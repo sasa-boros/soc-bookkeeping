@@ -4,6 +4,7 @@
   "description": "Serbian Orthodox Church bookkeeping app",
   "main": "app.js",
   "scripts": {
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/sasa-boros/soc-bookkeeping#readme",
   "dependencies": {
+    "electron": "^3.0.11",
     "lodash": "^4.17.11"
   }
 }
