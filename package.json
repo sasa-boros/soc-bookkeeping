@@ -1,0 +1,19 @@
+{
+  "name": "soc-bookkeeping",
+  "version": "1.0.0",
+  "description": "Serbian Orthodox Church bookkeeping app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sasa-boros/soc-bookkeeping.git"
+  },
+  "author": "Popović Radmila, Boroš Saša",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sasa-boros/soc-bookkeeping/issues"
+  },
+  "homepage": "https://github.com/sasa-boros/soc-bookkeeping#readme"
+}
