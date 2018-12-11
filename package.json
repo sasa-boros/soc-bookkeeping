@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/sasa-boros/soc-bookkeeping/issues"
   },
-  "homepage": "https://github.com/sasa-boros/soc-bookkeeping#readme"
+  "homepage": "https://github.com/sasa-boros/soc-bookkeeping#readme",
+  "dependencies": {
+    "lodash": "^4.17.11"
+  }
 }
