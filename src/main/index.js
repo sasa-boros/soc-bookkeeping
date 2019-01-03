@@ -1,6 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
+import mongodb from 'mongodb'
 require('./ipcRouter')
 
 /**
@@ -21,7 +22,7 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    useContentSize: true,
+    useContentSize: true
   })
 
   mainWindow.maximize()
@@ -31,6 +32,22 @@ function createWindow () {
     mainWindow = null
   })
 }
+
+const MongoClient = mongodb.MongoClient
+const dbName = 'soc-bookkeeping-db'
+const dbUrl = `mongodb://localhost:27017/${dbName}`
+
+let db
+
+MongoClient.connect(dbUrl, function (err, client) {
+  if (err) {
+    console.log(`Failed connecting to the database on url: ${dbUrl}`, err)
+    app.quit();
+  }
+  console.log(`Sucessfully connected to the database on url: ${dbUrl}`)
+
+  db = client.db(dbName)
+})
 
 app.on('ready', createWindow)
 
@@ -45,6 +62,8 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+module.exports = {db: db}
 
 /**
  * Auto Updater

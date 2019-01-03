@@ -73,7 +73,7 @@
 
     <!-- Info modal -->
     <b-modal id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-      <payment-slip-preview-simple></payment-slip-preview-simple>
+      <payment-slip-preview></payment-slip-preview>
     </b-modal>
 
     <!-- Create slip modal -->

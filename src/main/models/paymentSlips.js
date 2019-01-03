@@ -1,3 +1,25 @@
+import {db} from '../index'
+
+// eslint-disable-next-line no-unused-vars
+class PaymentSlip {
+  id;
+  amount;
+  amountText;
+  town;
+  reason;
+  payed;
+  received;
+  firstPart;
+  firstPos;
+  firstAmount;
+  secondPart;
+  secondPos;
+  secondAmount;
+  reportPage;
+  ordinal;
+  municipalityPresident;
+}
+
 var paymentSlips = [
   {id: 1, item: 'apple', price: 8},
   {id: 2, item: 'pear', price: 48},
@@ -23,6 +45,19 @@ var paymentSlips = [
   {id: 36, item: '3banana', price: 9}
   */
 ]
+
+// eslint-disable-next-line no-unused-vars
+function getPaymentSlipsTBU () {
+  db.collection('paymentSlips').find()
+}
+// eslint-disable-next-line no-unused-vars
+function savePaymentSlipTBU (slip) {
+  db.collection('paymentSlips').save(slip)
+}
+// eslint-disable-next-line no-unused-vars
+function deletePaymentSlipTBU (slipId) {
+  db.collection('paymentSlips').remove({'_id': slipId})
+}
 
 function getPaymentSlips () {
   return paymentSlips

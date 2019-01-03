@@ -5,10 +5,8 @@ ipcMain.on('get-payment-slips', function (event) {
   event.returnValue = paymentSlips.getPaymentSlips()
 })
 
-ipcMain.on('create-payment-slip', function (event, newSlip) {
-  console.log('router create')
-  console.log(newSlip)
-  event.returnValue = paymentSlips.createPaymentSlip(newSlip)
+ipcMain.on('create-payment-slip', function (event, slip) {
+  event.returnValue = paymentSlips.createPaymentSlip(slip)
 })
 
 ipcMain.on('delete-payment-slip', function (event, slipId) {
@@ -16,4 +14,5 @@ ipcMain.on('delete-payment-slip', function (event, slipId) {
 })
 
 ipcMain.on('update-payment-slip', function (event, slip) {
+  event.returnValue = paymentSlips.updatePaymentSlip(slip)
 })

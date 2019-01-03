@@ -5,10 +5,9 @@ function getPaymentSlips () {
   return slips
 }
 
-function createPaymentSlip (newSlip) {
-  ipcRenderer.sendSync('create-payment-slip', newSlip)
+function createPaymentSlip (slip) {
+  ipcRenderer.sendSync('create-payment-slip', slip)
 }
-
 function updatePaymentSlip (slip) {
   ipcRenderer.send('update-payment-slip', slip)
 }
