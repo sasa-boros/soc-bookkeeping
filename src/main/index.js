@@ -1,7 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
-import mongodb from 'mongodb'
+var mongoose = require('mongoose')
 require('./ipcRouter')
 
 /**
@@ -33,22 +33,10 @@ function createWindow () {
   })
 }
 
-const MongoClient = mongodb.MongoClient
 const dbName = 'soc-bookkeeping-db'
 const dbUrl = `mongodb://localhost:27017/${dbName}`
 
-let db = createConnection()
-
-async function createConnection () {
-  await MongoClient.connect(dbUrl, async function (err, client) {
-    if (err) {
-      console.log(`Failed connecting to the database on url: ${dbUrl}`, err)
-    }
-    console.log(`Sucessfully connected to the database on url: ${dbUrl}`)
-
-    db = client.db(dbName)
-  })
-}
+mongoose.connect(dbUrl)
 
 app.on('ready', createWindow)
 
@@ -63,8 +51,6 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
-module.exports = {db: db}
 
 /**
  * Auto Updater

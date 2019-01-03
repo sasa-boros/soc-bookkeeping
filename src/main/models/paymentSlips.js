@@ -1,24 +1,28 @@
-import {db} from '../index'
+var mongoose = require('mongoose')
+var Schema = mongoose.Schema
 
-// eslint-disable-next-line no-unused-vars
-class PaymentSlip {
-  id;
-  amount;
-  amountText;
-  town;
-  reason;
-  payed;
-  received;
-  firstPart;
-  firstPos;
-  firstAmount;
-  secondPart;
-  secondPos;
-  secondAmount;
-  reportPage;
-  ordinal;
-  municipalityPresident;
-}
+// create a schema
+var paymentSlipSchema = new Schema({
+  amount: {type: Number},
+  amountText: {type: String},
+  town: {type: String},
+  reason: {type: String},
+  payed: {type: String},
+  received: {type: String},
+  firstPart: {type: String},
+  firstPos: {type: String},
+  firstAmount: {type: Number},
+  secondPart: {type: String},
+  secondPos: {type: String},
+  secondAmount: {type: Number},
+  reportPage: {type: Number},
+  ordinal: {type: Number},
+  municipalityPresident: {type: String}
+})
+
+// the schema is useless so far
+// we need to create a model using it
+var PaymentSlip = mongoose.model('paymentSlips', paymentSlipSchema)
 
 var paymentSlips = [
   {id: 1, item: 'apple', price: 8},
@@ -45,19 +49,6 @@ var paymentSlips = [
   {id: 36, item: '3banana', price: 9}
   */
 ]
-
-// eslint-disable-next-line no-unused-vars
-function getPaymentSlipsTBU () {
-  db.collection('paymentSlips').find()
-}
-// eslint-disable-next-line no-unused-vars
-function savePaymentSlipTBU (slip) {
-  db.collection('paymentSlips').save(slip)
-}
-// eslint-disable-next-line no-unused-vars
-function deletePaymentSlipTBU (slipId) {
-  db.collection('paymentSlips').remove({'_id': slipId})
-}
 
 function getPaymentSlips () {
   return paymentSlips
@@ -89,6 +80,7 @@ function assignNewId () {
 }
 
 module.exports = {
+  PaymentSlip: PaymentSlip,
   getPaymentSlips: getPaymentSlips,
   createPaymentSlip: createPaymentSlip,
   deletePaymentSlip: deletePaymentSlip
