@@ -37,17 +37,18 @@ const MongoClient = mongodb.MongoClient
 const dbName = 'soc-bookkeeping-db'
 const dbUrl = `mongodb://localhost:27017/${dbName}`
 
-let db
+let db = createConnection()
 
-MongoClient.connect(dbUrl, function (err, client) {
-  if (err) {
-    console.log(`Failed connecting to the database on url: ${dbUrl}`, err)
-    app.quit();
-  }
-  console.log(`Sucessfully connected to the database on url: ${dbUrl}`)
+async function createConnection () {
+  await MongoClient.connect(dbUrl, async function (err, client) {
+    if (err) {
+      console.log(`Failed connecting to the database on url: ${dbUrl}`, err)
+    }
+    console.log(`Sucessfully connected to the database on url: ${dbUrl}`)
 
-  db = client.db(dbName)
-})
+    db = client.db(dbName)
+  })
+}
 
 app.on('ready', createWindow)
 
