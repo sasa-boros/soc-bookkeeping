@@ -72,7 +72,7 @@
     </b-row>
 
     <!-- Info modal -->
-    <b-modal id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
+    <b-modal hide-footer size="lg" id="modalInfo" @hide="resetModal">
       <payment-slip-preview></payment-slip-preview>
     </b-modal>
 
