@@ -17,7 +17,26 @@ const paymentSlipSchema = new Schema({
   secondAmount: {type: Number},
   reportPage: {type: Number},
   ordinal: {type: Number},
-  municipalityPresident: {type: String}
+  municipalityPresident: {type: String},
+  created_at: {type: Date},
+  updated_at: {type: Date}
+})
+
+paymentSlipSchema.pre('save', function (next) {
+  var currentDate = new Date()
+
+  this.updated_at = currentDate
+  this.created_at = currentDate
+
+  next()
+})
+
+paymentSlipSchema.pre('findOneAndUpdate', function (next) {
+  var currentDate = new Date()
+
+  this._update.updated_at = currentDate
+
+  next()
 })
 
 const PaymentSlip = mongoose.model('paymentSlips', paymentSlipSchema)
