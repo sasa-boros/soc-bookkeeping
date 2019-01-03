@@ -1,40 +1,46 @@
 <template>           
   <b-container fluid id="payment-slip-preview-container">
-  <div class="payment-slip-preview-text">
-    <h1> {{slipText.title}} </h1>
-  <br/>На дин. <b-form-input class="input-small" id="priceInput" type="text" placeholder="___________________________"></b-form-input> и словима <b-form-input class="input-small" id="priceWithLettersInput"  type="text" placeholder="..........................................................................................."></b-form-input>
-  <br/><b-form-input class="input-small" id="priceWithLettersInputPt2"  type="text" placeholder="......................................................................................................................................................."></b-form-input>
-  колико сам данас уплатио у благајну Српске православне црквене општине
-  у <b-form-input class="input-small" id="placeInput" type="text" placeholder="......................................................"></b-form-input> на име <b-form-input class="input-small" id="nameInput" type="text" placeholder="................................................................................."></b-form-input>
-                                                                                                                  Уплатио,
-  Примио благајник,                                                        <b-form-input class="input-small" id="payerInput" type="text" placeholder="................................................................"></b-form-input>
-                                                                                           Књижити у корист буџета за                                                                        
-  <br/><b-form-input class="input-small" type="text" placeholder="................................................................"></b-form-input>                                                    
-  <div id="divprice">asdhbksjhfskjdhfvkajhsdvfkahsdvfkhasdvf</div>
-
-  <div id="divContentEditable" contenteditable="true">asdhbksjhfskjdhfvkajhsdvfkahsdvfkhasdvf</div>
-  </div>
+    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+      <div class="payment-slip-preview-text">
+        <h1> УПЛАТНИЦА </h1>
+      <br/>На дин. <b-form-input required v-model="form.price" class="input-small" id="priceInput" type="text" placeholder="______________________________________"></b-form-input> и словима <b-form-input required v-model="form.priceWithLetters" class="input-small" id="priceWithLettersInput"  type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
+      <br/><b-form-input class="input-small" id="priceWithLettersInputPt2"  type="text" placeholder="_________________________________________________________________________________________________________________________________________"></b-form-input>
+      <br/>колико сам данас уплатио у благајну Српске православне црквене општине
+      <br/>у <b-form-input required v-model="form.place" class="input-small" id="placeInput" type="text" placeholder="___________________________________________________________________________"></b-form-input> на име <b-form-input required v-model="form.name" class="input-small" id="nameInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
+      
+                                                                                                                                            У п л а т и о,
+                                                                                                              <b-form-input class="input-small" id="payerInput" type="text" placeholder="__________________________________________________________________________"></b-form-input>
+                                                                                              Књижити у корист буџета за                                                                        
+      <br/><b-form-input class="input-small" type="text" placeholder="................................................................"></b-form-input>                                                    
+      
+      
+      Примио благајник, 
+      <b-button type="submit" variant="primary">Submit</b-button>
+      <b-button type="reset" variant="danger">Reset</b-button>
+      </div>
+    </b-form>
   </b-container>
 </template>
 
 <script>
 
-const slipText = {
-  title: 'УПЛАТНИЦА',
-  text: [
-    'На дин. ........................... и словима ...........................................................................................',
-    '.......................................................................................................................................................',
-    'колико сам данас уплатио у благајну Српске православне црквене општине',
-    'у ...................................................... на име .................................................................................',
-    '                                                                                                                Уплатио,',
-    'Примио благајник,                                                        ................................................................'
-  ]
-}
-
 export default {
   data () {
     return {
-      slipText
+      form: {
+        price: null,
+        name: null,
+        place: null,
+        priceWithLetters: null
+      },
+      show: true
+    }
+  },
+  methods: {
+    onSubmit (evt) {
+      evt.preventDefault()
+    },
+    onReset (evt) {
     }
   }
 }
@@ -45,6 +51,7 @@ export default {
   width: 794px; 
   height: 559px; 
   border-style: solid;
+  border-width: thin;
   font-family: "Times New Roman";
   position: relative;
 }
@@ -52,8 +59,8 @@ export default {
   white-space: pre;
   width: 670px; 
   height: 520px; 
-  border-style: solid;
-  border-color: blue;
+  /*border-style: solid;
+  border-color: blue;*/
   font-family: "Times New Roman";
   font-size: 90%;
   letter-spacing: 95%;
@@ -83,21 +90,22 @@ h1{
 .input-small::placeholder{
   border-style: none;
   font-weight: normal;
+  color: #d3d3d3;
 }
 #priceInput{
-  width: 110px;
+  width: 140px;
 }
 #priceWithLettersInput{
-  width: 370px;
+  width: 410px;
 }
 #priceWithLettersInputPt2{
-  width: 615px;
+  width: 670px;
 }
 #placeInput{
-  width: 220px;
+  width: 180px;
 }
 #nameInput{
-  width: 330px;
+  width: 430px;
 }
 #payerInput{
   width: 260px;
