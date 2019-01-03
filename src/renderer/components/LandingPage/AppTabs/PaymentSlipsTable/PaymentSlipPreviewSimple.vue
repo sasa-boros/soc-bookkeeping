@@ -1,22 +1,32 @@
 <template>
   <div>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show" novalidate>
-      <b-form-group id="exampleInputGroup1"
-                    label="Item:"
-                    label-for="exampleInput1">
-        <b-form-input id="exampleInput1"
-                      type="text"
-                      v-model="form.item"
+      <b-form-group id="exampleInputGroup2"
+                    label="Amount:"
+                    label-for="exampleInput2">
+        <b-form-input id="exampleInput2"
+                      type="number"
+                      v-model="form.amount"
                       required
                       placeholder="">
         </b-form-input>
       </b-form-group>
-      <b-form-group id="exampleInputGroup2"
-                    label="Price:"
-                    label-for="exampleInput2">
-        <b-form-input id="exampleInput2"
-                      type="number"
-                      v-model="form.price"
+      <b-form-group id="exampleInputGroup1"
+                    label="Town:"
+                    label-for="exampleInput1">
+        <b-form-input id="exampleInput1"
+                      type="text"
+                      v-model="form.town"
+                      required
+                      placeholder="">
+        </b-form-input>
+      </b-form-group>
+      <b-form-group id="exampleInputGroup3"
+                    label="Reason:"
+                    label-for="exampleInput3">
+        <b-form-input id="exampleInput3"
+                      type="text"
+                      v-model="form.reason"
                       required
                       placeholder="">
         </b-form-input>
@@ -34,8 +44,9 @@ export default {
   data () {
     return {
       form: {
-        item: '',
-        price: null
+        reason: '',
+        town: '',
+        amount: null
       },
       show: true
     }

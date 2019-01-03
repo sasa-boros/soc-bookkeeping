@@ -54,7 +54,10 @@
         </b-button>   
         <b-button size="sm" @click.stop="deleteSlip(row.item)" class="mr-1">
           <img src="~@/assets/delete.png" class="btn-img">                                           
-        </b-button>         
+        </b-button>       
+        <b-button size="sm" @click.stop="updateSlip(row.item)" class="mr-1">
+          <img src="~@/assets/delete.png" class="btn-img">                                           
+        </b-button>  
       </b-button-group>                
       </template>
       <template slot="show_details" slot-scope="row">
@@ -95,8 +98,9 @@ export default {
     return {
       fields: [
         {key: 'show_details', label: ''},
-        { key: 'item', label: 'Item', sortable: true, sortDirection: 'desc' },
-        { key: 'price', label: 'Price', sortable: true, 'class': 'text-center' },
+        { key: 'town', label: 'Town', sortable: true, sortDirection: 'desc' },
+        { key: 'amount', label: 'Amount', sortable: true, 'class': 'text-center' },
+        { key: 'reason', label: 'Reason', sortable: true, sortDirection: 'desc' },
         {key: 'actions', label: '', 'class': 'text-center'}
       ],
       currentPage: 1,
@@ -129,7 +133,12 @@ export default {
       this.$root.$emit('bv::show::modal', 'modalCreateSlip', button)
     },
     deleteSlip (item) {
-      paymentSlipsController.deletePaymentSlip(item.id)
+      paymentSlipsController.deletePaymentSlip(item._id)
+      this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+    },
+    updateSlip (item) {
+      item.amount++
+      paymentSlipsController.updatePaymentSlip(item)
       this.$root.$emit('bv::refresh::table', 'payment-slips-table')
     },
     resetModal () {

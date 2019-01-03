@@ -9,7 +9,7 @@ function createPaymentSlip (slip) {
   ipcRenderer.sendSync('create-payment-slip', slip)
 }
 function updatePaymentSlip (slip) {
-  ipcRenderer.send('update-payment-slip', slip)
+  ipcRenderer.sendSync('update-payment-slip', slip)
 }
 
 function deletePaymentSlip (slipId) {
