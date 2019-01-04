@@ -1,18 +1,16 @@
 <template>           
   <b-container fluid id="payment-slip-preview-container">
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+    <b-form @submit="onSubmit" @reset="onReset" v-if="show" no-validation>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-input required v-model="form.price" class="input-small" id="priceInput" type="text" placeholder="______________________________________"></b-form-input> и словима <b-form-input required v-model="form.priceWithLetters" class="input-small" id="priceWithLettersInput"  type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
+      <br/>На дин. <b-form-input required v-model="form.price" class="input-small" id="priceInput" type="text" placeholder="______________________________________"></b-form-input> и словима <b-form-input required v-model="generatedPriceWithLetters" class="input-small" id="priceWithLettersInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
       <br/><b-form-input class="input-small" id="priceWithLettersInputPt2"  type="text" placeholder="_________________________________________________________________________________________________________________________________________"></b-form-input>
-      <br/>колико сам данас уплатио у благајну Српске православне црквене општине
-      <br/>у <b-form-input required v-model="form.place" class="input-small" id="placeInput" type="text" placeholder="___________________________________________________________________________"></b-form-input> на име <b-form-input required v-model="form.name" class="input-small" id="nameInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
-      
-                                                                                                                                            У п л а т и о,
-                                                                                                              <b-form-input class="input-small" id="payerInput" type="text" placeholder="__________________________________________________________________________"></b-form-input>
-                                                                                              Књижити у корист буџета за                                                                        
+      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-input required v-model="form.place" class="input-small" id="placeInput" type="text" placeholder="___________________________________________________________________________"></b-form-input> на име <b-form-input required v-model="form.name" class="input-small" id="nameInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
+      <div class="mt-2">                                                                                                                                        У п л а т и о,
+                                                                                                            <b-form-input class="input-small" id="payerInput" type="text" placeholder="_______________________________________________________________________________"></b-form-input>   
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за                                                                        
       <br/><b-form-input class="input-small" type="text" placeholder="................................................................"></b-form-input>                                                    
-      
+      </div>
       
       Примио благајник, 
       <b-button type="submit" variant="primary">Submit</b-button>
@@ -23,6 +21,8 @@
 </template>
 
 <script>
+
+const {numberToSerbianDinars} = require('../../../../utils')
 
 export default {
   data () {
@@ -41,6 +41,15 @@ export default {
       evt.preventDefault()
     },
     onReset (evt) {
+    }
+  },
+  computed: {
+    generatedPriceWithLetters: {
+      get: function () {
+        return numberToSerbianDinars(this.form.price, ' ')
+      },
+      set: function (newValue) {
+      }
     }
   }
 }
@@ -108,7 +117,7 @@ h1{
   width: 430px;
 }
 #payerInput{
-  width: 260px;
+  width: 288px;
 }
 #divContentEditable{ 
   -ms-flow-into: article;
