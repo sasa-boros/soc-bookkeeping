@@ -75,7 +75,7 @@
     </b-row>
 
     <!-- Info modal -->
-    <b-modal hide-footer size="lg" id="modalInfo" @hide="resetModal">
+    <b-modal hide-footer hide-header size="a5" id="modalInfo" @hide="resetModal" >
       <payment-slip-preview></payment-slip-preview>
     </b-modal>
 
@@ -158,5 +158,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+.modal .modal-a5 {
+  max-width: 830px;
+  width: 830px;
+}
 </style>
