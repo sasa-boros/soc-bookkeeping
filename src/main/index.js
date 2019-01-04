@@ -1,8 +1,9 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
-var mongoose = require('mongoose')
-require('./ipcRouter')
+import mongoose from 'mongoose'
+// eslint-disable-next-line no-unused-vars
+import ipcRouter from './ipcRouter'
 
 /**
  * Set `__static` path to static files in production

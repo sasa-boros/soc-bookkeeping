@@ -34,10 +34,12 @@ receiptSchema.pre('save', function (next) {
   next()
 })
 
-receiptSchema.pre('findOneAndUpdate', function () {
+receiptSchema.pre('findOneAndUpdate', function (next) {
   var currentDate = new Date()
 
-  this.updated_at = currentDate
+  this._update.updated_at = currentDate
+
+  next()
 })
 
 const Receipt = mongoose.model('receipts', receiptSchema)

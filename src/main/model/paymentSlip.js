@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-// create a schema
 const paymentSlipSchema = new Schema({
   amount: {type: Number},
   amountText: {type: String},
