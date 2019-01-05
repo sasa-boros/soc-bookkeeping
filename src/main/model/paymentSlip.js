@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const paymentSlipSchema = new Schema({
+  date: {type: Date},
   amount: {type: Number},
   amountText: {type: String},
   town: {type: String},
@@ -22,8 +23,7 @@ const paymentSlipSchema = new Schema({
 })
 
 paymentSlipSchema.pre('save', function (next) {
-  var currentDate = new Date()
-
+  const currentDate = new Date()
   this.updated_at = currentDate
   this.created_at = currentDate
 
@@ -31,8 +31,7 @@ paymentSlipSchema.pre('save', function (next) {
 })
 
 paymentSlipSchema.pre('findOneAndUpdate', function (next) {
-  var currentDate = new Date()
-
+  const currentDate = new Date()
   this._update.updated_at = currentDate
 
   next()

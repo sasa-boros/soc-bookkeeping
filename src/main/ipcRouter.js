@@ -14,22 +14,22 @@ ipcMain.on('get-payment-slips', function (event) {
   })
 })
 
-ipcMain.on('create-payment-slip', function (event, slip) {
-  console.log(`Initiated create payment slip: \n${JSON.stringify(slip, null, 2)}`)
-  var newSlip = PaymentSlip(slip)
-  newSlip.save(function (err) {
+ipcMain.on('create-payment-slip', function (event, paymentSlip) {
+  console.log(`Initiated create payment slip: \n${JSON.stringify(paymentSlip, null, 2)}`)
+  var newPaymentSlip = PaymentSlip(paymentSlip)
+  newPaymentSlip.save(function (err) {
     if (err) {
       console.error(err.message)
       throw err
     }
-    console.log(`Successfully created payment slip: \n${newSlip}`)
+    console.log(`Successfully created payment slip: \n${newPaymentSlip}`)
     event.returnValue = true
   })
 })
 
-ipcMain.on('delete-payment-slip', function (event, slipId) {
-  console.log(`Initiated delete payment slip with: ${slipId}`)
-  PaymentSlip.findOneAndRemove({_id: slipId}, function (err) {
+ipcMain.on('delete-payment-slip', function (event, paymentSlipId) {
+  console.log(`Initiated delete payment slip with: ${paymentSlipId}`)
+  PaymentSlip.findOneAndRemove({_id: paymentSlipId}, function (err) {
     if (err) {
       console.error(err.message)
       throw err
@@ -39,14 +39,14 @@ ipcMain.on('delete-payment-slip', function (event, slipId) {
   })
 })
 
-ipcMain.on('update-payment-slip', function (event, slip) {
-  console.log(`Initiated update payment slip with: \n${JSON.stringify(slip, null, 2)}`)
-  PaymentSlip.findOneAndUpdate({_id: slip._id}, slip, function (err, updatedSlip) {
+ipcMain.on('update-payment-slip', function (event, paymentSlip) {
+  console.log(`Initiated update payment slip with: \n${JSON.stringify(paymentSlip, null, 2)}`)
+  PaymentSlip.findOneAndUpdate({_id: paymentSlip._id}, paymentSlip, function (err, updatedPaymentSlip) {
     if (err) {
       console.error(err.message)
       throw err
     }
-    console.log(`Successfully updated payment slip: \n${updatedSlip}`)
+    console.log(`Successfully updated payment slip: \n${updatedPaymentSlip}`)
     event.returnValue = true
   })
 })

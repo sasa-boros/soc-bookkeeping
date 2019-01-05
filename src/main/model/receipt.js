@@ -1,13 +1,12 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-// create a schema
 const receiptSchema = new Schema({
+  date: {type: Date},
   createdAt: {type: Date},
   amount: {type: Number},
   amountText: {type: String},
   churchMunicipality: {type: String},
-  date: {type: Date},
   town: {type: String},
   reason: {type: String},
   payed: {type: String},
@@ -26,8 +25,7 @@ const receiptSchema = new Schema({
 })
 
 receiptSchema.pre('save', function (next) {
-  var currentDate = new Date()
-
+  const currentDate = new Date()
   this.updated_at = currentDate
   this.created_at = currentDate
 
@@ -35,8 +33,7 @@ receiptSchema.pre('save', function (next) {
 })
 
 receiptSchema.pre('findOneAndUpdate', function (next) {
-  var currentDate = new Date()
-
+  const currentDate = new Date()
   this._update.updated_at = currentDate
 
   next()

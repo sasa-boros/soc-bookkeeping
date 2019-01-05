@@ -1,19 +1,19 @@
 const {ipcRenderer} = require('electron')
 
 function getPaymentSlips () {
-  var slips = ipcRenderer.sendSync('get-payment-slips')
-  return slips
+  var paymentSlips = ipcRenderer.sendSync('get-payment-slips')
+  return paymentSlips
 }
 
-function createPaymentSlip (slip) {
-  ipcRenderer.sendSync('create-payment-slip', slip)
+function createPaymentSlip (paymentSlip) {
+  ipcRenderer.sendSync('create-payment-slip', paymentSlip)
 }
-function updatePaymentSlip (slip) {
-  ipcRenderer.sendSync('update-payment-slip', slip)
+function updatePaymentSlip (paymentSlip) {
+  ipcRenderer.sendSync('update-payment-slip', paymentSlip)
 }
 
-function deletePaymentSlip (slipId) {
-  ipcRenderer.sendSync('delete-payment-slip', slipId)
+function deletePaymentSlip (paymentSlipId) {
+  ipcRenderer.sendSync('delete-payment-slip', paymentSlipId)
 }
 
 module.exports = {

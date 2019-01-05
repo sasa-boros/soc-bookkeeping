@@ -1,3 +1,6 @@
+const PaymentSlip = require('paymentSlip')
+const Receipt = require('receipt')
+
 const INCOME_PART_POS = {
     'I/1': 'парохијал',
     'I/2': 'иконе',
@@ -33,4 +36,31 @@ const OUTCOME_PART_POS = {
     'III/6': 'фонд 30% од земље',
     'III/7': 'паушал арх. намеснику',
     'IV' : 'епарх. разрез'
+}
+
+function generateAnnualReport(year) {
+    const paymentSlips = PaymentSlip.find(
+        {
+            'date': 
+            {
+                $gte: new Date(year, 0, 1),
+                $lt: new Date(year + 1, 0, 1),
+             }
+        }
+    )
+    const receipts = Receipt.find(
+        {
+            'date': 
+            {
+                $gte: new Date(year, 0, 1),
+                $lt: new Date(year + 1, 0, 1),
+             }
+        }
+    )
+}
+
+module.exports = {
+    INCOME_PART_POS: INCOME_PART_POS,
+    OUTCOME_PART_POS: OUTCOME_PART_POS,
+    generateAnnualReport: generateAnnualReport
 }
