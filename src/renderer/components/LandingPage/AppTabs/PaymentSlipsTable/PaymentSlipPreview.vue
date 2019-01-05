@@ -3,9 +3,9 @@
     <b-form @submit="onSubmit" @reset="onReset" v-if="show" no-validation>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-input required v-model="form.price" class="input-small" id="priceInput" type="text" placeholder="______________________________________"></b-form-input> и словима <b-form-input required v-model="generatedPriceWithLetters" class="input-small" id="priceWithLettersInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
-      <br/><b-form-input class="input-small" id="priceWithLettersInputPt2"  type="text" placeholder="_________________________________________________________________________________________________________________________________________"></b-form-input>
-      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-input required v-model="form.place" class="input-small" id="placeInput" type="text" placeholder="___________________________________________________________________________"></b-form-input> на име <b-form-input required v-model="form.name" class="input-small" id="nameInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
+      <br/>На дин. <b-form-input required v-model="form.amount" class="input-small" id="amountInput" type="text" placeholder="______________________________________"></b-form-input> и словима <b-form-input required v-model="generatedAmountWithLetters" class="input-small" id="amountWithLettersInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
+      <br/><b-form-input class="input-small" id="amountWithLettersInputPt2"  type="text" placeholder="_________________________________________________________________________________________________________________________________________"></b-form-input>
+      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-input required v-model="form.town" class="input-small" id="townInput" type="text" placeholder="___________________________________________________________________________"></b-form-input> на име <b-form-input required v-model="form.reason" class="input-small" id="reasonInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-input class="input-small" id="payerInput" type="text" placeholder="_______________________________________________________________________________"></b-form-input>   
       </div><div class="mt-2">                                                                                                          Књижити у корист буџета за                                                                        
@@ -22,16 +22,17 @@
 
 <script>
 
+const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
 const {numberToSerbianDinars} = require('../../../../utils')
 
 export default {
   data () {
     return {
       form: {
-        price: null,
-        name: null,
-        place: null,
-        priceWithLetters: null
+        amount: null,
+        reason: null,
+        town: null,
+        amountWithLetters: null
       },
       show: true
     }
@@ -39,14 +40,30 @@ export default {
   methods: {
     onSubmit (evt) {
       evt.preventDefault()
+      paymentSlipsController.createPaymentSlip(this.form)
+      this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+      this.form.amount = null
+      this.form.reason = null
+      this.form.town = null
+      this.form.amountWithLetters = null
+      this.$root.$emit('bv::hide::modal', 'modalCreateSlip')
     },
     onReset (evt) {
+      evt.preventDefault()
+      /* Reset our form values */
+      this.form.amount = null
+      this.form.reason = null
+      this.form.town = null
+      this.form.amountWithLetters = null
+      /* Trick to reset/clear native browser form validation state */
+      this.show = false
+      this.$nextTick(() => { this.show = true })
     }
   },
   computed: {
-    generatedPriceWithLetters: {
+    generatedAmountWithLetters: {
       get: function () {
-        return numberToSerbianDinars(this.form.price, ' ')
+        return numberToSerbianDinars(this.form.amount)
       },
       set: function (newValue) {
       }
@@ -101,19 +118,19 @@ h1{
   font-weight: normal;
   color: #d3d3d3;
 }
-#priceInput{
+#amountInput{
   width: 140px;
 }
-#priceWithLettersInput{
+#amountWithLettersInput{
   width: 410px;
 }
-#priceWithLettersInputPt2{
+#amountWithLettersInputPt2{
   width: 670px;
 }
-#placeInput{
+#townInput{
   width: 180px;
 }
-#nameInput{
+#reasonInput{
   width: 430px;
 }
 #payerInput{

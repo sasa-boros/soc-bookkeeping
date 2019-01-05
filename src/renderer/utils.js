@@ -3,7 +3,9 @@ function numberToSerbianDinars (n) {
     return null
   }
   var nFloored = Math.floor(n)
-  var string = nFloored.toString()
+  var flooredAndDecimalStrings = n.toString().split('.')
+  var flooredString = flooredAndDecimalStrings[0]
+  var decimalString
   var unitsMale
   var unitsFemale
   var tens
@@ -18,8 +20,9 @@ function numberToSerbianDinars (n) {
   var i
   var word
   var words
+  var paras = ''
 
-  if (parseInt(string) === 0) {
+  if (parseInt(flooredString) === 0) {
     return 'нула динара'
   }
 
@@ -37,11 +40,11 @@ function numberToSerbianDinars (n) {
   scales = ['', 'хиљад', 'милион', 'милијард', 'билион', 'билијард', 'трилион', 'трилијард', 'квадрилион', 'квадрилијард']
 
   /* Split user arguemnt into 3 digit chunks from right to left */
-  start = string.length
+  start = flooredString.length
   chunks = []
   while (start > 0) {
     end = start
-    chunks.push(string.slice((start = Math.max(0, start - 3)), end))
+    chunks.push(flooredString.slice((start = Math.max(0, start - 3)), end))
   }
 
   /* Check if function has enough scale words to be able to stringify the user argument */
@@ -121,7 +124,37 @@ function numberToSerbianDinars (n) {
   if ((nFloored % 10 !== 1) || (nFloored % 100 === 11)) {
     dinarWord += 'а'
   }
-  return words.reverse().join(' ') + dinarWord
+  var dinars = words.reverse().join(' ') + dinarWord
+
+  if (flooredAndDecimalStrings.length > 1) {
+    decimalString = flooredAndDecimalStrings[1].substring(0, 2)
+    if (decimalString.length === 1) {
+      decimalString += '0'
+    }
+    ints = decimalString.split('').reverse().map(parseFloat)
+
+    /* If tens integer is 1, i.e. 10, then add 10 to units integer */
+    if (ints[1] === 1) {
+      ints[0] += 10
+    }
+
+    /* Add tens word if array item exists */
+    if ((word = tens[ints[1]])) {
+      paras = paras + ' ' + word
+      /* If units of the chunk are between 0 and 9, add an and */
+      if (ints[0] > 0 && ints[0] <= 9) {
+        paras += ' и'
+      }
+    }
+    /* Add unit word if array item exists */
+    if ((word = unitsFemale[ints[0]])) {
+      paras = paras + ' ' + word
+    }
+    if (paras !== '') {
+      paras += ' пара'
+    }
+  }
+  return dinars + ((paras !== '') ? ', ' : '') + paras
 }
 
 module.exports = {

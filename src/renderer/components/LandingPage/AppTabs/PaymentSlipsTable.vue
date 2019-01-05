@@ -80,8 +80,8 @@
     </b-modal>
 
     <!-- Create slip modal -->
-    <b-modal id="modalCreateSlip" @hide="resetModal" :title="modalCreateSlip.title">
-      <payment-slip-preview-simple></payment-slip-preview-simple>
+    <b-modal hide-footer hide-header size="a5" id="modalCreateSlip" @hide="resetModal">
+      <payment-slip-preview></payment-slip-preview>
     </b-modal>
 
   </b-container>
