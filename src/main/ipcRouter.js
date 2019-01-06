@@ -1,18 +1,18 @@
 const {ipcMain} = require('electron')
 const PaymentSlip = require('./model/paymentSlip')
 const Receipt = require('./model/receipt')
-const annualReport = require('./model/annualReport')
+const {INCOME_CODES, OUTCOME_CODES} = require('./model/annualReport')
 
-ipcMain.on('get-income-part-pos', function (event) {
-  console.log('Initiated get income part pos')
-  console.log(`Found: \n${annualReport.INCOME_PART_POS}`)
-  event.returnValue = annualReport.INCOME_PART_POS
+ipcMain.on('get-income-codes', function (event) {
+  console.log('Initiated get income codes')
+  console.log(`Found: \n${INCOME_CODES}`)
+  event.returnValue = INCOME_CODES
 })
 
-ipcMain.on('get-outcome-part-pos', function (event) {
-  console.log('Initiated get outcome part pos')
-  console.log(`Found: \n${annualReport.OUTCOME_PART_POS}`)
-  event.returnValue = annualReport.OUTCOME_PART_POS
+ipcMain.on('get-outcome-codes', function (event) {
+  console.log('Initiated get outcome codes')
+  console.log(`Found: \n${OUTCOME_CODES}`)
+  event.returnValue = OUTCOME_CODES
 })
 
 ipcMain.on('get-payment-slips', function (event) {
