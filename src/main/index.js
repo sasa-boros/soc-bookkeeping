@@ -5,12 +5,22 @@ const mongoose = require('mongoose')
 // eslint-disable-next-line no-unused-vars
 const ipcRouter = require('./ipcRouter')
 
+const yaml = require('js-yaml')
+const fs = require('fs')
+const path = require('path')
+
+// Get document, or throw exception on error
+
+const properties = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '/resources/soc_bookkeeping_properties.yml'), 'utf8'))
+
+mongoose.connect(properties.dbUrl)
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
 let mainWindow
@@ -33,11 +43,6 @@ function createWindow () {
     mainWindow = null
   })
 }
-
-const dbName = 'soc-bookkeeping-db'
-const dbUrl = `mongodb://localhost:27017/${dbName}`
-
-mongoose.connect(dbUrl)
 
 app.on('ready', createWindow)
 
