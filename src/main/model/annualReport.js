@@ -38,7 +38,7 @@ const OUTCOME_PART_POS = {
     'IV' : 'епарх. разрез'
 }
 
-function generateAnnualReport(year) {
+function getAnnualReport(year, prevYearTransfer) {
     const paymentSlips = PaymentSlip.find(
         {
             'date': 
@@ -62,5 +62,5 @@ function generateAnnualReport(year) {
 module.exports = {
     INCOME_PART_POS: INCOME_PART_POS,
     OUTCOME_PART_POS: OUTCOME_PART_POS,
-    generateAnnualReport: generateAnnualReport
+    getAnnualReport: getAnnualReport
 }

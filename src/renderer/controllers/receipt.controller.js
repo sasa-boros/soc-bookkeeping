@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron')
 
 function getReceipts() {
-    var receipts = ipcRenderer.sendSync('get-receipts')
+    const receipts = ipcRenderer.sendSync('get-receipts')
     return receipts
 }
 

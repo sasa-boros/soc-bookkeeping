@@ -1,7 +1,7 @@
 const {ipcRenderer} = require('electron')
 
 function getPaymentSlips () {
-  var paymentSlips = ipcRenderer.sendSync('get-payment-slips')
+  const paymentSlips = ipcRenderer.sendSync('get-payment-slips')
   return paymentSlips
 }
 
