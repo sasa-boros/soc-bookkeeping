@@ -6,11 +6,13 @@ const annualReport = require('./model/annualReport')
 ipcMain.on('get-income-part-pos', function (event) {
   console.log('Initiated get income part pos')
   console.log(`Found: \n${annualReport.INCOME_PART_POS}`)
+  event.returnValue = annualReport.INCOME_PART_POS
 })
 
 ipcMain.on('get-outcome-part-pos', function (event) {
   console.log('Initiated get outcome part pos')
   console.log(`Found: \n${annualReport.OUTCOME_PART_POS}`)
+  event.returnValue = annualReport.OUTCOME_PART_POS
 })
 
 ipcMain.on('get-payment-slips', function (event) {
