@@ -17,6 +17,9 @@
         <img src="~@/assets/save.png" class="btn-img">
       </b-button>
       <b-button type="reset" variant="danger">Reset</b-button>
+      <b-button @click.stop="printPaymentSlip()" variant="secondary">
+        <img src="~@/assets/print.png" class="btn-img">
+      </b-button>
       </div>
     </b-form>
   </b-container>
@@ -90,8 +93,20 @@ export default {
       this.form = {}
       this.attemptSubmit = false
     },
-    setForm (item) {
-      this.form = item
+    printPaymentSlip () {
+      const modal = document.getElementById('payment-slip-preview-container')
+      const cloned = modal.cloneNode(true)
+      let section = document.getElementById('print')
+
+      if (!section) {
+        section = document.createElement('div')
+        section.id = 'print'
+        document.body.appendChild(section)
+      }
+
+      section.innerHTML = ''
+      section.appendChild(cloned)
+      window.print()
     }
   },
   computed: {
@@ -216,5 +231,26 @@ h1{
 #divContentEditable{ 
   -ms-flow-into: article;
   -webkit-flow-into: article;
+}
+</style>
+
+<style>
+@media screen {
+  #print {
+    display: none;
+  }
+}
+@media print {
+  * {
+    visibility:hidden;
+  }
+  #print, #print * {
+    visibility:visible;
+  }
+  #print {
+    position:absolute;
+    left:0;
+    top:0;
+  }
 }
 </style>
