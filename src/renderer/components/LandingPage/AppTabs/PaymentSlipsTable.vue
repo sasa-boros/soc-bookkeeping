@@ -4,7 +4,7 @@
      <b-row>
       <b-col md="2" class="my-1">
         <b-button-group size="sm">
-          <b-btn @click.stop="create($event.target)">
+          <b-btn @click.stop="openCreatePayslipModal($event.target)">
             New
           </b-btn>
           <b-btn>
@@ -49,15 +49,12 @@
         <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
         
       <b-button-group size="sm">
-        <b-button size="sm" @click.stop="info(row.item, row.index, $event.target)" class="mr-1">
-          <img src="~@/assets/see.png" class="btn-img">
-        </b-button>   
+        <b-button size="sm" @click.stop="openUpdateSlipModal(row.item)" class="mr-1">
+          <img src="~@/assets/see.png" class="btn-img">                                           
+        </b-button>
         <b-button size="sm" @click.stop="deleteSlip(row.item)" class="mr-1">
           <img src="~@/assets/delete.png" class="btn-img">                                           
-        </b-button>       
-        <b-button size="sm" @click.stop="updateSlip(row.item)" class="mr-1">
-          <img src="~@/assets/delete.png" class="btn-img">                                           
-        </b-button>  
+        </b-button>     
       </b-button-group>                
       </template>
       <template slot="show_details" slot-scope="row">
@@ -74,14 +71,9 @@
       </b-col>
     </b-row>
 
-    <!-- Info modal -->
-    <b-modal hide-footer hide-header size="a5" id="modalInfo" @hide="resetModal" >
-      <payment-slip-preview></payment-slip-preview>
-    </b-modal>
-
     <!-- Create slip modal -->
     <b-modal hide-footer hide-header size="a5" id="modalCreateSlip" @hide="resetModal">
-      <payment-slip-preview></payment-slip-preview>
+      <payment-slip-preview :item='selectedItem'></payment-slip-preview>
     </b-modal>
 
   </b-container>
@@ -111,8 +103,13 @@ export default {
       sortDesc: false,
       sortDirection: 'asc',
       filter: null,
-      modalInfo: { title: '', content: '' },
-      modalCreateSlip: { title: 'Create new payment slip' }
+      modalCreateSlip: { title: 'Create new payment slip' },
+      selectedItem: {
+        amount: null,
+        reason: null,
+        town: null,
+        amountText: null
+      }
     }
   },
   computed: {
@@ -124,26 +121,20 @@ export default {
     }
   },
   methods: {
-    info (item, index, button) {
-      this.modalInfo.title = `Row index: ${index}`
-      this.modalInfo.content = JSON.stringify(item, null, 2)
-      this.$root.$emit('bv::show::modal', 'modalInfo', button)
-    },
-    create (button) {
+    openCreatePayslipModal (button) {
+      this.resetSelectedItem()
       this.$root.$emit('bv::show::modal', 'modalCreateSlip', button)
     },
     deleteSlip (item) {
       paymentSlipsController.deletePaymentSlip(item._id)
       this.$root.$emit('bv::refresh::table', 'payment-slips-table')
     },
-    updateSlip (item) {
-      item.amount++
-      paymentSlipsController.updatePaymentSlip(item)
-      this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+    openUpdateSlipModal (item) {
+      this.selectedItem = item
+      this.$root.$emit('bv::show::modal', 'modalCreateSlip')
     },
     resetModal () {
-      this.modalInfo.title = ''
-      this.modalInfo.content = ''
+      this.resetSelectedItem()
     },
     onFiltered (filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -152,6 +143,14 @@ export default {
     },
     paymentSlipsProvider (ctx) {
       return paymentSlipsController.getPaymentSlips()
+    },
+    resetSelectedItem () {
+      this.selectedItem = {
+        amount: null,
+        reason: null,
+        town: null,
+        amountText: null
+      }
     }
   },
   components: { PaymentSlipPreview, PaymentSlipPreviewSimple }

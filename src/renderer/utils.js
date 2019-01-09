@@ -1,5 +1,5 @@
 function numberToSerbianDinars (n) {
-  if (!n || isNaN(n) || n.trim() === '') {
+  if (!n || isNaN(n) || n.toString().trim() === '') {
     return null
   }
   var nFloored = Math.floor(n)
