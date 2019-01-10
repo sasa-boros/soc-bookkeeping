@@ -61,7 +61,6 @@ export default {
       evt.preventDefault()
       this.attemptSubmit = true
       if (this.checkForm()) {
-        console.log(this.form)
         if (this.form._id) {
           /* Update the item */
           paymentSlipsController.updatePaymentSlip(this.form)

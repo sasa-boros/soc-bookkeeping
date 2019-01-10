@@ -7,8 +7,8 @@
           <b-btn @click.stop="openCreatePayslipModal($event.target)">
             New
           </b-btn>
-          <b-btn>
-            Delete 
+          <b-btn @click.stop="deleteCheckedSlips()">
+            Delete selected
           </b-btn>
         </b-button-group> 
       </b-col>
@@ -58,9 +58,7 @@
       </b-button-group>                
       </template>
       <template slot="show_details" slot-scope="row">
-        <!-- In some circumstances you may need to use @click.native.stop instead -->
-        <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
-        <b-form-checkbox @click.native.stop @change="row.toggleDetails" v-model="row.detailsShowing">
+        <b-form-checkbox :value="row.item._id" v-model="checkedItems">
         </b-form-checkbox>
       </template>
     </b-table>
@@ -104,6 +102,8 @@ export default {
       sortDirection: 'asc',
       filter: null,
       modalCreateSlip: { title: 'Create new payment slip' },
+      checkedItems: [],
+      checkAll: false,
       selectedItem: {
         amount: null,
         reason: null,
@@ -127,6 +127,12 @@ export default {
     },
     deleteSlip (item) {
       paymentSlipsController.deletePaymentSlip(item._id)
+      this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+    },
+    deleteCheckedSlips () {
+      this.checkedItems.forEach(function (id) {
+        paymentSlipsController.deletePaymentSlip(id)
+      })
       this.$root.$emit('bv::refresh::table', 'payment-slips-table')
     },
     openUpdateSlipModal (item) {
