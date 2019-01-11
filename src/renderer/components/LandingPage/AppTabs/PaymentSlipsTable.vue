@@ -57,7 +57,7 @@
         </b-button>     
       </b-button-group>                
       </template>
-      <template slot="show_details" slot-scope="row">
+      <template slot="select" slot-scope="row">
         <b-form-checkbox :value="row.item._id" v-model="checkedItems">
         </b-form-checkbox>
       </template>
@@ -87,7 +87,7 @@ export default {
   data () {
     return {
       fields: [
-        {key: 'show_details', label: ''},
+        {key: 'select', label: ''},
         { key: 'town', label: 'Town', sortable: true, sortDirection: 'desc' },
         { key: 'amount', label: 'Amount', sortable: true, 'class': 'text-center' },
         { key: 'reason', label: 'Reason', sortable: true, sortDirection: 'desc' },

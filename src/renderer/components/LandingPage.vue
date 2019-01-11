@@ -1,16 +1,8 @@
 <template>
 <b-container fluid>
   <div id="wrapper">
-  <main>
+    <main>
       <app-tabs></app-tabs>
-
-      <div class="right-side">
-        <div class="doc">
-          <div class="title alt">Other Documentation</div>
-          <button class="alt" @click="open('https://electron.atom.io/docs/')">Electron</button>
-          <button class="alt" @click="open('https://vuejs.org/v2/guide/')">Vue.js</button>
-        </div>
-      </div>
     </main>
   </div>
   </b-container fluid>

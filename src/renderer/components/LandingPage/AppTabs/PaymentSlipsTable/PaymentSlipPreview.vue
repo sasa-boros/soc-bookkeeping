@@ -3,8 +3,7 @@
     <b-form @submit="onSubmit" @reset="onReset" v-if="show" no-validation>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group"><b-form-input v-model="form.amount" v-b-tooltip.hover.html="missingAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group> и словима <b-form-group class="input-form-group"><b-form-input v-model="generatedAmountText" class="input-small" id="amountTextInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input></b-form-group>
-      <br/><b-form-group class="input-form-group"><b-form-input class="input-small" id="amountTextInputPt2"  type="text" placeholder="_________________________________________________________________________________________________________________________________________"></b-form-input></b-form-group>
+      <br/>На дин. <b-form-group class="input-form-group"><b-form-input v-model="form.amount" v-b-tooltip.hover.html="missingAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group> и словима  <div class="parent" contenteditable="false" id="divContentEditable">{{generatedAmountText}}</div><br v-if="showWs" />
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group"><b-form-input v-model="form.town" class="input-small" v-b-tooltip.hover.html="missingTownTooltipText" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text" placeholder="___________________________________________________________________________"></b-form-input></b-form-group> на име <b-form-group class="input-form-group"><b-form-input v-model="form.reason" v-b-tooltip.hover.html="missingReasonTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group"><b-form-input class="input-small" id="payerInput" type="text" placeholder="_______________________________________________________________________________"></b-form-input></b-form-group>  
@@ -13,13 +12,21 @@
       </div>
       
       Примио благајник, 
-      <b-button type="submit" variant="secondary">
-        <img src="~@/assets/save.png" class="btn-img">
-      </b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
-      <b-button @click.stop="printPaymentSlip()" variant="secondary">
-        <img src="~@/assets/print.png" class="btn-img">
-      </b-button>
+
+      
+        <b-row>
+          <b-col md="8">
+          </b-col>
+          <b-col md="4">
+            <b-button type="submit" variant="secondary" class="ignoreInPrint">
+              <img src="~@/assets/save.png" class="btn-img ignoreInPrint">
+            </b-button>
+            <b-button type="reset" variant="danger" class="ignoreInPrint">Reset</b-button>
+            <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint">
+              <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
+            </b-button>      
+          </b-col>
+        </b-row>
       </div>
     </b-form>
   </b-container>
@@ -111,14 +118,23 @@ export default {
   computed: {
     generatedAmountText: {
       get: function () {
+        var placeholder = '_______________________________________________________________________________________________________________________________________'
         if (this.form) {
-          return numberToSerbianDinars(this.form.amount)
+          var generatedText = numberToSerbianDinars(this.form.amount)
+          if (!generatedText) {
+            return placeholder
+          } else {
+            return generatedText
+          }
         } else {
-          return ''
+          return placeholder
         }
       },
       set: function (newValue) {
       }
+    },
+    showWs: function () {
+      return this.generatedAmountText.length < 55
     },
     missingReason: function () {
       return !this.form || !this.form.reason || this.form.reason.toString().trim() === ''
@@ -155,6 +171,9 @@ export default {
 </script>
 
 <style scoped>
+input { 
+  text-align: center; 
+}
 #payment-slip-preview-container{
   width: 794px; 
   height: 559px; 
@@ -200,11 +219,12 @@ h1{
   height: 15px;
   margin: 0px;
   padding: 0px;
+  color: black;
 }
 .input-small::placeholder{
   border-style: none;
   font-weight: normal;
-  color: #d3d3d3;
+  color: #16264C;
 }
 .is-invalid {
   border-style: dotted;
@@ -216,7 +236,7 @@ h1{
   width: 410px;
 }
 #amountTextInputPt2{
-  width: 670px;
+  width: 255px;
 }
 #townInput{
   width: 180px;
@@ -230,6 +250,15 @@ h1{
 #divContentEditable{ 
   -ms-flow-into: article;
   -webkit-flow-into: article;
+  display: inline;
+  font-weight: bold;
+  font-size: 110% !important;
+  line-height: 2 !important;
+  min-height: 4 !important;
+  color: black;
+  white-space:normal !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 </style>
 
@@ -250,6 +279,9 @@ h1{
     position:absolute;
     left:0;
     top:0;
+  }
+  .ignoreInPrint {
+    visibility:hidden !important;
   }
 }
 </style>
