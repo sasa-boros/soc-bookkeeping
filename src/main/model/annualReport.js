@@ -37,71 +37,131 @@ const OUTCOME_CODES = {
   'III/7': 'паушал арх. намеснику',
   'IV': 'епарх. разрез'
 }
-// eslint-disable-next-line no-unused-vars
+
 class AnnualReport {
-  year;
-  pages;
-  totalsPerIncomeCodesMonthly;
-  totalsPerIncomeCodes;
-  totalsPerOutcomeCodesMonthly;
-  totalsPerOutcomeCodes;
-  total;
+  constructor () {
+    this.year = 0
+    this.pages = []
+    this.totalIncomePerCode = {}
+    this.totalOutcomePerCode = {}
+    this.totalIncome = 0
+    this.totalOutcome = 0
+    this.total = 0
+  }
 }
-// eslint-disable-next-line no-unused-vars
+
 class AnnualReportPage {
-  ordinal;
-  month;
-  monthText;
-
-  paymentSlips;
-  receipts;
-  incomeCodes;
-  outcomeCodes;
-  totalPerIncomeCodes;
-  totalPerOutcomeCodes;
-
-  incomeTransferFromPrevMonth;
-  incomeTransferToNextMonth;
-  total;
-}
-// eslint-disable-next-line no-unused-vars
-class AnnualReportPaymentSlip {
-  ordinal;
-  paymentSlip;
-}
-// eslint-disable-next-line no-unused-vars
-class AnnualReportReceipt {
-  ordinal;
-  paymentSlip;
-}
-// eslint-disable-next-line no-unused-vars
-class AnnualReportCode {
-  code;
-  total;
+  constructor () {
+    this.ordinal = 0
+    this.monthText = ''
+    this.paymentSlips = {}
+    this.receipts = {}
+    this.totalIncomePerCode = {}
+    this.totalOutcomePerCode = {}
+    this.totalIncome = 0
+    this.totalOutcome = 0
+    this.transferFromPreviousMonth = 0
+    this.transferToNextMonth = 0
+    this.total = 0
+  }
 }
 
-function getAnnualReport (year, prevYearTransfer) {
-  const paymentSlips = PaymentSlip.find(
-    {
-      'date':
+const monthNames = ['Januaru', 'Februaru', 'Martu', 'Aprilu', 'Maju', 'Junu',
+  'Julu', 'Avgustu', 'Septembru', 'Oktobru', 'Novembru', 'Decembru'
+]
+
+function getAnnualReport (year) {
+  const annualReport = new AnnualReport()
+  annualReport.year = year
+  for (let i = 0; i < 12; i++) {
+    const annualReportPage = new AnnualReportPage()
+    annualReportPage.ordinal = i + 1
+    const paymentSlips = PaymentSlip.find(
       {
-        $gte: new Date(year, 0, 1),
-        $lt: new Date(year + 1, 0, 1)
-      }
-    }
-  )
-  const receipts = Receipt.find(
-    {
-      'date':
+        'date':
+        {
+          $gte: new Date(year, i),
+          $lt: new Date(year, i + 1)
+        }
+      }).sort({ 'date': 1 })
+    const receipts = Receipt.find(
       {
-        $gte: new Date(year, 0, 1),
-        $lt: new Date(year + 1, 0, 1)
+        'date':
+        {
+          $gte: new Date(year, i),
+          $lt: new Date(year, i + 1)
+        }
+      }).sort({ 'date': 1 })
+    annualReportPage.monthText = monthNames[new Date(year, i).getMonth()]
+    if (paymentSlips) {
+      for (let j = 0; j < paymentSlips.size(); j++) {
+        const paymentSlip = paymentSlips[j]
+        annualReportPage.paymentSlips[j + 1] = paymentSlip
+
+        if (paymentSlip.firstPart && paymentSlip.firstPos && paymentSlip.firstAmount) {
+          handleAnnualReportCodes(paymentSlip.firstPart, paymentSlip.firstPos, paymentSlip.firstAmount, annualReportPage.totalIncomePerCode)
+        }
+        if (paymentSlip.secondPart && paymentSlip.secondPos && paymentSlip.secondAmount) {
+          handleAnnualReportCodes(paymentSlip.secondPart, paymentSlip.secondPos, paymentSlip.secondAmount, annualReportPage.totalIncomePerCode)
+        }
       }
+      for (let code in annualReportPage.totalIncomePerCode) {
+        annualReportPage.totalIncome += annualReportPage.totalIncomePerCode[code]
+        if (annualReport.totalIncomePerCode[code]) {
+          annualReport.totalIncomePerCode[code] += annualReportPage.totalIncome
+        } else {
+          annualReport.totalIncomePerCode[code] = annualReportPage.totalIncome
+        }
+      }
+
+      annualReport.totalIncome += annualReportPage.totalIncome
+    }
+    if (receipts) {
+      for (let j = 0; j < receipts.size(); j++) {
+        const receipt = receipts[j]
+        annualReportPage.receipts[j + 1] = receipt
+
+        if (receipt.firstPart && receipt.firstPos && receipt.firstAmount) {
+          handleAnnualReportCodes(receipt.firstPart, receipt.firstPos, receipt.firstAmount, annualReportPage.totalOutcomePerCode)
+        }
+        if (receipt.secondPart && receipt.secondPos && receipt.secondAmount) {
+          handleAnnualReportCodes(receipt.secondPart, receipt.secondPos, receipt.secondAmount, annualReportPage.totalOutcomePerCode)
+        }
+      }
+
+      for (let code in annualReportPage.totalOutcomePerCode) {
+        annualReportPage.totalOutcome += annualReportPage.totalOutcomePerCode[code]
+        if (annualReport.totalOutcomePerCode[code]) {
+          annualReport.totalOutcomePerCode[code] += annualReportPage.totalOutcome
+        } else {
+          annualReport.totalOutcomePerCode[code] = annualReportPage.totalOutcome
+        }
+      }
+
+      annualReport.totalOutcome += annualReportPage.totalOutcome
     }
 
-  )
+    if (i !== 0) {
+      annualReportPage.transferFromPreviousMonth = annualReport.pages[i - 1].transferToNextMonth
+    }
+    annualReportPage.total = annualReportPage.totalIncome + annualReportPage.transferFromPreviousMonth
+    annualReportPage.transferToNextMonth = annualReportPage.total - annualReport.totalOutcome
+    annualReport.pages.push(annualReportPage)
+  }
 
-  return { paymentSlips: paymentSlips, receipts: receipts }
+  annualReport.total = annualReport.totalIncome - annualReport.totalOutcome
+
+  console.log(annualReport)
+  return annualReport
+}
+
+function handleAnnualReportCodes (part, pos, amount, totalPerCode) {
+  const code = part + '/' + pos
+  if (totalPerCode[code]) {
+    totalPerCode[code] += amount
+  } else {
+    totalPerCode[code] = amount
+  }
 }
 
 module.exports = {
