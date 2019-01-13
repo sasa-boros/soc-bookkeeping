@@ -39,43 +39,38 @@ const OUTCOME_CODES = {
 }
 
 class AnnualReport {
-
-  constructor() {
-    this.year = 0;
-    this.pages = new Array();
-    this.totalIncomePerCode = new Object();
-    this.totalOutcomePerCode = new Object();
-    this.totalIncome = 0;
-    this.totalOutcome = 0;
-    this.total = 0;
+  constructor () {
+    this.year = 0
+    this.pages = []
+    this.totalIncomePerCode = {}
+    this.totalOutcomePerCode = {}
+    this.totalIncome = 0
+    this.totalOutcome = 0
+    this.total = 0
   }
 }
 
 class AnnualReportPage {
-
-  constructor() {
-    this.ordinal = 0;
-    this.monthText = '';
-  
-    this.paymentSlips = new Object();
-    this.receipts = new Object();
-    this.totalIncomePerCode = new Object();
-    this.totalOutcomePerCode = new Object();
-    this.totalIncome = 0;
-    this.totalOutcome = 0;
-  
-    this.transferFromPreviousMonth = 0;
-    this.transferToNextMonth = 0;
-    this.total = 0;
+  constructor () {
+    this.ordinal = 0
+    this.monthText = ''
+    this.paymentSlips = {}
+    this.receipts = {}
+    this.totalIncomePerCode = {}
+    this.totalOutcomePerCode = {}
+    this.totalIncome = 0
+    this.totalOutcome = 0
+    this.transferFromPreviousMonth = 0
+    this.transferToNextMonth = 0
+    this.total = 0
   }
 }
 
-const monthNames = ["Januaru", "Februaru", "Martu", "Aprilu", "Maju", "Junu",
-  "Julu", "Avgustu", "Septembru", "Oktobru", "Novembru", "Decembru"
-];
+const monthNames = ['Januaru', 'Februaru', 'Martu', 'Aprilu', 'Maju', 'Junu',
+  'Julu', 'Avgustu', 'Septembru', 'Oktobru', 'Novembru', 'Decembru'
+]
 
-function getAnnualReport(year) {
-
+function getAnnualReport (year) {
   const annualReport = new AnnualReport()
   annualReport.year = year
   for (let i = 0; i < 12; i++) {
@@ -110,7 +105,7 @@ function getAnnualReport(year) {
           handleAnnualReportCodes(paymentSlip.secondPart, paymentSlip.secondPos, paymentSlip.secondAmount, annualReportPage.totalIncomePerCode)
         }
       }
-      for (code in annualReportPage.totalIncomePerCode) {
+      for (let code in annualReportPage.totalIncomePerCode) {
         annualReportPage.totalIncome += annualReportPage.totalIncomePerCode[code]
         if (annualReport.totalIncomePerCode[code]) {
           annualReport.totalIncomePerCode[code] += annualReportPage.totalIncome
@@ -134,7 +129,7 @@ function getAnnualReport(year) {
         }
       }
 
-      for (code in annualReportPage.totalOutcomePerCode) {
+      for (let code in annualReportPage.totalOutcomePerCode) {
         annualReportPage.totalOutcome += annualReportPage.totalOutcomePerCode[code]
         if (annualReport.totalOutcomePerCode[code]) {
           annualReport.totalOutcomePerCode[code] += annualReportPage.totalOutcome
@@ -146,7 +141,7 @@ function getAnnualReport(year) {
       annualReport.totalOutcome += annualReportPage.totalOutcome
     }
 
-    if (i != 0) {
+    if (i !== 0) {
       annualReportPage.transferFromPreviousMonth = annualReport.pages[i - 1].transferToNextMonth
     }
     annualReportPage.total = annualReportPage.totalIncome + annualReportPage.transferFromPreviousMonth
@@ -160,7 +155,7 @@ function getAnnualReport(year) {
   return annualReport
 }
 
-function handleAnnualReportCodes(part, pos, amount, totalPerCode) {
+function handleAnnualReportCodes (part, pos, amount, totalPerCode) {
   const code = part + '/' + pos
   if (totalPerCode[code]) {
     totalPerCode[code] += amount
