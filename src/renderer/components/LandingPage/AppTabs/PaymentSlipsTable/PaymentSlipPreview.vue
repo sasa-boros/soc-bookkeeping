@@ -6,13 +6,17 @@
       <br/>На дин. <b-form-group class="input-form-group"><b-form-input v-model="form.amount" v-b-tooltip.hover.html="missingAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group> и словима  <div class="parent" contenteditable="false" id="divContentEditable">{{generatedAmountText}}</div><br v-if="showWs" />
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group"><b-form-input v-model="form.town" class="input-small" v-b-tooltip.hover.html="missingTownTooltipText" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text" placeholder="___________________________________________________________________________"></b-form-input></b-form-group> на име <b-form-group class="input-form-group"><b-form-input v-model="form.reason" v-b-tooltip.hover.html="missingReasonTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
-                                                                                                            <b-form-group class="input-form-group"><b-form-input class="input-small" id="payerInput" type="text" placeholder="_______________________________________________________________________________"></b-form-input></b-form-group>  
+                                                                                                            <b-form-group class="input-form-group"><b-form-input v-model="form.payed" v-b-tooltip.hover.html="missingPayedTooltipText" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text" placeholder="_______________________________________________________________________________"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-select v-model="yearSelected" id="yearSelect" :options="yearOptions" size="sm" class="input-small"/> г.
                                                                                                             Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group"><b-form-group class="input-form-group"><b-form-input v-model="form.firstAmount" v-b-tooltip.hover.html="missingFirstAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group></b-form-group>
                   Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group"><b-form-group class="input-form-group"><b-form-input v-model="form.secondAmount" v-b-tooltip.hover.html="missingSecondAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group></b-form-group>                                                           
                                                            
-      <br/><b-form-group class="input-form-group"><b-form-input class="input-small" type="text" placeholder="................................................................"></b-form-input></b-form-group>                                                   
-      </div>
+      <br/><b-form-group class="input-form-group"><b-form-input v-model="form.received" v-b-tooltip.hover.html="missingReceivedTooltipText" v-bind:class="{ 'is-invalid': attemptSubmit && missingReceived }" class="input-small" id="receivedInput" type="text" placeholder="_______________________________________________________________________________"></b-form-input></b-form-group>                                                                    Свега дин. <b-form-group class="input-form-group"><b-form-input v-model="form.amount" v-b-tooltip.hover.html="missingAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group>                                                
+      <div class="my-0 line-spacing-small">
+                                                                                                                                                Наредбодавац
+                                                                                                                                  Председник црквене општине,
+      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group"><b-form-input disabled v-model="form.reportPage" class="input-small" id="reportPageInput" type="text" placeholder="______________________"></b-form-input></b-form-group> р. бр. <b-form-group class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text" placeholder="______________________"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group"><b-form-input v-model="form.municipalityPresident" v-b-tooltip.hover.html="missingMunicipalityPresidentTooltipText" v-bind:class="{ 'is-invalid': attemptSubmit && missingMunicipalityPresident }" class="input-small" id="municipalityPresidentInput" type="text" placeholder="_______________________________________________________________________________"></b-form-input></b-form-group>
+      </div></div>
     
 
 
@@ -53,12 +57,17 @@ export default {
           reason: null,
           town: null,
           amountText: null,
+          payed: null,
+          received: null,
           firstPart: '',
           firstPos: '',
           firstAmount: null,
           secondPart: '',
           secondPos: '',
-          secondAmount: null
+          secondAmount: null,
+          reportPage: null,
+          ordinal: null,
+          municipalityPresident: null
         }
       }
     }
@@ -103,7 +112,12 @@ export default {
     checkForm () {
       if (!this.form.amount ||
           !this.form.reason ||
-          !this.form.town) {
+          !this.form.town ||
+          !this.form.payed ||
+          !this.form.received ||
+          !this.form.firstAmount ||
+          !this.form.secondAmount ||
+          !this.form.municipalityPresident) {
         return false
       }
       return true
@@ -114,12 +128,17 @@ export default {
         reason: null,
         town: null,
         amountText: null,
+        payed: null,
+        received: null,
         firstPart: '',
         firstPos: '',
         firstAmount: null,
         secondPart: '',
         secondPos: '',
-        secondAmount: null
+        secondAmount: null,
+        reportPage: null,
+        ordinal: null,
+        municipalityPresident: null
       }
       this.attemptSubmit = false
     },
@@ -190,11 +209,20 @@ export default {
     missingAmount: function () {
       return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
     },
+    missingPayed: function () {
+      return !this.form || !this.form.payed || this.form.payed.toString().trim() === ''
+    },
+    missingReceived: function () {
+      return !this.form || !this.form.received || this.form.received.toString().trim() === ''
+    },
     missingFirstAmount: function () {
       return !this.form || !this.form.firstAmount || this.form.firstAmount.toString().trim() === ''
     },
     missingSecondAmount: function () {
       return !this.form || !this.form.secondAmount || this.form.secondAmount.toString().trim() === ''
+    },
+    missingMunicipalityPresident: function () {
+      return !this.form || !this.form.municipalityPresident || this.form.municipalityPresident.toString().trim() === ''
     },
     missingReasonTooltipText: function () {
       if (this.attemptSubmit && this.missingReason) {
@@ -217,6 +245,20 @@ export default {
         return ''
       }
     },
+    missingPayedTooltipText: function () {
+      if (this.attemptSubmit && this.missingPayed) {
+        return 'Унесите вредност'
+      } else {
+        return ''
+      }
+    },
+    missingReceivedTooltipText: function () {
+      if (this.attemptSubmit && this.missingReceived) {
+        return 'Унесите вредност'
+      } else {
+        return ''
+      }
+    },
     missingFirstAmountTooltipText: function () {
       if (this.attemptSubmit && this.missingFirstAmount) {
         return 'Унесите вредност'
@@ -226,6 +268,13 @@ export default {
     },
     missingSecondAmountTooltipText: function () {
       if (this.attemptSubmit && this.missingSecondAmount) {
+        return 'Унесите вредност'
+      } else {
+        return ''
+      }
+    },
+    missingMunicipalityPresidentTooltipText: function () {
+      if (this.attemptSubmit && this.missingMunicipalityPresident) {
         return 'Унесите вредност'
       } else {
         return ''
@@ -294,6 +343,9 @@ h1{
 .is-invalid {
   border-style: dotted;
 }
+.line-spacing-small {
+  line-height: 1.3;
+}
 #amountInput{
   width: 140px;
 }
@@ -309,23 +361,30 @@ h1{
 #reasonInput{
   width: 430px;
 }
-#payerInput{
+#payedInput{
   width: 288px;
+}
+#receivedInput{
+  width: 255px;
 }
 #yearSelect{
   width: 95px;
 }
 #part1Select{
   width: 50px;
+  padding-left:5px;
 }
 #pos1Select{
   width: 50px;
+  padding-left:5px;
 }
 #part2Select{
   width: 50px;
+  padding-left:5px;
 }
 #pos2Select{
   width: 50px;
+  padding-left:5px;
 }
 #firstAmountInput{
   width: 100px;
@@ -345,6 +404,18 @@ h1{
   white-space:normal !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
+}
+#totalAmountInput{
+  width: 100px;
+}
+#reportPageInput{
+  width: 35px;
+}
+#ordinalInput{
+  width: 40px;
+}
+#municipalityPresidentInput{
+  width: 235px;
 }
 </style>
 

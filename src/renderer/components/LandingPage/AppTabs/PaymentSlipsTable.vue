@@ -92,10 +92,13 @@ export default {
         { key: 'town', label: 'Town', sortable: true, sortDirection: 'desc' },
         { key: 'amount', label: 'Amount', sortable: true, 'class': 'text-center' },
         { key: 'reason', label: 'Reason', sortable: true, sortDirection: 'desc' },
+        { key: 'payed', label: 'Payed', sortable: true, sortDirection: 'desc' },
+        { key: 'received', label: 'Received', sortable: true, sortDirection: 'desc' },
         { key: 'firstPartPos', label: 'First part and pos', sortable: true, sortDirection: 'desc' },
         { key: 'firstAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
         { key: 'secondPartPos', label: 'Second part and pos', sortable: true, sortDirection: 'desc' },
         { key: 'secondAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
+        { key: 'municipalityPresident', label: 'Municipality President', sortable: true, sortDirection: 'desc' },
         {key: 'actions', label: '', 'class': 'text-center'}
       ],
       currentPage: 1,
@@ -114,12 +117,15 @@ export default {
         reason: null,
         town: null,
         amountText: null,
+        payed: null,
+        received: null,
         firstPart: '',
         firstPos: '',
         firstAmount: null,
         secondPart: '',
         secondPos: '',
-        secondAmount: null
+        secondAmount: null,
+        municipalityPresident: null
       }
     }
   },
@@ -166,7 +172,16 @@ export default {
         amount: null,
         reason: null,
         town: null,
-        amountText: null
+        amountText: null,
+        payed: null,
+        received: null,
+        firstPart: '',
+        firstPos: '',
+        firstAmount: null,
+        secondPart: '',
+        secondPos: '',
+        secondAmount: null,
+        municipalityPresident: null
       }
     }
   },
