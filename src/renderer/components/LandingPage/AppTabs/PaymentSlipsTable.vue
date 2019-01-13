@@ -4,11 +4,11 @@
      <b-row>
       <b-col md="2" class="my-1">
         <b-button-group size="sm">
-          <b-btn @click.stop="create($event.target)">
+          <b-btn @click.stop="openCreatePayslipModal($event.target)">
             New
           </b-btn>
-          <b-btn>
-            Delete 
+          <b-btn @click.stop="deleteCheckedSlips()">
+            Delete selected
           </b-btn>
         </b-button-group> 
       </b-col>
@@ -46,26 +46,22 @@
              @filtered="onFiltered"
     >
       <template slot="actions" slot-scope="row">
-        <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
-        
-      <b-button-group size="sm">
-        <b-button size="sm" @click.stop="info(row.item, row.index, $event.target)" class="mr-1">
-          <img src="~@/assets/see.png" class="btn-img">
-        </b-button>   
-        <b-button size="sm" @click.stop="deleteSlip(row.item)" class="mr-1">
-          <img src="~@/assets/delete.png" class="btn-img">                                           
-        </b-button>       
-        <b-button size="sm" @click.stop="updateSlip(row.item)" class="mr-1">
-          <img src="~@/assets/delete.png" class="btn-img">                                           
-        </b-button>  
-      </b-button-group>                
+        <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
+        <b-button-group size="sm">
+          <b-button size="sm" @click.stop="openUpdateSlipModal(row.item)" class="mr-1">
+            <img src="~@/assets/see.png" class="btn-img">                                           
+          </b-button>
+          <b-button size="sm" @click.stop="deleteSlip(row.item)" class="mr-1">
+            <img src="~@/assets/delete.png" class="btn-img">                                           
+          </b-button>     
+        </b-button-group>                
       </template>
-      <template slot="show_details" slot-scope="row">
-        <!-- In some circumstances you may need to use @click.native.stop instead -->
-        <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
-        <b-form-checkbox @click.native.stop @change="row.toggleDetails" v-model="row.detailsShowing">
+      <template slot="select" slot-scope="row">
+        <b-form-checkbox :value="row.item._id" v-model="checkedItems">
         </b-form-checkbox>
       </template>
+      <template slot="firstPartPos" slot-scope="row">{{row.item.firstPart}}-{{row.item.firstPos}}</template>
+      <template slot="secondPartPos" slot-scope="row">{{row.item.secondPart}}-{{row.item.secondPos}}</template>
     </b-table>
 
     <b-row>
@@ -74,14 +70,9 @@
       </b-col>
     </b-row>
 
-    <!-- Info modal -->
-    <b-modal hide-footer hide-header size="a5" id="modalInfo" @hide="resetModal" >
-      <payment-slip-preview></payment-slip-preview>
-    </b-modal>
-
     <!-- Create slip modal -->
     <b-modal hide-footer hide-header size="a5" id="modalCreateSlip" @hide="resetModal">
-      <payment-slip-preview></payment-slip-preview>
+      <payment-slip-preview :item='selectedItem'></payment-slip-preview>
     </b-modal>
 
   </b-container>
@@ -97,10 +88,14 @@ export default {
   data () {
     return {
       fields: [
-        {key: 'show_details', label: ''},
+        {key: 'select', label: ''},
         { key: 'town', label: 'Town', sortable: true, sortDirection: 'desc' },
         { key: 'amount', label: 'Amount', sortable: true, 'class': 'text-center' },
         { key: 'reason', label: 'Reason', sortable: true, sortDirection: 'desc' },
+        { key: 'firstPartPos', label: 'First part and pos', sortable: true, sortDirection: 'desc' },
+        { key: 'firstAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
+        { key: 'secondPartPos', label: 'Second part and pos', sortable: true, sortDirection: 'desc' },
+        { key: 'secondAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
         {key: 'actions', label: '', 'class': 'text-center'}
       ],
       currentPage: 1,
@@ -111,8 +106,21 @@ export default {
       sortDesc: false,
       sortDirection: 'asc',
       filter: null,
-      modalInfo: { title: '', content: '' },
-      modalCreateSlip: { title: 'Create new payment slip' }
+      modalCreateSlip: { title: 'Create new payment slip' },
+      checkedItems: [],
+      checkAll: false,
+      selectedItem: {
+        amount: null,
+        reason: null,
+        town: null,
+        amountText: null,
+        firstPart: '',
+        firstPos: '',
+        firstAmount: null,
+        secondPart: '',
+        secondPos: '',
+        secondAmount: null
+      }
     }
   },
   computed: {
@@ -124,26 +132,26 @@ export default {
     }
   },
   methods: {
-    info (item, index, button) {
-      this.modalInfo.title = `Row index: ${index}`
-      this.modalInfo.content = JSON.stringify(item, null, 2)
-      this.$root.$emit('bv::show::modal', 'modalInfo', button)
-    },
-    create (button) {
+    openCreatePayslipModal (button) {
+      this.resetSelectedItem()
       this.$root.$emit('bv::show::modal', 'modalCreateSlip', button)
     },
     deleteSlip (item) {
       paymentSlipsController.deletePaymentSlip(item._id)
       this.$root.$emit('bv::refresh::table', 'payment-slips-table')
     },
-    updateSlip (item) {
-      item.amount++
-      paymentSlipsController.updatePaymentSlip(item)
+    deleteCheckedSlips () {
+      this.checkedItems.forEach(function (id) {
+        paymentSlipsController.deletePaymentSlip(id)
+      })
       this.$root.$emit('bv::refresh::table', 'payment-slips-table')
     },
+    openUpdateSlipModal (item) {
+      this.selectedItem = item
+      this.$root.$emit('bv::show::modal', 'modalCreateSlip')
+    },
     resetModal () {
-      this.modalInfo.title = ''
-      this.modalInfo.content = ''
+      this.resetSelectedItem()
     },
     onFiltered (filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -152,6 +160,14 @@ export default {
     },
     paymentSlipsProvider (ctx) {
       return paymentSlipsController.getPaymentSlips()
+    },
+    resetSelectedItem () {
+      this.selectedItem = {
+        amount: null,
+        reason: null,
+        town: null,
+        amountText: null
+      }
     }
   },
   components: { PaymentSlipPreview, PaymentSlipPreviewSimple }

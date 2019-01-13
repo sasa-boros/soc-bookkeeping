@@ -17,8 +17,6 @@ const receiptSchema = new Schema({
   secondPart: { type: String },
   secondPos: { type: String },
   secondAmount: { type: Number },
-  reportPage: { type: Number },
-  ordinal: { type: Number },
   municipalityPresident: { type: String },
   created_at: { type: Date },
   updated_at: { type: Date }
