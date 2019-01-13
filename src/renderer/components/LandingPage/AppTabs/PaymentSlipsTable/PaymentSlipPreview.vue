@@ -7,11 +7,17 @@
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group"><b-form-input v-model="form.town" class="input-small" v-b-tooltip.hover.html="missingTownTooltipText" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text" placeholder="___________________________________________________________________________"></b-form-input></b-form-group> на име <b-form-group class="input-form-group"><b-form-input v-model="form.reason" v-b-tooltip.hover.html="missingReasonTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group"><b-form-input class="input-small" id="payerInput" type="text" placeholder="_______________________________________________________________________________"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за                                                                        
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-select v-model="yearSelected" id="yearSelect" :options="yearOptions" size="sm" class="input-small"/> г.
+                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group"><b-form-group class="input-form-group"><b-form-input v-model="form.firstAmount" v-b-tooltip.hover.html="missingFirstAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group></b-form-group>
+                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group"><b-form-group class="input-form-group"><b-form-input v-model="form.secondAmount" v-b-tooltip.hover.html="missingSecondAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group></b-form-group>                                                           
+                                                           
       <br/><b-form-group class="input-form-group"><b-form-input class="input-small" type="text" placeholder="................................................................"></b-form-input></b-form-group>                                                   
       </div>
-      
-      Примио благајник, 
+    
+
+
+
+
 
       
         <b-row>
@@ -35,7 +41,7 @@
 <script>
 
 const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
-const {numberToSerbianDinars} = require('../../../../utils')
+const {numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations} = require('../../../../utils')
 
 export default {
   props: {
@@ -46,7 +52,13 @@ export default {
           amount: null,
           reason: null,
           town: null,
-          amountText: null
+          amountText: null,
+          firstPart: '',
+          firstPos: '',
+          firstAmount: null,
+          secondPart: '',
+          secondPos: '',
+          secondAmount: null
         }
       }
     }
@@ -55,7 +67,8 @@ export default {
     return {
       form: this.item,
       attemptSubmit: false,
-      show: true
+      show: true,
+      yearSelected: null
     }
   },
   watch: {
@@ -96,8 +109,25 @@ export default {
       return true
     },
     resetForm () {
-      this.form = {}
+      this.form = {
+        amount: null,
+        reason: null,
+        town: null,
+        amountText: null,
+        firstPart: '',
+        firstPos: '',
+        firstAmount: null,
+        secondPart: '',
+        secondPos: '',
+        secondAmount: null
+      }
       this.attemptSubmit = false
+    },
+    onFirstPartChange () {
+      this.form.firstPos = ''
+    },
+    onSecondPartChange () {
+      this.form.secondPos = ''
     },
     printPaymentSlip () {
       const modal = document.getElementById('payment-slip-preview-container')
@@ -133,6 +163,21 @@ export default {
       set: function (newValue) {
       }
     },
+    yearOptions: function () {
+      return getLastNYears(10)
+    },
+    incomeCodeCombinations: function () {
+      return getIncomeCodeCombinations()
+    },
+    partOptions: function () {
+      return Object.keys(this.incomeCodeCombinations)
+    },
+    pos1Options: function () {
+      return this.incomeCodeCombinations[this.form.firstPart]
+    },
+    pos2Options: function () {
+      return this.incomeCodeCombinations[this.form.secondPart]
+    },
     showWs: function () {
       return this.generatedAmountText.length < 55
     },
@@ -144,6 +189,12 @@ export default {
     },
     missingAmount: function () {
       return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
+    },
+    missingFirstAmount: function () {
+      return !this.form || !this.form.firstAmount || this.form.firstAmount.toString().trim() === ''
+    },
+    missingSecondAmount: function () {
+      return !this.form || !this.form.secondAmount || this.form.secondAmount.toString().trim() === ''
     },
     missingReasonTooltipText: function () {
       if (this.attemptSubmit && this.missingReason) {
@@ -161,6 +212,20 @@ export default {
     },
     missingAmountTooltipText: function () {
       if (this.attemptSubmit && this.missingAmount) {
+        return 'Унесите вредност'
+      } else {
+        return ''
+      }
+    },
+    missingFirstAmountTooltipText: function () {
+      if (this.attemptSubmit && this.missingFirstAmount) {
+        return 'Унесите вредност'
+      } else {
+        return ''
+      }
+    },
+    missingSecondAmountTooltipText: function () {
+      if (this.attemptSubmit && this.missingSecondAmount) {
         return 'Унесите вредност'
       } else {
         return ''
@@ -246,6 +311,27 @@ h1{
 }
 #payerInput{
   width: 288px;
+}
+#yearSelect{
+  width: 95px;
+}
+#part1Select{
+  width: 50px;
+}
+#pos1Select{
+  width: 50px;
+}
+#part2Select{
+  width: 50px;
+}
+#pos2Select{
+  width: 50px;
+}
+#firstAmountInput{
+  width: 100px;
+}
+#secondAmountInput{
+  width: 100px;
 }
 #divContentEditable{ 
   -ms-flow-into: article;

@@ -46,21 +46,22 @@
              @filtered="onFiltered"
     >
       <template slot="actions" slot-scope="row">
-        <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
-        
-      <b-button-group size="sm">
-        <b-button size="sm" @click.stop="openUpdateSlipModal(row.item)" class="mr-1">
-          <img src="~@/assets/see.png" class="btn-img">                                           
-        </b-button>
-        <b-button size="sm" @click.stop="deleteSlip(row.item)" class="mr-1">
-          <img src="~@/assets/delete.png" class="btn-img">                                           
-        </b-button>     
-      </b-button-group>                
+        <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
+        <b-button-group size="sm">
+          <b-button size="sm" @click.stop="openUpdateSlipModal(row.item)" class="mr-1">
+            <img src="~@/assets/see.png" class="btn-img">                                           
+          </b-button>
+          <b-button size="sm" @click.stop="deleteSlip(row.item)" class="mr-1">
+            <img src="~@/assets/delete.png" class="btn-img">                                           
+          </b-button>     
+        </b-button-group>                
       </template>
       <template slot="select" slot-scope="row">
         <b-form-checkbox :value="row.item._id" v-model="checkedItems">
         </b-form-checkbox>
       </template>
+      <template slot="firstPartPos" slot-scope="row">{{row.item.firstPart}}-{{row.item.firstPos}}</template>
+      <template slot="secondPartPos" slot-scope="row">{{row.item.secondPart}}-{{row.item.secondPos}}</template>
     </b-table>
 
     <b-row>
@@ -91,6 +92,10 @@ export default {
         { key: 'town', label: 'Town', sortable: true, sortDirection: 'desc' },
         { key: 'amount', label: 'Amount', sortable: true, 'class': 'text-center' },
         { key: 'reason', label: 'Reason', sortable: true, sortDirection: 'desc' },
+        { key: 'firstPartPos', label: 'First part and pos', sortable: true, sortDirection: 'desc' },
+        { key: 'firstAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
+        { key: 'secondPartPos', label: 'Second part and pos', sortable: true, sortDirection: 'desc' },
+        { key: 'secondAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
         {key: 'actions', label: '', 'class': 'text-center'}
       ],
       currentPage: 1,
@@ -108,7 +113,13 @@ export default {
         amount: null,
         reason: null,
         town: null,
-        amountText: null
+        amountText: null,
+        firstPart: '',
+        firstPos: '',
+        firstAmount: null,
+        secondPart: '',
+        secondPos: '',
+        secondAmount: null
       }
     }
   },
