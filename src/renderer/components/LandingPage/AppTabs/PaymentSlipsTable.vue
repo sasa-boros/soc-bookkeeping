@@ -5,15 +5,15 @@
       <b-col md="2" class="my-1">
         <b-button-group size="sm">
           <b-btn @click.stop="openCreatePayslipModal($event.target)">
-            New
+            <img src="~@/assets/add1.png" class="btn-img">               
           </b-btn>
-          <b-btn @click.stop="deleteCheckedSlips()">
-            Delete selected
+          <b-btn @click.stop="deleteCheckedSlips()" :disabled="noRowChecked">
+            <img src="~@/assets/trash1.png" class="btn-img">               
           </b-btn>
         </b-button-group> 
       </b-col>
       <b-col md="6" class="my-1">
-        <b-form-group horizontal label="Filter" class="mb-0">
+        <b-form-group horizontal class="mb-0">
           <b-input-group>
             <b-form-input v-model="filter" placeholder="Type to Search" />
             <b-input-group-append>
@@ -29,6 +29,7 @@
       </b-col>
     </b-row>
 
+    <div class="tableDiv">
     <!-- Main table element -->
     <b-table show-empty hover small id="payment-slips-table"
              stacked="md"
@@ -44,15 +45,17 @@
              :no-provider-filtering="true"
              :no-provider-paging="true"
              @filtered="onFiltered"
+             @row-dblclicked="rowDblClickHandler" 
+             responsive
     >
       <template slot="actions" slot-scope="row">
         <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
         <b-button-group size="sm">
-          <b-button size="sm" @click.stop="openUpdateSlipModal(row.item)" class="mr-1">
-            <img src="~@/assets/see.png" class="btn-img">                                           
+          <b-button size="sm" @click.stop="openUpdateSlipModal(row.item)" class="mr-1 btn-xs">
+            <img src="~@/assets/see-more1.png" class="btnImgSm">                                           
           </b-button>
-          <b-button size="sm" @click.stop="deleteSlip(row.item)" class="mr-1">
-            <img src="~@/assets/delete.png" class="btn-img">                                           
+          <b-button size="sm" @click.stop="deleteSlip(row.item)" class="mr-1 btn-xs">
+            <img src="~@/assets/delete.png" class="btnImgSm">                                           
           </b-button>     
         </b-button-group>                
       </template>
@@ -63,9 +66,10 @@
       <template slot="firstPartPos" slot-scope="row">{{row.item.firstPart}}-{{row.item.firstPos}}</template>
       <template slot="secondPartPos" slot-scope="row">{{row.item.secondPart}}-{{row.item.secondPos}}</template>
     </b-table>
+    </div>
 
     <b-row>
-      <b-col md="6" class="my-1">
+      <b-col md="6" class="my-3">
         <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
       </b-col>
     </b-row>
@@ -89,6 +93,7 @@ export default {
     return {
       fields: [
         {key: 'select', label: ''},
+        {key: 'actions', label: '', 'class': 'text-center'},
         { key: 'town', label: 'Town', sortable: true, sortDirection: 'desc' },
         { key: 'amount', label: 'Amount', sortable: true, 'class': 'text-center' },
         { key: 'reason', label: 'Reason', sortable: true, sortDirection: 'desc' },
@@ -98,8 +103,7 @@ export default {
         { key: 'firstAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
         { key: 'secondPartPos', label: 'Second part and pos', sortable: true, sortDirection: 'desc' },
         { key: 'secondAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
-        { key: 'municipalityPresident', label: 'Municipality President', sortable: true, sortDirection: 'desc' },
-        {key: 'actions', label: '', 'class': 'text-center'}
+        { key: 'municipalityPresident', label: 'Municipality President', sortable: true, sortDirection: 'desc' }
       ],
       currentPage: 1,
       perPage: 10,
@@ -135,12 +139,18 @@ export default {
       return this.fields
         .filter(f => f.sortable)
         .map(f => { return { text: f.label, value: f.key } })
+    },
+    noRowChecked () {
+      return this.checkedItems.length === 0
     }
   },
   methods: {
     openCreatePayslipModal (button) {
       this.resetSelectedItem()
       this.$root.$emit('bv::show::modal', 'modalCreateSlip', button)
+    },
+    rowDblClickHandler (record, index) {
+      this.openUpdateSlipModal(record)
     },
     deleteSlip (item) {
       paymentSlipsController.deletePaymentSlip(item._id)
@@ -193,5 +203,13 @@ export default {
 .modal .modal-a5 {
   max-width: 830px;
   width: 830px;
+}
+.tableDiv{
+  display: block;
+  overflow: auto;
+}
+.btnImgSm{
+  width: 25px;
+  height: auto;
 }
 </style>

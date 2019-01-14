@@ -82,7 +82,8 @@ export default {
   },
   watch: {
     item: function () {
-      this.form = this.item
+      /* Deep clone the item using JSON parsing */
+      this.form = JSON.parse(JSON.stringify(this.item))
     }
   },
   methods: {
