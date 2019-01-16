@@ -25,13 +25,12 @@
 
       
         <b-row>
-          <b-col md="8">
+          <b-col md="9">
           </b-col>
-          <b-col md="4">
+          <b-col md="3">
             <b-button type="submit" variant="secondary" class="ignoreInPrint">
               <img src="~@/assets/save.png" class="btn-img ignoreInPrint">
             </b-button>
-            <b-button type="reset" variant="danger" class="ignoreInPrint">Reset</b-button>
             <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint">
               <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
             </b-button>      
@@ -287,7 +286,10 @@ export default {
 
 <style scoped>
 input { 
-  text-align: center; 
+  text-align: center;
+  /* Immitate the underline in the real payment slip */
+  border-bottom: 1px solid black !important;
+  border-radius: 0 !important;
 }
 #payment-slip-preview-container{
   width: 794px; 
@@ -388,10 +390,10 @@ h1{
   padding-left:5px;
 }
 #firstAmountInput{
-  width: 100px;
+  width: 85px;
 }
 #secondAmountInput{
-  width: 100px;
+  width: 85px;
 }
 #divContentEditable{ 
   -ms-flow-into: article;

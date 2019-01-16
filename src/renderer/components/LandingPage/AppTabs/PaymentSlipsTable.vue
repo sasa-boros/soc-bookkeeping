@@ -15,10 +15,10 @@
       <b-col md="6" class="my-1">
         <b-form-group horizontal class="mb-0">
           <b-input-group>
-            <b-form-input v-model="filter" placeholder="Type to Search" />
-            <b-input-group-append>
-              <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
-            </b-input-group-append>
+            <div class="inputWithIcon">
+              <b-form-input v-model="filter" placeholder="Type to Search" />
+              <img src="~@/assets/search-blue.png" class="btn-img fa fa-user fa-lg fa-fw" aria-hidden="true">
+            </div>
           </b-input-group>
         </b-form-group>
       </b-col>
@@ -99,9 +99,9 @@ export default {
         { key: 'reason', label: 'Reason', sortable: true, sortDirection: 'desc' },
         { key: 'payed', label: 'Payed', sortable: true, sortDirection: 'desc' },
         { key: 'received', label: 'Received', sortable: true, sortDirection: 'desc' },
-        { key: 'firstPartPos', label: 'First part and pos', sortable: true, sortDirection: 'desc' },
+        { key: 'firstPartPos', label: 'Part-pos', sortable: true, sortDirection: 'desc' },
         { key: 'firstAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
-        { key: 'secondPartPos', label: 'Second part and pos', sortable: true, sortDirection: 'desc' },
+        { key: 'secondPartPos', label: 'Part-pos', sortable: true, sortDirection: 'desc' },
         { key: 'secondAmount', label: 'Amount', sortable: true, 'class': 'text-center' },
         { key: 'municipalityPresident', label: 'Municipality President', sortable: true, sortDirection: 'desc' }
       ],
@@ -211,5 +211,24 @@ export default {
 .btnImgSm{
   width: 25px;
   height: auto;
+}
+.inputWithIcon input[type="text"] {
+  padding-left: 40px;
+}
+.inputWithIcon {
+  position: relative;
+  transition: 0.3s;
+}
+.inputWithIcon img {
+  position: absolute;
+  left: 0;
+  top: 0px;
+  padding: 3px 2px;
+  color: #111;
+  transition: 0.3s;
+  filter: grayscale(100%);
+}
+.inputWithIcon input[type="text"]:focus + img {
+  filter: none;
 }
 </style>
