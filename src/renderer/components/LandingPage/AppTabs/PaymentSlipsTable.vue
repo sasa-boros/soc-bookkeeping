@@ -69,7 +69,7 @@
     </div>
 
     <b-row>
-      <b-col md="6" class="my-3">
+      <b-col md="6" class="my-4">
         <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
       </b-col>
     </b-row>
@@ -143,18 +143,10 @@
       },
       fields () {
         return [
-          { key: 'select', label: '' },
-          { key: 'actions', label: '', 'class': 'text-center' },
-          { key: 'town', label: this.phrases.town, sortable: true, sortDirection: 'desc', thClass: 'thSmall' },
-          { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall' },
-          { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', thClass: 'thSmall' },
-          { key: 'payed', label: this.phrases.payed, sortable: true, sortDirection: 'desc', thClass: 'thSmall' },
-          { key: 'received', label: this.phrases.received, sortable: true, sortDirection: 'desc', thClass: 'thSmall' },
-          { key: 'firstPartPos', label: 'Part-pos', sortable: true, sortDirection: 'desc', thClass: 'thSmall' },
-          { key: 'firstAmount', label: 'Amount', sortable: true, 'class': 'text-center', thClass: 'thSmall' },
-          { key: 'secondPartPos', label: 'Part-pos', sortable: true, sortDirection: 'desc', thClass: 'thSmall' },
-          { key: 'secondAmount', label: 'Amount', sortable: true, 'class': 'text-center', thClass: 'thSmall' },
-          { key: 'municipalityPresident', label: 'Municipality President', sortable: true, sortDirection: 'desc', thClass: 'thSmall' }
+          { key: 'select', label: '', thClass: 'table-col-5' },
+          { key: 'actions', label: '', thClass: 'table-col-10' },
+          { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-30' },
+          { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-30' }
         ]
       }
     },
@@ -249,6 +241,15 @@
     width: 60px;
   }
   .thSmall{
-    font-size: 90%;
+    font-size: 80%;
+  }
+  .table-col-5{
+    width: 5% !important;
+  }
+  .table-col-10{
+    width: 10% !important;
+  }
+  .table-col-30{
+    width: 30% !important;
   }
 </style>

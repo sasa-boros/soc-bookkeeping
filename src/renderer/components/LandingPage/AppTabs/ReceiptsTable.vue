@@ -1,99 +1,255 @@
-<template>          <b-container fluid>
+<template>           
+  <b-container fluid>
+    <!-- User Interface controls -->
+     <b-row>
+      <b-col md="2" class="my-1">
+        <b-button-group size="sm">
+          <b-btn v-b-tooltip.hover.html="phrases.addReceipt" @click.stop="openCreateReceiptModal($event.target)">
+            <img src="~@/assets/add1.png" class="btn-img">               
+          </b-btn>
+          <b-btn v-b-tooltip.hover.html="phrases.deleteSelected" @click.stop="deleteCheckedReceipts()" :disabled="noRowChecked">
+            <img src="~@/assets/trash1.png" class="btn-img">               
+          </b-btn>
+        </b-button-group> 
+      </b-col>
+      <b-col md="7" class="my-1">
+        <b-form-group horizontal class="mb-0">
+          <b-input-group>
+            <div class="inputWithIcon">
+              <b-form-input v-model="filter" :placeholder="phrases.search" />
+              <img src="~@/assets/search-blue.png" class="btn-img fa fa-user fa-lg fa-fw" aria-hidden="true">
+            </div>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+      <b-col md="3" class="my-1">
+        <b-form-group horizontal class="mb-0" size="sm">
+          <b-form-select :options="pageOptions" v-model="perPage" id="perPageSelect" size="sm"/>
+        </b-form-group>
+      </b-col>
+    </b-row>
 
-                        <table class="table table-hover table-default table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            #
-                                        </th>
-                                        <th >
-                                            <p>
-                                                <input class="form-check-input table-checkbox-head" type="checkbox" value="" id="tableHeadCheckbox"/>
-                                            </p>
-                                        </th>
-                                        <th>
-                                            Product
-                                        </th>
-                                        <th>
-                                            Payment Taken
-                                        </th>
-                                        <th>
-                                            Status
-                                        </th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <template v-for="(person, index) in tableData">
-                                    <tr>
-                                        <td>
-                                            {{index + 1}}
-                                        </td>
-                                        <td>
-                                            <input class="form-check-input table-checkbox-body" type="checkbox" value="" id="defaultCheck1"/>
-                                        </td>
-                                        <td>
-                                           {{person.name}}
-                                        </td>
-                                        <td>
-                                            {{person.surname}}
-                                        </td>
-                                        <td>
-                                            Default
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-secondary btn-sm shadow-none" type="button" data-toggle="modal" data-target="#exampleModal"><img src="~@/assets/see.png" class="btn-img"></button>
-                                            <button class="btn btn-secondary btn-sm shadow-none" type="button"><img src="~@/assets/delete.png" class="btn-img"></button>                                
-                                        </td>
-                                    </tr>
-                                    </template>
-                                </tbody>
-                        </table>
-                        </b-container fluid>
+    <div class="tableDiv">
+    <!-- Main table element -->
+    <b-table show-empty hover small id="receipts-table"
+             stacked="md"
+             :items="receiptsProvider"
+             :fields="fields"
+             :current-page="currentPage"
+             :per-page="perPage"
+             :filter="filter"
+             :sort-by.sync="sortBy"
+             :sort-desc.sync="sortDesc"
+             :sort-direction="sortDirection"
+             :no-provider-sorting="true"
+             :no-provider-filtering="true"
+             :no-provider-paging="true"
+             @filtered="onFiltered"
+             @row-dblclicked="rowDblClickHandler" 
+             responsive
+    >
+      <template slot="actions" slot-scope="row">
+        <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
+        <b-button-group size="sm">
+          <b-button v-b-tooltip.hover.html="phrases.seeDetails" @click.stop="openUpdateReceiptModal(row.item)" class="mr-1 btn-xs" size="sm" >
+            <img src="~@/assets/see-more1.png" class="btnImgSm">                                           
+          </b-button>
+          <b-button v-b-tooltip.hover.html="phrases.deleteReceipt" @click.stop="deleteReceipt(row.item)" class="mr-1 btn-xs" size="sm" >
+            <img src="~@/assets/delete.png" class="btnImgSm">                                           
+          </b-button>     
+        </b-button-group>                
+      </template>
+      <template slot="select" slot-scope="row">
+        <b-form-checkbox :value="row.item._id" v-model="checkedItems">
+        </b-form-checkbox>
+      </template>
+      <template slot="firstPartPos" slot-scope="row">{{row.item.firstPart}}-{{row.item.firstPos}}</template>
+      <template slot="secondPartPos" slot-scope="row">{{row.item.secondPart}}-{{row.item.secondPos}}</template>
+    </b-table>
+    </div>
+
+    <b-row>
+      <b-col md="6" class="my-3">
+        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
+      </b-col>
+    </b-row>
+
+    <!-- Create receipt modal -->
+    <b-modal hide-footer hide-header size="a5" id="modalCreateReceipt" @hide="resetModal">
+      <receipt-preview :item='selectedItem'></receipt-preview>
+    </b-modal>
+
+  </b-container>
 </template>
 
 <script>
+  import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
+
+  const receiptsController = require('../../../controllers/receipt.controller')
+  const i18n = require('../../../translations/i18n')
+
   export default {
     data () {
       return {
-        tableData: [
-          {name: 'rada', surname: 'prada'},
-          {name: 'jeca', surname: 'pereca'},
-          {name: 'daki', surname: 'kavasaki'},
-          {name: 'rada', surname: 'prada'},
-          {name: 'jeca', surname: 'pereca'},
-          {name: 'daki', surname: 'kavasaki'},
-          {name: 'rada', surname: 'prada'}
-        ],
-        showCount: 0
+        phrases: {
+          addReceipt: i18n.getTranslation('Add a receipt'),
+          deleteSelected: i18n.getTranslation('Delete selected'),
+          seeDetails: i18n.getTranslation('See details'),
+          deleteReceipt: i18n.getTranslation('Delete the receipt'),
+          search: i18n.getTranslation('Search'),
+          town: i18n.getTranslation('Town'),
+          amount: i18n.getTranslation('Amount'),
+          payed: i18n.getTranslation('Payed'),
+          received: i18n.getTranslation('Received'),
+          reason: i18n.getTranslation('Reason')
+        },
+        currentPage: 1,
+        perPage: 10,
+        totalRows: null,
+        pageOptions: [ 10, 25, 50 ],
+        sortBy: null,
+        sortDesc: false,
+        sortDirection: 'asc',
+        filter: null,
+        modalCreateReceipt: { title: 'Create new receipt' },
+        checkedItems: [],
+        checkAll: false,
+        selectedItem: {
+          amount: null,
+          reason: null,
+          town: null,
+          amountText: null,
+          payed: null,
+          received: null,
+          firstPart: '',
+          firstPos: '',
+          firstAmount: null,
+          secondPart: '',
+          secondPos: '',
+          secondAmount: null,
+          municipalityPresident: null
+        }
       }
-    }
+    },
+    computed: {
+      sortOptions () {
+        // Create an options list from our fields
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => { return { text: f.label, value: f.key } })
+      },
+      noRowChecked () {
+        return this.checkedItems.length === 0
+      },
+      fields () {
+        return [
+          { key: 'select', label: '', thClass: 'table-col-5' },
+          { key: 'actions', label: '', thClass: 'table-col-10' },
+          { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-30' },
+          { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-30' }
+        ]
+      }
+    },
+    methods: {
+      openCreateReceiptModal (button) {
+        this.resetSelectedItem()
+        this.$root.$emit('bv::show::modal', 'modalCreateReceipt', button)
+      },
+      rowDblClickHandler (record, index) {
+        this.openUpdateReceiptModal(record)
+      },
+      deleteReceipt (item) {
+        receiptsController.deleteReceipt(item._id)
+        this.$root.$emit('bv::refresh::table', 'receipts-table')
+      },
+      deleteCheckedReceipts () {
+        this.checkedItems.forEach(function (id) {
+          receiptsController.deleteReceipt(id)
+        })
+        this.$root.$emit('bv::refresh::table', 'receipts-table')
+      },
+      openUpdateReceiptModal (item) {
+        this.selectedItem = item
+        this.$root.$emit('bv::show::modal', 'modalCreateReceipt')
+      },
+      resetModal () {
+        this.resetSelectedItem()
+      },
+      onFiltered (filteredItems) {
+        // Trigger pagination to update the number of buttons/pages due to filtering
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
+      },
+      receiptsProvider (ctx) {
+        return receiptsController.getReceipts()
+      },
+      resetSelectedItem () {
+        this.selectedItem = {
+          amount: null,
+          reason: null,
+          town: null,
+          amountText: null,
+          payed: null,
+          received: null,
+          firstPart: '',
+          firstPos: '',
+          firstAmount: null,
+          secondPart: '',
+          secondPos: '',
+          secondAmount: null,
+          municipalityPresident: null
+        }
+      }
+    },
+    components: { ReceiptPreview }
   }
 </script>
 
-<style scoped>
-  .title {
-    color: #888;
-    font-size: 18px;
-    font-weight: initial;
-    letter-spacing: .25px;
-    margin-top: 10px;
+<style>
+  .modal .modal-a5 {
+    max-width: 830px;
+    width: 830px;
   }
-
-  .items { margin-top: 8px; }
-
-  .item {
-    display: flex;
-    margin-bottom: 6px;
+  .tableDiv{
+    display: block;
+    overflow: auto;
   }
-
-  .item .name {
-    color: #6a6a6a;
-    margin-right: 6px;
+  .btnImgSm{
+    width: 25px;
+    height: auto;
   }
-
-  .item .value {
-    color: #35495e;
-    font-weight: bold;
+  .inputWithIcon input[type="text"] {
+    padding-left: 40px;
+  }
+  .inputWithIcon {
+    position: relative;
+    transition: 0.3s;
+  }
+  .inputWithIcon img {
+    position: absolute;
+    left: 0;
+    top: 0px;
+    padding: 3px 2px;
+    color: #111;
+    transition: 0.3s;
+    filter: grayscale(100%);
+  }
+  .inputWithIcon input[type="text"]:focus + img {
+    filter: none;
+  }
+  #perPageSelect{
+    width: 60px;
+  }
+  .thSmall{
+    font-size: 80%;
+  }
+  .table-col-5{
+    width: 5% !important;
+  }
+  .table-col-10{
+    width: 10% !important;
+  }
+  .table-col-30{
+    width: 30% !important;
   }
 </style>

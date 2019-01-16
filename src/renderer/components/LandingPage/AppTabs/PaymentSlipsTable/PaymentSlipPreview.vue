@@ -28,10 +28,10 @@
           <b-col md="9">
           </b-col>
           <b-col md="3">
-            <b-button type="submit" variant="secondary" class="ignoreInPrint">
+            <b-button type="submit" v-b-tooltip.hover.html="phrases.save" variant="secondary" class="ignoreInPrint">
               <img src="~@/assets/save.png" class="btn-img ignoreInPrint">
             </b-button>
-            <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint">
+            <b-button @click.stop="printPaymentSlip()" v-b-tooltip.hover.html="phrases.print" variant="secondary" class="ignoreInPrint">
               <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
             </b-button>      
           </b-col>
@@ -45,6 +45,7 @@
 
 const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
 const {numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations} = require('../../../../utils')
+const i18n = require('../../../../translations/i18n')
 
 export default {
   props: {
@@ -76,7 +77,11 @@ export default {
       form: this.item,
       attemptSubmit: false,
       show: true,
-      yearSelected: null
+      yearSelected: null,
+      phrases: {
+        save: i18n.getTranslation('Save'),
+        print: i18n.getTranslation('Print')
+      }
     }
   },
   watch: {
