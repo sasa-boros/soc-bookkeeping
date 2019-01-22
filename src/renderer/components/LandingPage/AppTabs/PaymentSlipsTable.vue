@@ -103,6 +103,7 @@
           deleteSelected: i18n.getTranslation('Delete selected'),
           seeDetails: i18n.getTranslation('See details'),
           deletePaymentSlip: i18n.getTranslation('Delete payment slip'),
+          deletePaymentSlips: i18n.getTranslation('Delete payment slips'),
           search: i18n.getTranslation('Search'),
           town: i18n.getTranslation('Town'),
           amount: i18n.getTranslation('Amount'),
@@ -110,6 +111,7 @@
           received: i18n.getTranslation('Received'),
           reason: i18n.getTranslation('Reason'),
           areYouSureToDeleteSlip: i18n.getTranslation('Are you sure you want to delete the payment slip?'),
+          areYouSureToDeleteCheckedSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
           noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
           noRecordsToShowFiltered: i18n.getTranslation('There are no payment slips that pass the filters')
         },
@@ -195,11 +197,24 @@
         })
       },
       deleteCheckedSlips () {
-        this.checkedItems.forEach(function (id) {
-          paymentSlipsController.deletePaymentSlip(id)
+        const options = {
+          type: 'question',
+          buttons: [this.phrases.cancel, this.phrases.delete],
+          defaultId: 1,
+          title: this.phrases.deletePaymentSlips,
+          message: this.phrases.areYouSureToDeleteCheckedSlips,
+          noLink: true,
+          cancelId: 0
+        }
+        dialog.showMessageBox(null, options, (response) => {
+          if (response === 1) {
+            this.checkedItems.forEach(function (id) {
+              paymentSlipsController.deletePaymentSlip(id)
+            })
+            this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+            this.checkedItems = []
+          }
         })
-        this.$root.$emit('bv::refresh::table', 'payment-slips-table')
-        this.checkedItems = []
       },
       openUpdateSlipModal (item) {
         this.selectedItem = item

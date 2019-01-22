@@ -15,7 +15,9 @@
 
     "Add a payment slip": "Add a payment slip",
     "Delete payment slip": "Delete payment slip",
+    "Delete payment slips": "Delete payment slips",
     "Are you sure you want to delete the payment slip?": "Are you sure you want to delete the payment slip?",
+    "Are you sure you want to delete selected payment slips?": "Are you sure you want to delete selected payment slips?",
     "Town": "Town",
     "Amount": "Amount",
     "Payed": "Payed",

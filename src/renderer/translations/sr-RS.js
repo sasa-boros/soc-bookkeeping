@@ -15,7 +15,9 @@
 
     "Add a payment slip": "Додај нову уплатницу",
     "Delete payment slip": "Обриши уплатницу",
+    "Delete payment slips": "Обриши уплатнице",
     "Are you sure you want to delete the payment slip?": "Да ли сте сигурни да желите да обришете уплатницу?",
+    "Are you sure you want to delete selected payment slips?": "Да ли сте сигурни да желите да обришете означене уплатнице?",
     "Town": "Место",
     "Amount": "Износ",
     "Payed": "Уплатио",
