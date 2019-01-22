@@ -1,17 +1,21 @@
 {
     "Payment slips": "Payment slips",
     "Receipts": "Receipts",
+    "Reports": "Reports",
 
     "Delete selected": "Delete selected",
     "See details": "See details",
     "Search": "Search",
     "Save": "Save",
     "Print": "Print",
+    "Delete": "Delete",
+    "Cancel": "Cancel",
     "The value will be generated": "The value will be generated",
     "Enter a value": "Enter a value",
 
     "Add a payment slip": "Add a payment slip",
     "Delete payment slip": "Delete payment slip",
+    "Are you sure you want to delete the payment slip?": "Are you sure you want to delete the payment slip?",
     "Town": "Town",
     "Amount": "Amount",
     "Payed": "Payed",

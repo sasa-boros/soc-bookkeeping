@@ -88,6 +88,7 @@
 
 <script>
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
+  const { dialog } = require('electron').remote
 
   const paymentSlipsController = require('../../../controllers/paymentSlip.controller')
   const i18n = require('../../../translations/i18n')
@@ -96,6 +97,8 @@
     data () {
       return {
         phrases: {
+          cancel: i18n.getTranslation('Cancel'),
+          delete: i18n.getTranslation('Delete'),
           addPaymentSlip: i18n.getTranslation('Add a payment slip'),
           deleteSelected: i18n.getTranslation('Delete selected'),
           seeDetails: i18n.getTranslation('See details'),
@@ -106,6 +109,7 @@
           payed: i18n.getTranslation('Payed'),
           received: i18n.getTranslation('Received'),
           reason: i18n.getTranslation('Reason'),
+          areYouSureToDeleteSlip: i18n.getTranslation('Are you sure you want to delete the payment slip?'),
           noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
           noRecordsToShowFiltered: i18n.getTranslation('There are no payment slips that pass the filters')
         },
@@ -165,13 +169,30 @@
       rowDblClickHandler (record, index) {
         this.openUpdateSlipModal(record)
       },
+      formatSlipForDialog (slip) {
+        return this.phrases.amount + ':   ' + slip.amount + '\n' + this.phrases.reason + ':   ' + slip.reason
+      },
       deleteSlip (item) {
-        paymentSlipsController.deletePaymentSlip(item._id)
-        this.$root.$emit('bv::refresh::table', 'payment-slips-table')
-        const itemCheckedIndex = this.checkedItems.indexOf(item._id)
-        if (itemCheckedIndex !== -1) {
-          this.checkedItems.splice(itemCheckedIndex, 1)
+        const options = {
+          type: 'question',
+          buttons: [this.phrases.cancel, this.phrases.delete],
+          defaultId: 1,
+          title: this.phrases.deletePaymentSlip,
+          message: this.phrases.areYouSureToDeleteSlip,
+          detail: this.formatSlipForDialog(item),
+          noLink: true,
+          cancelId: 0
         }
+        dialog.showMessageBox(null, options, (response) => {
+          if (response === 1) {
+            paymentSlipsController.deletePaymentSlip(item._id)
+            this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+            const itemCheckedIndex = this.checkedItems.indexOf(item._id)
+            if (itemCheckedIndex !== -1) {
+              this.checkedItems.splice(itemCheckedIndex, 1)
+            }
+          }
+        })
       },
       deleteCheckedSlips () {
         this.checkedItems.forEach(function (id) {
