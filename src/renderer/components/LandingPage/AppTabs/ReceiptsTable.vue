@@ -47,6 +47,8 @@
              @filtered="onFiltered"
              @row-dblclicked="rowDblClickHandler" 
              responsive
+             :empty-text="phrases.noRecordsToShow"
+             :empty-filtered-text="phrases.noRecordsToShowFiltered"
     >
       <template slot="actions" slot-scope="row">
         <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
@@ -101,7 +103,9 @@
           amount: i18n.getTranslation('Amount'),
           payed: i18n.getTranslation('Payed'),
           received: i18n.getTranslation('Received'),
-          reason: i18n.getTranslation('Reason')
+          reason: i18n.getTranslation('Reason'),
+          noRecordsToShow: i18n.getTranslation('There are no receipts to show'),
+          noRecordsToShowFiltered: i18n.getTranslation('There are no receipts that pass the filters')
         },
         currentPage: 1,
         perPage: 10,

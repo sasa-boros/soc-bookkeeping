@@ -1,4 +1,4 @@
-<template>           
+<template> 
   <b-container fluid>
     <!-- User Interface controls -->
      <b-row>
@@ -47,7 +47,12 @@
              @filtered="onFiltered"
              @row-dblclicked="rowDblClickHandler" 
              responsive
+             :empty-text="phrases.noRecordsToShow"
+             :empty-filtered-text="phrases.noRecordsToShowFiltered"
     >
+      <template slot="HEAD_selected" scope="data">
+        <input type="checkbox" v-model="allSelected"> {{allSelected}}
+      </template>
       <template slot="actions" slot-scope="row">
         <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
         <b-button-group size="sm">
@@ -63,8 +68,7 @@
         <b-form-checkbox :value="row.item._id" v-model="checkedItems">
         </b-form-checkbox>
       </template>
-      <template slot="firstPartPos" slot-scope="row">{{row.item.firstPart}}-{{row.item.firstPos}}</template>
-      <template slot="secondPartPos" slot-scope="row">{{row.item.secondPart}}-{{row.item.secondPos}}</template>
+      <template slot="formatedCreatedAt" slot-scope="row">{{ row.item.created_at | formateDate }}</template>
     </b-table>
     </div>
 
@@ -101,7 +105,9 @@
           amount: i18n.getTranslation('Amount'),
           payed: i18n.getTranslation('Payed'),
           received: i18n.getTranslation('Received'),
-          reason: i18n.getTranslation('Reason')
+          reason: i18n.getTranslation('Reason'),
+          noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
+          noRecordsToShowFiltered: i18n.getTranslation('There are no payment slips that pass the filters')
         },
         currentPage: 1,
         perPage: 10,
@@ -145,8 +151,9 @@
         return [
           { key: 'select', label: '', thClass: 'table-col-5' },
           { key: 'actions', label: '', thClass: 'table-col-10' },
-          { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-30' },
-          { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-30' }
+          { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' },
+          { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-20' },
+          { key: 'formatedCreatedAt', label: 'datum', sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' }
         ]
       }
     },
@@ -161,12 +168,17 @@
       deleteSlip (item) {
         paymentSlipsController.deletePaymentSlip(item._id)
         this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+        const itemCheckedIndex = this.checkedItems.indexOf(item._id)
+        if (itemCheckedIndex !== -1) {
+          this.checkedItems.splice(itemCheckedIndex, 1)
+        }
       },
       deleteCheckedSlips () {
         this.checkedItems.forEach(function (id) {
           paymentSlipsController.deletePaymentSlip(id)
         })
         this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+        this.checkedItems = []
       },
       openUpdateSlipModal (item) {
         this.selectedItem = item
@@ -199,6 +211,13 @@
           secondAmount: null,
           municipalityPresident: null
         }
+      }
+    },
+    filters: {
+      formateDate (date) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' }
+        const language = i18n.usedLanguage
+        return (new Date(date)).toLocaleDateString(language, options)
       }
     },
     components: { PaymentSlipPreview }

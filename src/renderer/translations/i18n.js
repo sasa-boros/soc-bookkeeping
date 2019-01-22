@@ -1,36 +1,41 @@
 const path = require('path')
 const fs = require('fs')
+const electron = require('electron')
+let app = electron.app ? electron.app : electron.remote.app
 let loadedLanguage
 
 const fallbackLanguage = 'en-US'
 const defaultLanguage = 'sr-RS'
+let localeLanguage = app.getLocale()
+let usedLanguage
 
-/*
-
-const electron = require('electron')
-let app = electron.app ? electron.app : electron.remote.app
 function loadLocaleLanguage () {
-  if (fs.existsSync(path.join(__dirname, app.getLocale() + '.js'))) {
-    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, app.getLocale() + '.js'), 'utf8'))
+  if (fs.existsSync(path.join(__dirname, localeLanguage + '.js'))) {
+    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, localeLanguage + '.js'), 'utf8'))
+    usedLanguage = localeLanguage
   } else {
     loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, fallbackLanguage + '.js'), 'utf8'))
+    usedLanguage = fallbackLanguage
   }
 }
-*/
 
 function loadDefaultLanguage () {
   if (fs.existsSync(path.join(__dirname, defaultLanguage + '.js'))) {
     loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, defaultLanguage + '.js'), 'utf8'))
+    usedLanguage = defaultLanguage
   } else {
     loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, fallbackLanguage + '.js'), 'utf8'))
+    usedLanguage = fallbackLanguage
   }
 }
 
 function setLanguage (language) {
   if (fs.existsSync(path.join(__dirname, language + '.js'))) {
     loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, language + '.js'), 'utf8'))
+    usedLanguage = language
   } else {
     loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, fallbackLanguage + '.js'), 'utf8'))
+    usedLanguage = fallbackLanguage
   }
 }
 
@@ -46,5 +51,7 @@ loadDefaultLanguage()
 
 module.exports = {
   setLanguage: setLanguage,
-  getTranslation: getTranslation
+  getTranslation: getTranslation,
+  loadLocaleLanguage: loadLocaleLanguage,
+  usedLanguage: usedLanguage
 }
