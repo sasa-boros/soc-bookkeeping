@@ -7,7 +7,7 @@
           <b-btn v-b-tooltip.hover.html="phrases.addPaymentSlip" @click.stop="openCreatePayslipModal($event.target)">
             <img src="~@/assets/add1.png" class="btn-img">               
           </b-btn>
-          <b-btn v-b-tooltip.hover.html="phrases.deleteSelected" @click.stop="deleteCheckedSlips()" :disabled="noRowChecked">
+          <b-btn v-b-tooltip.hover.html="phrases.deleteSelected" @click.stop="deleteCheckedSlips()" :disabled="noRowChecked" id="deleteSelectedBtn">
             <img src="~@/assets/trash1.png" class="btn-img">               
           </b-btn>
         </b-button-group> 
@@ -169,6 +169,7 @@
     methods: {
       openCreatePayslipModal (button) {
         this.resetSelectedItem()
+        this.$root.$emit('bv::hide::tooltip')
         this.$root.$emit('bv::show::modal', 'modalCreateSlip', button)
       },
       toggleCheckAll () {
@@ -264,8 +265,12 @@
       }
     },
     watch: {
-      checkedItems (oldValue, newValue) {
-        this.checkAll = (this.itemsShownInTable.length === oldValue.length)
+      checkedItems (newValue, oldValue) {
+        this.checkAll = (this.itemsShownInTable.length === newValue.length)
+        if (newValue.length === 0) {
+          /* Close delete-selected button tooltip before it gets disabled and stuck */
+          this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
+        }
       }
     },
     components: { PaymentSlipPreview }
