@@ -34,6 +34,7 @@
     <b-table show-empty hover small id="payment-slips-table"
              stacked="md"
              :items="paymentSlipsProvider"
+             v-model="itemsShownInTable"
              :fields="fields"
              :current-page="currentPage"
              :per-page="perPage"
@@ -50,8 +51,9 @@
              :empty-text="phrases.noRecordsToShow"
              :empty-filtered-text="phrases.noRecordsToShowFiltered"
     >
-      <template slot="HEAD_selected" scope="data">
-        <input type="checkbox" v-model="allSelected"> {{allSelected}}
+      <template slot="HEAD_select" scope="data">
+        <b-form-checkbox @click.native.stop="toggleCheckAll" v-model="checkAll">
+        </b-form-checkbox>
       </template>
       <template slot="actions" slot-scope="row">
         <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
@@ -65,7 +67,7 @@
         </b-button-group>                
       </template>
       <template slot="select" slot-scope="row">
-        <b-form-checkbox :value="row.item._id" v-model="checkedItems">
+        <b-form-checkbox :value="row.item" v-model="checkedItems">
         </b-form-checkbox>
       </template>
       <template slot="formatedCreatedAt" slot-scope="row">{{ row.item.created_at | formateDate }}</template>
@@ -125,6 +127,7 @@
         filter: null,
         modalCreateSlip: { title: 'Create new payment slip' },
         checkedItems: [],
+        itemsShownInTable: [],
         checkAll: false,
         selectedItem: {
           amount: null,
@@ -168,6 +171,10 @@
         this.resetSelectedItem()
         this.$root.$emit('bv::show::modal', 'modalCreateSlip', button)
       },
+      toggleCheckAll () {
+        /* Before the checkAll changes based on the click, so the logic is reversed in the check */
+        this.checkedItems = this.checkAll ? [] : this.itemsShownInTable
+      },
       rowDblClickHandler (record, index) {
         this.openUpdateSlipModal(record)
       },
@@ -189,7 +196,7 @@
           if (response === 1) {
             paymentSlipsController.deletePaymentSlip(item._id)
             this.$root.$emit('bv::refresh::table', 'payment-slips-table')
-            const itemCheckedIndex = this.checkedItems.indexOf(item._id)
+            const itemCheckedIndex = this.checkedItems.indexOf(item)
             if (itemCheckedIndex !== -1) {
               this.checkedItems.splice(itemCheckedIndex, 1)
             }
@@ -208,8 +215,8 @@
         }
         dialog.showMessageBox(null, options, (response) => {
           if (response === 1) {
-            this.checkedItems.forEach(function (id) {
-              paymentSlipsController.deletePaymentSlip(id)
+            this.checkedItems.forEach(function (item) {
+              paymentSlipsController.deletePaymentSlip(item._id)
             })
             this.$root.$emit('bv::refresh::table', 'payment-slips-table')
             this.checkedItems = []
@@ -254,6 +261,11 @@
         const options = { year: 'numeric', month: 'long', day: 'numeric' }
         const language = i18n.usedLanguage
         return (new Date(date)).toLocaleDateString(language, options)
+      }
+    },
+    watch: {
+      checkedItems (oldValue, newValue) {
+        this.checkAll = (this.itemsShownInTable.length === oldValue.length)
       }
     },
     components: { PaymentSlipPreview }
