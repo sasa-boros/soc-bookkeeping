@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron')
 
 function getAnnualReport (year) {
-  const annualReport = ipcRenderer.sendSync('get-annual-report')
+  const annualReport = ipcRenderer.sendSync('get-annual-report', year)
   return annualReport
 }
 
