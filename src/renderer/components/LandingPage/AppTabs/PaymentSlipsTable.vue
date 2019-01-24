@@ -2,7 +2,7 @@
   <b-container fluid>
     <!-- User Interface controls -->
      <b-row>
-      <b-col md="1" class="my-1">
+      <b-col md="2" class="my-1">
         <b-button-group size="sm">
           <b-btn v-b-tooltip.hover.html="phrases.addPaymentSlip" @click.stop="openCreatePayslipModal($event.target)">
             <img src="~@/assets/add1.png" class="btn-img">               
@@ -12,7 +12,7 @@
           </b-btn>
         </b-button-group> 
       </b-col>
-      <b-col md="8" class="my-1">
+      <b-col md="7" class="my-1">
         <b-form-group horizontal class="my-0">
           <b-form-group class="my-0" id="filterInputFormGroup">
             <div class="inputWithIcon">
@@ -71,7 +71,8 @@
         <b-form-checkbox :value="row.item" v-model="checkedItems">
         </b-form-checkbox>
       </template>
-      <template slot="formatedCreatedAt" slot-scope="row">{{ row.item.created_at | formateDate }}</template>
+      <template slot="formatedDate" slot-scope="row">{{ row.item.date | formatDate }}</template>
+      <template slot="formatedUpdatedAt" slot-scope="row">{{ row.item.updated_at | formatDate }}</template>
     </b-table>
     </div>
 
@@ -114,6 +115,8 @@
           payed: i18n.getTranslation('Payed'),
           received: i18n.getTranslation('Received'),
           reason: i18n.getTranslation('Reason'),
+          forDate: i18n.getTranslation('For date'),
+          updatedAt: i18n.getTranslation('Updated at'),
           areYouSureToDeleteSlip: i18n.getTranslation('Are you sure you want to delete the payment slip?'),
           areYouSureToDeleteCheckedSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
           noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
@@ -146,7 +149,12 @@
           secondPart: '',
           secondPos: '',
           secondAmount: null,
-          municipalityPresident: null
+          municipalityPresident: null,
+          date: null,
+          created_at: null,
+          updated_at: null,
+          ordinal: null,
+          annualReportPage: null
         }
       }
     },
@@ -169,7 +177,8 @@
           { key: 'actions', label: '', thClass: 'table-col-10' },
           { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' },
           { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-20' },
-          { key: 'formatedCreatedAt', label: 'datum', sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' }
+          { key: 'formatedDate', label: this.phrases.forDate, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' },
+          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' }
         ]
       }
     },
@@ -261,12 +270,17 @@
           secondPart: '',
           secondPos: '',
           secondAmount: null,
-          municipalityPresident: null
+          municipalityPresident: null,
+          date: null,
+          created_at: null,
+          updated_at: null,
+          ordinal: null,
+          annualReportPage: null
         }
       }
     },
     filters: {
-      formateDate (date) {
+      formatDate (date) {
         const options = { year: 'numeric', month: 'long', day: 'numeric' }
         const language = i18n.usedLanguage
         return (new Date(date)).toLocaleDateString(language, options)
@@ -274,11 +288,15 @@
     },
     watch: {
       checkedItems (newValue, oldValue) {
-        this.checkAll = (this.itemsShownInTable.length === newValue.length)
+        this.checkAll = (this.itemsShownInTable.length !== 0 && this.itemsShownInTable.length === newValue.length)
         if (newValue.length === 0) {
           /* Close delete-selected button tooltip before it gets disabled and stuck */
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
+      },
+      yearToFilter (newValue) {
+        this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+        this.checkedItems = []
       }
     },
     components: { PaymentSlipPreview }

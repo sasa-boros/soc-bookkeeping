@@ -2,6 +2,7 @@
     "Payment slips": "Уплатнице",
     "Receipts": "Признанице",
     "Reports": "Извештаји",
+    "Settings": "Подешавања",
 
     "Delete selected": "Обриши означено",
     "See details": "Види детаље",
@@ -11,8 +12,8 @@
     "Delete": "Обриши",
     "Cancel": "Поништи",
     "The value will be generated": "Вредност ће бити генерисана",
-    "Enter a value": "Унесите вредност",
-    "Pick a date": "Изаберите датум",
+    "Enter a value": "Унеси вредност",
+    "Pick a date": "Изабери датум",
 
     "Add a payment slip": "Додај нову уплатницу",
     "Delete payment slip": "Обриши уплатницу",
@@ -24,11 +25,17 @@
     "Payed": "Уплатио",
     "Received": "Примио",
     "Reason": "На име",
+    "For date": "На датум",
+    "Created at": "Креирано",
+    "Updated at": "Ажурирано",
     "There are no payment slips to show": "Нема уплатница за приказ", 
     "There are no payment slips that pass the filters": "Нема уплатница које задовољавају претрагу", 
 
     "Add a receipt": "Додај нову признаницу",
     "Delete the receipt": "Обриши признаницу",
     "There are no receipts to show": "Нема признаница за приказ",
-    "There are no receipts that pass the filters": "Нема признаница које задовољавају претрагу"
+    "There are no receipts that pass the filters": "Нема признаница које задовољавају претрагу",
+
+    "Set default values for payment slips": "Подеси подразумеване вредности за уплатнице",
+    "Set default values for receipts": "Подеси подразумеване вредности за признанице"
 }

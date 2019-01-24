@@ -18,7 +18,7 @@
       <div class="my-0 line-spacing-small">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
-      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" id="reportPageInputFormGroup"><b-form-input disabled v-model="form.reportPage" class="input-small" id="reportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group id="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" id="municipalityPresidentInputFormGroup"><b-form-input v-model="form.municipalityPresident" v-bind:class="{ 'is-invalid': attemptSubmit && missingMunicipalityPresident }" class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
+      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" id="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group id="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" id="municipalityPresidentInputFormGroup"><b-form-input v-model="form.municipalityPresident" v-bind:class="{ 'is-invalid': attemptSubmit && missingMunicipalityPresident }" class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
       </div></div>
 
 
@@ -98,7 +98,7 @@
         </div>
       </b-tooltip>
 
-      <b-tooltip target="reportPageInputFormGroup">
+      <b-tooltip target="annualReportPageInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.willBeGenerated}}
         </div>
@@ -149,10 +149,12 @@ export default {
           secondPart: '',
           secondPos: '',
           secondAmount: null,
-          reportPage: null,
+          annualReportPage: null,
           ordinal: null,
           municipalityPresident: null,
-          date: null
+          date: null,
+          created_at: null,
+          updated_at: null
         }
       }
     },
@@ -242,10 +244,12 @@ export default {
         secondPart: '',
         secondPos: '',
         secondAmount: null,
-        reportPage: null,
+        annualReportPage: null,
         ordinal: null,
         municipalityPresident: null,
-        date: null
+        date: null,
+        created_at: null,
+        updated_at: null
       }
       this.setAttemptSubmit(false)
     },
@@ -598,7 +602,7 @@ h1{
 #totalAmountInput{
   width: 100px;
 }
-#reportPageInput{
+#annualReportPageInput{
   width: 35px;
 }
 #ordinalInput{
