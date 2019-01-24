@@ -5,20 +5,21 @@ function getReceipts(year) {
     return receipts
 }
 
-function createReceipt(receipt) {
-    ipcRenderer.sendSync('create-receipt', receipt)
-}
-function updateReceipt(receipt) {
-    ipcRenderer.sendSync('update-receipt', receipt)
+function createReceipt (receipt) {
+  ipcRenderer.sendSync('create-receipt', receipt)
 }
 
-function deleteReceipt(receiptId) {
-    ipcRenderer.sendSync('delete-receipt', receiptId)
+function updateReceipt (receipt) {
+  ipcRenderer.sendSync('update-receipt', receipt)
+}
+
+function deleteReceipt (receiptId) {
+  ipcRenderer.sendSync('delete-receipt', receiptId)
 }
 
 module.exports = {
-    getReceipts: getReceipts,
-    createReceipt: createReceipt,
-    updateReceipt: updateReceipt,
-    deleteReceipt: deleteReceipt
+  getReceipts: getReceipts,
+  createReceipt: createReceipt,
+  updateReceipt: updateReceipt,
+  deleteReceipt: deleteReceipt
 }

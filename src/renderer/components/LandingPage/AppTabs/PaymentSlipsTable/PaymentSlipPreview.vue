@@ -1,39 +1,126 @@
 <template>           
   <b-container fluid id="payment-slip-preview-container">
     <b-form @submit="onSubmit" @reset="onReset" v-if="show" no-validation>
+      <b-button @click.stop="closeModal()" size="sm" variant="link" class="ignoreInPrint" id="modalCancelBtn">
+        <img src="~@/assets/delete.png" class="btn-img ignoreInPrint">
+      </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group"><b-form-input v-model="form.amount" v-b-tooltip.hover.html="missingAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group> и словима  <div class="parent" contenteditable="false" id="divContentEditable">{{generatedAmountText}}</div><br v-if="showWs" />
-      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group"><b-form-input v-model="form.town" class="input-small" v-b-tooltip.hover.html="missingTownTooltipText" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text" placeholder="___________________________________________________________________________"></b-form-input></b-form-group> на име <b-form-group class="input-form-group"><b-form-input v-model="form.reason" v-b-tooltip.hover.html="missingReasonTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text" placeholder="_______________________________________________________________________________________"></b-form-input></b-form-group>
+      <br/>На дин. <b-form-group class="input-form-group" id="amountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="parent" contenteditable="false" id="divContentEditable">{{generatedAmountText}}</div><br v-if="showWs" />
+      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" id="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" id="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
-                                                                                                            <b-form-group class="input-form-group"><b-form-input class="input-small" id="payerInput" type="text" placeholder="_______________________________________________________________________________"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-select v-model="yearSelected" id="yearSelect" :options="yearOptions" size="sm" class="input-small"/> г.
-                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group"><b-form-group class="input-form-group"><b-form-input v-model="form.firstAmount" v-b-tooltip.hover.html="missingFirstAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group></b-form-group>
-                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group"><b-form-group class="input-form-group"><b-form-input v-model="form.secondAmount" v-b-tooltip.hover.html="missingSecondAmountTooltipText" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" type="number" min="0" step=".01" placeholder="______________________________________"></b-form-input></b-form-group></b-form-group>                                                           
+                                                                                                            <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>  
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-group class="input-form-group" id="dateInputFormGroup"><b-form-input v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" class="input-small" id="dateInput" type="date"></b-form-input></b-form-group> г.
+                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>                                                        
                                                            
-      <br/><b-form-group class="input-form-group"><b-form-input class="input-small" type="text" placeholder="................................................................"></b-form-input></b-form-group>                                                   
-      </div>
-    
+      <br/><b-form-group class="input-form-group" id="receivedInputFormGroup"><b-form-input v-model="form.received" v-bind:class="{ 'is-invalid': attemptSubmit && missingReceived }" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                    Свега дин. <b-form-group class="input-form-group" id="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>                                                
+      <div class="my-0 line-spacing-small">
+                                                                                                                                                Наредбодавац
+                                                                                                                                  Председник црквене општине,
+      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" id="reportPageInputFormGroup"><b-form-input disabled v-model="form.reportPage" class="input-small" id="reportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group id="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" id="municipalityPresidentInputFormGroup"><b-form-input v-model="form.municipalityPresident" v-bind:class="{ 'is-invalid': attemptSubmit && missingMunicipalityPresident }" class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
+      </div></div>
 
 
+  
 
 
 
       
-        <b-row>
-          <b-col md="8">
-          </b-col>
-          <b-col md="4">
-            <b-button type="submit" variant="secondary" class="ignoreInPrint">
-              <img src="~@/assets/save.png" class="btn-img ignoreInPrint">
-            </b-button>
-            <b-button type="reset" variant="danger" class="ignoreInPrint">Reset</b-button>
-            <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint">
-              <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
-            </b-button>      
-          </b-col>
-        </b-row>
+
       </div>
+      <div id="printSaveBtnsDiv">
+        <b-button type="submit" variant="secondary" class="ignoreInPrint" id="paymentSlipSaveBtn">
+          <img src="~@/assets/save.png" class="btn-img ignoreInPrint">
+        </b-button>
+        <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint" id="paymentSlipPrintBtn">
+          <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
+        </b-button>
+      </div>
+              
+      <b-tooltip :disabled.sync="disableAmountTooltip" target="amountInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.enterValue}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip :disabled.sync="disableTownTooltip" target="townInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.enterValue}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip :disabled.sync="disableReasonTooltip" target="reasonInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.enterValue}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip :disabled.sync="disablePayedTooltip" target="payedInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.enterValue}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip :disabled.sync="disableReceivedTooltip" target="receivedInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.enterValue}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip :disabled.sync="disableFirstAmountTooltip" target="firstAmountInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.enterValue}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip :disabled.sync="disableSecondAmountTooltip" target="secondAmountInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.enterValue}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip :disabled.sync="disableTotalAmountTooltip" target="totalAmountInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.enterValue}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip :disabled.sync="disableMunicipalityPresidentTooltip" target="municipalityPresidentInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.enterValue}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip :disabled.sync="disableDateTooltip" target="dateInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.pickDate}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip target="reportPageInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.willBeGenerated}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip target="ordinalInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.willBeGenerated}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip target="paymentSlipPrintBtn">
+        <div class="tooltipInnerText">
+          {{phrases.print}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip target="paymentSlipSaveBtn">
+        <div class="tooltipInnerText">
+          {{phrases.save}}
+        </div>
+      </b-tooltip>
     </b-form>
   </b-container>
 </template>
@@ -42,6 +129,7 @@
 
 const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
 const {numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations} = require('../../../../utils')
+const i18n = require('../../../../translations/i18n')
 
 export default {
   props: {
@@ -53,33 +141,59 @@ export default {
           reason: null,
           town: null,
           amountText: null,
+          payed: null,
+          received: null,
           firstPart: '',
           firstPos: '',
           firstAmount: null,
           secondPart: '',
           secondPos: '',
-          secondAmount: null
+          secondAmount: null,
+          reportPage: null,
+          ordinal: null,
+          municipalityPresident: null,
+          date: null
         }
       }
+    },
+    newlyOpened: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
     return {
       form: this.item,
-      attemptSubmit: false,
+      attemptSubmit: !this.newlyOpened,
       show: true,
-      yearSelected: null
+      yearSelected: null,
+      phrases: {
+        save: i18n.getTranslation('Save'),
+        print: i18n.getTranslation('Print'),
+        willBeGenerated: i18n.getTranslation('The value will be generated'),
+        enterValue: i18n.getTranslation('Enter a value'),
+        pickDate: i18n.getTranslation('Pick a date')
+      }
     }
   },
   watch: {
     item: function () {
-      this.form = this.item
+      /* Deep clone the item using JSON parsing */
+      this.form = JSON.parse(JSON.stringify(this.item))
+    },
+    newlyOpened: function () {
+      this.attemptSubmit = !this.newlyOpened
     }
   },
   methods: {
+    setAttemptSubmit (val) {
+      this.attemptSubmit = val
+      /* Sync the prop used by the parent */
+      this.$emit('update:newlyOpened', !val)
+    },
     onSubmit (evt) {
       evt.preventDefault()
-      this.attemptSubmit = true
+      this.setAttemptSubmit(true)
       if (this.checkForm()) {
         if (this.form._id) {
           /* Update the item */
@@ -103,7 +217,13 @@ export default {
     checkForm () {
       if (!this.form.amount ||
           !this.form.reason ||
-          !this.form.town) {
+          !this.form.town ||
+          !this.form.payed ||
+          !this.form.received ||
+          !this.form.firstAmount ||
+          !this.form.secondAmount ||
+          !this.form.municipalityPresident ||
+          !this.form.date) {
         return false
       }
       return true
@@ -114,14 +234,20 @@ export default {
         reason: null,
         town: null,
         amountText: null,
+        payed: null,
+        received: null,
         firstPart: '',
         firstPos: '',
         firstAmount: null,
         secondPart: '',
         secondPos: '',
-        secondAmount: null
+        secondAmount: null,
+        reportPage: null,
+        ordinal: null,
+        municipalityPresident: null,
+        date: null
       }
-      this.attemptSubmit = false
+      this.setAttemptSubmit(false)
     },
     onFirstPartChange () {
       this.form.firstPos = ''
@@ -143,6 +269,10 @@ export default {
       section.innerHTML = ''
       section.appendChild(cloned)
       window.print()
+    },
+    closeModal () {
+      this.$root.$emit('bv::hide::modal', 'modalCreateSlip')
+      this.setAttemptSubmit(false)
     }
   },
   computed: {
@@ -161,6 +291,116 @@ export default {
         }
       },
       set: function (newValue) {
+      }
+    },
+    disableAmountTooltip: {
+      get: function () {
+        return !this.missingAmount || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'amountInputFormGroup')
+        }
+      }
+    },
+    disableTownTooltip: {
+      get: function () {
+        return !this.missingTown || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'townInputFormGroup')
+        }
+      }
+    },
+    disableReasonTooltip: {
+      get: function () {
+        return !this.missingReason || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'reasonInputFormGroup')
+        }
+      }
+    },
+    disablePayedTooltip: {
+      get: function () {
+        return !this.missingPayed || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'payedInputFormGroup')
+        }
+      }
+    },
+    disableReceivedTooltip: {
+      get: function () {
+        return !this.missingReceived || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'receivedInputFormGroup')
+        }
+      }
+    },
+    disableFirstAmountTooltip: {
+      get: function () {
+        return !this.missingFirstAmount || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'firstAmountInputFormGroup')
+        }
+      }
+    },
+    disableSecondAmountTooltip: {
+      get: function () {
+        return !this.missingSecondAmount || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'secondAmountInputFormGroup')
+        }
+      }
+    },
+    disableTotalAmountTooltip: {
+      get: function () {
+        return !this.missingTotalAmount || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'totalAmountInputFormGroup')
+        }
+      }
+    },
+    disableMunicipalityPresidentTooltip: {
+      get: function () {
+        return !this.missingMunicipalityPresident || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'municipalityPresidentInputFormGroup')
+        }
+      }
+    },
+    disableDateTooltip: {
+      get: function () {
+        return !this.missingDate || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'dateInputFormGroup')
+        }
       }
     },
     yearOptions: function () {
@@ -190,46 +430,26 @@ export default {
     missingAmount: function () {
       return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
     },
+    missingPayed: function () {
+      return !this.form || !this.form.payed || this.form.payed.toString().trim() === ''
+    },
+    missingReceived: function () {
+      return !this.form || !this.form.received || this.form.received.toString().trim() === ''
+    },
     missingFirstAmount: function () {
       return !this.form || !this.form.firstAmount || this.form.firstAmount.toString().trim() === ''
     },
     missingSecondAmount: function () {
       return !this.form || !this.form.secondAmount || this.form.secondAmount.toString().trim() === ''
     },
-    missingReasonTooltipText: function () {
-      if (this.attemptSubmit && this.missingReason) {
-        return 'Унесите вредност'
-      } else {
-        return ''
-      }
+    missingTotalAmount: function () {
+      return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
     },
-    missingTownTooltipText: function () {
-      if (this.attemptSubmit && this.missingTown) {
-        return 'Унесите вредност'
-      } else {
-        return ''
-      }
+    missingMunicipalityPresident: function () {
+      return !this.form || !this.form.municipalityPresident || this.form.municipalityPresident.toString().trim() === ''
     },
-    missingAmountTooltipText: function () {
-      if (this.attemptSubmit && this.missingAmount) {
-        return 'Унесите вредност'
-      } else {
-        return ''
-      }
-    },
-    missingFirstAmountTooltipText: function () {
-      if (this.attemptSubmit && this.missingFirstAmount) {
-        return 'Унесите вредност'
-      } else {
-        return ''
-      }
-    },
-    missingSecondAmountTooltipText: function () {
-      if (this.attemptSubmit && this.missingSecondAmount) {
-        return 'Унесите вредност'
-      } else {
-        return ''
-      }
+    missingDate: function () {
+      return !this.form || !this.form.date
     }
   }
 }
@@ -237,7 +457,15 @@ export default {
 
 <style scoped>
 input { 
-  text-align: center; 
+  text-align: center;
+  /* Immitate the underline in the real payment slip */
+  border-bottom: 1px solid black !important;
+  border-radius: 0 !important;
+}
+.tooltipInnerText {
+  font-size: 95%;
+  line-height: 1;
+  margin: 1px;
 }
 #payment-slip-preview-container{
   width: 794px; 
@@ -294,6 +522,9 @@ h1{
 .is-invalid {
   border-style: dotted;
 }
+.line-spacing-small {
+  line-height: 1.3;
+}
 #amountInput{
   width: 140px;
 }
@@ -309,29 +540,47 @@ h1{
 #reasonInput{
   width: 430px;
 }
-#payerInput{
+#payedInput{
   width: 288px;
+}
+#receivedInput{
+  width: 255px;
 }
 #yearSelect{
   width: 95px;
+  padding-left:5px;
+  margin-bottom: 8px;
+}
+#dateInput{
+  width: 95px;
+  padding-left:5px;
+  margin-bottom: 8px;
 }
 #part1Select{
   width: 50px;
+  padding-left:5px;
+  margin-bottom: 8px;
 }
 #pos1Select{
   width: 50px;
+  padding-left:5px;
+  margin-bottom: 8px;
 }
 #part2Select{
   width: 50px;
+  padding-left:5px;
+  margin-bottom: 8px;
 }
 #pos2Select{
   width: 50px;
+  padding-left:5px;
+  margin-bottom: 8px;
 }
 #firstAmountInput{
-  width: 100px;
+  width: 85px;
 }
 #secondAmountInput{
-  width: 100px;
+  width: 85px;
 }
 #divContentEditable{ 
   -ms-flow-into: article;
@@ -345,6 +594,28 @@ h1{
   white-space:normal !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
+}
+#totalAmountInput{
+  width: 100px;
+}
+#reportPageInput{
+  width: 35px;
+}
+#ordinalInput{
+  width: 40px;
+}
+#municipalityPresidentInput{
+  width: 235px;
+}
+#modalCancelBtn{
+  margin-top: 5px;
+  position: absolute;
+  right: 5px;
+}
+#printSaveBtnsDiv{
+  position: absolute;
+  bottom: 20px;
+  right: 50px;
 }
 </style>
 
