@@ -71,7 +71,7 @@
         <b-form-checkbox :value="row.item" v-model="checkedItems">
         </b-form-checkbox>
       </template>
-      <template slot="formatedCreatedAt" slot-scope="row">{{ row.item.created_at | formateDate }}</template>
+      <template slot="formatedCreatedAt" slot-scope="row">{{ row.item.created_at | formatDate }}</template>
     </b-table>
     </div>
 
@@ -266,7 +266,7 @@
       }
     },
     filters: {
-      formateDate (date) {
+      formatDate (date) {
         const options = { year: 'numeric', month: 'long', day: 'numeric' }
         const language = i18n.usedLanguage
         return (new Date(date)).toLocaleDateString(language, options)
@@ -279,6 +279,9 @@
           /* Close delete-selected button tooltip before it gets disabled and stuck */
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
+      },
+      yearToFilter (newValue) {
+        this.$root.$emit('bv::refresh::table', 'payment-slips-table')
       }
     },
     components: { PaymentSlipPreview }
