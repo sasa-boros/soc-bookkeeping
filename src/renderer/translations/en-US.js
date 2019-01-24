@@ -2,6 +2,7 @@
     "Payment slips": "Payment slips",
     "Receipts": "Receipts",
     "Reports": "Reports",
+    "Settings": "Settings",
 
     "Delete selected": "Delete selected",
     "See details": "See details",
@@ -24,11 +25,17 @@
     "Payed": "Payed",
     "Received": "Received",
     "Reason": "Reason",
+    "For date": "For date",
+    "Created at": "Created at",
+    "Updated at": "Updated at",
     "There are no payment slips to show": "There are no payment slips to show", 
     "There are no payment slips that pass the filters": "There are no payment slips that pass the filters", 
 
     "Add a receipt": "Add a receipt",
     "Delete the receipt": "Delete the receipt",
     "There are no receipts to show": "There are no receipts to show",
-    "There are no payment slips that pass the filters": "There are no receipts that pass the filters"
+    "There are no payment slips that pass the filters": "There are no receipts that pass the filters",
+
+    "Set default values for payment slips": "Set default values for payment slips",
+    "Set default values for receipts": "Set default values for receipts"
 }

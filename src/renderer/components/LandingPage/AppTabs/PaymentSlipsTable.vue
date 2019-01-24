@@ -71,7 +71,8 @@
         <b-form-checkbox :value="row.item" v-model="checkedItems">
         </b-form-checkbox>
       </template>
-      <template slot="formatedCreatedAt" slot-scope="row">{{ row.item.created_at | formatDate }}</template>
+      <template slot="formatedDate" slot-scope="row">{{ row.item.date | formatDate }}</template>
+      <template slot="formatedUpdatedAt" slot-scope="row">{{ row.item.updated_at | formatDate }}</template>
     </b-table>
     </div>
 
@@ -114,6 +115,8 @@
           payed: i18n.getTranslation('Payed'),
           received: i18n.getTranslation('Received'),
           reason: i18n.getTranslation('Reason'),
+          forDate: i18n.getTranslation('For date'),
+          updatedAt: i18n.getTranslation('Updated at'),
           areYouSureToDeleteSlip: i18n.getTranslation('Are you sure you want to delete the payment slip?'),
           areYouSureToDeleteCheckedSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
           noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
@@ -146,7 +149,12 @@
           secondPart: '',
           secondPos: '',
           secondAmount: null,
-          municipalityPresident: null
+          municipalityPresident: null,
+          date: null,
+          created_at: null,
+          updated_at: null,
+          ordinal: null,
+          annualReportPage: null
         }
       }
     },
@@ -169,7 +177,8 @@
           { key: 'actions', label: '', thClass: 'table-col-10' },
           { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' },
           { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-20' },
-          { key: 'formatedCreatedAt', label: 'datum', sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' }
+          { key: 'formatedDate', label: this.phrases.forDate, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' },
+          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' }
         ]
       }
     },
@@ -261,7 +270,12 @@
           secondPart: '',
           secondPos: '',
           secondAmount: null,
-          municipalityPresident: null
+          municipalityPresident: null,
+          date: null,
+          created_at: null,
+          updated_at: null,
+          ordinal: null,
+          annualReportPage: null
         }
       }
     },
