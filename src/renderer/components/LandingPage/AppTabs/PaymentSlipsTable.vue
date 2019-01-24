@@ -2,7 +2,7 @@
   <b-container fluid>
     <!-- User Interface controls -->
      <b-row>
-      <b-col md="2" class="my-1">
+      <b-col md="1" class="my-1">
         <b-button-group size="sm">
           <b-btn v-b-tooltip.hover.html="phrases.addPaymentSlip" @click.stop="openCreatePayslipModal($event.target)">
             <img src="~@/assets/add1.png" class="btn-img">               
@@ -12,14 +12,15 @@
           </b-btn>
         </b-button-group> 
       </b-col>
-      <b-col md="7" class="my-1">
-        <b-form-group horizontal class="mb-0">
-          <b-input-group>
+      <b-col md="8" class="my-1">
+        <b-form-group horizontal class="my-0">
+          <b-form-group class="my-0" id="filterInputFormGroup">
             <div class="inputWithIcon">
               <b-form-input v-model="filter" :placeholder="phrases.search" />
               <img src="~@/assets/search-blue.png" class="btn-img fa fa-user fa-lg fa-fw" aria-hidden="true">
             </div>
-          </b-input-group>
+          </b-form-group>
+          <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-form-group>
       </b-col>
       <b-col md="3" class="my-1">
@@ -92,6 +93,7 @@
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
   const { dialog } = require('electron').remote
 
+  const { getLastNYears } = require('../../../utils')
   const paymentSlipsController = require('../../../controllers/paymentSlip.controller')
   const i18n = require('../../../translations/i18n')
 
@@ -129,6 +131,7 @@
         checkedItems: [],
         itemsShownInTable: [],
         checkAll: false,
+        yearToFilter: (new Date()).getFullYear(),
         selectedItem: {
           amount: null,
           reason: null,
@@ -152,6 +155,9 @@
         return this.fields
           .filter(f => f.sortable)
           .map(f => { return { text: f.label, value: f.key } })
+      },
+      yearOptions: function () {
+        return getLastNYears(50)
       },
       noRowChecked () {
         return this.checkedItems.length === 0
@@ -277,7 +283,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .modal .modal-a5 {
     max-width: 830px;
     width: 830px;
@@ -311,6 +317,14 @@
   }
   #perPageSelect{
     width: 60px;
+  }
+  #yearSelect{
+    width: 80px;
+    display: inline;
+  }
+  #filterInputFormGroup{
+    width: 200px;
+    display: inline;
   }
   .thSmall{
     font-size: 80%;

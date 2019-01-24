@@ -1,6 +1,9 @@
 <template>           
   <b-container fluid id="payment-slip-preview-container">
     <b-form @submit="onSubmit" @reset="onReset" v-if="show" no-validation>
+      <b-button @click.stop="closeModal()" size="sm" variant="link" class="ignoreInPrint" id="modalCancelBtn">
+        <img src="~@/assets/delete.png" class="btn-img ignoreInPrint">
+      </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
       <br/>На дин. <b-form-group class="input-form-group" id="amountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="parent" contenteditable="false" id="divContentEditable">{{generatedAmountText}}</div><br v-if="showWs" />
@@ -247,6 +250,9 @@ export default {
       section.innerHTML = ''
       section.appendChild(cloned)
       window.print()
+    },
+    closeModal () {
+      this.$root.$emit('bv::hide::modal', 'modalCreateSlip')
     }
   },
   computed: {
@@ -561,6 +567,11 @@ h1{
 }
 #municipalityPresidentInput{
   width: 235px;
+}
+#modalCancelBtn{
+  margin-top: 5px;
+  position: absolute;
+  right: 5px;
 }
 </style>
 
