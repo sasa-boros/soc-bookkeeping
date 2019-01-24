@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const paymentSlipSchema = new Schema({
-  ordinal: {type: Number},
-  annualReportPage: {type: Number},
+  ordinal: { type: Number },
+  annualReportPage: { type: Number },
   date: { type: Date },
   amount: { type: Number },
   amountText: { type: String },
@@ -29,7 +29,7 @@ paymentSlipSchema.statics.reorderByDate = function (date) {
       '$gte': new Date(date.getFullYear(), date.getMonth(), 1),
       '$lt': new Date(date.getFullYear(), date.getMonth() + 1, 1)
     }
-  }).sort({'date': 1}).exec().then(async function (paymentSlips) {
+  }).sort({ 'date': 1 }).exec().then(async function (paymentSlips) {
     for (let i = 0; i < paymentSlips.length; i++) {
       const paymentSlip = paymentSlips[i]
 
@@ -45,7 +45,7 @@ paymentSlipSchema.statics.reorderByDate = function (date) {
 }
 
 async function updatePaymentSlip (paymentSlip) {
-  PaymentSlip.findOneAndUpdate({_id: paymentSlip._id}, paymentSlip, function (err) {
+  PaymentSlip.findOneAndUpdate({ _id: paymentSlip._id }, paymentSlip, function (err) {
     if (err) {
       console.error(err.message)
       throw err
@@ -69,5 +69,9 @@ paymentSlipSchema.pre('findOneAndUpdate', function (next) {
 })
 
 const PaymentSlip = mongoose.model('paymentSlips', paymentSlipSchema)
+const DefaultPaymentSlip = mongoose.model('defaultPaymentSlips', paymentSlipSchema)
 
-module.exports = PaymentSlip
+module.exports = {
+  PaymentSlip: PaymentSlip,
+  DefaultPaymentSlip: DefaultPaymentSlip
+}

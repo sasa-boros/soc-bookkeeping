@@ -1,6 +1,6 @@
 const {ipcMain} = require('electron')
-const PaymentSlip = require('./model/paymentSlip')
-const Receipt = require('./model/receipt')
+const {PaymentSlip, DefaultPaymentSlip} = require('./model/paymentSlip')
+const {Receipt, DefaultReceipt} = require('./model/receipt')
 const annualReport = require('./model/annualReport')
 
 ipcMain.on('get-income-codes', function (event) {
@@ -134,4 +134,64 @@ ipcMain.on('get-annual-report', async function (event, year) {
   const generatedAnnualReport = await annualReport.getAnnualReport(year)
   console.log(`Found: \n${JSON.stringify(generatedAnnualReport, null, 2)}`)
   event.returnValue = generatedAnnualReport
+})
+
+ipcMain.on('get-default-payment-slip', function (event) {
+  console.log('Initiated get default payment slip')
+  DefaultPaymentSlip.find({}).exec().then(function (defaultPaymentSlip) {
+    console.log(`Found: \n${JSON.stringify(defaultPaymentSlip, null, 2)}`)
+    event.returnValue = defaultPaymentSlip
+  }).catch((err) => {
+    console.error(err.message)
+    throw err
+  })
+})
+
+ipcMain.on('create-default-payment-slip', function (event, defaultPaymentSlip) {
+  console.log(`Initiated create default payment slip: \n${JSON.stringify(defaultPaymentSlip)}`)
+  DefaultPaymentSlip.remove({}, function (err) {
+    if (err) {
+      console.error(err.message)
+      throw err
+    }
+    var newDefaultPaymentSlip = DefaultPaymentSlip(defaultPaymentSlip)
+    newDefaultPaymentSlip.save(function (err) {
+      if (err) {
+        console.error(err.message)
+        throw err
+      }
+      console.log(`Successfully created default payment slip: \n${newDefaultPaymentSlip}`)
+      event.returnValue = true
+    })
+  })
+})
+
+ipcMain.on('get-default-receipt', function (event) {
+  console.log('Initiated get default receipt')
+  DefaultReceipt.find({}).exec().then(function (defaultReceipt) {
+    console.log(`Found: \n${JSON.stringify(defaultReceipt, null, 2)}`)
+    event.returnValue = defaultReceipt
+  }).catch((err) => {
+    console.error(err.message)
+    throw err
+  })
+})
+
+ipcMain.on('create-default-receipt', function (event, defaultReceipt) {
+  console.log(`Initiated create default receipt: \n${JSON.stringify(defaultReceipt)}`)
+  DefaultReceipt.remove({}, function (err) {
+    if (err) {
+      console.error(err.message)
+      throw err
+    }
+    var newDefaultReceipt = DefaultReceipt(defaultReceipt)
+    newDefaultReceipt.save(function (err) {
+      if (err) {
+        console.error(err.message)
+        throw err
+      }
+      console.log(`Successfully created default receipt: \n${newDefaultReceipt}`)
+      event.returnValue = true
+    })
+  })
 })

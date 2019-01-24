@@ -71,5 +71,9 @@ receiptSchema.pre('findOneAndUpdate', function (next) {
 })
 
 const Receipt = mongoose.model('receipts', receiptSchema)
+const DefaultReceipt = mongoose.model('defaultReceipts', receiptSchema)
 
-module.exports = Receipt
+module.exports = {
+  Receipt: Receipt,
+  DefaultReceipt: DefaultReceipt
+}

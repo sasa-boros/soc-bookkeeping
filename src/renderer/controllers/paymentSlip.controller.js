@@ -16,9 +16,20 @@ function deletePaymentSlip (paymentSlipId) {
   ipcRenderer.sendSync('delete-payment-slip', paymentSlipId)
 }
 
+function getDefaultPaymentSlip () {
+  const defaultPaymentSlip = ipcRenderer.sendSync('get-default-payment-slip')
+  return defaultPaymentSlip
+}
+
+function createDefaultPaymentSlip (defaultPaymentSlip) {
+  ipcRenderer.sendSync('create-default-payment-slip', defaultPaymentSlip)
+}
+
 module.exports = {
   getPaymentSlips: getPaymentSlips,
   createPaymentSlip: createPaymentSlip,
   deletePaymentSlip: deletePaymentSlip,
-  updatePaymentSlip: updatePaymentSlip
+  updatePaymentSlip: updatePaymentSlip,
+  getDefaultPaymentSlip: getDefaultPaymentSlip,
+  createDefaultPaymentSlip: createDefaultPaymentSlip
 }
