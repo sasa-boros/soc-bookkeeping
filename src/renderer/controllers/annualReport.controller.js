@@ -16,6 +16,7 @@ function getOutcomeCodes () {
 }
 
 module.exports = {
+  getAnnualReport: getAnnualReport,
   getIncomeCodes: getIncomeCodes,
   getOutcomeCodes: getOutcomeCodes
 }
