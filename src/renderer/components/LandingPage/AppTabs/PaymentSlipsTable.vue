@@ -83,7 +83,7 @@
 
     <!-- Create slip modal -->
     <b-modal hide-footer hide-header size="a5" id="modalCreateSlip" @hide="resetModal">
-      <payment-slip-preview :item='selectedItem'></payment-slip-preview>
+      <payment-slip-preview :item='selectedItem' :newlyOpened.sync='modalNewlyOpened'></payment-slip-preview>
     </b-modal>
 
   </b-container>
@@ -132,6 +132,7 @@
         itemsShownInTable: [],
         checkAll: false,
         yearToFilter: (new Date()).getFullYear(),
+        modalNewlyOpened: true,
         selectedItem: {
           amount: null,
           reason: null,
@@ -236,6 +237,7 @@
       },
       resetModal () {
         this.resetSelectedItem()
+        this.modalNewlyOpened = true
       },
       onFiltered (filteredItems) {
         // Trigger pagination to update the number of buttons/pages due to filtering

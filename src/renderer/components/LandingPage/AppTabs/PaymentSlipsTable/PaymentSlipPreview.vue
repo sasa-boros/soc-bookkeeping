@@ -148,12 +148,16 @@ export default {
           municipalityPresident: null
         }
       }
+    },
+    newlyOpened: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
     return {
       form: this.item,
-      attemptSubmit: false,
+      attemptSubmit: !this.newlyOpened,
       show: true,
       yearSelected: null,
       phrases: {
@@ -168,12 +172,20 @@ export default {
     item: function () {
       /* Deep clone the item using JSON parsing */
       this.form = JSON.parse(JSON.stringify(this.item))
+    },
+    newlyOpened: function () {
+      this.attemptSubmit = !this.newlyOpened
     }
   },
   methods: {
+    setAttemptSubmit (val) {
+      this.attemptSubmit = val
+      /* Sync the prop used by the parent */
+      this.$emit('update:newlyOpened', !val)
+    },
     onSubmit (evt) {
       evt.preventDefault()
-      this.attemptSubmit = true
+      this.setAttemptSubmit(true)
       if (this.checkForm()) {
         if (this.form._id) {
           /* Update the item */
@@ -225,7 +237,7 @@ export default {
         ordinal: null,
         municipalityPresident: null
       }
-      this.attemptSubmit = false
+      this.setAttemptSubmit(false)
     },
     onFirstPartChange () {
       this.form.firstPos = ''
@@ -250,6 +262,7 @@ export default {
     },
     closeModal () {
       this.$root.$emit('bv::hide::modal', 'modalCreateSlip')
+      this.setAttemptSubmit(false)
     }
   },
   computed: {
