@@ -148,7 +148,7 @@ ipcMain.on('get-default-payment-slip', function (event) {
 })
 
 ipcMain.on('create-default-payment-slip', function (event, defaultPaymentSlip) {
-  console.log(`Initiated create default payment slip: \n${JSON.stringify(defaultPaymentSlip)}`)
+  console.log(`Initiated create default payment slip: \n${JSON.stringify(defaultPaymentSlip, null, 2)}`)
   DefaultPaymentSlip.remove({}, function (err) {
     if (err) {
       console.error(err.message)
@@ -178,7 +178,7 @@ ipcMain.on('get-default-receipt', function (event) {
 })
 
 ipcMain.on('create-default-receipt', function (event, defaultReceipt) {
-  console.log(`Initiated create default receipt: \n${JSON.stringify(defaultReceipt)}`)
+  console.log(`Initiated create default receipt: \n${JSON.stringify(defaultReceipt, null, 2)}`)
   DefaultReceipt.remove({}, function (err) {
     if (err) {
       console.error(err.message)
