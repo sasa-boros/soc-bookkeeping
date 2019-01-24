@@ -2,7 +2,7 @@
   <b-container fluid>
     <!-- User Interface controls -->
      <b-row>
-      <b-col md="1" class="my-1">
+      <b-col md="2" class="my-1">
         <b-button-group size="sm">
           <b-btn v-b-tooltip.hover.html="phrases.addPaymentSlip" @click.stop="openCreatePayslipModal($event.target)">
             <img src="~@/assets/add1.png" class="btn-img">               
@@ -12,7 +12,7 @@
           </b-btn>
         </b-button-group> 
       </b-col>
-      <b-col md="8" class="my-1">
+      <b-col md="7" class="my-1">
         <b-form-group horizontal class="my-0">
           <b-form-group class="my-0" id="filterInputFormGroup">
             <div class="inputWithIcon">
@@ -274,7 +274,7 @@
     },
     watch: {
       checkedItems (newValue, oldValue) {
-        this.checkAll = (this.itemsShownInTable.length === newValue.length)
+        this.checkAll = (this.itemsShownInTable.length !== 0 && this.itemsShownInTable.length === newValue.length)
         if (newValue.length === 0) {
           /* Close delete-selected button tooltip before it gets disabled and stuck */
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
@@ -282,6 +282,7 @@
       },
       yearToFilter (newValue) {
         this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+        this.checkedItems = []
       }
     },
     components: { PaymentSlipPreview }
