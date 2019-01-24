@@ -127,9 +127,9 @@ ipcMain.on('update-receipt', function (event, receipt) {
   })
 })
 
-ipcMain.on('get-annual-report', function (event, year) {
+ipcMain.on('get-annual-report', async function (event, year) {
   console.log('Initiated get annual report')
-  const generatedAnnualReport = annualReport.getAnnualReport(year)
+  const generatedAnnualReport = await annualReport.getAnnualReport(year)
   console.log(`Found: \n${JSON.stringify(generatedAnnualReport, null, 2)}`)
   event.returnValue = generatedAnnualReport
 })
