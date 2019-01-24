@@ -24,6 +24,7 @@ ipcMain.on('get-payment-slips', function (event, year) {
       '$lt': new Date(year + 1, 0, 1)
     }
   }).exec().then(function (paymentSlips) {
+    console.log(`Found: \n${JSON.stringify(paymentSlips, null, 2)}`)
     event.returnValue = paymentSlips
   }).catch((err) => {
     console.error(err.message)
@@ -34,12 +35,12 @@ ipcMain.on('get-payment-slips', function (event, year) {
 ipcMain.on('create-payment-slip', function (event, paymentSlip) {
   console.log(`Initiated create payment slip: \n${JSON.stringify(paymentSlip, null, 2)}`)
   var newPaymentSlip = PaymentSlip(paymentSlip)
-  newPaymentSlip.save(function (err) {
+  newPaymentSlip.save(async function (err) {
     if (err) {
       console.error(err.message)
       throw err
     }
-    PaymentSlip.reorderByDate(newPaymentSlip.date)
+    await PaymentSlip.reorderByDate(newPaymentSlip.date)
     console.log(`Successfully created payment slip: \n${newPaymentSlip}`)
     event.returnValue = true
   })
@@ -47,12 +48,12 @@ ipcMain.on('create-payment-slip', function (event, paymentSlip) {
 
 ipcMain.on('delete-payment-slip', function (event, paymentSlipId) {
   console.log(`Initiated delete payment slip with: ${paymentSlipId}`)
-  PaymentSlip.findOneAndRemove({_id: paymentSlipId}, function (err, deletedPaymentSlip) {
+  PaymentSlip.findOneAndRemove({_id: paymentSlipId}, async function (err, deletedPaymentSlip) {
     if (err) {
       console.error(err.message)
       throw err
     }
-    PaymentSlip.reorderByDate(deletedPaymentSlip.date)
+    await PaymentSlip.reorderByDate(deletedPaymentSlip.date)
     console.log('Successfully deleted payment slip')
     event.returnValue = true
   })
@@ -60,12 +61,12 @@ ipcMain.on('delete-payment-slip', function (event, paymentSlipId) {
 
 ipcMain.on('update-payment-slip', function (event, paymentSlip) {
   console.log(`Initiated update payment slip with: \n${JSON.stringify(paymentSlip, null, 2)}`)
-  PaymentSlip.findOneAndUpdate({_id: paymentSlip._id}, paymentSlip, function (err, updatedPaymentSlip) {
+  PaymentSlip.findOneAndUpdate({_id: paymentSlip._id}, paymentSlip, async function (err, updatedPaymentSlip) {
     if (err) {
       console.error(err.message)
       throw err
     }
-    PaymentSlip.reorderByDate(updatedPaymentSlip.date)
+    await PaymentSlip.reorderByDate(updatedPaymentSlip.date)
     console.log(`Successfully updated payment slip: \n${updatedPaymentSlip}`)
     event.returnValue = true
   })
@@ -80,6 +81,7 @@ ipcMain.on('get-receipts', function (event, year) {
       '$lt': new Date(year + 1, 0, 1)
     }
   }).exec().then(function (receipts) {
+    console.log(`Found: \n${JSON.stringify(receipts, null, 2)}`)
     event.returnValue = receipts
   }).catch((err) => {
     console.error(err.message)
@@ -90,12 +92,12 @@ ipcMain.on('get-receipts', function (event, year) {
 ipcMain.on('create-receipt', function (event, receipt) {
   console.log(`Initiated create receipt: \n${JSON.stringify(receipt, null, 2)}`)
   var newReceipt = Receipt(receipt)
-  newReceipt.save(function (err) {
+  newReceipt.save(async function (err) {
     if (err) {
       console.error(err.message)
       throw err
     }
-    Receipt.reorderByDate(newReceipt.date)
+    await Receipt.reorderByDate(newReceipt.date)
     console.log(`Successfully created receipt: \n${newReceipt}`)
     event.returnValue = true
   })
@@ -103,12 +105,12 @@ ipcMain.on('create-receipt', function (event, receipt) {
 
 ipcMain.on('delete-receipt', function (event, receiptId) {
   console.log(`Initiated delete receipt with: ${receiptId}`)
-  Receipt.findOneAndRemove({_id: receiptId}, function (err, deletedReceipt) {
+  Receipt.findOneAndRemove({_id: receiptId}, async function (err, deletedReceipt) {
     if (err) {
       console.error(err.message)
       throw err
     }
-    Receipt.reorderByDate(deletedReceipt.date)
+    await Receipt.reorderByDate(deletedReceipt.date)
     console.log('Successfully deleted receipt')
     event.returnValue = true
   })
@@ -116,12 +118,12 @@ ipcMain.on('delete-receipt', function (event, receiptId) {
 
 ipcMain.on('update-receipt', function (event, receipt) {
   console.log(`Initiated update receipt with: \n${JSON.stringify(receipt, null, 2)}`)
-  Receipt.findOneAndUpdate({_id: receipt._id}, receipt, function (err, updatedReceipt) {
+  Receipt.findOneAndUpdate({_id: receipt._id}, receipt, async function (err, updatedReceipt) {
     if (err) {
       console.error(err.message)
       throw err
     }
-    Receipt.reorderByDate(updatedReceipt.date)
+    await Receipt.reorderByDate(updatedReceipt.date)
     console.log(`Successfully updated receipt: \n${updatedReceipt}`)
     event.returnValue = true
   })

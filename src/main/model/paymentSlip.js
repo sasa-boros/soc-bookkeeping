@@ -23,28 +23,33 @@ const paymentSlipSchema = new Schema({
 })
 
 paymentSlipSchema.statics.reorderByDate = function (date) {
-  this.find({
+  return this.find({
     'date':
     {
       '$gte': new Date(date.getFullYear(), date.getMonth(), 1),
       '$lt': new Date(date.getFullYear(), date.getMonth() + 1, 1)
     }
-  }).sort({'date': 1}).exec().then(function (paymentSlips) {
+  }).sort({'date': 1}).exec().then(async function (paymentSlips) {
     for (let i = 0; i < paymentSlips.length; i++) {
       const paymentSlip = paymentSlips[i]
 
       paymentSlip.ordinal = i + 1
       paymentSlip.annualReportPage = date.getMonth() + 1
-      PaymentSlip.findOneAndUpdate({_id: paymentSlip._id}, paymentSlip, function (err) {
-        if (err) {
-          console.error(err.message)
-          throw err
-        }
-      })
+      await updatePaymentSlip(paymentSlip)
     }
+    return paymentSlips
   }).catch((err) => {
     console.error(err.message)
     throw err
+  })
+}
+
+async function updatePaymentSlip (paymentSlip) {
+  PaymentSlip.findOneAndUpdate({_id: paymentSlip._id}, paymentSlip, function (err) {
+    if (err) {
+      console.error(err.message)
+      throw err
+    }
   })
 }
 

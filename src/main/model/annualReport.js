@@ -1,5 +1,6 @@
 const PaymentSlip = require('./paymentSlip')
 const Receipt = require('./receipt')
+const Big = require('big.js')
 
 const INCOME_CODES = {
   'I/1': 'парохијал',
@@ -44,9 +45,9 @@ class AnnualReport {
     this.pages = []
     this.totalIncomePerCode = {}
     this.totalOutcomePerCode = {}
-    this.totalIncome = 0
-    this.totalOutcome = 0
-    this.total = 0
+    this.totalIncome = Big(0.0)
+    this.totalOutcome = Big(0.0)
+    this.total = Big(0.0)
   }
 }
 
@@ -58,11 +59,11 @@ class AnnualReportPage {
     this.receipts = []
     this.totalIncomePerCode = {}
     this.totalOutcomePerCode = {}
-    this.totalIncome = 0
-    this.totalOutcome = 0
-    this.transferFromPreviousMonth = 0
-    this.transferToNextMonth = 0
-    this.total = 0
+    this.totalIncome = Big(0.0)
+    this.totalOutcome = Big(0.0)
+    this.transferFromPreviousMonth = Big(0.0)
+    this.transferToNextMonth = Big(0.0)
+    this.total = Big(0.0)
   }
 }
 
@@ -93,14 +94,14 @@ async function getAnnualReport (year) {
         annualReportPage.paymentSlips.push(paymentSlip)
       }
       for (let code in annualReportPage.totalIncomePerCode) {
-        annualReportPage.totalIncome += annualReportPage.totalIncomePerCode[code]
+        annualReportPage.totalIncome = annualReportPage.totalIncome.plus(annualReportPage.totalIncomePerCode[code])
         if (annualReport.totalIncomePerCode[code]) {
-          annualReport.totalIncomePerCode[code] += annualReportPage.totalIncome
+          annualReport.totalIncomePerCode[code] = annualReport.totalIncomePerCode[code].plus(annualReportPage.totalIncome)
         } else {
           annualReport.totalIncomePerCode[code] = annualReportPage.totalIncome
         }
       }
-      annualReport.totalIncome += annualReportPage.totalIncome
+      annualReport.totalIncome = annualReport.totalIncome.plus(annualReportPage.totalIncome)
     }
     if (receipts) {
       for (let j = 0; j < receipts.length; j++) {
@@ -115,26 +116,26 @@ async function getAnnualReport (year) {
       }
 
       for (let code in annualReportPage.totalOutcomePerCode) {
-        annualReportPage.totalOutcome += annualReportPage.totalOutcomePerCode[code]
+        annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(annualReportPage.totalOutcomePerCode[code])
         if (annualReport.totalOutcomePerCode[code]) {
-          annualReport.totalOutcomePerCode[code] += annualReportPage.totalOutcome
+          annualReport.totalOutcomePerCode[code] = annualReport.totalOutcomePerCode[code].plus(annualReportPage.totalOutcome)
         } else {
           annualReport.totalOutcomePerCode[code] = annualReportPage.totalOutcome
         }
       }
 
-      annualReport.totalOutcome += annualReportPage.totalOutcome
+      annualReport.totalOutcome = annualReport.totalOutcome.plus(annualReportPage.totalOutcome)
     }
 
     if (i !== 0) {
       annualReportPage.transferFromPreviousMonth = annualReport.pages[i - 1].transferToNextMonth
     }
-    annualReportPage.total = annualReportPage.totalIncome + annualReportPage.transferFromPreviousMonth
-    annualReportPage.transferToNextMonth = annualReportPage.total - annualReport.totalOutcome
+    annualReportPage.total = annualReportPage.totalIncome.plus(annualReportPage.transferFromPreviousMonth)
+    annualReportPage.transferToNextMonth = annualReportPage.total.minus(annualReport.totalOutcome)
     annualReport.pages.push(annualReportPage)
   }
 
-  annualReport.total = annualReport.totalIncome - annualReport.totalOutcome
+  annualReport.total = annualReport.totalIncome.minus(annualReport.totalOutcome)
   return annualReport
 }
 
@@ -160,9 +161,9 @@ function findAndSortEntitiesPerMonth (year, monthOrdinal, sortingOrder, entity) 
 function calculateTotalsPerCode (part, pos, amount, totalPerCode) {
   const code = part + '/' + pos
   if (totalPerCode[code]) {
-    totalPerCode[code] += amount
+    totalPerCode[code] = totalPerCode[code].plus(Big(amount))
   } else {
-    totalPerCode[code] = amount
+    totalPerCode[code] = Big(amount)
   }
 }
 

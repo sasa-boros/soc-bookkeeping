@@ -25,28 +25,33 @@ const receiptSchema = new Schema({
 })
 
 receiptSchema.statics.reorderByDate = function (date) {
-  this.find({
+  return this.find({
     'date':
     {
       '$gte': new Date(date.getFullYear(), date.getMonth(), 1),
       '$lt': new Date(date.getFullYear(), date.getMonth() + 1, 1)
     }
-  }).sort({'date': 1}).exec().then(function (receipts) {
+  }).sort({'date': 1}).exec().then(async function (receipts) {
     for (let i = 0; i < receipts.length; i++) {
       const receipt = receipts[i]
 
       receipt.ordinal = i + 1
       receipt.annualReportPage = date.getMonth() + 1
-      Receipt.findOneAndUpdate({_id: receipt._id}, receipt, function (err) {
-        if (err) {
-          console.error(err.message)
-          throw err
-        }
-      })
+      await updateReceipt(receipt)
     }
+    return receipts
   }).catch((err) => {
     console.error(err.message)
     throw err
+  })
+}
+
+async function updateReceipt (receipt) {
+  Receipt.findOneAndUpdate({_id: receipt._id}, receipt, function (err) {
+    if (err) {
+      console.error(err.message)
+      throw err
+    }
   })
 }
 
