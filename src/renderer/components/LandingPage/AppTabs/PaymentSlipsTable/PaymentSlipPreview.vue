@@ -27,18 +27,16 @@
 
 
       
-        <b-row>
-          <b-col md="9">
-          </b-col>
-          <b-col md="3">
-            <b-button type="submit" variant="secondary" class="ignoreInPrint" id="paymentSlipSaveBtn">
-              <img src="~@/assets/save.png" class="btn-img ignoreInPrint">
-            </b-button>
-            <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint" id="paymentSlipPrintBtn">
-              <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
-            </b-button>      
-          </b-col>
-        </b-row>
+
+      </div>
+      <div id="printSaveBtnsDiv">
+        <b-button type="submit" variant="secondary" class="ignoreInPrint" id="paymentSlipSaveBtn">
+          <img src="~@/assets/save.png" class="btn-img ignoreInPrint">
+        </b-button>
+        <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint" id="paymentSlipPrintBtn">
+          <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
+        </b-button>
+      </div>
               
       <b-tooltip :disabled.sync="disableAmountTooltip" target="amountInputFormGroup">
         <div class="tooltipInnerText">
@@ -117,7 +115,6 @@
           {{phrases.save}}
         </div>
       </b-tooltip>
-      </div>
     </b-form>
   </b-container>
 </template>
@@ -572,6 +569,11 @@ h1{
   margin-top: 5px;
   position: absolute;
   right: 5px;
+}
+#printSaveBtnsDiv{
+  position: absolute;
+  bottom: 20px;
+  right: 50px;
 }
 </style>
 
