@@ -12,6 +12,7 @@
     "Cancel": "Поништи",
     "The value will be generated": "Вредност ће бити генерисана",
     "Enter a value": "Унесите вредност",
+    "Pick a date": "Изаберите датум",
 
     "Add a payment slip": "Додај нову уплатницу",
     "Delete payment slip": "Обриши уплатницу",

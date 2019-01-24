@@ -12,6 +12,7 @@
     "Cancel": "Cancel",
     "The value will be generated": "The value will be generated",
     "Enter a value": "Enter a value",
+    "Pick a date": "Pick a date",
 
     "Add a payment slip": "Add a payment slip",
     "Delete payment slip": "Delete payment slip",

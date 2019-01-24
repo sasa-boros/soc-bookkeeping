@@ -1,10 +1,16 @@
 <template>
   <b-card no-body id="appTabsCard">
     <b-tabs card>
-      <b-tab :title="phrases.receipts" active class="appTab">
+      <b-tab active class="appTab">
+        <template slot="title">
+          <img src="~@/assets/income-blue.png">  {{phrases.receipts}}
+        </template>
         <receipts-table></receipts-table>
       </b-tab>
-      <b-tab :title="phrases.paymentSlips" class="appTab">
+      <b-tab class="appTab">
+        <template slot="title">
+          <img src="~@/assets/outcome-blue.png">  {{phrases.paymentSlips}}
+        </template>
         <payment-slips-table></payment-slips-table>
       </b-tab>
       <b-tab :title="phrases.reports" class="appTab">

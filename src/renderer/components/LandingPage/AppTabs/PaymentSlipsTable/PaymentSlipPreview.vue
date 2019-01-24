@@ -10,7 +10,7 @@
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" id="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" id="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-select v-model="yearSelected" id="yearSelect" :options="yearOptions" size="sm" class="input-small"/> г.
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-group class="input-form-group" id="dateInputFormGroup"><b-form-input v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" class="input-small" id="dateInput" type="date"></b-form-input></b-form-group> г.
                                                                                                             Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>
                   Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>                                                        
                                                            
@@ -92,6 +92,12 @@
         </div>
       </b-tooltip>
 
+      <b-tooltip :disabled.sync="disableDateTooltip" target="dateInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.pickDate}}
+        </div>
+      </b-tooltip>
+
       <b-tooltip target="reportPageInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.willBeGenerated}}
@@ -145,7 +151,8 @@ export default {
           secondAmount: null,
           reportPage: null,
           ordinal: null,
-          municipalityPresident: null
+          municipalityPresident: null,
+          date: null
         }
       }
     },
@@ -164,7 +171,8 @@ export default {
         save: i18n.getTranslation('Save'),
         print: i18n.getTranslation('Print'),
         willBeGenerated: i18n.getTranslation('The value will be generated'),
-        enterValue: i18n.getTranslation('Enter a value')
+        enterValue: i18n.getTranslation('Enter a value'),
+        pickDate: i18n.getTranslation('Pick a date')
       }
     }
   },
@@ -214,7 +222,8 @@ export default {
           !this.form.received ||
           !this.form.firstAmount ||
           !this.form.secondAmount ||
-          !this.form.municipalityPresident) {
+          !this.form.municipalityPresident ||
+          !this.form.date) {
         return false
       }
       return true
@@ -235,7 +244,8 @@ export default {
         secondAmount: null,
         reportPage: null,
         ordinal: null,
-        municipalityPresident: null
+        municipalityPresident: null,
+        date: null
       }
       this.setAttemptSubmit(false)
     },
@@ -382,6 +392,17 @@ export default {
         }
       }
     },
+    disableDateTooltip: {
+      get: function () {
+        return !this.missingDate || !this.attemptSubmit
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'dateInputFormGroup')
+        }
+      }
+    },
     yearOptions: function () {
       return getLastNYears(10)
     },
@@ -426,6 +447,9 @@ export default {
     },
     missingMunicipalityPresident: function () {
       return !this.form || !this.form.municipalityPresident || this.form.municipalityPresident.toString().trim() === ''
+    },
+    missingDate: function () {
+      return !this.form || !this.form.date
     }
   }
 }
@@ -523,6 +547,11 @@ h1{
   width: 255px;
 }
 #yearSelect{
+  width: 95px;
+  padding-left:5px;
+  margin-bottom: 8px;
+}
+#dateInput{
   width: 95px;
   padding-left:5px;
   margin-bottom: 8px;
