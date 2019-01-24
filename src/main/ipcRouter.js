@@ -1,18 +1,18 @@
 const {ipcMain} = require('electron')
 const PaymentSlip = require('./model/paymentSlip')
 const Receipt = require('./model/receipt')
-const {INCOME_CODES, OUTCOME_CODES} = require('./model/annualReport')
+const annualReport = require('./model/annualReport')
 
 ipcMain.on('get-income-codes', function (event) {
   console.log('Initiated get income codes')
-  console.log(`Found: \n${INCOME_CODES}`)
-  event.returnValue = INCOME_CODES
+  console.log(`Found: \n${JSON.stringify(annualReport.INCOME_CODES, null, 2)}`)
+  event.returnValue = annualReport.INCOME_CODES
 })
 
 ipcMain.on('get-outcome-codes', function (event) {
   console.log('Initiated get outcome codes')
-  console.log(`Found: \n${OUTCOME_CODES}`)
-  event.returnValue = OUTCOME_CODES
+  console.log(`Found: \n${JSON.stringify(annualReport.OUTCOME_CODES, null, 2)}`)
+  event.returnValue = annualReport.OUTCOME_CODES
 })
 
 ipcMain.on('get-payment-slips', function (event, year) {
@@ -125,4 +125,11 @@ ipcMain.on('update-receipt', function (event, receipt) {
     console.log(`Successfully updated receipt: \n${updatedReceipt}`)
     event.returnValue = true
   })
+})
+
+ipcMain.on('get-annual-report', function (event, year) {
+  console.log('Initiated get annual report')
+  const generatedAnnualReport = annualReport.getAnnualReport(year)
+  console.log(`Found: \n${JSON.stringify(generatedAnnualReport, null, 2)}`)
+  event.returnValue = generatedAnnualReport
 })

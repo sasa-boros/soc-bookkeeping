@@ -245,7 +245,7 @@
         this.currentPage = 1
       },
       paymentSlipsProvider (ctx) {
-        return paymentSlipsController.getPaymentSlips(yearToFilter)
+        return paymentSlipsController.getPaymentSlips(this.yearToFilter)
       },
       resetSelectedItem () {
         this.selectedItem = {

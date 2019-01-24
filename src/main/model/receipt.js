@@ -32,7 +32,7 @@ receiptSchema.statics.reorderByDate = function (date) {
       '$lt': new Date(date.getFullYear(), date.getMonth() + 1, 1)
     }
   }).sort({'date': 1}).exec().then(function (receipts) {
-    for (let i; i < receipts.length; i++) {
+    for (let i = 0; i < receipts.length; i++) {
       const receipt = receipts[i]
 
       receipt.ordinal = i + 1

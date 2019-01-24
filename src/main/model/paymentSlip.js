@@ -30,7 +30,7 @@ paymentSlipSchema.statics.reorderByDate = function (date) {
       '$lt': new Date(date.getFullYear(), date.getMonth() + 1, 1)
     }
   }).sort({'date': 1}).exec().then(function (paymentSlips) {
-    for (let i; i < paymentSlips.length; i++) {
+    for (let i = 0; i < paymentSlips.length; i++) {
       const paymentSlip = paymentSlips[i]
 
       paymentSlip.ordinal = i + 1
