@@ -45,8 +45,8 @@ let defaultReceipt = {
 
 function loadDefaultPaymentSlip () {
   const defaultPaymentSlipFromDB = paymentSlipsController.getDefaultPaymentSlip()
-  if (defaultPaymentSlipFromDB.length > 0) {
-    defaultPaymentSlip = defaultPaymentSlipFromDB[0]
+  if (defaultPaymentSlipFromDB) {
+    defaultPaymentSlip = defaultPaymentSlipFromDB
     defaultPaymentSlip._id = null
     defaultPaymentSlip.created_at = null
     defaultPaymentSlip.updated_at = null
@@ -55,8 +55,8 @@ function loadDefaultPaymentSlip () {
 
 function loadDefaultReceipt () {
   const defaultReceiptFromDB = receiptsController.getDefaultReceipt()
-  if (defaultReceiptFromDB.length > 0) {
-    defaultReceipt = defaultReceiptFromDB[0]
+  if (defaultReceiptFromDB) {
+    defaultReceipt = defaultReceiptFromDB
     defaultReceipt._id = null
     defaultReceipt.created_at = null
     defaultReceipt.updated_at = null

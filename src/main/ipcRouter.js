@@ -140,7 +140,7 @@ ipcMain.on('get-default-payment-slip', function (event) {
   console.log('Initiated get default payment slip')
   DefaultPaymentSlip.find({}).exec().then(function (defaultPaymentSlips) {
     console.log(`Found: \n${JSON.stringify(defaultPaymentSlips, null, 2)}`)
-    if(defaultPaymentSlips && defaultPaymentSlips.length > 0) {
+    if (defaultPaymentSlips && defaultPaymentSlips.length > 0) {
       event.sender.send('get-default-payment-slip-reply', defaultPaymentSlips[0])
     } else {
       event.sender.send('get-default-payment-slip-reply', null)
@@ -186,7 +186,7 @@ ipcMain.on('get-default-receipt', function (event) {
   console.log('Initiated get default receipt')
   DefaultReceipt.find({}).exec().then(function (defaultReceipts) {
     console.log(`Found: \n${JSON.stringify(defaultReceipts, null, 2)}`)
-    if(defaultReceipts && defaultReceipts.length > 0) {
+    if (defaultReceipts && defaultReceipts.length > 0) {
       event.sender.send('get-default-receipt-reply', defaultReceipts[0])
     } else {
       event.sender.send('get-default-receipt-reply', null)

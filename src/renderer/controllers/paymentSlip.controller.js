@@ -29,17 +29,17 @@ ipcRenderer.on('get-payment-slips-reply', function (event, paymentSlips) {
 
 ipcRenderer.on('create-payment-slip-reply', function (event, createdPaymentSlip) {
   // year should be taken from select
-  ipcRenderer.send('get-payment-slips', year)
+  // ipcRenderer.send('get-payment-slips', year)
 })
 
 ipcRenderer.on('update-payment-slip-reply', function (event, updatedPaymentSlip) {
   // year should be taken from select
-  ipcRenderer.send('get-payment-slips', year)
+  // ipcRenderer.send('get-payment-slips', year)
 })
 
 ipcRenderer.on('delete-payment-slip-reply', function (event, deletedPaymentSlip) {
   // year should be taken from select
-  ipcRenderer.send('get-payment-slips', year)
+  // ipcRenderer.send('get-payment-slips', year)
 })
 
 ipcRenderer.on('get-default-payment-slip-reply', function (event, defaultPaymentSlip) {

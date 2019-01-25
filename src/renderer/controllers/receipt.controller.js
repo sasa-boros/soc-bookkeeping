@@ -30,17 +30,17 @@ ipcRenderer.on('get-receipts-reply', function (event, receipts) {
 
 ipcRenderer.on('create-receipt-reply', function (event, createdReceipt) {
   // year should be taken from select
-  ipcRenderer.send('get-receipts', year)
+  // ipcRenderer.send('get-receipts', year)
 })
 
 ipcRenderer.on('update-receipt-reply', function (event, updatedReceipt) {
   // year should be taken from select
-  ipcRenderer.send('get-receipts', year)
+  // ipcRenderer.send('get-receipts', year)
 })
 
 ipcRenderer.on('delete-receipt-reply', function (event, deletedReceipt) {
   // year should be taken from select
-  ipcRenderer.send('get-receipts', year)
+  // ipcRenderer.send('get-receipts', year)
 })
 
 ipcRenderer.on('get-default-receipt-reply', function (event, defaultReceipt) {

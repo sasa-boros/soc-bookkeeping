@@ -2,6 +2,7 @@
 
 const { app, BrowserWindow } = require('electron')
 const mongoose = require('mongoose')
+const path = require('path')
 
 // eslint-disable-next-line no-unused-vars
 const ipcRouter = require('./ipcRouter')
