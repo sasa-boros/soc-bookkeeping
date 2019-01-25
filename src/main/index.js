@@ -3,11 +3,9 @@
 const { app, BrowserWindow } = require('electron')
 const mongoose = require('mongoose')
 const path = require('path')
-
+const config = require('../config/config')
 // eslint-disable-next-line no-unused-vars
 const ipcRouter = require('./ipcRouter')
-
-const config = require('../config/config')
 
 mongoose.connect(config.dbUrl, {user: config.dbUsername, pass: config.dbPassword})
 

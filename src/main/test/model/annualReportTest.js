@@ -1,17 +1,8 @@
 const annualReport = require('../../model/annualReport')
-const { ipcRenderer } = require('electron')
-
 const assert = require('assert')
-const mongoose = require('mongoose')
-
-const yaml = require('js-yaml')
-const fs = require('fs')
-const path = require('path')
 
 describe('Annual report test', function () {
     before(async function () {
-        const properties = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '../../resources/soc_bookkeeping_properties.yml'), 'utf8'))
-        await mongoose.connect(properties.dbUrl + "-test")
 
         /*
          {
@@ -31,6 +22,13 @@ describe('Annual report test', function () {
       "town": "sfa",
     }
     */
+
+   annualReport.findAndSortEntitiesPerMonth = jest.fn(function(year, monthOrdinal, sortingOrder, entity) {
+
+
+   })
+
+
     })
 
     it('Should return valid annual report', async function () {
