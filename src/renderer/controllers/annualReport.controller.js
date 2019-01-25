@@ -1,15 +1,30 @@
 const { ipcRenderer } = require('electron')
 
 function getAnnualReport (year) {
-  return ipcRenderer.sendSync('get-annual-report', year)
+  return new Promise(function (resolve) {
+    ipcRenderer.send('get-annual-report', year)
+    ipcRenderer.on('get-annual-report-reply', function (event, data) {
+      resolve(data)
+    })
+  })
 }
 
 function getIncomeCodes () {
-  return ipcRenderer.sendSync('get-income-codes')
+  return new Promise(function (resolve) {
+    ipcRenderer.send('get-income-codes')
+    ipcRenderer.on('get-income-codes-reply', function (event, data) {
+      resolve(data)
+    })
+  })
 }
 
 function getOutcomeCodes () {
-  return ipcRenderer.sendSync('get-outcome-codes')
+  return new Promise(function (resolve) {
+    ipcRenderer.send('get-outcome-codes')
+    ipcRenderer.on('get-outcome-codes-reply', function (event, data) {
+      resolve(data)
+    })
+  })
 }
 
 module.exports = {
