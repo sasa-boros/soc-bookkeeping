@@ -14,7 +14,7 @@
 
     <!-- Default slip modal -->
     <b-modal hide-footer hide-header size="a5" id="modalDefaultSlip">
-      <payment-slip-preview :item='defaultPaymentSlipItem'></payment-slip-preview>
+      <payment-slip-preview :item='defaultPaymentSlipItem' parentModal="modalDefaultSlip" defaultPaymentSlip></payment-slip-preview>
     </b-modal>
   </b-container>
 </template>
@@ -24,57 +24,22 @@
   import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
 
   const i18n = require('../../../translations/i18n')
-  // const paymentSlipsController = require('../../../controllers/paymentSlip.controller')
-  // const receiptsController = require('../../../controllers/receipt.controller')
+  const defaultValues = require('../../../utils/defaultValues')
 
   export default {
     data () {
       return {
-        defaultPaymentSlipItem: {
-          amount: null,
-          reason: null,
-          town: null,
-          amountText: null,
-          payed: null,
-          received: null,
-          firstPart: '',
-          firstPos: '',
-          firstAmount: null,
-          secondPart: '',
-          secondPos: '',
-          secondAmount: null,
-          municipalityPresident: null,
-          date: null,
-          created_at: null,
-          updated_at: null,
-          ordinal: null,
-          annualReportPage: null
-        }, // paymentSlipsController.
-        defaultReceiptItem: {
-          amount: null,
-          reason: null,
-          town: null,
-          amountText: null,
-          payed: null,
-          received: null,
-          firstPart: '',
-          firstPos: '',
-          firstAmount: null,
-          secondPart: '',
-          secondPos: '',
-          secondAmount: null,
-          municipalityPresident: null,
-          date: null,
-          created_at: null,
-          updated_at: null,
-          ordinal: null,
-          annualReportPage: null
-        }, // receiptsController.
+        defaultPaymentSlipItem: null,
+        defaultReceiptItem: null,
         phrases: {
           setDefaultPaymentSlip: i18n.getTranslation('Set default values for payment slips'),
           setDefaultsReceipts: i18n.getTranslation('Set default values for receipts')
         }
       }
+    },
+    created () {
+      this.defaultPaymentSlipItem = JSON.parse(JSON.stringify(defaultValues.getDefaultPaymentSlip()))
+      this.defaultReceiptItem = JSON.parse(JSON.stringify(defaultValues.getDefaultReceipt()))
     },
     methods: {
       openDefaultReceiptModal: function () {

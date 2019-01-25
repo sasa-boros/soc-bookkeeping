@@ -32,7 +32,7 @@
 
     <div class="tableDiv">
     <!-- Main table element -->
-    <b-table show-empty hover small id="payment-slips-table"
+    <b-table show-empty hover small id="payment-slips-table" class="mt-3"
              stacked="md"
              :items="paymentSlipsProvider"
              v-model="itemsShownInTable"
@@ -84,7 +84,7 @@
 
     <!-- Create slip modal -->
     <b-modal hide-footer hide-header size="a5" id="modalCreateSlip" @hide="resetModal">
-      <payment-slip-preview :item='selectedItem' :newlyOpened.sync='modalNewlyOpened'></payment-slip-preview>
+      <payment-slip-preview :item='selectedItem' :newlyOpened.sync='modalNewlyOpened' parentModal="modalCreateSlip"></payment-slip-preview>
     </b-modal>
 
   </b-container>
@@ -94,7 +94,7 @@
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
   const { dialog } = require('electron').remote
 
-  const { getLastNYears } = require('../../../utils')
+  const { getLastNYears } = require('../../../utils/utils')
   const paymentSlipsController = require('../../../controllers/paymentSlip.controller')
   const i18n = require('../../../translations/i18n')
 
@@ -136,26 +136,7 @@
         checkAll: false,
         yearToFilter: (new Date()).getFullYear(),
         modalNewlyOpened: true,
-        selectedItem: {
-          amount: null,
-          reason: null,
-          town: null,
-          amountText: null,
-          payed: null,
-          received: null,
-          firstPart: '',
-          firstPos: '',
-          firstAmount: null,
-          secondPart: '',
-          secondPos: '',
-          secondAmount: null,
-          municipalityPresident: null,
-          date: null,
-          created_at: null,
-          updated_at: null,
-          ordinal: null,
-          annualReportPage: null
-        }
+        selectedItem: null
       }
     },
     computed: {
@@ -257,26 +238,7 @@
         return paymentSlipsController.getPaymentSlips(this.yearToFilter)
       },
       resetSelectedItem () {
-        this.selectedItem = {
-          amount: null,
-          reason: null,
-          town: null,
-          amountText: null,
-          payed: null,
-          received: null,
-          firstPart: '',
-          firstPos: '',
-          firstAmount: null,
-          secondPart: '',
-          secondPos: '',
-          secondAmount: null,
-          municipalityPresident: null,
-          date: null,
-          created_at: null,
-          updated_at: null,
-          ordinal: null,
-          annualReportPage: null
-        }
+        this.selectedItem = null
       }
     },
     filters: {

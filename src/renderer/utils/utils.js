@@ -1,4 +1,4 @@
-const annualReportController = require('./controllers/annualReport.controller')
+const annualReportController = require('../controllers/annualReport.controller')
 
 function numberToSerbianDinars (n) {
   if (!n || isNaN(n) || n.toString().trim() === '') {

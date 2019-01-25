@@ -13,7 +13,7 @@
 
 <script>
   const annualReportController = require('../../../controllers/annualReport.controller')
-  const { getLastNYears } = require('../../../utils')
+  const { getLastNYears } = require('../../../utils/utils')
 
   export default {
     data () {

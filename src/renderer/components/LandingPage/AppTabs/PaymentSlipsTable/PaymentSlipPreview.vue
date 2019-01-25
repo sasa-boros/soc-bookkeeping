@@ -98,13 +98,13 @@
         </div>
       </b-tooltip>
 
-      <b-tooltip target="annualReportPageInputFormGroup">
+      <b-tooltip :disabled.sync="disableAnnualReportPageTooltip" target="annualReportPageInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.willBeGenerated}}
         </div>
       </b-tooltip>
 
-      <b-tooltip target="ordinalInputFormGroup">
+      <b-tooltip :disabled.sync="disableOrdinalTooltip" target="ordinalInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.willBeGenerated}}
         </div>
@@ -128,7 +128,8 @@
 <script>
 
 const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
-const {numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations} = require('../../../../utils')
+const { numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations } = require('../../../../utils/utils')
+const defaultValues = require('../../../../utils/defaultValues')
 const i18n = require('../../../../translations/i18n')
 
 export default {
@@ -161,12 +162,22 @@ export default {
     newlyOpened: {
       type: Boolean,
       default: true
+    },
+    defaultPaymentSlip: {
+      type: Boolean,
+      default: false
+    },
+    parentModal: {
+      type: String,
+      default: null
     }
   },
   data () {
     return {
-      form: this.item,
+      defaultForm: null,
+      form: null,
       attemptSubmit: !this.newlyOpened,
+      fresh: this.newlyOpened,
       show: true,
       yearSelected: null,
       phrases: {
@@ -178,13 +189,28 @@ export default {
       }
     }
   },
+  created () {
+    this.defaultForm = defaultValues.getDefaultPaymentSlip()
+    this.form = JSON.parse(JSON.stringify(this.defaultForm))
+  },
   watch: {
     item: function () {
       /* Deep clone the item using JSON parsing */
-      this.form = JSON.parse(JSON.stringify(this.item))
+      if (this.item) {
+        this.form = JSON.parse(JSON.stringify(this.item))
+      } else {
+        this.form = JSON.parse(JSON.stringify(this.defaultForm))
+      }
     },
     newlyOpened: function () {
-      this.attemptSubmit = !this.newlyOpened
+      /* If the form is reseted from the parent component */
+      if (this.newlyOpened) {
+        this.attemptSubmit = false
+        this.fresh = true
+        this.resetForm()
+        /* Needs to be stale, so that any reset from the parent will be detected */
+        this.$emit('update:newlyOpened', false)
+      }
     }
   },
   methods: {
@@ -194,19 +220,29 @@ export default {
       this.$emit('update:newlyOpened', !val)
     },
     onSubmit (evt) {
-      evt.preventDefault()
-      this.setAttemptSubmit(true)
-      if (this.checkForm()) {
-        if (this.form._id) {
-          /* Update the item */
-          paymentSlipsController.updatePaymentSlip(this.form)
-        } else {
-          /* Create new item */
-          paymentSlipsController.createPaymentSlip(this.form)
+      if (this.defaultPaymentSlip) {
+        /* Set the default values for payment slips */
+        defaultValues.setDefaultPaymentSlip(this.form)
+        if (this.parentModal) {
+          this.$root.$emit('bv::hide::modal', this.parentModal)
         }
-        this.$root.$emit('bv::refresh::table', 'payment-slips-table')
-        this.resetForm()
-        this.$root.$emit('bv::hide::modal', 'modalCreateSlip')
+      } else {
+        evt.preventDefault()
+        this.setAttemptSubmit(true)
+        if (this.checkForm()) {
+          if (this.form._id) {
+            /* Update the item */
+            paymentSlipsController.updatePaymentSlip(this.form)
+          } else {
+            /* Create new item */
+            paymentSlipsController.createPaymentSlip(this.form)
+          }
+          this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+          this.resetForm()
+          if (this.parentModal) {
+            this.$root.$emit('bv::hide::modal', this.parentModal)
+          }
+        }
       }
     },
     onReset (evt) {
@@ -231,26 +267,7 @@ export default {
       return true
     },
     resetForm () {
-      this.form = {
-        amount: null,
-        reason: null,
-        town: null,
-        amountText: null,
-        payed: null,
-        received: null,
-        firstPart: '',
-        firstPos: '',
-        firstAmount: null,
-        secondPart: '',
-        secondPos: '',
-        secondAmount: null,
-        annualReportPage: null,
-        ordinal: null,
-        municipalityPresident: null,
-        date: null,
-        created_at: null,
-        updated_at: null
-      }
+      this.form = JSON.parse(JSON.stringify(this.defaultForm))
       this.setAttemptSubmit(false)
     },
     onFirstPartChange () {
@@ -275,8 +292,10 @@ export default {
       window.print()
     },
     closeModal () {
-      this.$root.$emit('bv::hide::modal', 'modalCreateSlip')
-      this.setAttemptSubmit(false)
+      if (this.parentModal) {
+        this.$root.$emit('bv::hide::modal', this.parentModal)
+      }
+      this.resetForm()
     }
   },
   computed: {
@@ -407,6 +426,28 @@ export default {
         }
       }
     },
+    disableAnnualReportPageTooltip: {
+      get: function () {
+        return !this.missingAnnualReportPage
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'annualReportPageInputFormGroup')
+        }
+      }
+    },
+    disableOrdinalTooltip: {
+      get: function () {
+        return !this.missingOrdinal
+      },
+      set: function (newValue) {
+        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+        if (newValue) {
+          this.$root.$emit('bv::hide::tooltip', 'ordinalInputFormGroup')
+        }
+      }
+    },
     yearOptions: function () {
       return getLastNYears(10)
     },
@@ -454,6 +495,12 @@ export default {
     },
     missingDate: function () {
       return !this.form || !this.form.date
+    },
+    missingAnnualReportPage: function () {
+      return !this.form || !this.form.annualReportPage
+    },
+    missingOrdinal: function () {
+      return !this.form || !this.form.ordinal
     }
   }
 }

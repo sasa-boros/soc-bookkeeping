@@ -37,5 +37,6 @@
     "There are no receipts that pass the filters": "Нема признаница које задовољавају претрагу",
 
     "Set default values for payment slips": "Подеси подразумеване вредности за уплатнице",
-    "Set default values for receipts": "Подеси подразумеване вредности за признанице"
+    "Set default values for receipts": "Подеси подразумеване вредности за признанице",
+    "Default value can not be set": "Подразумевана вредност се не може задати"
 }

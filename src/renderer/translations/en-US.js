@@ -37,5 +37,6 @@
     "There are no payment slips that pass the filters": "There are no receipts that pass the filters",
 
     "Set default values for payment slips": "Set default values for payment slips",
-    "Set default values for receipts": "Set default values for receipts"
+    "Set default values for receipts": "Set default values for receipts",
+    "Default value can not be set": "Default value can not be set"
 }

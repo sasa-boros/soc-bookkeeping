@@ -44,7 +44,7 @@
 <script>
 
 const receiptsController = require('../../../../controllers/receipt.controller')
-const {numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations} = require('../../../../utils')
+const {numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations} = require('../../../../utils/utils')
 const i18n = require('../../../../translations/i18n')
 
 export default {
