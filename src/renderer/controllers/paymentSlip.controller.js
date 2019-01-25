@@ -1,29 +1,58 @@
 const {ipcRenderer} = require('electron')
 
 function getPaymentSlips (year) {
-  const paymentSlips = ipcRenderer.sendSync('get-payment-slips', year)
-  return paymentSlips
+  ipcRenderer.send('get-payment-slips', year)
 }
 
 function createPaymentSlip (paymentSlip) {
-  ipcRenderer.sendSync('create-payment-slip', paymentSlip)
+  ipcRenderer.send('create-payment-slip', paymentSlip)
 }
 function updatePaymentSlip (paymentSlip) {
-  ipcRenderer.sendSync('update-payment-slip', paymentSlip)
+  ipcRenderer.send('update-payment-slip', paymentSlip)
 }
 
 function deletePaymentSlip (paymentSlipId) {
-  ipcRenderer.sendSync('delete-payment-slip', paymentSlipId)
+  ipcRenderer.send('delete-payment-slip', paymentSlipId)
 }
 
 function getDefaultPaymentSlip () {
-  const defaultPaymentSlip = ipcRenderer.sendSync('get-default-payment-slip')
-  return defaultPaymentSlip
+  ipcRenderer.send('get-default-payment-slip')
 }
 
 function createDefaultPaymentSlip (defaultPaymentSlip) {
-  ipcRenderer.sendSync('create-default-payment-slip', defaultPaymentSlip)
+  ipcRenderer.send('create-default-payment-slip', defaultPaymentSlip)
 }
+
+ipcRenderer.on('get-payment-slips-reply', function (event, paymentSlips) {
+  // update table on frontend
+})
+
+ipcRenderer.on('create-payment-slip-reply', function (event, createdPaymentSlip) {
+  // year should be taken from select
+  ipcRenderer.send('get-payment-slips', year)
+})
+
+ipcRenderer.on('update-payment-slip-reply', function (event, updatedPaymentSlip) {
+  // year should be taken from select
+  ipcRenderer.send('get-payment-slips', year)
+})
+
+ipcRenderer.on('delete-payment-slip-reply', function (event, deletedPaymentSlip) {
+  // year should be taken from select
+  ipcRenderer.send('get-payment-slips', year)
+})
+
+ipcRenderer.on('get-default-payment-slip-reply', function (event, defaultPaymentSlip) {
+  // update default on frontend
+})
+
+ipcRenderer.on('create-default-payment-slip-reply', function (event, createdDefaultPaymentSlip) {
+  ipcRenderer.send('get-default-payment-slip')
+})
+
+ipcRenderer.on('delete-default-payment-slip-reply', function (event) {
+  // do whatever
+})
 
 module.exports = {
   getPaymentSlips: getPaymentSlips,

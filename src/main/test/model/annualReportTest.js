@@ -31,9 +31,6 @@ describe('Annual report test', function () {
       "town": "sfa",
     }
     */
-
-        ipcRenderer.sendSync('create-payment-slip', paymentSlip)
-        ipcRenderer.sendSync('create-receipt', receipt)
     })
 
     it('Should return valid annual report', async function () {

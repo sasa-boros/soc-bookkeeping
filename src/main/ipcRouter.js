@@ -6,13 +6,13 @@ const annualReport = require('./model/annualReport')
 ipcMain.on('get-income-codes', function (event) {
   console.log('Initiated get income codes')
   console.log(`Found: \n${JSON.stringify(annualReport.INCOME_CODES, null, 2)}`)
-  event.returnValue = annualReport.INCOME_CODES
+  event.sender.send('get-income-codes-reply', annualReport.INCOME_CODES)
 })
 
 ipcMain.on('get-outcome-codes', function (event) {
   console.log('Initiated get outcome codes')
   console.log(`Found: \n${JSON.stringify(annualReport.OUTCOME_CODES, null, 2)}`)
-  event.returnValue = annualReport.OUTCOME_CODES
+  event.sender.send('get-outcome-codes-reply', annualReport.OUTCOME_CODES)
 })
 
 ipcMain.on('get-payment-slips', function (event, year) {
@@ -25,10 +25,10 @@ ipcMain.on('get-payment-slips', function (event, year) {
     }
   }).exec().then(function (paymentSlips) {
     console.log(`Found: \n${JSON.stringify(paymentSlips, null, 2)}`)
-    event.returnValue = paymentSlips
+    event.sender.send('get-payment-slips-reply', paymentSlips)
   }).catch((err) => {
     console.error(err.message)
-    throw err
+    event.sender.send('error', err)
   })
 })
 
@@ -38,11 +38,11 @@ ipcMain.on('create-payment-slip', function (event, paymentSlip) {
   newPaymentSlip.save(async function (err) {
     if (err) {
       console.error(err.message)
-      throw err
+      event.sender.send('error', err)
     }
     await PaymentSlip.reorderByDate(newPaymentSlip.date)
     console.log(`Successfully created payment slip: \n${newPaymentSlip}`)
-    event.returnValue = true
+    event.sender.send('create-payment-slip-reply', newPaymentSlip)
   })
 })
 
@@ -51,11 +51,11 @@ ipcMain.on('delete-payment-slip', function (event, paymentSlipId) {
   PaymentSlip.findOneAndRemove({_id: paymentSlipId}, async function (err, deletedPaymentSlip) {
     if (err) {
       console.error(err.message)
-      throw err
+      event.sender.send('error', err)
     }
     await PaymentSlip.reorderByDate(deletedPaymentSlip.date)
     console.log('Successfully deleted payment slip')
-    event.returnValue = true
+    event.sender.send('delete-payment-slip-reply', deletedPaymentSlip)
   })
 })
 
@@ -64,11 +64,11 @@ ipcMain.on('update-payment-slip', function (event, paymentSlip) {
   PaymentSlip.findOneAndUpdate({_id: paymentSlip._id}, paymentSlip, async function (err, updatedPaymentSlip) {
     if (err) {
       console.error(err.message)
-      throw err
+      event.sender.send('error', err)
     }
     await PaymentSlip.reorderByDate(updatedPaymentSlip.date)
     console.log(`Successfully updated payment slip: \n${updatedPaymentSlip}`)
-    event.returnValue = true
+    event.sender.send('update-payment-slip-reply', updatedPaymentSlip)
   })
 })
 
@@ -82,10 +82,10 @@ ipcMain.on('get-receipts', function (event, year) {
     }
   }).exec().then(function (receipts) {
     console.log(`Found: \n${JSON.stringify(receipts, null, 2)}`)
-    event.returnValue = receipts
+    event.sender.send('get-receipts-reply', receipts)
   }).catch((err) => {
     console.error(err.message)
-    throw err
+    event.sender.send('error', err)
   })
 })
 
@@ -95,11 +95,11 @@ ipcMain.on('create-receipt', function (event, receipt) {
   newReceipt.save(async function (err) {
     if (err) {
       console.error(err.message)
-      throw err
+      event.sender.send('error', err)
     }
     await Receipt.reorderByDate(newReceipt.date)
     console.log(`Successfully created receipt: \n${newReceipt}`)
-    event.returnValue = true
+    event.sender.send('create-receipt-reply', newReceipt)
   })
 })
 
@@ -108,11 +108,11 @@ ipcMain.on('delete-receipt', function (event, receiptId) {
   Receipt.findOneAndRemove({_id: receiptId}, async function (err, deletedReceipt) {
     if (err) {
       console.error(err.message)
-      throw err
+      event.sender.send('error', err)
     }
     await Receipt.reorderByDate(deletedReceipt.date)
     console.log('Successfully deleted receipt')
-    event.returnValue = true
+    event.sender.send('delete-receipt-reply', deletedReceipt)
   })
 })
 
@@ -121,11 +121,11 @@ ipcMain.on('update-receipt', function (event, receipt) {
   Receipt.findOneAndUpdate({_id: receipt._id}, receipt, async function (err, updatedReceipt) {
     if (err) {
       console.error(err.message)
-      throw err
+      event.sender.send('error', err)
     }
     await Receipt.reorderByDate(updatedReceipt.date)
     console.log(`Successfully updated receipt: \n${updatedReceipt}`)
-    event.returnValue = true
+    event.sender.send('update-receipt-reply', updatedReceipt)
   })
 })
 
@@ -133,17 +133,21 @@ ipcMain.on('get-annual-report', async function (event, year) {
   console.log('Initiated get annual report')
   const generatedAnnualReport = await annualReport.getAnnualReport(year)
   console.log(`Found: \n${JSON.stringify(generatedAnnualReport, null, 2)}`)
-  event.returnValue = generatedAnnualReport
+  event.sender.send('get-annual-report-reply', generatedAnnualReport)
 })
 
 ipcMain.on('get-default-payment-slip', function (event) {
   console.log('Initiated get default payment slip')
-  DefaultPaymentSlip.find({}).exec().then(function (defaultPaymentSlip) {
-    console.log(`Found: \n${JSON.stringify(defaultPaymentSlip, null, 2)}`)
-    event.returnValue = defaultPaymentSlip
+  DefaultPaymentSlip.find({}).exec().then(function (defaultPaymentSlips) {
+    console.log(`Found: \n${JSON.stringify(defaultPaymentSlips, null, 2)}`)
+    if(defaultPaymentSlips && defaultPaymentSlips.length > 0) {
+      event.sender.send('get-default-payment-slip-reply', defaultPaymentSlips[0])
+    } else {
+      event.sender.send('get-default-payment-slip-reply', null)
+    }
   }).catch((err) => {
     console.error(err.message)
-    throw err
+    event.sender.send('error', err)
   })
 })
 
@@ -152,28 +156,44 @@ ipcMain.on('create-default-payment-slip', function (event, defaultPaymentSlip) {
   DefaultPaymentSlip.remove({}, function (err) {
     if (err) {
       console.error(err.message)
-      throw err
+      event.sender.send('error', err)
     }
     var newDefaultPaymentSlip = DefaultPaymentSlip(defaultPaymentSlip)
     newDefaultPaymentSlip.save(function (err) {
       if (err) {
         console.error(err.message)
-        throw err
+        event.sender.send('error', err)
       }
       console.log(`Successfully created default payment slip: \n${newDefaultPaymentSlip}`)
-      event.returnValue = true
+      event.sender.send('create-default-payment-slip-reply', newDefaultPaymentSlip)
     })
+  })
+})
+
+ipcMain.on('delete-default-payment-slip', function (event) {
+  console.log('Initiated delete default payment slip')
+  DefaultPaymentSlip.remove({}, function (err) {
+    if (err) {
+      console.error(err.message)
+      event.sender.send('error', err)
+    }
+    console.log('Successfully deleted default payment slip')
+    event.sender.send('delete-default-payment-slip-reply')
   })
 })
 
 ipcMain.on('get-default-receipt', function (event) {
   console.log('Initiated get default receipt')
-  DefaultReceipt.find({}).exec().then(function (defaultReceipt) {
-    console.log(`Found: \n${JSON.stringify(defaultReceipt, null, 2)}`)
-    event.returnValue = defaultReceipt
+  DefaultReceipt.find({}).exec().then(function (defaultReceipts) {
+    console.log(`Found: \n${JSON.stringify(defaultReceipts, null, 2)}`)
+    if(defaultReceipts && defaultReceipts.length > 0) {
+      event.sender.send('get-default-receipt-reply', defaultReceipts[0])
+    } else {
+      event.sender.send('get-default-receipt-reply', null)
+    }
   }).catch((err) => {
     console.error(err.message)
-    throw err
+    event.sender.send('error', err)
   })
 })
 
@@ -182,16 +202,28 @@ ipcMain.on('create-default-receipt', function (event, defaultReceipt) {
   DefaultReceipt.remove({}, function (err) {
     if (err) {
       console.error(err.message)
-      throw err
+      event.sender.send('error', err)
     }
     var newDefaultReceipt = DefaultReceipt(defaultReceipt)
     newDefaultReceipt.save(function (err) {
       if (err) {
         console.error(err.message)
-        throw err
+        event.sender.send('error', err)
       }
       console.log(`Successfully created default receipt: \n${newDefaultReceipt}`)
-      event.returnValue = true
+      event.sender.send('create-default-receipt-reply', newDefaultReceipt)
     })
+  })
+})
+
+ipcMain.on('delete-default-receipt', function (event) {
+  console.log('Initiated delete default receipt')
+  DefaultReceipt.remove({}, function (err) {
+    if (err) {
+      console.error(err.message)
+      event.sender.send('error', err)
+    }
+    console.log('Successfully deleted default receipt')
+    event.sender.send('delete-default-receipt-reply')
   })
 })

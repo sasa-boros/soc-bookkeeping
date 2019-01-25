@@ -12,8 +12,9 @@ const path = require('path')
 // Get document, or throw exception on error
 
 const properties = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '/resources/soc_bookkeeping_properties.yml'), 'utf8'))
+process.env.PROPERTIES = properties
 
-mongoose.connect(properties.dbUrl)
+mongoose.connect(process.env.PROPERTIES.dbUrl, {user: process.env.PROPERTIES.dbUsername, pass: process.env.PROPERTIES.dbPassword})
 
 /**
  * Set `__static` path to static files in production

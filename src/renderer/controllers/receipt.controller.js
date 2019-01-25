@@ -1,30 +1,59 @@
 const { ipcRenderer } = require('electron')
 
 function getReceipts (year) {
-  const receipts = ipcRenderer.sendSync('get-receipts', year)
-  return receipts
+  ipcRenderer.send('get-receipts', year)
 }
 
 function createReceipt (receipt) {
-  ipcRenderer.sendSync('create-receipt', receipt)
+  ipcRenderer.send('create-receipt', receipt)
 }
 
 function updateReceipt (receipt) {
-  ipcRenderer.sendSync('update-receipt', receipt)
+  ipcRenderer.send('update-receipt', receipt)
 }
 
 function deleteReceipt (receiptId) {
-  ipcRenderer.sendSync('delete-receipt', receiptId)
+  ipcRenderer.send('delete-receipt', receiptId)
 }
 
 function getDefaultReceipt () {
-  const defaultReceipt = ipcRenderer.sendSync('get-default-receipt')
-  return defaultReceipt
+  ipcRenderer.send('get-default-receipt')
 }
 
 function createDefaultReceipt (defaultReceipt) {
-  ipcRenderer.sendSync('create-default-receipt', defaultReceipt)
+  ipcRenderer.send('create-default-receipt', defaultReceipt)
 }
+
+ipcRenderer.on('get-receipts-reply', function (event, receipts) {
+  // update table on frontend
+})
+
+ipcRenderer.on('create-receipt-reply', function (event, createdReceipt) {
+  // year should be taken from select
+  ipcRenderer.send('get-receipts', year)
+})
+
+ipcRenderer.on('update-receipt-reply', function (event, updatedReceipt) {
+  // year should be taken from select
+  ipcRenderer.send('get-receipts', year)
+})
+
+ipcRenderer.on('delete-receipt-reply', function (event, deletedReceipt) {
+  // year should be taken from select
+  ipcRenderer.send('get-receipts', year)
+})
+
+ipcRenderer.on('get-default-receipt-reply', function (event, defaultReceipt) {
+  // update default on frontend
+})
+
+ipcRenderer.on('create-default-receipt-reply', function (event, createdDefaultReceipt) {
+  ipcRenderer.send('get-default-receipt')
+})
+
+ipcRenderer.on('delete-default-receipt-reply', function (event) {
+  // do whatever
+})
 
 module.exports = {
   getReceipts: getReceipts,
