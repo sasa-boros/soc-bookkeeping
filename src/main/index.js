@@ -2,19 +2,13 @@
 
 const { app, BrowserWindow } = require('electron')
 const mongoose = require('mongoose')
+
 // eslint-disable-next-line no-unused-vars
 const ipcRouter = require('./ipcRouter')
 
-const yaml = require('js-yaml')
-const fs = require('fs')
-const path = require('path')
+const config = require('../config/config')
 
-// Get document, or throw exception on error
-
-const properties = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '/resources/soc_bookkeeping_properties.yml'), 'utf8'))
-process.env.PROPERTIES = properties
-
-mongoose.connect(process.env.PROPERTIES.dbUrl, {user: process.env.PROPERTIES.dbUsername, pass: process.env.PROPERTIES.dbPassword})
+mongoose.connect(config.dbUrl, {user: config.dbUsername, pass: config.dbPassword})
 
 /**
  * Set `__static` path to static files in production

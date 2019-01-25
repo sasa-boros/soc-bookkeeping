@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-var encrypt = require('mongoose-encryption')
+const encrypt = require('mongoose-encryption')
+const config = require('../../config/config')
 
 const Schema = mongoose.Schema
 
@@ -65,7 +66,7 @@ receiptSchema.pre('save', function (next) {
   next()
 })
 
-userSchema.plugin(encrypt, { secret: process.env.PROPERTIES.encryptionSecret, excludeFromEncryption: ['created_at', 'updated_at']})
+receiptSchema.plugin(encrypt, { secret: config.encryptionSecret, excludeFromEncryption: ['created_at', 'updated_at'] })
 
 receiptSchema.pre('findOneAndUpdate', function (next) {
   const currentDate = new Date()
