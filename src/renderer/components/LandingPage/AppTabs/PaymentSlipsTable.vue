@@ -192,12 +192,16 @@
         }
         dialog.showMessageBox(null, options, (response) => {
           if (response === 1) {
-            paymentSlipsController.deletePaymentSlip(item._id)
-            this.$root.$emit('bv::refresh::table', 'payment-slips-table')
-            const itemCheckedIndex = this.checkedItems.indexOf(item)
-            if (itemCheckedIndex !== -1) {
-              this.checkedItems.splice(itemCheckedIndex, 1)
-            }
+            const self = this
+            paymentSlipsController.deletePaymentSlip(item._id).then((res) => {
+              if (!res.err) {
+                this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                const itemCheckedIndex = self.checkedItems.indexOf(item)
+                if (itemCheckedIndex !== -1) {
+                  self.checkedItems.splice(itemCheckedIndex, 1)
+                }
+              }
+            })
           }
         })
       },
@@ -213,11 +217,20 @@
         }
         dialog.showMessageBox(null, options, (response) => {
           if (response === 1) {
+            const self = this
             this.checkedItems.forEach(function (item) {
-              paymentSlipsController.deletePaymentSlip(item._id)
+              paymentSlipsController.deletePaymentSlip(item._id).then((res) => {
+                if (!res.err) {
+                  this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                  const itemCheckedIndex = self.checkedItems.indexOf(item)
+                  if (itemCheckedIndex !== -1) {
+                    self.checkedItems.splice(itemCheckedIndex, 1)
+                  }
+                }
+              })
             })
-            this.$root.$emit('bv::refresh::table', 'payment-slips-table')
-            this.checkedItems = []
+            // this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+            // this.checkedItems = []
           }
         })
       },
@@ -235,7 +248,13 @@
         this.currentPage = 1
       },
       paymentSlipsProvider (ctx) {
-        return paymentSlipsController.getPaymentSlips(this.yearToFilter)
+        return paymentSlipsController.getPaymentSlips(this.yearToFilter).then((res) => {
+          if (!res.err) {
+            const items = res.data.map(item => item._doc)
+            return (items || [])
+          }
+          return null
+        })
       },
       resetSelectedItem () {
         this.selectedItem = null

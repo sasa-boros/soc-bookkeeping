@@ -1,5 +1,3 @@
-const annualReportController = require('../controllers/annualReport.controller')
-
 function numberToSerbianDinars (n) {
   if (!n || isNaN(n) || n.toString().trim() === '') {
     return null
@@ -176,39 +174,41 @@ function getLastNYears (n) {
   return nYears
 }
 
-function getIncomeCodeCombinations () {
-  const incomeCodes = Object.keys(annualReportController.getIncomeCodes())
+function getIncomeCodeCombinations (incomeCodes) {
   var parts = {}
   parts[''] = ['']
-  incomeCodes.forEach(function (code) {
-    const part = code.split('/')[0]
-    const pos = code.split('/')[1]
-    if (!parts[part]) {
-      parts[part] = []
-      parts[part].push('')
-    }
-    if (pos) {
-      parts[part].push(pos)
-    }
-  })
+  if (incomeCodes) {
+    incomeCodes.forEach(function (code) {
+      const part = code.split('/')[0]
+      const pos = code.split('/')[1]
+      if (!parts[part]) {
+        parts[part] = []
+        parts[part].push('')
+      }
+      if (pos) {
+        parts[part].push(pos)
+      }
+    })
+  }
   return parts
 }
 
-function getOutcomeCodeCombinations () {
-  const outcomeCodes = Object.keys(annualReportController.getOutcomeCodes())
+function getOutcomeCodeCombinations (outcomeCodes) {
   var parts = {}
   parts[''] = ['']
-  outcomeCodes.forEach(function (code) {
-    const part = code.split('/')[0]
-    const pos = code.split('/')[1]
-    if (!parts[part]) {
-      parts[part] = []
-      parts[part].push('')
-    }
-    if (pos) {
-      parts[part].push(pos)
-    }
-  })
+  if (outcomeCodes) {
+    outcomeCodes.forEach(function (code) {
+      const part = code.split('/')[0]
+      const pos = code.split('/')[1]
+      if (!parts[part]) {
+        parts[part] = []
+        parts[part].push('')
+      }
+      if (pos) {
+        parts[part].push(pos)
+      }
+    })
+  }
   return parts
 }
 

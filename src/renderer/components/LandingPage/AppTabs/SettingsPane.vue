@@ -9,37 +9,49 @@
 
     <!-- Default receipt modal -->
     <b-modal hide-footer hide-header size="a5" id="modalDefaultReceipt">
-      <receipt-preview :item='defaultReceiptItem'></receipt-preview>
+      <receipt-preview :item='defaultReceiptForm' parentModal="modalDefaultReceipt" defaultReceipt></receipt-preview>
     </b-modal>
 
     <!-- Default slip modal -->
     <b-modal hide-footer hide-header size="a5" id="modalDefaultSlip">
-      <payment-slip-preview :item='defaultPaymentSlipItem' parentModal="modalDefaultSlip" defaultPaymentSlip></payment-slip-preview>
+      <payment-slip-preview :item='defaultPaymentSlipForm' parentModal="modalDefaultSlip" defaultPaymentSlip></payment-slip-preview>
     </b-modal>
   </b-container>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
   import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
 
   const i18n = require('../../../translations/i18n')
-  const defaultValues = require('../../../utils/defaultValues')
 
   export default {
     data () {
       return {
-        defaultPaymentSlipItem: null,
-        defaultReceiptItem: null,
         phrases: {
           setDefaultPaymentSlip: i18n.getTranslation('Set default values for payment slips'),
           setDefaultsReceipts: i18n.getTranslation('Set default values for receipts')
         }
       }
     },
+    computed: {
+      ...mapState(
+        {
+          defaultPaymentSlip: state => state.DefaultValues.defaultPaymentSlip,
+          defaultReceipt: state => state.DefaultValues.defaultReceipt
+        }
+      ),
+      defaultPaymentSlipForm () {
+        return JSON.parse(JSON.stringify(this.defaultPaymentSlip))
+      },
+      defaultReceiptForm () {
+        return JSON.parse(JSON.stringify(this.defaultReceipt))
+      }
+    },
     created () {
-      this.defaultPaymentSlipItem = JSON.parse(JSON.stringify(defaultValues.getDefaultPaymentSlip()))
-      this.defaultReceiptItem = JSON.parse(JSON.stringify(defaultValues.getDefaultReceipt()))
+      this.$store.dispatch('LOAD_DEFAULT_PAYMENT_SLIP')
+      this.$store.dispatch('LOAD_DEFAULT_RECEIPT')
     },
     methods: {
       openDefaultReceiptModal: function () {
@@ -54,9 +66,4 @@
 </script>
 
 <style scoped>
-#yearSelect{
-  width: 95px;
-  padding-left:5px;
-  margin-bottom: 8px;
-}
 </style>

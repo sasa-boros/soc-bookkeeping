@@ -7,7 +7,7 @@ const config = require('../config/config')
 // eslint-disable-next-line no-unused-vars
 const ipcRouter = require('./ipcRouter')
 
-mongoose.connect(config.dbUrl, {user: config.dbUsername, pass: config.dbPassword})
+mongoose.connect(config.dbUrl)
 
 /**
  * Set `__static` path to static files in production

@@ -126,384 +126,402 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+  const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
+  const annualReportController = require('../../../../controllers/annualReport.controller')
+  const { numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations } = require('../../../../utils/utils')
+  const i18n = require('../../../../translations/i18n')
 
-const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
-const { numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations } = require('../../../../utils/utils')
-const defaultValues = require('../../../../utils/defaultValues')
-const i18n = require('../../../../translations/i18n')
-
-export default {
-  props: {
-    item: {
-      type: Object,
-      default: function () {
-        return {
-          amount: null,
-          reason: null,
-          town: null,
-          amountText: null,
-          payed: null,
-          received: null,
-          firstPart: '',
-          firstPos: '',
-          firstAmount: null,
-          secondPart: '',
-          secondPos: '',
-          secondAmount: null,
-          annualReportPage: null,
-          ordinal: null,
-          municipalityPresident: null,
-          date: null,
-          created_at: null,
-          updated_at: null
-        }
-      }
-    },
-    newlyOpened: {
-      type: Boolean,
-      default: true
-    },
-    defaultPaymentSlip: {
-      type: Boolean,
-      default: false
-    },
-    parentModal: {
-      type: String,
-      default: null
-    }
-  },
-  data () {
-    return {
-      defaultForm: null,
-      form: null,
-      attemptSubmit: !this.newlyOpened,
-      fresh: this.newlyOpened,
-      show: true,
-      yearSelected: null,
-      phrases: {
-        save: i18n.getTranslation('Save'),
-        print: i18n.getTranslation('Print'),
-        willBeGenerated: i18n.getTranslation('The value will be generated'),
-        enterValue: i18n.getTranslation('Enter a value'),
-        pickDate: i18n.getTranslation('Pick a date')
-      }
-    }
-  },
-  created () {
-    this.defaultForm = defaultValues.getDefaultPaymentSlip()
-    this.form = JSON.parse(JSON.stringify(this.defaultForm))
-  },
-  watch: {
-    item: function () {
-      /* Deep clone the item using JSON parsing */
-      if (this.item) {
-        this.form = JSON.parse(JSON.stringify(this.item))
-      } else {
-        this.form = JSON.parse(JSON.stringify(this.defaultForm))
-      }
-    },
-    newlyOpened: function () {
-      /* If the form is reseted from the parent component */
-      if (this.newlyOpened) {
-        this.attemptSubmit = false
-        this.fresh = true
-        this.resetForm()
-        /* Needs to be stale, so that any reset from the parent will be detected */
-        this.$emit('update:newlyOpened', false)
-      }
-    }
-  },
-  methods: {
-    setAttemptSubmit (val) {
-      this.attemptSubmit = val
-      /* Sync the prop used by the parent */
-      this.$emit('update:newlyOpened', !val)
-    },
-    onSubmit (evt) {
-      if (this.defaultPaymentSlip) {
-        /* Set the default values for payment slips */
-        defaultValues.setDefaultPaymentSlip(this.form)
-        if (this.parentModal) {
-          this.$root.$emit('bv::hide::modal', this.parentModal)
-        }
-      } else {
-        evt.preventDefault()
-        this.setAttemptSubmit(true)
-        if (this.checkForm()) {
-          if (this.form._id) {
-            /* Update the item */
-            paymentSlipsController.updatePaymentSlip(this.form)
-          } else {
-            /* Create new item */
-            paymentSlipsController.createPaymentSlip(this.form)
+  export default {
+    props: {
+      item: {
+        type: Object,
+        default: function () {
+          return {
+            amount: null,
+            reason: null,
+            town: null,
+            amountText: null,
+            payed: null,
+            received: null,
+            firstPart: '',
+            firstPos: '',
+            firstAmount: null,
+            secondPart: '',
+            secondPos: '',
+            secondAmount: null,
+            annualReportPage: null,
+            ordinal: null,
+            municipalityPresident: null,
+            date: null,
+            created_at: null,
+            updated_at: null
           }
-          this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+        }
+      },
+      newlyOpened: {
+        type: Boolean,
+        default: true
+      },
+      defaultPaymentSlip: {
+        type: Boolean,
+        default: false
+      },
+      parentModal: {
+        type: String,
+        default: null
+      }
+    },
+    data () {
+      return {
+        form: null,
+        attemptSubmit: !this.newlyOpened,
+        fresh: this.newlyOpened,
+        show: true,
+        yearSelected: null,
+        incomeCodeCombinations: {
+          '': ['']
+        },
+        phrases: {
+          save: i18n.getTranslation('Save'),
+          print: i18n.getTranslation('Print'),
+          willBeGenerated: i18n.getTranslation('The value will be generated'),
+          enterValue: i18n.getTranslation('Enter a value'),
+          pickDate: i18n.getTranslation('Pick a date')
+        }
+      }
+    },
+    created () {
+      this.form = JSON.parse(JSON.stringify(this.defaultForm))
+      const self = this
+
+      annualReportController.getIncomeCodes().then(function (res) {
+        if (!res.err) {
+          self.incomeCodeCombinations = getIncomeCodeCombinations(Object.keys(res.data))
+        }
+      })
+    },
+    watch: {
+      item: function () {
+        /* Deep clone the item using JSON parsing */
+        if (this.item) {
+          this.form = JSON.parse(JSON.stringify(this.item))
+        } else {
+          this.form = JSON.parse(JSON.stringify(this.defaultForm))
+        }
+      },
+      newlyOpened: function () {
+        /* If the form is reseted from the parent component */
+        if (this.newlyOpened) {
+          this.attemptSubmit = false
+          this.fresh = true
           this.resetForm()
+          /* Needs to be stale, so that any reset from the parent will be detected */
+          this.$emit('update:newlyOpened', false)
+        }
+      }
+    },
+    computed: {
+      ...mapState(
+        {
+          defaultForm: state => state.DefaultValues.defaultPaymentSlip
+        }
+      ),
+      generatedAmountText: {
+        get: function () {
+          var placeholder = '_______________________________________________________________________________________________________________________________________'
+          if (this.form) {
+            var generatedText = numberToSerbianDinars(this.form.amount)
+            if (!generatedText) {
+              return placeholder
+            } else {
+              this.form.amountText = generatedText
+              return generatedText
+            }
+          } else {
+            return placeholder
+          }
+        },
+        set: function (newValue) {
+        }
+      },
+      disableAmountTooltip: {
+        get: function () {
+          return !this.missingAmount || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'amountInputFormGroup')
+          }
+        }
+      },
+      disableTownTooltip: {
+        get: function () {
+          return !this.missingTown || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'townInputFormGroup')
+          }
+        }
+      },
+      disableReasonTooltip: {
+        get: function () {
+          return !this.missingReason || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'reasonInputFormGroup')
+          }
+        }
+      },
+      disablePayedTooltip: {
+        get: function () {
+          return !this.missingPayed || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'payedInputFormGroup')
+          }
+        }
+      },
+      disableReceivedTooltip: {
+        get: function () {
+          return !this.missingReceived || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'receivedInputFormGroup')
+          }
+        }
+      },
+      disableFirstAmountTooltip: {
+        get: function () {
+          return !this.missingFirstAmount || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'firstAmountInputFormGroup')
+          }
+        }
+      },
+      disableSecondAmountTooltip: {
+        get: function () {
+          return !this.missingSecondAmount || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'secondAmountInputFormGroup')
+          }
+        }
+      },
+      disableTotalAmountTooltip: {
+        get: function () {
+          return !this.missingTotalAmount || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'totalAmountInputFormGroup')
+          }
+        }
+      },
+      disableMunicipalityPresidentTooltip: {
+        get: function () {
+          return !this.missingMunicipalityPresident || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'municipalityPresidentInputFormGroup')
+          }
+        }
+      },
+      disableDateTooltip: {
+        get: function () {
+          return !this.missingDate || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'dateInputFormGroup')
+          }
+        }
+      },
+      disableAnnualReportPageTooltip: {
+        get: function () {
+          return !this.missingAnnualReportPage
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'annualReportPageInputFormGroup')
+          }
+        }
+      },
+      disableOrdinalTooltip: {
+        get: function () {
+          return !this.missingOrdinal
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$root.$emit('bv::hide::tooltip', 'ordinalInputFormGroup')
+          }
+        }
+      },
+      yearOptions: function () {
+        return getLastNYears(10)
+      },
+      partOptions: function () {
+        return Object.keys(this.incomeCodeCombinations)
+      },
+      pos1Options: function () {
+        return this.incomeCodeCombinations[this.form.firstPart]
+      },
+      pos2Options: function () {
+        return this.incomeCodeCombinations[this.form.secondPart]
+      },
+      showWs: function () {
+        return this.generatedAmountText.length < 55
+      },
+      missingReason: function () {
+        return !this.form || !this.form.reason || this.form.reason.toString().trim() === ''
+      },
+      missingTown: function () {
+        return !this.form || !this.form.town || this.form.town.toString().trim() === ''
+      },
+      missingAmount: function () {
+        return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
+      },
+      missingPayed: function () {
+        return !this.form || !this.form.payed || this.form.payed.toString().trim() === ''
+      },
+      missingReceived: function () {
+        return !this.form || !this.form.received || this.form.received.toString().trim() === ''
+      },
+      missingFirstAmount: function () {
+        return !this.form || !this.form.firstAmount || this.form.firstAmount.toString().trim() === ''
+      },
+      missingSecondAmount: function () {
+        return !this.form || !this.form.secondAmount || this.form.secondAmount.toString().trim() === ''
+      },
+      missingTotalAmount: function () {
+        return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
+      },
+      missingMunicipalityPresident: function () {
+        return !this.form || !this.form.municipalityPresident || this.form.municipalityPresident.toString().trim() === ''
+      },
+      missingDate: function () {
+        return !this.form || !this.form.date
+      },
+      missingAnnualReportPage: function () {
+        return !this.form || !this.form.annualReportPage
+      },
+      missingOrdinal: function () {
+        return !this.form || !this.form.ordinal
+      }
+    },
+    methods: {
+      setAttemptSubmit (val) {
+        this.attemptSubmit = val
+        /* Sync the prop used by the parent */
+        this.$emit('update:newlyOpened', !val)
+      },
+      onSubmit (evt) {
+        if (this.defaultPaymentSlip) {
+          /* Set the default values for payment slips */
+          this.$store.dispatch('SET_DEFAULT_PAYMENT_SLIP', this.form)
           if (this.parentModal) {
             this.$root.$emit('bv::hide::modal', this.parentModal)
           }
-        }
-      }
-    },
-    onReset (evt) {
-      evt.preventDefault()
-      this.resetForm()
-      /* Trick to reset/clear native browser form validation state */
-      this.show = false
-      this.$nextTick(() => { this.show = true })
-    },
-    checkForm () {
-      if (!this.form.amount ||
-          !this.form.reason ||
-          !this.form.town ||
-          !this.form.payed ||
-          !this.form.received ||
-          !this.form.firstAmount ||
-          !this.form.secondAmount ||
-          !this.form.municipalityPresident ||
-          !this.form.date) {
-        return false
-      }
-      return true
-    },
-    resetForm () {
-      this.form = JSON.parse(JSON.stringify(this.defaultForm))
-      this.setAttemptSubmit(false)
-    },
-    onFirstPartChange () {
-      this.form.firstPos = ''
-    },
-    onSecondPartChange () {
-      this.form.secondPos = ''
-    },
-    printPaymentSlip () {
-      const modal = document.getElementById('payment-slip-preview-container')
-      const cloned = modal.cloneNode(true)
-      let section = document.getElementById('print')
-
-      if (!section) {
-        section = document.createElement('div')
-        section.id = 'print'
-        document.body.appendChild(section)
-      }
-
-      section.innerHTML = ''
-      section.appendChild(cloned)
-      window.print()
-    },
-    closeModal () {
-      if (this.parentModal) {
-        this.$root.$emit('bv::hide::modal', this.parentModal)
-      }
-      this.resetForm()
-    }
-  },
-  computed: {
-    generatedAmountText: {
-      get: function () {
-        var placeholder = '_______________________________________________________________________________________________________________________________________'
-        if (this.form) {
-          var generatedText = numberToSerbianDinars(this.form.amount)
-          if (!generatedText) {
-            return placeholder
-          } else {
-            return generatedText
-          }
         } else {
-          return placeholder
+          evt.preventDefault()
+          this.setAttemptSubmit(true)
+          if (this.checkForm()) {
+            if (this.form._id) {
+              /* Update the item */
+              paymentSlipsController.updatePaymentSlip(this.form).then((res) => {
+                if (!res.err) {
+                  this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                }
+              })
+            } else {
+              /* Create new item */
+              paymentSlipsController.createPaymentSlip(this.form).then((res) => {
+                if (!res.err) {
+                  this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                }
+              })
+            }
+            this.resetForm()
+            if (this.parentModal) {
+              this.$root.$emit('bv::hide::modal', this.parentModal)
+            }
+          }
         }
       },
-      set: function (newValue) {
-      }
-    },
-    disableAmountTooltip: {
-      get: function () {
-        return !this.missingAmount || !this.attemptSubmit
+      onReset (evt) {
+        evt.preventDefault()
+        this.resetForm()
+        /* Trick to reset/clear native browser form validation state */
+        this.show = false
+        this.$nextTick(() => { this.show = true })
       },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'amountInputFormGroup')
+      checkForm () {
+        if (!this.form.amount ||
+            !this.form.reason ||
+            !this.form.town ||
+            !this.form.payed ||
+            !this.form.received ||
+            !this.form.firstAmount ||
+            !this.form.secondAmount ||
+            !this.form.municipalityPresident ||
+            !this.form.date) {
+          return false
         }
-      }
-    },
-    disableTownTooltip: {
-      get: function () {
-        return !this.missingTown || !this.attemptSubmit
+        return true
       },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'townInputFormGroup')
-        }
-      }
-    },
-    disableReasonTooltip: {
-      get: function () {
-        return !this.missingReason || !this.attemptSubmit
+      resetForm () {
+        this.form = JSON.parse(JSON.stringify(this.defaultForm))
+        this.setAttemptSubmit(false)
       },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'reasonInputFormGroup')
-        }
-      }
-    },
-    disablePayedTooltip: {
-      get: function () {
-        return !this.missingPayed || !this.attemptSubmit
+      onFirstPartChange () {
+        this.form.firstPos = ''
       },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'payedInputFormGroup')
-        }
-      }
-    },
-    disableReceivedTooltip: {
-      get: function () {
-        return !this.missingReceived || !this.attemptSubmit
+      onSecondPartChange () {
+        this.form.secondPos = ''
       },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'receivedInputFormGroup')
+      printPaymentSlip () {
+        const modal = document.getElementById('payment-slip-preview-container')
+        const cloned = modal.cloneNode(true)
+        let section = document.getElementById('print')
+
+        if (!section) {
+          section = document.createElement('div')
+          section.id = 'print'
+          document.body.appendChild(section)
         }
-      }
-    },
-    disableFirstAmountTooltip: {
-      get: function () {
-        return !this.missingFirstAmount || !this.attemptSubmit
+
+        section.innerHTML = ''
+        section.appendChild(cloned)
+        window.print()
       },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'firstAmountInputFormGroup')
+      closeModal () {
+        if (this.parentModal) {
+          this.$root.$emit('bv::hide::modal', this.parentModal)
         }
+        this.resetForm()
       }
-    },
-    disableSecondAmountTooltip: {
-      get: function () {
-        return !this.missingSecondAmount || !this.attemptSubmit
-      },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'secondAmountInputFormGroup')
-        }
-      }
-    },
-    disableTotalAmountTooltip: {
-      get: function () {
-        return !this.missingTotalAmount || !this.attemptSubmit
-      },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'totalAmountInputFormGroup')
-        }
-      }
-    },
-    disableMunicipalityPresidentTooltip: {
-      get: function () {
-        return !this.missingMunicipalityPresident || !this.attemptSubmit
-      },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'municipalityPresidentInputFormGroup')
-        }
-      }
-    },
-    disableDateTooltip: {
-      get: function () {
-        return !this.missingDate || !this.attemptSubmit
-      },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'dateInputFormGroup')
-        }
-      }
-    },
-    disableAnnualReportPageTooltip: {
-      get: function () {
-        return !this.missingAnnualReportPage
-      },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'annualReportPageInputFormGroup')
-        }
-      }
-    },
-    disableOrdinalTooltip: {
-      get: function () {
-        return !this.missingOrdinal
-      },
-      set: function (newValue) {
-        /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-        if (newValue) {
-          this.$root.$emit('bv::hide::tooltip', 'ordinalInputFormGroup')
-        }
-      }
-    },
-    yearOptions: function () {
-      return getLastNYears(10)
-    },
-    incomeCodeCombinations: function () {
-      return getIncomeCodeCombinations()
-    },
-    partOptions: function () {
-      return Object.keys(this.incomeCodeCombinations)
-    },
-    pos1Options: function () {
-      return this.incomeCodeCombinations[this.form.firstPart]
-    },
-    pos2Options: function () {
-      return this.incomeCodeCombinations[this.form.secondPart]
-    },
-    showWs: function () {
-      return this.generatedAmountText.length < 55
-    },
-    missingReason: function () {
-      return !this.form || !this.form.reason || this.form.reason.toString().trim() === ''
-    },
-    missingTown: function () {
-      return !this.form || !this.form.town || this.form.town.toString().trim() === ''
-    },
-    missingAmount: function () {
-      return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
-    },
-    missingPayed: function () {
-      return !this.form || !this.form.payed || this.form.payed.toString().trim() === ''
-    },
-    missingReceived: function () {
-      return !this.form || !this.form.received || this.form.received.toString().trim() === ''
-    },
-    missingFirstAmount: function () {
-      return !this.form || !this.form.firstAmount || this.form.firstAmount.toString().trim() === ''
-    },
-    missingSecondAmount: function () {
-      return !this.form || !this.form.secondAmount || this.form.secondAmount.toString().trim() === ''
-    },
-    missingTotalAmount: function () {
-      return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
-    },
-    missingMunicipalityPresident: function () {
-      return !this.form || !this.form.municipalityPresident || this.form.municipalityPresident.toString().trim() === ''
-    },
-    missingDate: function () {
-      return !this.form || !this.form.date
-    },
-    missingAnnualReportPage: function () {
-      return !this.form || !this.form.annualReportPage
-    },
-    missingOrdinal: function () {
-      return !this.form || !this.form.ordinal
     }
   }
-}
 </script>
 
 <style scoped>

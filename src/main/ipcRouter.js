@@ -141,7 +141,7 @@ ipcMain.on('get-default-payment-slip', function (event) {
   DefaultPaymentSlip.find({}).exec().then(function (defaultPaymentSlips) {
     console.log(`Found: \n${JSON.stringify(defaultPaymentSlips, null, 2)}`)
     if (defaultPaymentSlips && defaultPaymentSlips.length > 0) {
-      event.sender.send('get-default-payment-slip-reply', {error: null, data: defaultPaymentSlips[0]})
+      event.sender.send('get-default-payment-slip-reply', {error: null, data: defaultPaymentSlips[0]._doc})
     } else {
       event.sender.send('get-default-payment-slip-reply', {error: null, data: null})
     }

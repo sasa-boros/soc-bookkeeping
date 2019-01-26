@@ -3,9 +3,9 @@ const receiptsController = require('../controllers/receipt.controller')
 
 let defaultPaymentSlip = {
   amount: null,
+  amountText: null,
   reason: null,
   town: null,
-  amountText: null,
   payed: null,
   received: null,
   firstPart: '',
@@ -23,10 +23,10 @@ let defaultPaymentSlip = {
 }
 let defaultReceipt = {
   amount: null,
+  amountText: null,
   reason: null,
   churchMunicipality: null,
   town: null,
-  amountText: null,
   payed: null,
   received: null,
   firstPart: '',
@@ -44,23 +44,31 @@ let defaultReceipt = {
 }
 
 function loadDefaultPaymentSlip () {
-  const defaultPaymentSlipFromDB = paymentSlipsController.getDefaultPaymentSlip()
-  if (defaultPaymentSlipFromDB) {
-    defaultPaymentSlip = defaultPaymentSlipFromDB
-    defaultPaymentSlip._id = null
-    defaultPaymentSlip.created_at = null
-    defaultPaymentSlip.updated_at = null
-  }
+  paymentSlipsController.getDefaultPaymentSlip().then(function (res) {
+    if (!res.err) {
+      const defaultPaymentSlipFromDB = res.data
+      if (defaultPaymentSlipFromDB) {
+        defaultPaymentSlip = defaultPaymentSlipFromDB
+        defaultPaymentSlip._id = null
+        defaultPaymentSlip.created_at = null
+        defaultPaymentSlip.updated_at = null
+      }
+    }
+  })
 }
 
 function loadDefaultReceipt () {
-  const defaultReceiptFromDB = receiptsController.getDefaultReceipt()
-  if (defaultReceiptFromDB) {
-    defaultReceipt = defaultReceiptFromDB
-    defaultReceipt._id = null
-    defaultReceipt.created_at = null
-    defaultReceipt.updated_at = null
-  }
+  receiptsController.getDefaultReceipt().then(function (res) {
+    if (!res.err) {
+      const defaultReceiptFromDB = res.data
+      if (defaultReceiptFromDB) {
+        defaultReceipt = defaultReceiptFromDB
+        defaultReceipt._id = null
+        defaultReceipt.created_at = null
+        defaultReceipt.updated_at = null
+      }
+    }
+  })
 }
 
 function getDefaultPaymentSlip () {
@@ -72,11 +80,14 @@ function getDefaultReceipt () {
 }
 
 function setDefaultPaymentSlip (paymentSlip) {
-  paymentSlipsController.createDefaultPaymentSlip(paymentSlip)
-  defaultPaymentSlip = paymentSlip
-  defaultPaymentSlip._id = null
-  defaultPaymentSlip.created_at = null
-  defaultPaymentSlip.updated_at = null
+  paymentSlipsController.createDefaultPaymentSlip(paymentSlip).then(function (res) {
+    if (!res.err) {
+      defaultPaymentSlip = paymentSlip
+      defaultPaymentSlip._id = null
+      defaultPaymentSlip.created_at = null
+      defaultPaymentSlip.updated_at = null
+    }
+  })
 }
 
 function setDefaultReceipt (receipt) {
