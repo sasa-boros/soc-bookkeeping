@@ -2,6 +2,47 @@ const paymentSlipsController = require('../../controllers/paymentSlip.controller
 const receiptsController = require('../../controllers/receipt.controller')
 
 const state = {
+  emptyPaymentSlip: {
+    amount: null,
+    amountText: null,
+    reason: null,
+    town: null,
+    payed: null,
+    received: null,
+    firstPart: '',
+    firstPos: '',
+    firstAmount: null,
+    secondPart: '',
+    secondPos: '',
+    secondAmount: null,
+    annualReportPage: null,
+    ordinal: null,
+    municipalityPresident: null,
+    date: null,
+    created_at: null,
+    updated_at: null
+  },
+  emptyReceipt: {
+    amount: null,
+    amountText: null,
+    reason: null,
+    churchMunicipality: null,
+    town: null,
+    payed: null,
+    received: null,
+    firstPart: '',
+    firstPos: '',
+    firstAmount: null,
+    secondPart: '',
+    secondPos: '',
+    secondAmount: null,
+    annualReportPage: null,
+    ordinal: null,
+    municipalityPresident: null,
+    date: null,
+    created_at: null,
+    updated_at: null
+  },
   defaultPaymentSlip: {
     amount: null,
     amountText: null,

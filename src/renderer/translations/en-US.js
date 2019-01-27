@@ -9,6 +9,7 @@
     "Search": "Search",
     "Save": "Save",
     "Print": "Print",
+    "Clear": "Clear",
     "Delete": "Delete",
     "Cancel": "Cancel",
     "The value will be generated": "The value will be generated",
