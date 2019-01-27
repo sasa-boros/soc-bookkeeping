@@ -7,13 +7,14 @@
       <b-button type="submit" variant="secondary">
        Get annual report
       </b-button>
+      {{reportData}}
     </b-form>
   </b-container>
 </template>
 
 <script>
   const annualReportController = require('../../../controllers/annualReport.controller')
-  const { getLastNYears } = require('../../../utils/utils')
+  const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -29,10 +30,12 @@
     },
     methods: {
       annualReportCreateSubmit: function () {
+        const self = this
         annualReportController.getAnnualReport(this.yearToFilter).then(function (res) {
-          console.log(res)
           if (!res.err) {
-            this.reportData = res.data
+            self.reportData = res.data
+          } else {
+            showErrorDialog(res.err)
           }
         })
       }

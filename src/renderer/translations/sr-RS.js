@@ -12,6 +12,7 @@
     "Clear": "Обриши",
     "Delete": "Обриши",
     "Cancel": "Поништи",
+    "Error": "Грешка",
     "The value will be generated": "Вредност ће бити генерисана",
     "Enter a value": "Унеси вредност",
     "Pick a date": "Изабери датум",

@@ -1,5 +1,6 @@
 const paymentSlipsController = require('../../controllers/paymentSlip.controller')
 const receiptsController = require('../../controllers/receipt.controller')
+const { showErrorDialog } = require('../../utils/utils')
 
 const state = {
   emptyPaymentSlip: {
@@ -106,6 +107,8 @@ const actions = {
           defaultPaymentSlipFromDB.updated_at = null
           commit('SET_DEFAULT_PAYMENT_SLIP', defaultPaymentSlipFromDB)
         }
+      } else {
+        showErrorDialog(res.err)
       }
     })
   },
@@ -119,6 +122,8 @@ const actions = {
           defaultReceiptFromDB.updated_at = null
           commit('SET_DEFAULT_RECEIPT', defaultReceiptFromDB)
         }
+      } else {
+        showErrorDialog(res.err)
       }
     })
   },
@@ -129,6 +134,8 @@ const actions = {
         paymentSlip.created_at = null
         paymentSlip.updated_at = null
         commit('SET_DEFAULT_PAYMENT_SLIP', paymentSlip)
+      } else {
+        showErrorDialog(res.err)
       }
     })
   },
@@ -139,6 +146,8 @@ const actions = {
         receipt.created_at = null
         receipt.updated_at = null
         commit('SET_DEFAULT_RECEIPT', receipt)
+      } else {
+        showErrorDialog(res.err)
       }
     })
   }

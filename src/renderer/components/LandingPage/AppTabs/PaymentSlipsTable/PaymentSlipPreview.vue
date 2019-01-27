@@ -140,7 +140,7 @@
   import { mapState } from 'vuex'
   const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
   const annualReportController = require('../../../../controllers/annualReport.controller')
-  const { numberToSerbianDinars, getLastNYears, getCodeCombinations } = require('../../../../utils/utils')
+  const { numberToSerbianDinars, getLastNYears, getCodeCombinations, showErrorDialog } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
 
   export default {
@@ -210,6 +210,8 @@
       annualReportController.getOutcomeCodes().then(function (res) {
         if (!res.err) {
           self.incomeCodeCombinations = getCodeCombinations(Object.keys(res.data))
+        } else {
+          showErrorDialog(res.err)
         }
       })
     },
@@ -464,6 +466,8 @@
               paymentSlipsController.updatePaymentSlip(this.form).then((res) => {
                 if (!res.err) {
                   this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                } else {
+                  showErrorDialog(res.err)
                 }
               })
             } else {
@@ -471,6 +475,8 @@
               paymentSlipsController.createPaymentSlip(this.form).then((res) => {
                 if (!res.err) {
                   this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                } else {
+                  showErrorDialog(res.err)
                 }
               })
             }
