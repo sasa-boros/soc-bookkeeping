@@ -250,7 +250,7 @@
       paymentSlipsProvider (ctx) {
         return paymentSlipsController.getPaymentSlips(this.yearToFilter).then((res) => {
           if (!res.err) {
-            const items = res.data.map(item => item._doc)
+            const items = res.data
             return (items || [])
           }
           return null

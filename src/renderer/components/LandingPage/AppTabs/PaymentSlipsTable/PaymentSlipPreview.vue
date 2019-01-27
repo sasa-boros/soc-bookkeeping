@@ -129,7 +129,7 @@
   import { mapState } from 'vuex'
   const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
   const annualReportController = require('../../../../controllers/annualReport.controller')
-  const { numberToSerbianDinars, getLastNYears, getIncomeCodeCombinations } = require('../../../../utils/utils')
+  const { numberToSerbianDinars, getLastNYears, getCodeCombinations } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
 
   export default {
@@ -195,9 +195,9 @@
       this.form = JSON.parse(JSON.stringify(this.defaultForm))
       const self = this
 
-      annualReportController.getIncomeCodes().then(function (res) {
+      annualReportController.getOutcomeCodes().then(function (res) {
         if (!res.err) {
-          self.incomeCodeCombinations = getIncomeCodeCombinations(Object.keys(res.data))
+          self.incomeCodeCombinations = getCodeCombinations(Object.keys(res.data))
         }
       })
     },

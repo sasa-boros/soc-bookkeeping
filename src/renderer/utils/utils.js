@@ -174,7 +174,7 @@ function getLastNYears (n) {
   return nYears
 }
 
-function getIncomeCodeCombinations (incomeCodes) {
+function getCodeCombinations (incomeCodes) {
   var parts = {}
   parts[''] = ['']
   if (incomeCodes) {
@@ -192,29 +192,8 @@ function getIncomeCodeCombinations (incomeCodes) {
   }
   return parts
 }
-
-function getOutcomeCodeCombinations (outcomeCodes) {
-  var parts = {}
-  parts[''] = ['']
-  if (outcomeCodes) {
-    outcomeCodes.forEach(function (code) {
-      const part = code.split('/')[0]
-      const pos = code.split('/')[1]
-      if (!parts[part]) {
-        parts[part] = []
-        parts[part].push('')
-      }
-      if (pos) {
-        parts[part].push(pos)
-      }
-    })
-  }
-  return parts
-}
-
 module.exports = {
   numberToSerbianDinars: numberToSerbianDinars,
   getLastNYears: getLastNYears,
-  getIncomeCodeCombinations: getIncomeCodeCombinations,
-  getOutcomeCodeCombinations: getOutcomeCodeCombinations
+  getCodeCombinations: getCodeCombinations
 }

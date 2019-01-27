@@ -1,5 +1,5 @@
-const PaymentSlip = require('./paymentSlip')
-const Receipt = require('./receipt')
+const { PaymentSlip } = require('./paymentSlip')
+const { Receipt } = require('./receipt')
 const Big = require('big.js')
 
 const INCOME_CODES = {
@@ -139,8 +139,8 @@ async function getAnnualReport (year) {
   return annualReport
 }
 
-function findAndSortEntitiesPerMonth (year, monthOrdinal, sortingOrder, entity) {
-  return entity.find({
+function findAndSortEntitiesPerMonth (year, monthOrdinal, sortingOrder, bkEntity) {
+  return bkEntity.find({
     'date': {
       '$gte': new Date(year, monthOrdinal, 1),
       '$lt': new Date(year, monthOrdinal + 1, 1)
@@ -149,9 +149,10 @@ function findAndSortEntitiesPerMonth (year, monthOrdinal, sortingOrder, entity) 
     .sort({
       'date': sortingOrder
     })
+    .lean()
     .exec()
-    .then(function (entities) {
-      return entities
+    .then(function (bkEntities) {
+      return bkEntities
     }).catch((err) => {
       console.error(err.message)
       throw err

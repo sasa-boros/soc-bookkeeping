@@ -28,7 +28,9 @@
     },
     methods: {
       annualReportCreateSubmit: function () {
-        console.log(annualReportController.getAnnualReport(this.yearToFilter))
+        annualReportController.getAnnualReport(this.yearToFilter).then(function (annualReport) {
+          console.log(annualReport)
+        })
       }
     }
   }

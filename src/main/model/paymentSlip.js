@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { assignAnnualReportValues, preSave, preFindOneAndUpdate } = require('./bkEntity')
 // const encrypt = require('mongoose-encryption')
 // const config = require('../../config/config')
 
@@ -25,53 +26,19 @@ const paymentSlipSchema = new Schema({
   updated_at: { type: Date }
 })
 
-paymentSlipSchema.statics.reorderByDate = function (date) {
-  return this.find({
-    'date':
-    {
-      '$gte': new Date(date.getFullYear(), date.getMonth(), 1),
-      '$lt': new Date(date.getFullYear(), date.getMonth() + 1, 1)
-    }
-  }).sort({ 'date': 1 }).exec().then(async function (paymentSlips) {
-    for (let i = 0; i < paymentSlips.length; i++) {
-      const paymentSlip = paymentSlips[i]
-
-      paymentSlip.ordinal = i + 1
-      paymentSlip.annualReportPage = date.getMonth() + 1
-      await updatePaymentSlip(paymentSlip)
-    }
-    return paymentSlips
-  }).catch((err) => {
-    console.error(err.message)
-    throw err
-  })
-}
-
-async function updatePaymentSlip (paymentSlip) {
-  PaymentSlip.findOneAndUpdate({ _id: paymentSlip._id }, paymentSlip, function (err) {
-    if (err) {
-      console.error(err.message)
-      throw err
-    }
-  })
-}
+paymentSlipSchema.statics.assignAnnualReportValues = assignAnnualReportValues
 
 paymentSlipSchema.pre('save', function (next) {
-  const currentDate = new Date()
-  this.updated_at = currentDate
-  this.created_at = currentDate
+  preSave(this)
+  next()
+})
 
+paymentSlipSchema.pre('findOneAndUpdate', function (next) {
+  preFindOneAndUpdate(this)
   next()
 })
 
 // paymentSlipSchema.plugin(encrypt, { secret: config.encryptionSecret, excludeFromEncryption: ['created_at', 'updated_at'] })
-
-paymentSlipSchema.pre('findOneAndUpdate', function (next) {
-  const currentDate = new Date()
-  this._update.updated_at = currentDate
-
-  next()
-})
 
 const PaymentSlip = mongoose.model('paymentSlips', paymentSlipSchema)
 const DefaultPaymentSlip = mongoose.model('defaultPaymentSlips', paymentSlipSchema)
