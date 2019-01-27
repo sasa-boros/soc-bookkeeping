@@ -3,7 +3,7 @@ const {ipcRenderer} = require('electron')
 function getPaymentSlips (year) {
   return new Promise(function (resolve) {
     ipcRenderer.send('get-payment-slips', year)
-    ipcRenderer.on('get-payment-slips-reply', function (event, res) {
+    ipcRenderer.once('get-payment-slips-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -12,7 +12,7 @@ function getPaymentSlips (year) {
 function createPaymentSlip (paymentSlip) {
   return new Promise(function (resolve) {
     ipcRenderer.send('create-payment-slip', paymentSlip)
-    ipcRenderer.on('create-payment-slip-reply', function (event, res) {
+    ipcRenderer.once('create-payment-slip-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -20,7 +20,7 @@ function createPaymentSlip (paymentSlip) {
 function updatePaymentSlip (paymentSlip) {
   return new Promise(function (resolve) {
     ipcRenderer.send('update-payment-slip', paymentSlip)
-    ipcRenderer.on('update-payment-slip-reply', function (event, res) {
+    ipcRenderer.once('update-payment-slip-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -29,7 +29,7 @@ function updatePaymentSlip (paymentSlip) {
 function deletePaymentSlip (paymentSlipId) {
   return new Promise(function (resolve) {
     ipcRenderer.send('delete-payment-slip', paymentSlipId)
-    ipcRenderer.on('delete-payment-slip-reply', function (event, res) {
+    ipcRenderer.once('delete-payment-slip-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -38,7 +38,7 @@ function deletePaymentSlip (paymentSlipId) {
 function getDefaultPaymentSlip () {
   return new Promise(function (resolve) {
     ipcRenderer.send('get-default-payment-slip')
-    ipcRenderer.on('get-default-payment-slip-reply', function (event, res) {
+    ipcRenderer.once('get-default-payment-slip-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -47,7 +47,7 @@ function getDefaultPaymentSlip () {
 function createDefaultPaymentSlip (defaultPaymentSlip) {
   return new Promise(function (resolve) {
     ipcRenderer.send('create-default-payment-slip', defaultPaymentSlip)
-    ipcRenderer.on('create-default-payment-slip-reply', function (event, res) {
+    ipcRenderer.once('create-default-payment-slip-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -56,7 +56,7 @@ function createDefaultPaymentSlip (defaultPaymentSlip) {
 function deleteDefaultPaymentSlip () {
   return new Promise(function (resolve) {
     ipcRenderer.send('delete-default-payment-slip')
-    ipcRenderer.on('delete-default-payment-slip-reply', function (event, res) {
+    ipcRenderer.once('delete-default-payment-slip-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })

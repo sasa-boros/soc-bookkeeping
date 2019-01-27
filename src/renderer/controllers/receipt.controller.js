@@ -3,7 +3,7 @@ const { ipcRenderer } = require('electron')
 function getReceipts (year) {
   return new Promise(function (resolve) {
     ipcRenderer.send('get-receipts', year)
-    ipcRenderer.on('get-receipts-reply', function (event, res) {
+    ipcRenderer.once('get-receipts-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -12,7 +12,7 @@ function getReceipts (year) {
 function createReceipt (receipt) {
   return new Promise(function (resolve) {
     ipcRenderer.send('create-receipt', receipt)
-    ipcRenderer.on('create-receipt-reply', function (event, res) {
+    ipcRenderer.once('create-receipt-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -21,7 +21,7 @@ function createReceipt (receipt) {
 function updateReceipt (receipt) {
   return new Promise(function (resolve) {
     ipcRenderer.send('update-receipt', receipt)
-    ipcRenderer.on('update-receipt-reply', function (event, res) {
+    ipcRenderer.once('update-receipt-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -30,7 +30,7 @@ function updateReceipt (receipt) {
 function deleteReceipt (receiptId) {
   return new Promise(function (resolve) {
     ipcRenderer.send('delete-receipt', receiptId)
-    ipcRenderer.on('delete-receipt-reply', function (event, res) {
+    ipcRenderer.once('delete-receipt-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -39,7 +39,7 @@ function deleteReceipt (receiptId) {
 function getDefaultReceipt () {
   return new Promise(function (resolve) {
     ipcRenderer.send('get-default-receipt')
-    ipcRenderer.on('get-default-receipt-reply', function (event, res) {
+    ipcRenderer.once('get-default-receipt-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -48,7 +48,7 @@ function getDefaultReceipt () {
 function createDefaultReceipt (defaultReceipt) {
   return new Promise(function (resolve) {
     ipcRenderer.send('create-default-receipt', defaultReceipt)
-    ipcRenderer.on('create-default-receipt-reply', function (event, res) {
+    ipcRenderer.once('create-default-receipt-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
@@ -57,7 +57,7 @@ function createDefaultReceipt (defaultReceipt) {
 function deleteDefaultReceipt () {
   return new Promise(function (resolve) {
     ipcRenderer.send('delete-default-receipt')
-    ipcRenderer.on('delete-default-receipt-reply', function (event, res) {
+    ipcRenderer.once('delete-default-receipt-reply', function (event, res) {
       resolve(JSON.parse(res))
     })
   })
