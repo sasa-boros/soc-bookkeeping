@@ -10,7 +10,7 @@
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" id="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" id="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-group class="input-form-group" id="dateInputFormGroup"><b-form-input v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" class="input-small" id="dateInput" type="date"></b-form-input></b-form-group> г.
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-group class="input-form-group" id="dateInputFormGroup"><b-form-input v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" class="input-small unstyled" id="dateInput" type="text" onfocus="(this.type='date')" onblur="(this.type='text')"></b-form-input></b-form-group> г.
                                                                                                             Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>
                   Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>                                                        
                                                            
@@ -36,7 +36,7 @@
       </div>
       <div id="clearSaveBtnsDiv">
         <b-button type="submit" variant="secondary" class="ignoreInPrint" id="paymentSlipSaveBtn">
-          <img src="~@/assets/save.png" class="btn-img ignoreInPrint">
+          <img src="~@/assets/save1.png" class="btn-img ignoreInPrint">
         </b-button>
         <b-button @click.stop="clearForm()" variant="secondary" class="ignoreInPrint" id="paymentSlipClearBtn">
           <img src="~@/assets/clear.png" class="btn-img ignoreInPrint">
@@ -717,6 +717,10 @@ h1{
 }
 .displayNone{
   display:none;
+}
+.unstyled::-webkit-inner-spin-button {
+  display: none;
+  -webkit-appearance: none;
 }
 </style>
 
