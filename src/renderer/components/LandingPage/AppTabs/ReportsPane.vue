@@ -5,9 +5,44 @@
         <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
       </b-form-group>
       <b-button type="submit" variant="secondary">
-       Get annual report
+       Генериши дневник благајне
       </b-button>
-      {{reportData}}
+      <div v-for="page in reportData.pages" class="pageDiv">
+        <h5>У месецу {{page.monthText}}</h5>
+        <h6> Свега: <em><b>{{page.total}}</b></em></h6>
+        <b-row class="lighterDiv">
+          <b-col>
+            <div class="itemsDiv">
+            <h6>Признанице:</h6>
+              <ul>
+                <li v-for="receipt in page.receipts">
+                  <em><b>{{receipt.amount}}</b></em> дин, на име <em><b>{{receipt.reason}}</b></em>
+                </li>
+              </ul>
+            </div>  
+          </b-col>
+          <b-col>
+            <div class="itemsDiv">
+            <h6>Уплатнице:</h6>
+              <ul>
+                <li v-for="paymentSlip in page.paymentSlips">
+                  <em><b>{{paymentSlip.amount}}</b></em> дин, на име <em><b>{{paymentSlip.reason}}</b></em>
+                </li>
+              </ul>
+            </div>
+          </b-col>
+        </b-row>
+        <b-row class="darkerDiv">
+          <b-col>
+             Свега примања: <em><b>{{page.totalIncome}}</b></em>
+            <br/>Пренос готовине из прошлог месеца: <em><b>{{page.transferFromPreviousMonth}}</b></em>
+          </b-col>
+          <b-col>
+            Свега издавања: <em><b>{{page.totalOutcome}}</b></em>
+            <br/>Пренос готовине у наредни месец: <em><b>{{page.transferToNextMonth}}</b></em>
+          </b-col>
+        </b-row>
+      </div>
     </b-form>
   </b-container>
 </template>
@@ -19,7 +54,7 @@
   export default {
     data () {
       return {
-        reportData: null,
+        reportData: {},
         yearToFilter: (new Date()).getFullYear()
       }
     },
@@ -48,5 +83,20 @@
   width: 95px;
   padding-left:5px;
   margin-bottom: 8px;
+}
+.pageDiv{
+  border-style: solid;
+  border-color: #ddeeee;
+  border-radius: 10px;
+  border-width: 1px;
+  margin: 10px;
+  padding: 10px;
+  background-color: #ddeeee;
+}
+.itemsDiv{
+  min-height: 5px;
+}
+.lighterDiv{
+  background-color: #eeffff;
 }
 </style>

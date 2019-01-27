@@ -1,6 +1,7 @@
 const { PaymentSlip } = require('./paymentSlip')
 const { Receipt } = require('./receipt')
 const Big = require('big.js')
+const i18n = require('../../renderer/translations/i18n')
 
 const INCOME_CODES = {
   'I/1': 'парохијал',
@@ -67,8 +68,19 @@ class AnnualReportPage {
   }
 }
 
-const monthNames = ['Januaru', 'Februaru', 'Martu', 'Aprilu', 'Maju', 'Junu',
-  'Julu', 'Avgustu', 'Septembru', 'Oktobru', 'Novembru', 'Decembru'
+const monthNames = [
+  i18n.getTranslation('January.lokativ'),
+  i18n.getTranslation('February.lokativ'),
+  i18n.getTranslation('March.lokativ'),
+  i18n.getTranslation('April.lokativ'),
+  i18n.getTranslation('May.lokativ'),
+  i18n.getTranslation('June.lokativ'),
+  i18n.getTranslation('July.lokativ'),
+  i18n.getTranslation('August.lokativ'),
+  i18n.getTranslation('September.lokativ'),
+  i18n.getTranslation('October.lokativ'),
+  i18n.getTranslation('November.lokativ'),
+  i18n.getTranslation('December.lokativ')
 ]
 
 async function getAnnualReport (year) {
