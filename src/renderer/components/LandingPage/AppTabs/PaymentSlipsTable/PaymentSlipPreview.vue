@@ -1,12 +1,12 @@
 <template>           
   <b-container fluid id="payment-slip-preview-container">
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show" no-validation>
+    <b-form @submit="onSubmit" v-if="show" no-validation>
       <b-button @click.stop="closeModal()" size="sm" variant="link" class="ignoreInPrint" id="modalCancelBtn">
         <img src="~@/assets/delete.png" class="btn-img ignoreInPrint">
       </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" id="amountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="parent" contenteditable="false" id="divContentEditable">{{generatedAmountText}}</div><br v-if="showWs" />
+      <br/>На дин. <b-form-group class="input-form-group" id="amountInputFormGroup"><b-form-input ref="amountInput" v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="parent" contenteditable="false" id="divContentEditable">{{generatedAmountText}}</div><br v-if="showWs" />
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" id="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" id="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>  
@@ -29,12 +29,17 @@
       
 
       </div>
-      <div id="printSaveBtnsDiv">
+      <div id="printBtnDiv">
+        <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint" :class="{ 'displayNone' : defaultPaymentSlip }" id="paymentSlipPrintBtn">
+          <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
+        </b-button>
+      </div>
+      <div id="clearSaveBtnsDiv">
         <b-button type="submit" variant="secondary" class="ignoreInPrint" id="paymentSlipSaveBtn">
           <img src="~@/assets/save.png" class="btn-img ignoreInPrint">
         </b-button>
-        <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint" id="paymentSlipPrintBtn">
-          <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
+        <b-button @click.stop="clearForm()" variant="secondary" class="ignoreInPrint" id="paymentSlipClearBtn">
+          <img src="~@/assets/clear.png" class="btn-img ignoreInPrint">
         </b-button>
       </div>
               
@@ -121,6 +126,12 @@
           {{phrases.save}}
         </div>
       </b-tooltip>
+
+      <b-tooltip target="paymentSlipClearBtn">
+        <div class="tooltipInnerText">
+          {{phrases.clear}}
+        </div>
+      </b-tooltip>
     </b-form>
   </b-container>
 </template>
@@ -185,6 +196,7 @@
         phrases: {
           save: i18n.getTranslation('Save'),
           print: i18n.getTranslation('Print'),
+          clear: i18n.getTranslation('Clear'),
           willBeGenerated: i18n.getTranslation('The value will be generated'),
           enterValue: i18n.getTranslation('Enter a value'),
           pickDate: i18n.getTranslation('Pick a date')
@@ -215,7 +227,7 @@
         if (this.newlyOpened) {
           this.attemptSubmit = false
           this.fresh = true
-          this.resetForm()
+          this.resetModal()
           /* Needs to be stale, so that any reset from the parent will be detected */
           this.$emit('update:newlyOpened', false)
         }
@@ -224,7 +236,8 @@
     computed: {
       ...mapState(
         {
-          defaultForm: state => state.DefaultValues.defaultPaymentSlip
+          defaultForm: state => state.DefaultValues.defaultPaymentSlip,
+          emptyForm: state => state.DefaultValues.emptyPaymentSlip
         }
       ),
       generatedAmountText: {
@@ -461,19 +474,24 @@
                 }
               })
             }
-            this.resetForm()
+            this.resetModal()
             if (this.parentModal) {
               this.$root.$emit('bv::hide::modal', this.parentModal)
             }
           }
         }
       },
-      onReset (evt) {
-        evt.preventDefault()
+      resetModal () {
         this.resetForm()
+        /* Focus the first input field */
+        console.log(this.$refs.amountInput)
+        this.$refs.amountInput.focus()
         /* Trick to reset/clear native browser form validation state */
         this.show = false
         this.$nextTick(() => { this.show = true })
+      },
+      clearForm () {
+        this.form = JSON.parse(JSON.stringify(this.emptyForm))
       },
       checkForm () {
         if (!this.form.amount ||
@@ -518,7 +536,7 @@
         if (this.parentModal) {
           this.$root.$emit('bv::hide::modal', this.parentModal)
         }
-        this.resetForm()
+        this.resetModal()
       }
     }
   }
@@ -681,10 +699,18 @@ h1{
   position: absolute;
   right: 5px;
 }
-#printSaveBtnsDiv{
+#clearSaveBtnsDiv{
   position: absolute;
   bottom: 20px;
   right: 50px;
+}
+#printBtnDiv{
+  position: absolute;
+  bottom: 20px;
+  left: 50px;
+}
+.displayNone{
+  display:none;
 }
 </style>
 

@@ -18,6 +18,7 @@
   export default {
     data () {
       return {
+        reportData: null,
         yearToFilter: (new Date()).getFullYear()
       }
     },
@@ -28,7 +29,12 @@
     },
     methods: {
       annualReportCreateSubmit: function () {
-        console.log(annualReportController.getAnnualReport(this.yearToFilter))
+        annualReportController.getAnnualReport(this.yearToFilter).then(function (res) {
+          console.log(res)
+          if (!res.err) {
+            this.reportData = res.data
+          }
+        })
       }
     }
   }

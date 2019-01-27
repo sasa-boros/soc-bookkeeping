@@ -9,6 +9,7 @@
     "Search": "Претражи",
     "Save": "Сачувај",
     "Print": "Штампај",
+    "Clear": "Обриши",
     "Delete": "Обриши",
     "Cancel": "Поништи",
     "The value will be generated": "Вредност ће бити генерисана",
