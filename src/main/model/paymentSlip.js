@@ -28,6 +28,8 @@ const paymentSlipSchema = new Schema({
 
 paymentSlipSchema.statics.assignAnnualReportValues = assignAnnualReportValues
 
+// paymentSlipSchema.plugin(encrypt, { secret: config.encryptionSecret, encryptedFields: ['created_at', 'updated_at'] })
+
 paymentSlipSchema.pre('save', function (next) {
   preSave(this)
   next()
@@ -37,8 +39,6 @@ paymentSlipSchema.pre('findOneAndUpdate', function (next) {
   preFindOneAndUpdate(this)
   next()
 })
-
-// paymentSlipSchema.plugin(encrypt, { secret: config.encryptionSecret, excludeFromEncryption: ['created_at', 'updated_at'] })
 
 const PaymentSlip = mongoose.model('paymentSlips', paymentSlipSchema)
 const DefaultPaymentSlip = mongoose.model('defaultPaymentSlips', paymentSlipSchema)

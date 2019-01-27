@@ -78,8 +78,8 @@ async function getAnnualReport (year) {
     const annualReportPage = new AnnualReportPage()
     annualReportPage.ordinal = i + 1
 
-    const paymentSlips = await findAndSortEntitiesPerMonth(year, i, 1, PaymentSlip)
-    const receipts = await findAndSortEntitiesPerMonth(year, i, 1, Receipt)
+    const paymentSlips = await findAndSortBkEntitiesPerMonth(year, i, 1, PaymentSlip)
+    const receipts = await findAndSortBkEntitiesPerMonth(year, i, 1, Receipt)
 
     annualReportPage.monthText = monthNames[new Date(year, i).getMonth()]
     if (paymentSlips) {
@@ -139,24 +139,25 @@ async function getAnnualReport (year) {
   return annualReport
 }
 
-function findAndSortEntitiesPerMonth (year, monthOrdinal, sortingOrder, bkEntity) {
-  return bkEntity.find({
-    'date': {
-      '$gte': new Date(year, monthOrdinal, 1),
-      '$lt': new Date(year, monthOrdinal + 1, 1)
-    }
+function findAndSortBkEntitiesPerMonth (year, monthOrdinal, sortingOrder, bkEntity) {
+  return new Promise(function (resolve, reject) {
+    bkEntity.find({
+      'date': {
+        '$gte': new Date(year, monthOrdinal, 1),
+        '$lt': new Date(year, monthOrdinal + 1, 1)
+      }
+    })
+      .sort({
+        'date': sortingOrder
+      })
+      .exec()
+      .then(function (bkEntities) {
+        resolve(bkEntities)
+      }).catch((err) => {
+        console.error(err.message)
+        reject(err)
+      })
   })
-    .sort({
-      'date': sortingOrder
-    })
-    .lean()
-    .exec()
-    .then(function (bkEntities) {
-      return bkEntities
-    }).catch((err) => {
-      console.error(err.message)
-      throw err
-    })
 }
 
 function calculateTotalsPerCode (part, pos, amount, totalPerCode) {

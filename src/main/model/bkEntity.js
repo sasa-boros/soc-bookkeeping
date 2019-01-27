@@ -1,10 +1,9 @@
 function assignAnnualReportValues () {
   var self = this
   return new Promise(function (resolve, reject) {
-    return self.find({}).sort({ 'date': 1 }).lean().exec().then(async function (bkEntities) {
+    return self.find({}).sort({ 'date': 1 }).exec().then(async function (bkEntities) {
       for (let i = 0; i < bkEntities.length; i++) {
         const bkEntity = bkEntities[i]
-
         bkEntity.ordinal = i + 1
         bkEntity.annualReportPage = bkEntity.date.getMonth() + 1
         await updateBkEntity(self, bkEntity)
@@ -24,7 +23,6 @@ function updateBkEntity (self, bkEntity) {
         console.error(err.message)
         reject(err)
       }
-      console.log(bkEntity)
       resolve()
     })
   })
