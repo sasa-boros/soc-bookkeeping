@@ -94,7 +94,7 @@
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
   const { dialog } = require('electron').remote
 
-  const { getLastNYears } = require('../../../utils/utils')
+  const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
   const paymentSlipsController = require('../../../controllers/paymentSlip.controller')
   const i18n = require('../../../translations/i18n')
 
@@ -195,11 +195,13 @@
             const self = this
             paymentSlipsController.deletePaymentSlip(item._id).then((res) => {
               if (!res.err) {
-                this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                self.$root.$emit('bv::refresh::table', 'payment-slips-table')
                 const itemCheckedIndex = self.checkedItems.indexOf(item)
                 if (itemCheckedIndex !== -1) {
                   self.checkedItems.splice(itemCheckedIndex, 1)
                 }
+              } else {
+                showErrorDialog(res.err)
               }
             })
           }
@@ -221,11 +223,13 @@
             this.checkedItems.forEach(function (item) {
               paymentSlipsController.deletePaymentSlip(item._id).then((res) => {
                 if (!res.err) {
-                  this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                  self.$root.$emit('bv::refresh::table', 'payment-slips-table')
                   const itemCheckedIndex = self.checkedItems.indexOf(item)
                   if (itemCheckedIndex !== -1) {
                     self.checkedItems.splice(itemCheckedIndex, 1)
                   }
+                } else {
+                  showErrorDialog(res.err)
                 }
               })
             })
@@ -252,6 +256,8 @@
           if (!res.err) {
             const items = res.data
             return (items || [])
+          } else {
+            showErrorDialog(res.err)
           }
           return null
         })

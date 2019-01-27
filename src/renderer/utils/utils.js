@@ -1,3 +1,10 @@
+const { dialog } = require('electron').remote
+const i18n = require('../translations/i18n')
+
+let phrases = {
+  error: i18n.getTranslation('Error')
+}
+
 function numberToSerbianDinars (n) {
   if (!n || isNaN(n) || n.toString().trim() === '') {
     return null
@@ -192,8 +199,22 @@ function getCodeCombinations (incomeCodes) {
   }
   return parts
 }
+
+function showErrorDialog (error) {
+  error = JSON.stringify(error)
+  const options = {
+    type: 'error',
+    buttons: [],
+    title: phrases.error,
+    message: error,
+    noLink: true
+  }
+  dialog.showMessageBox(null, options)
+}
+
 module.exports = {
   numberToSerbianDinars: numberToSerbianDinars,
   getLastNYears: getLastNYears,
-  getCodeCombinations: getCodeCombinations
+  getCodeCombinations: getCodeCombinations,
+  showErrorDialog: showErrorDialog
 }
