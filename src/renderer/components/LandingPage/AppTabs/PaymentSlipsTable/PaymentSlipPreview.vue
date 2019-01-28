@@ -1,4 +1,4 @@
-<template>           
+<template>       
   <b-container fluid id="payment-slip-preview-container">
     <b-form @submit="onSubmit" v-if="show" no-validation>
       <b-button @click.stop="closeModal()" size="sm" variant="link" class="ignoreInPrint" id="modalCancelBtn">
@@ -437,9 +437,6 @@
       pos2Options: function () {
         return this.incomeCodeCombinations[this.form.secondPart]
       },
-      showWs: function () {
-        return this.generatedAmountText.length < 55
-      },
       missingReason: function () {
         return !this.form || !this.form.reason || this.form.reason.toString().trim() === ''
       },
@@ -582,234 +579,234 @@
 </script>
 
 <style scoped>
-input { 
-  text-align: center;
-  /* Immitate the underline in the real payment slip */
-  border-bottom: 1px solid black !important;
-  border-radius: 0 !important;
-}
-.tooltipInnerText {
-  font-size: 95%;
-  line-height: 1;
-  margin: 1px;
-}
-#payment-slip-preview-container{
-  width: 794px; 
-  height: 559px; 
-  border-style: solid;
-  border-width: thin;
-  position: relative;
-}
-.payment-slip-preview-text{
-  white-space: pre;
-  width: 670px; 
-  height: 520px; 
-  /*border-style: solid;
-  border-color: blue;*/
-  font-family: "Times New Roman";
-  font-size: 90%;
-  letter-spacing: 95%;
-  color: #16264C;
-  line-height: 2;
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-h1{
-  text-align: center;
-  font-weight: bold;
-  font-size: 25px;
-  margin: 0px;
-  padding: 0px;
-}
-.input-form-group{ 
-  display: inline;
-  height: 15px;
-  margin: 0px;
-  padding: 0px;
-}
-.input-small{
-  border-style: none;
-  font-weight: bold;
-  display: inline;
-  height: 15px;
-  margin: 0px;
-  padding: 0px;
-  color: black;
-}
-.input-small::placeholder{
-  border-style: none;
-  font-weight: normal;
-  color: #16264C;
-}
-.is-invalid {
-  border-style: dotted;
-}
-.line-spacing-small {
-  line-height: 1.3;
-}
-#amountInput{
-  width: 140px;
-}
-#amountTextInput{
-  width: 410px;
-}
-#amountTextInputPt2{
-  width: 255px;
-}
-#townInput{
-  width: 180px;
-}
-#reasonInput{
-  width: 430px;
-}
-#payedInput{
-  width: 288px;
-}
-#receivedInput{
-  width: 255px;
-}
-#yearSelect{
-  width: 95px;
-  padding-left:5px;
-  margin-bottom: 8px;
-}
-#dateInput{
-  width: 95px;
-  padding-left:5px;
-  margin-bottom: 8px;
-}
-#part1Select{
-  width: 50px;
-  padding-left:5px;
-  margin-bottom: 8px;
-}
-#pos1Select{
-  width: 50px;
-  padding-left:5px;
-  margin-bottom: 8px;
-}
-#part2Select{
-  width: 50px;
-  padding-left:5px;
-  margin-bottom: 8px;
-}
-#pos2Select{
-  width: 50px;
-  padding-left:5px;
-  margin-bottom: 8px;
-}
-#firstAmountInput{
-  width: 85px;
-}
-#secondAmountInput{
-  width: 85px;
-}
-#divContentEditable{ 
-  -ms-flow-into: article;
-  -webkit-flow-into: article;
-  display: inline;
-  font-weight: bold;
-  font-size: 110% !important;
-  line-height: 2 !important;
-  min-height: 4 !important;
-  color: black;
-  white-space: nowrap;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-#totalAmountInput{
-  width: 100px;
-}
-#annualReportPageInput{
-  width: 35px;
-}
-#ordinalInput{
-  width: 40px;
-}
-#municipalityPresidentInput{
-  width: 235px;
-}
-#modalCancelBtn{
-  margin-top: 5px;
-  position: absolute;
-  right: 5px;
-}
-#clearSaveBtnsDiv{
-  position: absolute;
-  bottom: 20px;
-  right: 50px;
-}
-#printBtnDiv{
-  position: absolute;
-  bottom: 20px;
-  left: 50px;
-}
-.displayNone{
-  display:none;
-}
-.unstyled::-webkit-inner-spin-button {
-  display: none;
-  -webkit-appearance: none;
-}
-.amountTextDivWrapper{
-  display: inline;
-  font-weight: bold;
-  color: black;
-  font-size: 110% !important;
-  line-height: 2 !important;
-  min-height: 4 !important;
-  white-space: nowrap;
-  border-bottom: solid;
-  border-width: 1px;
-  display: inline-block;
-  margin: 0;
-}
-#amountTextDivWrapper1{
-  height: 25px;
-  width: 405px;
-  white-space: nowrap;
-  overflow: hidden;
-  display: inline-block;
-  margin-bottom: -2px;
-}
-#amountTextDivWrapper2{
-  height: 25px;
-  width: 670px;
-  white-space: nowrap;
-  overflow: hidden;
-  margin-bottom: -3px;
-  margin-top: -2px;
-}
-.disabledTextDiv{
-  background-color: #ededed;
-  max-height: 15px;
-}
+  input {
+    text-align: center;
+    /* Immitate the underline in the real payment slip */
+    border-bottom: 1px solid black !important;
+    border-radius: 0 !important;
+  }
+  .tooltipInnerText {
+    font-size: 95%;
+    line-height: 1;
+    margin: 1px;
+  }
+  #payment-slip-preview-container{
+    width: 794px;
+    height: 559px;
+    border-style: solid;
+    border-width: thin;
+    position: relative;
+  }
+  .payment-slip-preview-text{
+    white-space: pre;
+    width: 670px;
+    height: 520px;
+    /*border-style: solid;
+    border-color: blue;*/
+    font-family: "Times New Roman";
+    font-size: 90%;
+    letter-spacing: 95%;
+    color: #16264C;
+    line-height: 2;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+  h1{
+    text-align: center;
+    font-weight: bold;
+    font-size: 25px;
+    margin: 0px;
+    padding: 0px;
+  }
+  .input-form-group{
+    display: inline;
+    height: 15px;
+    margin: 0px;
+    padding: 0px;
+  }
+  .input-small{
+    border-style: none;
+    font-weight: bold;
+    display: inline;
+    height: 15px;
+    margin: 0px;
+    padding: 0px;
+    color: black;
+  }
+  .input-small::placeholder{
+    border-style: none;
+    font-weight: normal;
+    color: #16264C;
+  }
+  .is-invalid {
+    border-style: dotted;
+  }
+  .line-spacing-small {
+    line-height: 1.3;
+  }
+  #amountInput{
+    width: 140px;
+  }
+  #amountTextInput{
+    width: 410px;
+  }
+  #amountTextInputPt2{
+    width: 255px;
+  }
+  #townInput{
+    width: 180px;
+  }
+  #reasonInput{
+    width: 430px;
+  }
+  #payedInput{
+    width: 288px;
+  }
+  #receivedInput{
+    width: 255px;
+  }
+  #yearSelect{
+    width: 95px;
+    padding-left:5px;
+    margin-bottom: 8px;
+  }
+  #dateInput{
+    width: 95px;
+    padding-left:5px;
+    margin-bottom: 8px;
+  }
+  #part1Select{
+    width: 50px;
+    padding-left:5px;
+    margin-bottom: 8px;
+  }
+  #pos1Select{
+    width: 50px;
+    padding-left:5px;
+    margin-bottom: 8px;
+  }
+  #part2Select{
+    width: 50px;
+    padding-left:5px;
+    margin-bottom: 8px;
+  }
+  #pos2Select{
+    width: 50px;
+    padding-left:5px;
+    margin-bottom: 8px;
+  }
+  #firstAmountInput{
+    width: 85px;
+  }
+  #secondAmountInput{
+    width: 85px;
+  }
+  #divContentEditable{
+    -ms-flow-into: article;
+    -webkit-flow-into: article;
+    display: inline;
+    font-weight: bold;
+    font-size: 110% !important;
+    line-height: 2 !important;
+    min-height: 4 !important;
+    color: black;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  #totalAmountInput{
+    width: 100px;
+  }
+  #annualReportPageInput{
+    width: 35px;
+  }
+  #ordinalInput{
+    width: 40px;
+  }
+  #municipalityPresidentInput{
+    width: 235px;
+  }
+  #modalCancelBtn{
+    margin-top: 5px;
+    position: absolute;
+    right: 5px;
+  }
+  #clearSaveBtnsDiv{
+    position: absolute;
+    bottom: 20px;
+    right: 50px;
+  }
+  #printBtnDiv{
+    position: absolute;
+    bottom: 20px;
+    left: 50px;
+  }
+  .displayNone{
+    display:none;
+  }
+  .unstyled::-webkit-inner-spin-button {
+    display: none;
+    -webkit-appearance: none;
+  }
+  .amountTextDivWrapper{
+    display: inline;
+    font-weight: bold;
+    color: black;
+    font-size: 110% !important;
+    line-height: 2 !important;
+    min-height: 4 !important;
+    white-space: nowrap;
+    border-bottom: solid;
+    border-width: 1px;
+    display: inline-block;
+    margin: 0;
+  }
+  #amountTextDivWrapper1{
+    height: 25px;
+    width: 405px;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    margin-bottom: -2px;
+  }
+  #amountTextDivWrapper2{
+    height: 25px;
+    width: 670px;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-bottom: -3px;
+    margin-top: -2px;
+  }
+  .disabledTextDiv{
+    background-color: #ededed;
+    max-height: 15px;
+  }
 </style>
 
 <style>
-@media screen {
-  #print {
-    display: none;
+  @media screen {
+    #print {
+      display: none;
+    }
   }
-}
-@media print {
-  * {
-    visibility:hidden;
+  @media print {
+    * {
+      visibility:hidden;
+    }
+    #print, #print * {
+      visibility:visible;
+    }
+    #print {
+      position:absolute;
+      left:0;
+      top:0;
+    }
+    .ignoreInPrint {
+      visibility:hidden !important;
+    }
   }
-  #print, #print * {
-    visibility:visible;
-  }
-  #print {
-    position:absolute;
-    left:0;
-    top:0;
-  }
-  .ignoreInPrint {
-    visibility:hidden !important;
-  }
-}
 </style>
