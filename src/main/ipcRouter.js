@@ -34,6 +34,7 @@ ipcMain.on('get-payment-slips', function (event, year) {
 
 ipcMain.on('create-payment-slip', function (event, paymentSlip) {
   console.log(`Initiated create payment slip: \n${JSON.stringify(paymentSlip, null, 2)}`)
+  delete paymentSlip['_id']
   var newPaymentSlip = PaymentSlip(paymentSlip)
   newPaymentSlip.save(function (err, createdPaymentSlip) {
     if (err) {
@@ -94,6 +95,7 @@ ipcMain.on('get-receipts', function (event, year) {
 
 ipcMain.on('create-receipt', function (event, receipt) {
   console.log(`Initiated create receipt: \n${JSON.stringify(receipt, null, 2)}`)
+  delete receipt['_id']
   var newReceipt = Receipt(receipt)
   newReceipt.save(function (err, createdReceipt) {
     if (err) {
@@ -160,6 +162,7 @@ ipcMain.on('get-default-payment-slip', function (event) {
 
 ipcMain.on('create-default-payment-slip', function (event, defaultPaymentSlip) {
   console.log(`Initiated create default payment slip: \n${JSON.stringify(defaultPaymentSlip, null, 2)}`)
+  delete defaultPaymentSlip['_id']
   DefaultPaymentSlip.deleteOne({}, function (err) {
     if (err) {
       console.error(err.message)
@@ -206,6 +209,7 @@ ipcMain.on('get-default-receipt', function (event) {
 
 ipcMain.on('create-default-receipt', function (event, defaultReceipt) {
   console.log(`Initiated create default receipt: \n${JSON.stringify(defaultReceipt, null, 2)}`)
+  delete defaultReceipt['_id']
   DefaultReceipt.deleteOne({}, function (err) {
     if (err) {
       console.error(err.message)
