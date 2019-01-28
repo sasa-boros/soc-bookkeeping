@@ -6,7 +6,8 @@
       </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" id="amountInputFormGroup"><b-form-input ref="amountInput" v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="parent" contenteditable="false" id="divContentEditable">{{generatedAmountText}}</div><br v-if="showWs" />
+      <br/>На дин. <b-form-group class="input-form-group" id="amountInputFormGroup"><b-form-input ref="amountInput" v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="amountTextDivWrapper" contenteditable="false" id="amountTextDivWrapper1">{{generatedAmountTextLine1}}</div>
+      <br/><div class="amountTextDivWrapper" contenteditable="false" id="amountTextDivWrapper2">{{generatedAmountTextLine2}}</div>
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" id="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" id="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>  
@@ -244,7 +245,7 @@
       ),
       generatedAmountText: {
         get: function () {
-          var placeholder = '_______________________________________________________________________________________________________________________________________'
+          var placeholder = ''
           if (this.form) {
             var generatedText = numberToSerbianDinars(this.form.amount)
             if (!generatedText) {
@@ -255,6 +256,38 @@
             }
           } else {
             return placeholder
+          }
+        },
+        set: function (newValue) {
+        }
+      },
+      generatedAmountTextLine1: {
+        get: function () {
+          if (this.generatedAmountText.length <= 52) {
+            return this.generatedAmountText
+          }
+          const firstSubstring = this.generatedAmountText.substring(0, 52)
+          const spaceInd = firstSubstring.lastIndexOf(' ')
+          if (spaceInd !== -1) {
+            return this.generatedAmountText.substring(0, spaceInd)
+          } else {
+            return this.generatedAmountText.substring(0, 52)
+          }
+        },
+        set: function (newValue) {
+        }
+      },
+      generatedAmountTextLine2: {
+        get: function () {
+          if (this.generatedAmountText.length <= 52) {
+            return ''
+          }
+          const firstSubstring = this.generatedAmountText.substring(0, 52)
+          const spaceInd = firstSubstring.lastIndexOf(' ')
+          if (spaceInd !== -1) {
+            return this.generatedAmountText.substring(spaceInd)
+          } else {
+            return this.generatedAmountText.substring(52)
           }
         },
         set: function (newValue) {
@@ -684,7 +717,7 @@ h1{
   line-height: 2 !important;
   min-height: 4 !important;
   color: black;
-  white-space:normal !important;
+  white-space: nowrap;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
@@ -721,6 +754,35 @@ h1{
 .unstyled::-webkit-inner-spin-button {
   display: none;
   -webkit-appearance: none;
+}
+.amountTextDivWrapper{
+  display: inline;
+  font-weight: bold;
+  color: black;
+  font-size: 110% !important;
+  line-height: 2 !important;
+  min-height: 4 !important;
+  white-space: nowrap;
+  border-bottom: solid;
+  border-width: 1px;
+  display: inline-block;
+  margin: 0;
+}
+#amountTextDivWrapper1{
+  height: 25px;
+  width: 405px;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  margin-bottom: -2px;
+}
+#amountTextDivWrapper2{
+  height: 25px;
+  width: 670px;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-bottom: -3px;
+  margin-top: -2px;
 }
 </style>
 
