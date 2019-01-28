@@ -64,7 +64,8 @@
       }
     },
     methods: {
-      annualReportCreateSubmit: function () {
+      annualReportCreateSubmit: function (evt) {
+        evt.preventDefault()
         const self = this
         annualReportController.getAnnualReport(this.yearToFilter).then(function (res) {
           if (!res.err) {

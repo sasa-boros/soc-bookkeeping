@@ -484,6 +484,7 @@
         this.$emit('update:newlyOpened', !val)
       },
       onSubmit (evt) {
+        evt.preventDefault()
         if (this.defaultPaymentSlipPreview) {
           /* Set the default values for payment slips */
           this.$store.dispatch('SET_DEFAULT_PAYMENT_SLIP', this.form)
@@ -491,7 +492,6 @@
             this.$root.$emit('bv::hide::modal', this.parentModal)
           }
         } else {
-          evt.preventDefault()
           this.setAttemptSubmit(true)
           if (this.checkForm()) {
             if (this.form._id) {
