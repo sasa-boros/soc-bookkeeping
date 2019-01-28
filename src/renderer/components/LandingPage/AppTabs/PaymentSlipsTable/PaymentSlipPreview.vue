@@ -6,16 +6,16 @@
       </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" id="amountInputFormGroup"><b-form-input ref="amountInput" v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="amountTextDivWrapper" contenteditable="false" id="amountTextDivWrapper1">{{generatedAmountTextLine1}}</div>
-      <br/><div class="amountTextDivWrapper" contenteditable="false" id="amountTextDivWrapper2">{{generatedAmountTextLine2}}</div>
+      <br/>На дин. <b-form-group class="input-form-group" id="amountInputFormGroup"><b-form-input ref="amountInput" v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="amountTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" contenteditable="false" id="amountTextDivWrapper1">{{generatedAmountTextLine1}}</div>
+      <br/><div class="amountTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" id="amountTextDivWrapper2">{{generatedAmountTextLine2}}</div>
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" id="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" id="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-group class="input-form-group" id="dateInputFormGroup"><b-form-input v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" class="input-small unstyled" id="dateInput" type="text" onfocus="(this.type='date')" onblur="(this.type='text')"></b-form-input></b-form-group> г.
-                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>
-                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>                                                        
+                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultPaymentSlipPreview" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
                                                            
-      <br/><b-form-group class="input-form-group" id="receivedInputFormGroup"><b-form-input v-model="form.received" v-bind:class="{ 'is-invalid': attemptSubmit && missingReceived }" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                    Свега дин. <b-form-group class="input-form-group" id="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" type="number" min="0" step=".01"></b-form-input></b-form-group>                                                
+      <br/><b-form-group class="input-form-group" id="receivedInputFormGroup"><b-form-input v-model="form.received" v-bind:class="{ 'is-invalid': attemptSubmit && missingReceived }" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                    Свега дин. <b-form-group class="input-form-group" id="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
       <div class="my-0 line-spacing-small">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
@@ -31,7 +31,7 @@
 
       </div>
       <div id="printBtnDiv">
-        <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint" :class="{ 'displayNone' : defaultPaymentSlip }" id="paymentSlipPrintBtn">
+        <b-button @click.stop="printPaymentSlip()" variant="secondary" class="ignoreInPrint" :class="{ 'displayNone' : defaultPaymentSlipPreview }" id="paymentSlipPrintBtn">
           <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
         </b-button>
       </div>
@@ -175,7 +175,7 @@
         type: Boolean,
         default: true
       },
-      defaultPaymentSlip: {
+      defaultPaymentSlipPreview: {
         type: Boolean,
         default: false
       },
@@ -484,7 +484,7 @@
         this.$emit('update:newlyOpened', !val)
       },
       onSubmit (evt) {
-        if (this.defaultPaymentSlip) {
+        if (this.defaultPaymentSlipPreview) {
           /* Set the default values for payment slips */
           this.$store.dispatch('SET_DEFAULT_PAYMENT_SLIP', this.form)
           if (this.parentModal) {
@@ -783,6 +783,10 @@ h1{
   overflow: hidden;
   margin-bottom: -3px;
   margin-top: -2px;
+}
+.disabledTextDiv{
+  background-color: #ededed;
+  max-height: 15px;
 }
 </style>
 

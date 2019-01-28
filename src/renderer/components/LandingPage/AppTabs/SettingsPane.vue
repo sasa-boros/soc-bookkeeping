@@ -9,12 +9,12 @@
 
     <!-- Default receipt modal -->
     <b-modal hide-footer hide-header size="a5" id="modalDefaultReceipt">
-      <receipt-preview :item='defaultReceiptForm' parentModal="modalDefaultReceipt" defaultReceipt></receipt-preview>
+      <receipt-preview :item='defaultReceiptForm' parentModal="modalDefaultReceipt" defaultReceiptPreview></receipt-preview>
     </b-modal>
 
     <!-- Default slip modal -->
     <b-modal hide-footer hide-header size="a5" id="modalDefaultSlip">
-      <payment-slip-preview :item='defaultPaymentSlipForm' parentModal="modalDefaultSlip" defaultPaymentSlip></payment-slip-preview>
+      <payment-slip-preview :item='defaultPaymentSlipForm' parentModal="modalDefaultSlip" defaultPaymentSlipPreview></payment-slip-preview>
     </b-modal>
   </b-container>
 </template>
