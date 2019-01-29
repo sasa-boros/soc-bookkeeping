@@ -90,20 +90,20 @@ async function getAnnualReport (year) {
     const annualReportPage = new AnnualReportPage()
     annualReportPage.ordinal = i + 1
 
-    const paymentSlips = await findAndSortBkEntitiesPerMonth(year, i, 1, PaymentSlip)
     const receipts = await findAndSortBkEntitiesPerMonth(year, i, 1, Receipt)
+    const paymentSlips = await findAndSortBkEntitiesPerMonth(year, i, 1, PaymentSlip)
 
     annualReportPage.monthText = monthNames[new Date(year, i).getMonth()]
-    if (paymentSlips) {
-      for (let j = 0; j < paymentSlips.length; j++) {
-        const paymentSlip = paymentSlips[j]
-        if (paymentSlip.firstPart && paymentSlip.firstPos && paymentSlip.firstAmount) {
-          calculateTotalsPerCode(paymentSlip.firstPart, paymentSlip.firstPos, paymentSlip.firstAmount, annualReportPage.totalIncomePerCode)
+    if (receipts) {
+      for (let j = 0; j < receipts.length; j++) {
+        const receipt = receipts[j]
+        if (receipt.firstPart && receipt.firstPos && receipt.firstAmount) {
+          calculateTotalsPerCode(receipt.firstPart, receipt.firstPos, receipt.firstAmount, annualReportPage.totalIncomePerCode)
         }
-        if (paymentSlip.secondPart && paymentSlip.secondPos && paymentSlip.secondAmount) {
-          calculateTotalsPerCode(paymentSlip.secondPart, paymentSlip.secondPos, paymentSlip.secondAmount, annualReportPage.totalIncomePerCode)
+        if (receipt.secondPart && receipt.secondPos && receipt.secondAmount) {
+          calculateTotalsPerCode(receipt.secondPart, receipt.secondPos, receipt.secondAmount, annualReportPage.totalIncomePerCode)
         }
-        annualReportPage.paymentSlips.push(paymentSlip)
+        annualReportPage.receipts.push(receipt)
       }
       for (let code in annualReportPage.totalIncomePerCode) {
         annualReportPage.totalIncome = annualReportPage.totalIncome.plus(annualReportPage.totalIncomePerCode[code])
@@ -115,16 +115,16 @@ async function getAnnualReport (year) {
       }
       annualReport.totalIncome = annualReport.totalIncome.plus(annualReportPage.totalIncome)
     }
-    if (receipts) {
-      for (let j = 0; j < receipts.length; j++) {
-        const receipt = receipts[j]
-        if (receipt.firstPart && receipt.firstPos && receipt.firstAmount) {
-          calculateTotalsPerCode(receipt.firstPart, receipt.firstPos, receipt.firstAmount, annualReportPage.totalOutcomePerCode)
+    if (paymentSlips) {
+      for (let j = 0; j < paymentSlips.length; j++) {
+        const paymentSlip = paymentSlips[j]
+        if (paymentSlip.firstPart && paymentSlip.firstPos && paymentSlip.firstAmount) {
+          calculateTotalsPerCode(paymentSlip.firstPart, paymentSlip.firstPos, paymentSlip.firstAmount, annualReportPage.totalOutcomePerCode)
         }
-        if (receipt.secondPart && receipt.secondPos && receipt.secondAmount) {
-          calculateTotalsPerCode(receipt.secondPart, receipt.secondPos, receipt.secondAmount, annualReportPage.totalOutcomePerCode)
+        if (paymentSlip.secondPart && paymentSlip.secondPos && paymentSlip.secondAmount) {
+          calculateTotalsPerCode(paymentSlip.secondPart, paymentSlip.secondPos, paymentSlip.secondAmount, annualReportPage.totalOutcomePerCode)
         }
-        annualReportPage.receipts.push(receipt)
+        annualReportPage.paymentSlips.push(paymentSlip)
       }
 
       for (let code in annualReportPage.totalOutcomePerCode) {

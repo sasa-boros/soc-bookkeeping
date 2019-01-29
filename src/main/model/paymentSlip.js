@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const { assignAnnualReportValues, preSave, preFindOneAndUpdate } = require('./bkEntity')
-// const encrypt = require('mongoose-encryption')
-// const config = require('../../config/config')
+// const CryptoJS = require('crypto-js')
 
 const Schema = mongoose.Schema
 
@@ -28,10 +27,15 @@ const paymentSlipSchema = new Schema({
 
 paymentSlipSchema.statics.assignAnnualReportValues = assignAnnualReportValues
 
-// paymentSlipSchema.plugin(encrypt, { secret: config.encryptionSecret, encryptedFields: ['created_at', 'updated_at'] })
-
 paymentSlipSchema.pre('save', function (next) {
   preSave(this)
+  // Encrypt
+  /* var ps = this._doc
+  var psEncrypted = {}
+  Object.keys(ps).forEach(function (key) {
+    psEncrypted[key] = CryptoJS.AES.encrypt(JSON.stringify(ps[key]), 'secret key 123').toString()
+  })
+  this._doc = psEncrypted */
   next()
 })
 
