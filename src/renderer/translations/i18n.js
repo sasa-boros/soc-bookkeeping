@@ -10,31 +10,31 @@ let localeLanguage = app.getLocale()
 let usedLanguage
 
 function loadLocaleLanguage () {
-  if (fs.existsSync(path.join(__dirname, localeLanguage + '.js'))) {
-    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, localeLanguage + '.js'), 'utf8'))
+  if (fs.existsSync(path.join(__dirname, localeLanguage + '.json'))) {
+    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, localeLanguage + '.json'), 'utf8'))
     usedLanguage = localeLanguage
   } else {
-    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, fallbackLanguage + '.js'), 'utf8'))
+    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, fallbackLanguage + '.json'), 'utf8'))
     usedLanguage = fallbackLanguage
   }
 }
 
 function loadDefaultLanguage () {
-  if (fs.existsSync(path.join(__dirname, defaultLanguage + '.js'))) {
-    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, defaultLanguage + '.js'), 'utf8'))
+  if (fs.existsSync(path.join(__dirname, defaultLanguage + '.json'))) {
+    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, defaultLanguage + '.json'), 'utf8'))
     usedLanguage = defaultLanguage
   } else {
-    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, fallbackLanguage + '.js'), 'utf8'))
+    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, fallbackLanguage + '.json'), 'utf8'))
     usedLanguage = fallbackLanguage
   }
 }
 
 function setLanguage (language) {
-  if (fs.existsSync(path.join(__dirname, language + '.js'))) {
-    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, language + '.js'), 'utf8'))
+  if (fs.existsSync(path.join(__dirname, language + '.json'))) {
+    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, language + '.json'), 'utf8'))
     usedLanguage = language
   } else {
-    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, fallbackLanguage + '.js'), 'utf8'))
+    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, fallbackLanguage + '.json'), 'utf8'))
     usedLanguage = fallbackLanguage
   }
 }

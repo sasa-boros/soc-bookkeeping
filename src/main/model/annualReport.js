@@ -108,9 +108,9 @@ async function getAnnualReport (year) {
       for (let code in annualReportPage.totalIncomePerCode) {
         annualReportPage.totalIncome = annualReportPage.totalIncome.plus(annualReportPage.totalIncomePerCode[code])
         if (annualReport.totalIncomePerCode[code]) {
-          annualReport.totalIncomePerCode[code] = annualReport.totalIncomePerCode[code].plus(annualReportPage.totalIncome)
+          annualReport.totalIncomePerCode[code] = annualReport.totalIncomePerCode[code].plus(annualReportPage.totalIncomePerCode[code])
         } else {
-          annualReport.totalIncomePerCode[code] = annualReportPage.totalIncome
+          annualReport.totalIncomePerCode[code] = annualReportPage.totalIncomePerCode[code]
         }
       }
       annualReport.totalIncome = annualReport.totalIncome.plus(annualReportPage.totalIncome)
@@ -130,9 +130,9 @@ async function getAnnualReport (year) {
       for (let code in annualReportPage.totalOutcomePerCode) {
         annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(annualReportPage.totalOutcomePerCode[code])
         if (annualReport.totalOutcomePerCode[code]) {
-          annualReport.totalOutcomePerCode[code] = annualReport.totalOutcomePerCode[code].plus(annualReportPage.totalOutcome)
+          annualReport.totalOutcomePerCode[code] = annualReport.totalOutcomePerCode[code].plus(annualReportPage.totalOutcomePerCode[code])
         } else {
-          annualReport.totalOutcomePerCode[code] = annualReportPage.totalOutcome
+          annualReport.totalOutcomePerCode[code] = annualReportPage.totalOutcomePerCode[code]
         }
       }
 
@@ -143,7 +143,10 @@ async function getAnnualReport (year) {
       annualReportPage.transferFromPreviousMonth = annualReport.pages[i - 1].transferToNextMonth
     }
     annualReportPage.total = annualReportPage.totalIncome.plus(annualReportPage.transferFromPreviousMonth)
-    annualReportPage.transferToNextMonth = annualReportPage.total.minus(annualReport.totalOutcome)
+    annualReportPage.transferToNextMonth = annualReportPage.total.minus(annualReportPage.totalOutcome)
+    if (annualReportPage.transferToNextMonth.lt(0)) {
+      annualReportPage.transferToNextMonth = Big(0)
+    }
     annualReport.pages.push(annualReportPage)
   }
 
