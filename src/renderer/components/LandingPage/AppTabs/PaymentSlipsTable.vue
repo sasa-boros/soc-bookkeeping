@@ -135,7 +135,7 @@
         itemsShownInTable: [],
         checkAll: false,
         yearToFilter: (new Date()).getFullYear(),
-        modalNewlyOpened: true,
+        modalNewlyOpened: false,
         selectedItem: null
       }
     },
@@ -165,7 +165,7 @@
     },
     methods: {
       openCreatePayslipModal (button) {
-        this.resetSelectedItem()
+        this.resetModal()
         this.$root.$emit('bv::hide::tooltip')
         this.$root.$emit('bv::show::modal', 'modalCreateSlip', button)
       },
