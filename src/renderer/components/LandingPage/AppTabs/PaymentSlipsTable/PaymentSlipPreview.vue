@@ -11,7 +11,7 @@
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" id="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" id="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за  <b-form-group class="input-form-group" id="dateInputFormGroup"><b-form-input v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" class="input-small unstyled" id="dateInput" type="text" onfocus="(this.type='date')" onblur="(this.type='text')"></b-form-input></b-form-group> г.
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker>г.
                                                                                                             Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
                   Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultPaymentSlipPreview" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
                                                            
@@ -98,7 +98,7 @@
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableDateTooltip" target="dateInputFormGroup">
+      <b-tooltip :disabled.sync="disableDateTooltip" target="dateInput">
         <div class="tooltipInnerText">
           {{phrases.pickDate}}
         </div>
@@ -139,6 +139,8 @@
 
 <script>
   import { mapState } from 'vuex'
+  import Datepicker from 'vuejs-datepicker'
+  import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
   const paymentSlipsController = require('../../../../controllers/paymentSlip.controller')
   const annualReportController = require('../../../../controllers/annualReport.controller')
   const { numberToSerbianDinars, getLastNYears, getCodeCombinations, showErrorDialog } = require('../../../../utils/utils')
@@ -201,6 +203,10 @@
           willBeGenerated: i18n.getTranslation('The value will be generated'),
           enterValue: i18n.getTranslation('Enter a value'),
           pickDate: i18n.getTranslation('Pick a date')
+        },
+        calendarLanguages: {
+          sr: sr,
+          srCYRL: srCYRL
         }
       }
     },
@@ -399,7 +405,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'dateInputFormGroup')
+            this.$root.$emit('bv::hide::tooltip', 'dateInput')
           }
         }
       },
@@ -574,7 +580,8 @@
         }
         this.resetModal()
       }
-    }
+    },
+    components: { Datepicker }
   }
 </script>
 
@@ -643,7 +650,7 @@
     color: #16264C;
   }
   .is-invalid {
-    border-style: dotted;
+    border: dotted 1px red;
   }
   .line-spacing-small {
     line-height: 1.3;
@@ -670,11 +677,6 @@
     width: 255px;
   }
   #yearSelect{
-    width: 95px;
-    padding-left:5px;
-    margin-bottom: 8px;
-  }
-  #dateInput{
     width: 95px;
     padding-left:5px;
     margin-bottom: 8px;
@@ -737,20 +739,16 @@
   }
   #clearSaveBtnsDiv{
     position: absolute;
-    bottom: 20px;
+    bottom: 15px;
     right: 50px;
   }
   #printBtnDiv{
     position: absolute;
-    bottom: 20px;
+    bottom: 15px;
     left: 50px;
   }
   .displayNone{
     display:none;
-  }
-  .unstyled::-webkit-inner-spin-button {
-    display: none;
-    -webkit-appearance: none;
   }
   .amountTextDivWrapper{
     display: inline;
@@ -788,6 +786,49 @@
 </style>
 
 <style>
+  .datepickerInput{
+    display: inline;
+    border-style: none;
+    border-bottom: 1px solid black;
+    text-align: center;
+
+    white-space: nowrap;
+    width: 95px;
+    max-height: 15px;
+    padding: 0px;
+    font-size: 110%;
+    margin: 0px;
+    color: red;
+    font-weight: bold;
+    padding: 0px;
+    color: black;
+  }
+  .datepickerWrapper{
+    display: inline;
+    white-space: normal;
+    height: 15px;
+    margin: 0px;
+    padding: 0px;
+    width: 95px;
+  }
+  .datepickerWrapper > div:first-child{
+    display: inline;
+    width: 95px;
+    margin: 0px;
+    padding: 0px;
+  }
+  .datepickerCalendar{
+    font-size: 120%;
+    white-space: normal;
+    z-index: 100;
+    -webkit-transform: scale(0.7, 0.7) translate(650px, -65px); /* Safari and Chrome */
+  }
+  /* To get calendar cells smaller to avoid save and clear buttons from covering the popup*/
+  .vdp-datepicker__calendar .cell{
+    height: 35px !important;
+    line-height: 35px !important;
+    padding: 0 !important;
+  }
   @media screen {
     #print {
       display: none;
