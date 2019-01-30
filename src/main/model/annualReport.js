@@ -144,7 +144,7 @@ async function getAnnualReport (year) {
     }
     annualReportPage.total = annualReportPage.totalIncome.plus(annualReportPage.transferFromPreviousMonth)
     annualReportPage.transferToNextMonth = annualReportPage.total.minus(annualReportPage.totalOutcome)
-    
+
     annualReport.pages.push(annualReportPage)
   }
 

@@ -34,6 +34,19 @@
     "Delete payment slips": "Delete payment slips",
     "Are you sure you want to delete the payment slip?": "Are you sure you want to delete the payment slip?",
     "Are you sure you want to delete selected payment slips?": "Are you sure you want to delete selected payment slips?",
+    "There are no payment slips to show": "There are no payment slips to show", 
+    "There are no payment slips that pass the filters": "There are no payment slips that pass the filters",
+    "Set default values for payment slips": "Set default values for payment slips",
+
+    "Add a receipt": "Add a receipt",
+    "Delete the receipt": "Delete the receipt",
+    "Delete the receipts": "Delete the receipts",
+    "Are you sure you want to delete the receipt?": "Are you sure you want to delete the receipt?",
+    "Are you sure you want to delete selected receipts?": "Are you sure you want to delete selected receipts?",
+    "There are no receipts to show": "There are no receipts to show",
+    "There are no receipts that pass the filters": "There are no receipts that pass the filters",
+    "Set default values for receipts": "Set default values for receipts",
+    
     "Town": "Town",
     "Amount": "Amount",
     "Payed": "Payed",
@@ -42,15 +55,5 @@
     "For date": "For date",
     "Created at": "Created at",
     "Updated at": "Updated at",
-    "There are no payment slips to show": "There are no payment slips to show", 
-    "There are no payment slips that pass the filters": "There are no payment slips that pass the filters", 
-
-    "Add a receipt": "Add a receipt",
-    "Delete the receipt": "Delete the receipt",
-    "There are no receipts to show": "There are no receipts to show",
-    "There are no payment slips that pass the filters": "There are no receipts that pass the filters",
-
-    "Set default values for payment slips": "Set default values for payment slips",
-    "Set default values for receipts": "Set default values for receipts",
     "Default value can not be set": "Default value can not be set"
 }

@@ -14,7 +14,7 @@
           <b-col>
             <div class="itemsDiv">
             <h6>Признанице:</h6>
-              <ul>
+              <ul class="itemsList">
                 <li v-for="receipt in page.receipts">
                   <em><b>{{receipt.amount}}</b></em> дин, на име <em><b>{{receipt.reason}}</b></em>
                 </li>
@@ -24,7 +24,7 @@
           <b-col>
             <div class="itemsDiv">
             <h6>Уплатнице:</h6>
-              <ul>
+              <ul class="itemsList">
                 <li v-for="paymentSlip in page.paymentSlips">
                   <em><b>{{paymentSlip.amount}}</b></em> дин, на име <em><b>{{paymentSlip.reason}}</b></em>
                 </li>
@@ -99,5 +99,8 @@
 }
 .lighterDiv{
   background-color: #eeffff;
+}
+.itemsList{
+  padding-left: 20px;
 }
 </style>

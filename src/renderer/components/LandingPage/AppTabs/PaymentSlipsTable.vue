@@ -49,6 +49,7 @@
              @filtered="onFiltered"
              @row-dblclicked="rowDblClickHandler" 
              responsive
+             no-sort-reset
              :empty-text="phrases.noRecordsToShow"
              :empty-filtered-text="phrases.noRecordsToShowFiltered"
     >
@@ -130,7 +131,6 @@
         sortDesc: false,
         sortDirection: 'asc',
         filter: null,
-        modalCreateSlip: { title: 'Create new payment slip' },
         checkedItems: [],
         itemsShownInTable: [],
         checkAll: false,
@@ -290,11 +290,14 @@
   }
 </script>
 
-<style scoped>
+<style>
   .modal .modal-a5 {
     max-width: 830px;
     width: 830px;
   }
+</style>
+
+<style scoped>
   .tableDiv{
     display: block;
     overflow: auto;

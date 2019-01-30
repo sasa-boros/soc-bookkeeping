@@ -34,6 +34,19 @@
     "Delete payment slips": "Обриши уплатнице",
     "Are you sure you want to delete the payment slip?": "Да ли сте сигурни да желите да обришете уплатницу?",
     "Are you sure you want to delete selected payment slips?": "Да ли сте сигурни да желите да обришете означене уплатнице?",
+    "There are no payment slips to show": "Нема уплатница за приказ", 
+    "There are no payment slips that pass the filters": "Нема уплатница које задовољавају претрагу",
+    "Set default values for payment slips": "Подеси подразумеване вредности за уплатнице",
+
+    "Add a receipt": "Додај нову признаницу",
+    "Delete the receipt": "Обриши признаницу",
+    "Delete the receipts": "Обриши признанице",
+    "Are you sure you want to delete the receipt?": "Да ли сте сигурни да желите да обришете признаницу?",
+    "Are you sure you want to delete selected receipts?": "Да ли сте сигурни да желите да обришете означене признанице?",
+    "There are no receipts to show": "Нема признаница за приказ",
+    "There are no receipts that pass the filters": "Нема признаница које задовољавају претрагу",
+    "Set default values for receipts": "Подеси подразумеване вредности за признанице",
+
     "Town": "Место",
     "Amount": "Износ",
     "Payed": "Уплатио",
@@ -42,15 +55,5 @@
     "For date": "На датум",
     "Created at": "Креирано",
     "Updated at": "Ажурирано",
-    "There are no payment slips to show": "Нема уплатница за приказ", 
-    "There are no payment slips that pass the filters": "Нема уплатница које задовољавају претрагу", 
-
-    "Add a receipt": "Додај нову признаницу",
-    "Delete the receipt": "Обриши признаницу",
-    "There are no receipts to show": "Нема признаница за приказ",
-    "There are no receipts that pass the filters": "Нема признаница које задовољавају претрагу",
-
-    "Set default values for payment slips": "Подеси подразумеване вредности за уплатнице",
-    "Set default values for receipts": "Подеси подразумеване вредности за признанице",
     "Default value can not be set": "Подразумевана вредност се не може задати"
 }

@@ -1,4 +1,4 @@
-<template>           
+<template> 
   <b-container fluid>
     <!-- User Interface controls -->
      <b-row>
@@ -7,19 +7,20 @@
           <b-btn v-b-tooltip.hover.html="phrases.addReceipt" @click.stop="openCreateReceiptModal($event.target)">
             <img src="~@/assets/add1.png" class="btn-img">               
           </b-btn>
-          <b-btn v-b-tooltip.hover.html="phrases.deleteSelected" @click.stop="deleteCheckedReceipts()" :disabled="noRowChecked">
+          <b-btn v-b-tooltip.hover.html="phrases.deleteSelected" @click.stop="deleteCheckedReceipts()" :disabled="noRowChecked" id="deleteSelectedBtn">
             <img src="~@/assets/trash1.png" class="btn-img">               
           </b-btn>
         </b-button-group> 
       </b-col>
       <b-col md="7" class="my-1">
-        <b-form-group horizontal class="mb-0">
-          <b-input-group>
+        <b-form-group horizontal class="my-0">
+          <b-form-group class="my-0" id="filterInputFormGroup">
             <div class="inputWithIcon">
               <b-form-input v-model="filter" :placeholder="phrases.search" />
               <img src="~@/assets/search-blue.png" class="btn-img fa fa-user fa-lg fa-fw" aria-hidden="true">
             </div>
-          </b-input-group>
+          </b-form-group>
+          <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-form-group>
       </b-col>
       <b-col md="3" class="my-1">
@@ -31,9 +32,10 @@
 
     <div class="tableDiv">
     <!-- Main table element -->
-    <b-table show-empty hover small id="receipts-table"
+    <b-table show-empty hover small id="receipts-table" class="mt-3"
              stacked="md"
              :items="receiptsProvider"
+             v-model="itemsShownInTable"
              :fields="fields"
              :current-page="currentPage"
              :per-page="perPage"
@@ -47,9 +49,14 @@
              @filtered="onFiltered"
              @row-dblclicked="rowDblClickHandler" 
              responsive
+             no-sort-reset
              :empty-text="phrases.noRecordsToShow"
              :empty-filtered-text="phrases.noRecordsToShowFiltered"
     >
+      <template slot="HEAD_select" scope="data">
+        <b-form-checkbox @click.native.stop="toggleCheckAll" v-model="checkAll">
+        </b-form-checkbox>
+      </template>
       <template slot="actions" slot-scope="row">
         <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
         <b-button-group size="sm">
@@ -62,23 +69,23 @@
         </b-button-group>                
       </template>
       <template slot="select" slot-scope="row">
-        <b-form-checkbox :value="row.item._id" v-model="checkedItems">
+        <b-form-checkbox :value="row.item" v-model="checkedItems">
         </b-form-checkbox>
       </template>
-      <template slot="firstPartPos" slot-scope="row">{{row.item.firstPart}}-{{row.item.firstPos}}</template>
-      <template slot="secondPartPos" slot-scope="row">{{row.item.secondPart}}-{{row.item.secondPos}}</template>
+      <template slot="formatedDate" slot-scope="row">{{ row.item.date | formatDate }}</template>
+      <template slot="formatedUpdatedAt" slot-scope="row">{{ row.item.updated_at | formatDate }}</template>
     </b-table>
     </div>
 
     <b-row>
-      <b-col md="6" class="my-3">
+      <b-col md="6" class="my-4">
         <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
       </b-col>
     </b-row>
 
     <!-- Create receipt modal -->
     <b-modal hide-footer hide-header size="a5" id="modalCreateReceipt" @hide="resetModal">
-      <receipt-preview :item='selectedItem'></receipt-preview>
+      <receipt-preview :item='selectedItem' :newlyOpened.sync='modalNewlyOpened' parentModal="modalCreateReceipt"></receipt-preview>
     </b-modal>
 
   </b-container>
@@ -86,7 +93,9 @@
 
 <script>
   import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
+  const { dialog } = require('electron').remote
 
+  const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
   const receiptsController = require('../../../controllers/receipt.controller')
   const i18n = require('../../../translations/i18n')
 
@@ -94,16 +103,23 @@
     data () {
       return {
         phrases: {
+          cancel: i18n.getTranslation('Cancel'),
+          delete: i18n.getTranslation('Delete'),
           addReceipt: i18n.getTranslation('Add a receipt'),
           deleteSelected: i18n.getTranslation('Delete selected'),
           seeDetails: i18n.getTranslation('See details'),
           deleteReceipt: i18n.getTranslation('Delete the receipt'),
+          deleteReceipts: i18n.getTranslation('Delete receipt'),
           search: i18n.getTranslation('Search'),
           town: i18n.getTranslation('Town'),
           amount: i18n.getTranslation('Amount'),
           payed: i18n.getTranslation('Payed'),
           received: i18n.getTranslation('Received'),
           reason: i18n.getTranslation('Reason'),
+          forDate: i18n.getTranslation('For date'),
+          updatedAt: i18n.getTranslation('Updated at'),
+          areYouSureToDeleteReceipt: i18n.getTranslation('Are you sure you want to delete the receipt?'),
+          areYouSureToDeleteCheckedReceipts: i18n.getTranslation('Are you sure you want to delete selected receipts?'),
           noRecordsToShow: i18n.getTranslation('There are no receipts to show'),
           noRecordsToShowFiltered: i18n.getTranslation('There are no receipts that pass the filters')
         },
@@ -115,24 +131,12 @@
         sortDesc: false,
         sortDirection: 'asc',
         filter: null,
-        modalCreateReceipt: { title: 'Create new receipt' },
         checkedItems: [],
+        itemsShownInTable: [],
         checkAll: false,
-        selectedItem: {
-          amount: null,
-          reason: null,
-          town: null,
-          amountText: null,
-          payed: null,
-          received: null,
-          firstPart: '',
-          firstPos: '',
-          firstAmount: null,
-          secondPart: '',
-          secondPos: '',
-          secondAmount: null,
-          municipalityPresident: null
-        }
+        yearToFilter: (new Date()).getFullYear(),
+        modalNewlyOpened: false,
+        selectedItem: null
       }
     },
     computed: {
@@ -142,6 +146,9 @@
           .filter(f => f.sortable)
           .map(f => { return { text: f.label, value: f.key } })
       },
+      yearOptions: function () {
+        return getLastNYears(50)
+      },
       noRowChecked () {
         return this.checkedItems.length === 0
       },
@@ -149,28 +156,89 @@
         return [
           { key: 'select', label: '', thClass: 'table-col-5' },
           { key: 'actions', label: '', thClass: 'table-col-10' },
-          { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-30' },
-          { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-30' }
+          { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' },
+          { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-20' },
+          { key: 'formatedDate', label: this.phrases.forDate, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' },
+          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' }
         ]
       }
     },
     methods: {
       openCreateReceiptModal (button) {
-        this.resetSelectedItem()
+        this.resetModal()
+        this.$root.$emit('bv::hide::tooltip')
         this.$root.$emit('bv::show::modal', 'modalCreateReceipt', button)
+      },
+      toggleCheckAll () {
+        /* Before the checkAll changes based on the click, so the logic is reversed in the check */
+        this.checkedItems = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
         this.openUpdateReceiptModal(record)
       },
+      formatReceiptForDialog (receipt) {
+        return this.phrases.amount + ':   ' + receipt.amount + '\n' + this.phrases.reason + ':   ' + receipt.reason
+      },
       deleteReceipt (item) {
-        receiptsController.deleteReceipt(item._id)
-        this.$root.$emit('bv::refresh::table', 'receipts-table')
+        const options = {
+          type: 'question',
+          buttons: [this.phrases.cancel, this.phrases.delete],
+          defaultId: 1,
+          title: this.phrases.deleteReceipt,
+          message: this.phrases.areYouSureToDeleteReceipt,
+          detail: this.formatReceiptForDialog(item),
+          noLink: true,
+          cancelId: 0
+        }
+        dialog.showMessageBox(null, options, (response) => {
+          console.log(response)
+          if (response === 1) {
+            const self = this
+            receiptsController.deleteReceipt(item._id).then((res) => {
+              console.log(res)
+              if (!res.err) {
+                self.$root.$emit('bv::refresh::table', 'receipts-table')
+                const itemCheckedIndex = self.checkedItems.indexOf(item)
+                if (itemCheckedIndex !== -1) {
+                  self.checkedItems.splice(itemCheckedIndex, 1)
+                }
+              } else {
+                showErrorDialog(res.err)
+              }
+            })
+          }
+        })
       },
       deleteCheckedReceipts () {
-        this.checkedItems.forEach(function (id) {
-          receiptsController.deleteReceipt(id)
+        const options = {
+          type: 'question',
+          buttons: [this.phrases.cancel, this.phrases.delete],
+          defaultId: 1,
+          title: this.phrases.deleteReceipts,
+          message: this.phrases.areYouSureToDeleteCheckedReceipts,
+          noLink: true,
+          cancelId: 0
+        }
+        dialog.showMessageBox(null, options, (response) => {
+          if (response === 1) {
+            const self = this
+            this.checkedItems.forEach(function (item) {
+              receiptsController.deleteReceipt(item._id).then((res) => {
+                if (!res.err) {
+                  self.$root.$emit('bv::refresh::table', 'receipts-table')
+                  const itemCheckedIndex = self.checkedItems.indexOf(item)
+                  if (itemCheckedIndex !== -1) {
+                    self.checkedItems.splice(itemCheckedIndex, 1)
+                  }
+                } else {
+                  showErrorDialog(res.err)
+                }
+              })
+            })
+            // this.$root.$emit('bv::refresh::table', 'receipts-table')
+            // this.checkedItems = []
+          }
         })
-        this.$root.$emit('bv::refresh::table', 'receipts-table')
       },
       openUpdateReceiptModal (item) {
         this.selectedItem = item
@@ -178,6 +246,7 @@
       },
       resetModal () {
         this.resetSelectedItem()
+        this.modalNewlyOpened = true
       },
       onFiltered (filteredItems) {
         // Trigger pagination to update the number of buttons/pages due to filtering
@@ -185,24 +254,38 @@
         this.currentPage = 1
       },
       receiptsProvider (ctx) {
-        return receiptsController.getReceipts()
+        return receiptsController.getReceipts(this.yearToFilter).then((res) => {
+          if (!res.err) {
+            const items = res.data
+            return (items || [])
+          } else {
+            showErrorDialog(res.err)
+          }
+          return null
+        })
       },
       resetSelectedItem () {
-        this.selectedItem = {
-          amount: null,
-          reason: null,
-          town: null,
-          amountText: null,
-          payed: null,
-          received: null,
-          firstPart: '',
-          firstPos: '',
-          firstAmount: null,
-          secondPart: '',
-          secondPos: '',
-          secondAmount: null,
-          municipalityPresident: null
+        this.selectedItem = null
+      }
+    },
+    filters: {
+      formatDate (date) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' }
+        const language = i18n.usedLanguage
+        return (new Date(date)).toLocaleDateString(language, options)
+      }
+    },
+    watch: {
+      checkedItems (newValue, oldValue) {
+        this.checkAll = (this.itemsShownInTable.length !== 0 && this.itemsShownInTable.length === newValue.length)
+        if (newValue.length === 0) {
+          /* Close delete-selected button tooltip before it gets disabled and stuck */
+          this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
+      },
+      yearToFilter (newValue) {
+        this.$root.$emit('bv::refresh::table', 'receipts-table')
+        this.checkedItems = []
       }
     },
     components: { ReceiptPreview }
@@ -214,6 +297,9 @@
     max-width: 830px;
     width: 830px;
   }
+</style>
+
+<style scoped>
   .tableDiv{
     display: block;
     overflow: auto;
@@ -243,6 +329,14 @@
   }
   #perPageSelect{
     width: 60px;
+  }
+  #yearSelect{
+    width: 80px;
+    display: inline;
+  }
+  #filterInputFormGroup{
+    width: 200px;
+    display: inline;
   }
   .thSmall{
     font-size: 80%;
