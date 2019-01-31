@@ -6,20 +6,20 @@
       </b-button>
       <div class="receipt-preview-text">
         <h1> ПРИЗНАНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" id="amountInputFormGroup"><b-form-input ref="amountInput" v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="amountTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" contenteditable="false" id="amountTextDivWrapper1">{{generatedAmountTextLine1}}</div>
+      <br/>На дин. <b-form-group class="input-form-group" ref="amountInputFormGroup"><b-form-input ref="amountInput" v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="amountTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" contenteditable="false" id="amountTextDivWrapper1">{{generatedAmountTextLine1}}</div>
       <br/><div class="amountTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" id="amountTextDivWrapper2">{{generatedAmountTextLine2}}</div>
-      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" id="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" id="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
+      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
-                                                                                                            <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" ref="datepickerInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker>г.
-                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :disabled="defaultReceiptPreview" :options="partOptions" size="sm" class="input-small" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultReceiptPreview" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
-                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :disabled="defaultReceiptPreview" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultReceiptPreview" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                                                                                                            <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker>г.
+                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :disabled="defaultReceiptPreview" :options="partOptions" size="sm" class="input-small" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultReceiptPreview" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :disabled="defaultReceiptPreview" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultReceiptPreview" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
                                                            
-      <br/><b-form-group class="input-form-group" id="receivedInputFormGroup"><b-form-input v-model="form.received" v-bind:class="{ 'is-invalid': attemptSubmit && missingReceived }" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                    Свега дин. <b-form-group class="input-form-group" id="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" v-bind:class="{ 'is-invalid': attemptSubmit && missingReceived }" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                    Свега дин. <b-form-group class="input-form-group" ref="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
       <div class="my-0 line-spacing-small">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
-      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" id="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group id="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" id="municipalityPresidentInputFormGroup"><b-form-input v-model="form.municipalityPresident" v-bind:class="{ 'is-invalid': attemptSubmit && missingMunicipalityPresident }" class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
+      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group ref="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input v-model="form.municipalityPresident" v-bind:class="{ 'is-invalid': attemptSubmit && missingMunicipalityPresident }" class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
       </div></div>
 
 
@@ -31,104 +31,104 @@
 
       </div>
       <div id="printBtnDiv">
-        <b-button @click.stop="printReceipt()" variant="secondary" class="ignoreInPrint" :class="{ 'displayNone' : defaultReceiptPreview }" id="receiptPrintBtn">
+        <b-button ref="receiptPrintBtn" @click.stop="printReceipt()" variant="secondary" class="ignoreInPrint" :class="{ 'displayNone' : defaultReceiptPreview }">
           <img src="~@/assets/print.png" class="btn-img ignoreInPrint">
         </b-button>
       </div>
       <div id="clearSaveBtnsDiv">
-        <b-button type="submit" variant="secondary" class="ignoreInPrint" id="receiptSaveBtn">
+        <b-button ref="receiptSaveBtn" type="submit" variant="secondary" class="ignoreInPrint">
           <img src="~@/assets/save1.png" class="btn-img ignoreInPrint">
         </b-button>
-        <b-button @click.stop="clearForm()" variant="secondary" class="ignoreInPrint" id="receiptClearBtn">
+        <b-button ref="receiptClearBtn" @click.stop="clearForm()" variant="secondary" class="ignoreInPrint">
           <img src="~@/assets/clear.png" class="btn-img ignoreInPrint">
         </b-button>
       </div>
               
-      <b-tooltip :disabled.sync="disableAmountTooltip" target="amountInputFormGroup">
+      <b-tooltip ref="amountInputTooltip" :disabled.sync="disableAmountTooltip" :target="() => $refs.amountInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableTownTooltip" target="townInputFormGroup">
+      <b-tooltip ref="townInputTooltip" :disabled.sync="disableTownTooltip" :target="() => $refs.townInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableReasonTooltip" target="reasonInputFormGroup">
+      <b-tooltip ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip" :target="() => $refs.reasonInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disablePayedTooltip" target="payedInputFormGroup">
+      <b-tooltip ref="payedInputTooltip" :disabled.sync="disablePayedTooltip" :target="() => $refs.payedInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableReceivedTooltip" target="receivedInputFormGroup">
+      <b-tooltip ref="receivedInputTooltip" :disabled.sync="disableReceivedTooltip" :target="() => $refs.receivedInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableFirstAmountTooltip" target="firstAmountInputFormGroup">
+      <b-tooltip ref="firstAmountInputTooltip" :disabled.sync="disableFirstAmountTooltip" :target="() => $refs.firstAmountInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableSecondAmountTooltip" target="secondAmountInputFormGroup">
+      <b-tooltip ref="secondAmountInputTooltip" :disabled.sync="disableSecondAmountTooltip" :target="() => $refs.secondAmountInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableTotalAmountTooltip" target="totalAmountInputFormGroup">
+      <b-tooltip ref="totalAmountInputTooltip" :disabled.sync="disableTotalAmountTooltip" :target="() => $refs.totalAmountInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableMunicipalityPresidentTooltip" target="municipalityPresidentInputFormGroup">
+      <b-tooltip ref="municipalityPresidentInputTooltip" :disabled.sync="disableMunicipalityPresidentTooltip" :target="() => $refs.municipalityPresidentInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableDateTooltip" target="dateInput">
+      <b-tooltip ref="dateInputTooltip" :disabled.sync="disableDateTooltip" :target="() => $refs.dateInput">
         <div class="tooltipInnerText">
           {{phrases.pickDate}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableAnnualReportPageTooltip" target="annualReportPageInputFormGroup">
+      <b-tooltip ref="annualReportPageInputTooltip" :disabled.sync="disableAnnualReportPageTooltip" :target="() => $refs.annualReportPageInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.willBeGenerated}}
         </div>
       </b-tooltip>
 
-      <b-tooltip :disabled.sync="disableOrdinalTooltip" target="ordinalInputFormGroup">
+      <b-tooltip ref="ordinalInputTooltip" :disabled.sync="disableOrdinalTooltip" :target="() => $refs.ordinalInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.willBeGenerated}}
         </div>
       </b-tooltip>
 
-      <b-tooltip target="receiptPrintBtn">
+      <b-tooltip ref="receiptPrintBtnTooltip" :target="() => $refs.receiptPrintBtn">
         <div class="tooltipInnerText">
           {{phrases.print}}
         </div>
       </b-tooltip>
 
-      <b-tooltip target="receiptSaveBtn">
+      <b-tooltip ref="receiptSaveBtnTooltip" :target="() => $refs.receiptSaveBtn">
         <div class="tooltipInnerText">
           {{phrases.save}}
         </div>
       </b-tooltip>
 
-      <b-tooltip target="receiptClearBtn">
+      <b-tooltip ref="receiptClearBtnTooltip" :target="() => $refs.receiptClearBtn">
         <div class="tooltipInnerText">
           {{phrases.clear}}
         </div>
@@ -301,6 +301,7 @@
         set: function (newValue) {
         }
       },
+
       disableAmountTooltip: {
         get: function () {
           return !this.missingAmount || !this.attemptSubmit
@@ -308,7 +309,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'amountInputFormGroup')
+            this.$refs.amountInputTooltip.$emit('close')
           }
         }
       },
@@ -319,7 +320,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'townInputFormGroup')
+            this.$refs.townInputTooltip.$emit('close')
           }
         }
       },
@@ -330,7 +331,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'reasonInputFormGroup')
+            this.$refs.reasonInputTooltip.$emit('close')
           }
         }
       },
@@ -341,7 +342,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'payedInputFormGroup')
+            this.$refs.payedInputTooltip.$emit('close')
           }
         }
       },
@@ -352,7 +353,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'receivedInputFormGroup')
+            this.$refs.receivedInputTooltip.$emit('close')
           }
         }
       },
@@ -363,7 +364,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'firstAmountInputFormGroup')
+            this.$refs.firstAmountInputTooltip.$emit('close')
           }
         }
       },
@@ -374,7 +375,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'secondAmountInputFormGroup')
+            this.$refs.secondAmountInputTooltip.$emit('close')
           }
         }
       },
@@ -385,7 +386,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'totalAmountInputFormGroup')
+            this.$refs.totalAmountInputTooltip.$emit('close')
           }
         }
       },
@@ -396,7 +397,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'municipalityPresidentInputFormGroup')
+            this.$refs.municipalityPresidentInputTooltip.$emit('close')
           }
         }
       },
@@ -407,7 +408,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'dateInput')
+            this.$refs.dateInputTooltip.$emit('close')
           }
         }
       },
@@ -418,7 +419,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'annualReportPageInputFormGroup')
+            this.$refs.annualReportPageInputTooltip.$emit('close')
           }
         }
       },
@@ -429,7 +430,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$root.$emit('bv::hide::tooltip', 'ordinalInputFormGroup')
+            this.$refs.ordinalInputTooltip.$emit('close')
           }
         }
       },
@@ -486,7 +487,7 @@
       tabPressedHandler (evt) {
         if (this.preDatepickerJustBlurred) {
           /* Manually put focus on the datepicker object */
-          this.$refs.datepickerInput.showCalendar()
+          this.$refs.dateInput.showCalendar()
           evt.preventDefault()
         }
         this.postDatepickerJustBlurred = false
@@ -495,7 +496,7 @@
       shiftTabPressedHandler (evt) {
         if (this.postDatepickerJustBlurred) {
           /* Manually put focus on the datepicker object */
-          this.$refs.datepickerInput.showCalendar()
+          this.$refs.dateInput.showCalendar()
           evt.preventDefault()
         }
         this.postDatepickerJustBlurred = false
@@ -555,7 +556,7 @@
         this.resetForm()
         /* Focus the first input field */
         console.log(this.$refs.amountInput)
-        this.$refs.amountInput.focus()
+        // this.$refs.amountInput.focus()
         /* Trick to reset/clear native browser form validation state */
         this.show = false
         this.$nextTick(() => { this.show = true })
