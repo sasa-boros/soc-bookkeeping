@@ -1,5 +1,5 @@
 <template>       
-  <b-container fluid id="payment-slip-preview-container">
+  <b-container fluid id="payment-slip-preview-container" @keyup.tab.exact="tabPressedHandler" @keyup.shift.tab.exact="shiftTabPressedHandler">
     <b-form @submit="onSubmit" v-if="show" no-validation>
       <b-button @click.stop="closeModal()" size="sm" variant="link" class="ignoreInPrint" id="modalCancelBtn">
         <img src="~@/assets/delete.png" class="btn-img ignoreInPrint">
@@ -10,9 +10,9 @@
       <br/><div class="amountTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" id="amountTextDivWrapper2">{{generatedAmountTextLine2}}</div>
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" id="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" id="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
-                                                                                                            <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker>г.
-                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                                                                                                            <b-form-group class="input-form-group" id="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" ref="datepickerInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker>г.
+                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
                   Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultPaymentSlipPreview" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" id="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
                                                            
       <br/><b-form-group class="input-form-group" id="receivedInputFormGroup"><b-form-input v-model="form.received" v-bind:class="{ 'is-invalid': attemptSubmit && missingReceived }" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                    Свега дин. <b-form-group class="input-form-group" id="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
@@ -193,7 +193,9 @@
         fresh: this.newlyOpened,
         show: true,
         yearSelected: null,
-        incomeCodeCombinations: {
+        preDatepickerJustBlurred: false,
+        postDatepickerJustBlurred: false,
+        outcomeCodeCombinations: {
           '': ['']
         },
         phrases: {
@@ -216,7 +218,7 @@
 
       annualReportController.getOutcomeCodes().then(function (res) {
         if (!res.err) {
-          self.incomeCodeCombinations = getCodeCombinations(Object.keys(res.data))
+          self.outcomeCodeCombinations = getCodeCombinations(Object.keys(res.data))
         } else {
           showErrorDialog(res.err)
         }
@@ -435,13 +437,13 @@
         return getLastNYears(10)
       },
       partOptions: function () {
-        return Object.keys(this.incomeCodeCombinations)
+        return Object.keys(this.outcomeCodeCombinations)
       },
       pos1Options: function () {
-        return this.incomeCodeCombinations[this.form.firstPart]
+        return this.outcomeCodeCombinations[this.form.firstPart]
       },
       pos2Options: function () {
-        return this.incomeCodeCombinations[this.form.secondPart]
+        return this.outcomeCodeCombinations[this.form.secondPart]
       },
       missingReason: function () {
         return !this.form || !this.form.reason || this.form.reason.toString().trim() === ''
@@ -481,6 +483,30 @@
       }
     },
     methods: {
+      tabPressedHandler (evt) {
+        if (this.preDatepickerJustBlurred) {
+          /* Manually put focus on the datepicker object */
+          this.$refs.datepickerInput.showCalendar()
+          evt.preventDefault()
+        }
+        this.postDatepickerJustBlurred = false
+        this.preDatepickerJustBlurred = false
+      },
+      shiftTabPressedHandler (evt) {
+        if (this.postDatepickerJustBlurred) {
+          /* Manually put focus on the datepicker object */
+          this.$refs.datepickerInput.showCalendar()
+          evt.preventDefault()
+        }
+        this.postDatepickerJustBlurred = false
+        this.preDatepickerJustBlurred = false
+      },
+      preDatepickerOnBlur (evt) {
+        this.preDatepickerJustBlurred = true
+      },
+      postDatepickerOnBlur (evt) {
+        this.postDatepickerJustBlurred = true
+      },
       setAttemptSubmit (val) {
         this.attemptSubmit = val
         /* Sync the prop used by the parent */
