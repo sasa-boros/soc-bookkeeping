@@ -15,6 +15,7 @@
     "Error": "Грешка",
     "The value will be generated": "Вредност ће бити генерисана",
     "Enter a value": "Унеси вредност",
+    "Enter at least one partition, position, amount": "Унеси бар једну партицију, позицију, вредност",
     "Pick a date": "Изабери датум",
     "January.lokativ": "Јануару",
     "February.lokativ": "Фебруару",

@@ -10,16 +10,16 @@
       <br/><div class="amountTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" id="amountTextDivWrapper2">{{generatedAmountTextLine2}}</div>
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
-                                                                                                            <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input v-model="form.payed" v-bind:class="{ 'is-invalid': attemptSubmit && missingPayed }" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
+                                                                                                            <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input v-model="form.payed" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker>г.
-                                                                                                            Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview" :options="pos1Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount }" id="firstAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
-                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small"/></b-form-group> поз. <b-form-group class="input-form-group"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultPaymentSlipPreview" :options="pos2Options" size="sm" class="input-small"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount }" id="secondAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                                                                                                            Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><b-form-select v-model="form.firstPart" @change="onFirstPartChange()" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview" :options="pos1Options" size="sm" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount && atLeastOnePartPosNotSet }" id="firstAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><b-form-select v-model="form.secondPart" @change="onSecondPartChange()" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPart && atLeastOnePartPosNotSet }"/></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultPaymentSlipPreview" :options="pos2Options" size="sm" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount && atLeastOnePartPosNotSet }" id="secondAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
                                                            
-      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" v-bind:class="{ 'is-invalid': attemptSubmit && missingReceived }" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
       <div class="my-0 line-spacing-small">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
-      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group ref="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input v-model="form.municipalityPresident" v-bind:class="{ 'is-invalid': attemptSubmit && missingMunicipalityPresident }" class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
+      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group ref="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input v-model="form.municipalityPresident" class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
       </div></div>
 
 
@@ -62,37 +62,43 @@
         </div>
       </b-tooltip>
 
-      <b-tooltip ref="payedInputTooltip" :disabled.sync="disablePayedTooltip" :target="() => $refs.payedInputFormGroup">
+      <b-tooltip ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip" :target="() => $refs.firstPartInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.enterValue}}
+          {{phrases.atLeastOnePartPosAmount}}
         </div>
       </b-tooltip>
 
-      <b-tooltip ref="receivedInputTooltip" :disabled.sync="disableReceivedTooltip" :target="() => $refs.receivedInputFormGroup">
+      <b-tooltip ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip" :target="() => $refs.firstPosInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.enterValue}}
+          {{phrases.atLeastOnePartPosAmount}}
         </div>
       </b-tooltip>
 
       <b-tooltip ref="firstAmountInputTooltip" :disabled.sync="disableFirstAmountTooltip" :target="() => $refs.firstAmountInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.enterValue}}
+          {{phrases.atLeastOnePartPosAmount}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip" :target="() => $refs.secondPartInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.atLeastOnePartPosAmount}}
+        </div>
+      </b-tooltip>
+
+      <b-tooltip ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip" :target="() => $refs.secondPosInputFormGroup">
+        <div class="tooltipInnerText">
+          {{phrases.atLeastOnePartPosAmount}}
         </div>
       </b-tooltip>
 
       <b-tooltip ref="secondAmountInputTooltip" :disabled.sync="disableSecondAmountTooltip" :target="() => $refs.secondAmountInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.enterValue}}
+          {{phrases.atLeastOnePartPosAmount}}
         </div>
       </b-tooltip>
 
       <b-tooltip ref="totalAmountInputTooltip" :disabled.sync="disableTotalAmountTooltip" :target="() => $refs.totalAmountInputFormGroup">
-        <div class="tooltipInnerText">
-          {{phrases.enterValue}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip ref="municipalityPresidentInputTooltip" :disabled.sync="disableMunicipalityPresidentTooltip" :target="() => $refs.municipalityPresidentInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
@@ -204,7 +210,8 @@
           clear: i18n.getTranslation('Clear'),
           willBeGenerated: i18n.getTranslation('The value will be generated'),
           enterValue: i18n.getTranslation('Enter a value'),
-          pickDate: i18n.getTranslation('Pick a date')
+          pickDate: i18n.getTranslation('Pick a date'),
+          atLeastOnePartPosAmount: i18n.getTranslation('Enter at least one partition, position, amount')
         },
         calendarLanguages: {
           sr: sr,
@@ -334,31 +341,31 @@
           }
         }
       },
-      disablePayedTooltip: {
+      disableFirstPartTooltip: {
         get: function () {
-          return !this.missingPayed || !this.attemptSubmit
+          return !this.atLeastOnePartPosNotSet || !this.missingFirstPart || !this.attemptSubmit
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.payedInputTooltip.$emit('close')
+            this.$refs.firstPartInputTooltip.$emit('close')
           }
         }
       },
-      disableReceivedTooltip: {
+      disableFirstPosTooltip: {
         get: function () {
-          return !this.missingReceived || !this.attemptSubmit
+          return !this.atLeastOnePartPosNotSet || !this.missingFirstPos || !this.attemptSubmit
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.receivedInputTooltip.$emit('close')
+            this.$refs.firstPosInputTooltip.$emit('close')
           }
         }
       },
       disableFirstAmountTooltip: {
         get: function () {
-          return !this.missingFirstAmount || !this.attemptSubmit
+          return !this.atLeastOnePartPosNotSet || !this.missingFirstAmount || !this.attemptSubmit
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -367,9 +374,31 @@
           }
         }
       },
+      disableSecondPartTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingSecondPart || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$refs.secondPartInputTooltip.$emit('close')
+          }
+        }
+      },
+      disableSecondPosTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingSecondPos || !this.attemptSubmit
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.$refs.secondPosInputTooltip.$emit('close')
+          }
+        }
+      },
       disableSecondAmountTooltip: {
         get: function () {
-          return !this.missingSecondAmount || !this.attemptSubmit
+          return !this.atLeastOnePartPosNotSet || !this.missingSecondAmount || !this.attemptSubmit
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -386,17 +415,6 @@
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
             this.$refs.totalAmountInputTooltip.$emit('close')
-          }
-        }
-      },
-      disableMunicipalityPresidentTooltip: {
-        get: function () {
-          return !this.missingMunicipalityPresident || !this.attemptSubmit
-        },
-        set: function (newValue) {
-          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-          if (newValue) {
-            this.$refs.municipalityPresidentInputTooltip.$emit('close')
           }
         }
       },
@@ -454,23 +472,26 @@
       missingAmount: function () {
         return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
       },
-      missingPayed: function () {
-        return !this.form || !this.form.payed || this.form.payed.toString().trim() === ''
+      missingFirstPart: function () {
+        return !this.form || !this.form.firstPart
       },
-      missingReceived: function () {
-        return !this.form || !this.form.received || this.form.received.toString().trim() === ''
+      missingFirstPos: function () {
+        return !this.form || !this.form.firstPos
       },
       missingFirstAmount: function () {
         return !this.form || !this.form.firstAmount || this.form.firstAmount.toString().trim() === ''
+      },
+      missingSecondPart: function () {
+        return !this.form || !this.form.secondPart
+      },
+      missingSecondPos: function () {
+        return !this.form || !this.form.secondPos
       },
       missingSecondAmount: function () {
         return !this.form || !this.form.secondAmount || this.form.secondAmount.toString().trim() === ''
       },
       missingTotalAmount: function () {
         return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
-      },
-      missingMunicipalityPresident: function () {
-        return !this.form || !this.form.municipalityPresident || this.form.municipalityPresident.toString().trim() === ''
       },
       missingDate: function () {
         return !this.form || !this.form.date
@@ -480,6 +501,13 @@
       },
       missingOrdinal: function () {
         return !this.form || !this.form.ordinal
+      },
+      atLeastOnePartPosNotSet: function () {
+        /* True if not a single part-pos combination is set. At least one combination should be set. */
+        const firstCombinationSet = !this.missingFirstPart && !this.missingFirstPos && !this.missingFirstAmount
+        const secondCombinationSet = !this.missingSecondPart && !this.missingSecondPos && !this.missingSecondAmount
+
+        return !firstCombinationSet && !secondCombinationSet
       }
     },
     methods: {
@@ -565,11 +593,8 @@
         if (!this.form.amount ||
             !this.form.reason ||
             !this.form.town ||
-            !this.form.payed ||
-            !this.form.received ||
             !this.form.firstAmount ||
             !this.form.secondAmount ||
-            !this.form.municipalityPresident ||
             !this.form.date) {
           return false
         }
