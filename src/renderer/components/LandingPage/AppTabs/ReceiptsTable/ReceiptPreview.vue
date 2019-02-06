@@ -737,6 +737,8 @@
   }
   .is-invalid {
     border: dotted 1px red;
+    /* To keep selects from getting wider when invalid */
+    padding-right: 0 !important;
   }
   .line-spacing-small {
     line-height: 1.3;
