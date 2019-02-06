@@ -70,13 +70,13 @@
 
       <b-tooltip ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip" :target="() => $refs.firstPosInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosAmount}}
+          {{firstPosTooltipText}}
         </div>
       </b-tooltip>
 
       <b-tooltip ref="firstAmountInputTooltip" :disabled.sync="disableFirstAmountTooltip" :target="() => $refs.firstAmountInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosAmount}}
+          {{firstAmountTooltipText}}
         </div>
       </b-tooltip>
 
@@ -88,13 +88,13 @@
 
       <b-tooltip ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip" :target="() => $refs.secondPosInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosAmount}}
+          {{secondPosTooltipText}}
         </div>
       </b-tooltip>
 
       <b-tooltip ref="secondAmountInputTooltip" :disabled.sync="disableSecondAmountTooltip" :target="() => $refs.secondAmountInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosAmount}}
+          {{secondAmountTooltipText}}
         </div>
       </b-tooltip>
 
@@ -211,7 +211,8 @@
           willBeGenerated: i18n.getTranslation('The value will be generated'),
           enterValue: i18n.getTranslation('Enter a value'),
           pickDate: i18n.getTranslation('Pick a date'),
-          atLeastOnePartPosAmount: i18n.getTranslation('Enter at least one partition, position, amount')
+          atLeastOnePartPosAmount: i18n.getTranslation('Enter at least one partition, position, amount'),
+          enterPartition: i18n.getTranslation('Enter partition')
         },
         calendarLanguages: {
           sr: sr,
@@ -322,6 +323,34 @@
         set: function (newValue) {
         }
       },
+      firstPosTooltipText: function () {
+        if (this.missingFirstPart) {
+          return this.phrases.enterPartition
+        } else {
+          return this.phrases.atLeastOnePartPosAmount
+        }
+      },
+      firstAmountTooltipText: function () {
+        if (this.missingFirstPart) {
+          return this.phrases.enterPartition
+        } else {
+          return this.phrases.atLeastOnePartPosAmount
+        }
+      },
+      secondPosTooltipText: function () {
+        if (this.missingSecondPart) {
+          return this.phrases.enterPartition
+        } else {
+          return this.phrases.atLeastOnePartPosAmount
+        }
+      },
+      secondAmountTooltipText: function () {
+        if (this.missingSecondPart) {
+          return this.phrases.enterPartition
+        } else {
+          return this.phrases.atLeastOnePartPosAmount
+        }
+      },
       disableAmountTooltip: {
         get: function () {
           return !this.missingAmount || !this.attemptSubmit
@@ -368,7 +397,12 @@
       },
       disableFirstPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstPos || !this.attemptSubmit
+          if (this.missingFirstPart) {
+            /* If missing part, pos is disabled, so show the tooltip */
+            return false
+          } else {
+            return !this.atLeastOnePartPosNotSet || !this.missingFirstPos || !this.attemptSubmit
+          }
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -379,7 +413,12 @@
       },
       disableFirstAmountTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstAmount || !this.attemptSubmit
+          if (this.missingFirstPart) {
+            /* If missing part, pos is disabled, so show the tooltip */
+            return false
+          } else {
+            return !this.atLeastOnePartPosNotSet || !this.missingFirstAmount || !this.attemptSubmit
+          }
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -401,7 +440,12 @@
       },
       disableSecondPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondPos || !this.attemptSubmit
+          if (this.missingSecondPart) {
+            /* If missing part, pos is disabled, so show the tooltip */
+            return false
+          } else {
+            return !this.atLeastOnePartPosNotSet || !this.missingSecondPos || !this.attemptSubmit
+          }
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -412,7 +456,12 @@
       },
       disableSecondAmountTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondAmount || !this.attemptSubmit
+          if (this.missingSecondPart) {
+            /* If missing part, pos is disabled, so show the tooltip */
+            return false
+          } else {
+            return !this.atLeastOnePartPosNotSet || !this.missingSecondAmount || !this.attemptSubmit
+          }
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -607,8 +656,7 @@
         if (!this.form.amount ||
             !this.form.reason ||
             !this.form.town ||
-            !this.form.firstAmount ||
-            !this.form.secondAmount ||
+            this.atLeastOnePartPosNotSet ||
             !this.form.date) {
           return false
         }
