@@ -15,7 +15,7 @@
                                                                                                             Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><b-form-select v-model="form.firstPart" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount && atLeastOnePartPosNotSet }" id="firstAmountInput" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
                   Примио благајник,                                                          Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><b-form-select v-model="form.secondPart" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPart && atLeastOnePartPosNotSet }"/></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount && atLeastOnePartPosNotSet }" id="secondAmountInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
                                                            
-      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && ( missingTotalAmount || totalAmountNotValid ) }" id="totalAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
       <div class="my-0 line-spacing-small">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
@@ -100,7 +100,7 @@
 
       <b-tooltip ref="totalAmountInputTooltip" :disabled.sync="disableTotalAmountTooltip" :target="() => $refs.totalAmountInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.enterValue}}
+          {{totalAmountTooltipText}}
         </div>
       </b-tooltip>
 
@@ -213,7 +213,8 @@
           enterValue: i18n.getTranslation('Enter a value'),
           pickDate: i18n.getTranslation('Pick a date'),
           atLeastOnePartPosAmount: i18n.getTranslation('Enter at least one partition, position, amount'),
-          enterPartition: i18n.getTranslation('Enter partition')
+          enterPartition: i18n.getTranslation('Enter partition'),
+          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of amounts by partitions and position')
         },
         calendarLanguages: {
           sr: sr,
@@ -365,6 +366,13 @@
           return this.phrases.atLeastOnePartPosAmount
         }
       },
+      totalAmountTooltipText: function () {
+        if (this.totalAmountNotValid) {
+          return this.phrases.needsToBeEqualToSum
+        } else {
+          return this.phrases.enterValue
+        }
+      },
       disableAmountTooltip: {
         get: function () {
           return !this.missingAmount || !this.attemptSubmit
@@ -486,7 +494,7 @@
       },
       disableTotalAmountTooltip: {
         get: function () {
-          return !this.missingTotalAmount || !this.attemptSubmit
+          return (!this.missingTotalAmount && !this.totalAmountNotValid) || !this.attemptSubmit
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -590,6 +598,17 @@
       missingTotalAmount: function () {
         return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
       },
+      totalAmountNotValid: function () {
+        if (this.form && this.form.amount) {
+          const totalAmount = parseFloat(this.form.amount)
+          const firstAmount = this.missingFirstAmount ? 0 : parseFloat(this.form.firstAmount)
+          const secondAmount = this.missingSecondAmount ? 0 : parseFloat(this.form.secondAmount)
+          if (firstAmount + secondAmount !== totalAmount) {
+            return true
+          }
+        }
+        return false
+      },
       missingDate: function () {
         return !this.form || !this.form.date
       },
@@ -687,11 +706,12 @@
         this.form = JSON.parse(JSON.stringify(this.emptyForm))
       },
       checkForm () {
-        if (!this.form.amount ||
-            !this.form.reason ||
-            !this.form.town ||
+        if (this.missingAmount ||
+            this.missingReason ||
+            this.missingTown ||
+            this.missingDate ||
             this.atLeastOnePartPosNotSet ||
-            !this.form.date) {
+            this.totalAmountNotValid) {
           return false
         }
         return true

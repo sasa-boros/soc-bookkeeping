@@ -17,6 +17,7 @@
     "Enter a value": "Enter a value",
     "Enter at least one partition, position, amount": "Enter at least one partition, position, amount",
     "Enter partition": "Enter partition",
+    "Needs to equal to sum of amounts by partitions and position": "Needs to equal to sum of amounts by partitions and position",
     "Pick a date": "Pick a date",
     "January.lokativ": "January",
     "February.lokativ": "February",

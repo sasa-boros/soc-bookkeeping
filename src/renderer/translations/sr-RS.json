@@ -17,6 +17,7 @@
     "Enter a value": "Унеси вредност",
     "Enter at least one partition, position, amount": "Унеси бар једну партицију, позицију, вредност",
     "Enter partition": "Унеси партицију",
+    "Needs to equal to sum of amounts by partitions and position": "Мора бити једнако суми износа по партицијама и позицијама",
     "Pick a date": "Изабери датум",
     "January.lokativ": "Јануару",
     "February.lokativ": "Фебруару",
