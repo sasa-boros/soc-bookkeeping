@@ -261,14 +261,22 @@
         }
       },
       'form.firstPart': function (newValue) {
-        this.form.firstPos = ''
+        const allowedPosValues = this.incomeCodeCombinations[newValue]
+        if (allowedPosValues.indexOf(this.form.firstPos) === -1) {
+          /* Pos value needs to be reset since it is not allowed with the new part */
+          this.form.firstPos = ''
+        }
         /* If new value is null, i.e. the part is reset, reset the amount too */
         if (!newValue) {
           this.form.firstAmount = null
         }
       },
       'form.secondPart': function (newValue) {
-        this.form.secondPos = ''
+        const allowedPosValues = this.incomeCodeCombinations[newValue]
+        if (allowedPosValues.indexOf(this.form.secondPos) === -1) {
+          /* Pos value needs to be reset since it is not allowed with the new part */
+          this.form.secondPos = ''
+        }
         /* If new value is null, i.e. the part is reset, reset the amount too */
         if (!newValue) {
           this.form.secondAmount = null
@@ -648,9 +656,7 @@
               })
             } else {
               /* Create new item */
-              console.log('create')
               receiptsController.createReceipt(this.form).then((res) => {
-                console.log(res)
                 if (!res.err) {
                   this.$root.$emit('bv::refresh::table', 'receipts-table')
                 } else {
