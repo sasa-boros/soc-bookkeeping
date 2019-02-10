@@ -140,12 +140,6 @@
       }
     },
     computed: {
-      sortOptions () {
-        // Create an options list from our fields
-        return this.fields
-          .filter(f => f.sortable)
-          .map(f => { return { text: f.label, value: f.key } })
-      },
       yearOptions: function () {
         return getLastNYears(50)
       },

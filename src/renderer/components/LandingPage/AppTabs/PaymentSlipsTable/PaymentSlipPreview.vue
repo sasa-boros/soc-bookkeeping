@@ -11,9 +11,9 @@
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input v-model="form.payed" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker>г.
-                                                                                                            Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><b-form-select v-model="form.firstPart" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount && atLeastOnePartPosNotSet }" id="firstAmountInput" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
-                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><b-form-select v-model="form.secondPart" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPart && atLeastOnePartPosNotSet }"/></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount && atLeastOnePartPosNotSet }" id="secondAmountInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker> г.
+                                                                                                            Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><b-form-select v-model="form.firstPart" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount && atLeastOnePartPosNotSet }" id="firstAmountInput" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><b-form-select v-model="form.secondPart" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPart && atLeastOnePartPosNotSet }"/></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount && atLeastOnePartPosNotSet }" id="secondAmountInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
                                                            
       <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="totalAmountInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
       <div class="my-0 line-spacing-small">
@@ -704,14 +704,14 @@
     line-height: 1;
     margin: 1px;
   }
-  #payment-slip-preview-container{
+  #payment-slip-preview-container {
     width: 794px;
     height: 559px;
     border-style: solid;
     border-width: thin;
     position: relative;
   }
-  .payment-slip-preview-text{
+  .payment-slip-preview-text {
     white-space: pre;
     width: 670px;
     height: 520px;
@@ -729,20 +729,20 @@
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
   }
-  h1{
+  h1 {
     text-align: center;
     font-weight: bold;
     font-size: 25px;
     margin: 0px;
     padding: 0px;
   }
-  .input-form-group{
+  .input-form-group {
     display: inline;
     height: 15px;
     margin: 0px;
     padding: 0px;
   }
-  .input-small{
+  .input-small {
     border-style: none;
     font-weight: bold;
     display: inline;
@@ -751,7 +751,16 @@
     padding: 0px;
     color: black;
   }
-  .input-small::placeholder{
+  .select-small {
+    border-style: none;
+    font-weight: bold;
+    display: inline;
+    height: 15px;
+    margin: 0px;
+    padding: 0px;
+    color: black;
+  }
+  .input-small::placeholder {
     border-style: none;
     font-weight: normal;
     color: #16264C;
@@ -761,62 +770,72 @@
     /* To keep selects from getting wider when invalid */
     padding-right: 0 !important;
   }
+  .input-small.is-invalid {
+    background-image: url('~@/assets/invalid-red.png') !important;
+  }
+  .select-small.is-invalid {
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px,url('~@/assets/invalid-red.png') no-repeat center right 1.75rem/1.125rem 1.125rem;
+  }
+  .custom-select:disabled {
+    color: #6c757d;
+    background-color: #e9ecef;
+  }
   .line-spacing-small {
     line-height: 1.3;
   }
-  #amountInput{
+  #amountInput {
     width: 140px;
   }
-  #amountTextInput{
+  #amountTextInput {
     width: 410px;
   }
-  #amountTextInputPt2{
+  #amountTextInputPt2 {
     width: 255px;
   }
-  #townInput{
+  #townInput {
     width: 180px;
   }
-  #reasonInput{
+  #reasonInput {
     width: 430px;
   }
-  #payedInput{
+  #payedInput {
     width: 288px;
   }
-  #receivedInput{
+  #receivedInput {
     width: 230px;
   }
-  #yearSelect{
+  #yearSelect {
     width: 95px;
     padding-left:5px;
     margin-bottom: 8px;
   }
-  #part1Select{
+  #part1Select {
     width: 50px;
     padding-left:5px;
     margin-bottom: 8px;
   }
-  #pos1Select{
+  #pos1Select {
     width: 50px;
     padding-left:5px;
     margin-bottom: 8px;
   }
-  #part2Select{
+  #part2Select {
     width: 50px;
     padding-left:5px;
     margin-bottom: 8px;
   }
-  #pos2Select{
+  #pos2Select {
     width: 50px;
     padding-left:5px;
     margin-bottom: 8px;
   }
-  #firstAmountInput{
+  #firstAmountInput {
     width: 85px;
   }
-  #secondAmountInput{
+  #secondAmountInput {
     width: 85px;
   }
-  #divContentEditable{
+  #divContentEditable {
     -ms-flow-into: article;
     -webkit-flow-into: article;
     display: inline;
@@ -829,37 +848,37 @@
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
-  #totalAmountInput{
+  #totalAmountInput {
     width: 100px;
   }
-  #annualReportPageInput{
+  #annualReportPageInput {
     width: 35px;
   }
-  #ordinalInput{
+  #ordinalInput {
     width: 40px;
   }
-  #municipalityPresidentInput{
+  #municipalityPresidentInput {
     width: 235px;
   }
-  #modalCancelBtn{
+  #modalCancelBtn {
     margin-top: 5px;
     position: absolute;
     right: 5px;
   }
-  #clearSaveBtnsDiv{
+  #clearSaveBtnsDiv {
     position: absolute;
     bottom: 15px;
     right: 50px;
   }
-  #printBtnDiv{
+  #printBtnDiv {
     position: absolute;
     bottom: 15px;
     left: 50px;
   }
-  .displayNone{
+  .displayNone {
     display:none;
   }
-  .amountTextDivWrapper{
+  .amountTextDivWrapper {
     display: inline;
     font-weight: bold;
     color: black;
@@ -872,7 +891,7 @@
     display: inline-block;
     margin: 0;
   }
-  #amountTextDivWrapper1{
+  #amountTextDivWrapper1 {
     height: 25px;
     width: 405px;
     white-space: nowrap;
@@ -880,7 +899,7 @@
     display: inline-block;
     margin-bottom: -2px;
   }
-  #amountTextDivWrapper2{
+  #amountTextDivWrapper2 {
     height: 25px;
     width: 670px;
     white-space: nowrap;
@@ -888,21 +907,21 @@
     margin-bottom: -3px;
     margin-top: -2px;
   }
-  .disabledTextDiv{
+  .disabledTextDiv {
     background-color: #ededed;
     max-height: 15px;
   }
 </style>
 
 <style>
-  .datepickerInput{
+  .datepickerInput {
     display: inline;
     border-style: none;
     border-bottom: 1px solid black;
     text-align: center;
 
     white-space: nowrap;
-    width: 95px;
+    width: 93px;
     max-height: 15px;
     padding: 0px;
     font-size: 110%;
@@ -912,28 +931,34 @@
     padding: 0px;
     color: black;
   }
-  .datepickerWrapper{
+  .is-invalid .datepickerInput {    
+    background-image: url('~@/assets/invalid-red.png');
+    background-repeat: no-repeat;
+    background-position: center right calc(2.25rem / 4);
+    background-size: calc(2.25rem / 2) calc(2.25rem / 2);
+  }
+  .datepickerWrapper {
     display: inline;
     white-space: normal;
     height: 15px;
     margin: 0px;
     padding: 0px;
-    width: 95px;
+    width: 93px;
   }
-  .datepickerWrapper > div:first-child{
+  .datepickerWrapper > div:first-child {
     display: inline;
-    width: 95px;
+    width: 93px;
     margin: 0px;
     padding: 0px;
   }
-  .datepickerCalendar{
+  .datepickerCalendar {
     font-size: 120%;
     white-space: normal;
     z-index: 100;
     -webkit-transform: scale(0.7, 0.7) translate(650px, -65px); /* Safari and Chrome */
   }
   /* To get calendar cells smaller to avoid save and clear buttons from covering the popup*/
-  .vdp-datepicker__calendar .cell{
+  .vdp-datepicker__calendar .cell {
     height: 35px !important;
     line-height: 35px !important;
     padding: 0 !important;
