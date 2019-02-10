@@ -157,7 +157,7 @@
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
   const receiptsController = require('../../../../controllers/receipt.controller')
   const annualReportController = require('../../../../controllers/annualReport.controller')
-  const { numberToSerbianDinars, getLastNYears, getCodeCombinations, showErrorDialog } = require('../../../../utils/utils')
+  const { numberToSerbianDinars, getLastNYears, getCodeCombinations, getCodeCombinationsForRendering, showErrorDialog } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
 
   export default {
@@ -210,7 +210,8 @@
         yearSelected: null,
         preDatepickerJustBlurred: false,
         postDatepickerJustBlurred: false,
-        incomeCodeCombinations: {
+        incomeCodeCombinations: null,
+        incomeCodeCombinationsForRendering: {
           '': ['']
         },
         phrases: {
@@ -236,6 +237,7 @@
       annualReportController.getIncomeCodes().then(function (res) {
         if (!res.err) {
           self.incomeCodeCombinations = getCodeCombinations(Object.keys(res.data))
+          self.incomeCodeCombinationsForRendering = getCodeCombinationsForRendering(Object.keys(res.data))
         } else {
           showErrorDialog(res.err)
         }
@@ -261,10 +263,12 @@
         }
       },
       'form.firstPart': function (newValue) {
-        const allowedPosValues = this.incomeCodeCombinations[newValue]
-        if (allowedPosValues.indexOf(this.form.firstPos) === -1) {
-          /* Pos value needs to be reset since it is not allowed with the new part */
-          this.form.firstPos = ''
+        if (this.incomeCodeCombinations) {
+          const allowedPosValues = this.incomeCodeCombinations[newValue]
+          if (!allowedPosValues || allowedPosValues.indexOf(this.form.firstPos) === -1) {
+            /* Pos value needs to be reset since it is not allowed with the new part */
+            this.form.firstPos = ''
+          }
         }
         /* If new value is null, i.e. the part is reset, reset the amount too */
         if (!newValue) {
@@ -272,10 +276,12 @@
         }
       },
       'form.secondPart': function (newValue) {
-        const allowedPosValues = this.incomeCodeCombinations[newValue]
-        if (allowedPosValues.indexOf(this.form.secondPos) === -1) {
-          /* Pos value needs to be reset since it is not allowed with the new part */
-          this.form.secondPos = ''
+        if (this.incomeCodeCombinations) {
+          const allowedPosValues = this.incomeCodeCombinations[newValue]
+          if (!allowedPosValues || allowedPosValues.indexOf(this.form.secondPos) === -1) {
+            /* Pos value needs to be reset since it is not allowed with the new part */
+            this.form.secondPos = ''
+          }
         }
         /* If new value is null, i.e. the part is reset, reset the amount too */
         if (!newValue) {
@@ -546,13 +552,19 @@
         return getLastNYears(10)
       },
       partOptions: function () {
-        return Object.keys(this.incomeCodeCombinations)
+        const options = Object.keys(this.incomeCodeCombinationsForRendering)
+        const i = options.indexOf('')
+        if (i > -1) {
+          options.splice(i)
+          options.unshift('')
+        }
+        return options
       },
       pos1Options: function () {
-        return this.incomeCodeCombinations[this.form.firstPart]
+        return this.incomeCodeCombinationsForRendering[this.form.firstPart]
       },
       pos2Options: function () {
-        return this.incomeCodeCombinations[this.form.secondPart]
+        return this.incomeCodeCombinationsForRendering[this.form.secondPart]
       },
       missingReason: function () {
         return !this.form || !this.form.reason || this.form.reason.toString().trim() === ''
@@ -570,7 +582,14 @@
         return !this.form || !this.form.firstPart
       },
       missingFirstPos: function () {
-        return !this.form || !this.form.firstPos
+        /* IncomeCodeCombinations may not be ready right away */
+        if (this.incomeCodeCombinations) {
+          /* Empty string is not considered missing if it is an allowed pos for a given part */
+          const allowedPosValues = this.incomeCodeCombinations[this.form.firstPart]
+          return !this.form || !allowedPosValues || (allowedPosValues.indexOf(this.form.firstPos) === -1)
+        } else {
+          return false
+        }
       },
       missingFirstAmount: function () {
         return !this.form || !this.form.firstAmount || this.form.firstAmount.toString().trim() === ''
@@ -579,7 +598,14 @@
         return !this.form || !this.form.secondPart
       },
       missingSecondPos: function () {
-        return !this.form || !this.form.secondPos
+        /* IncomeCodeCombinations may not be ready right away */
+        if (this.incomeCodeCombinations) {
+          /* Empty string is not considered missing if it is an allowed pos for a given part */
+          const allowedPosValues = this.incomeCodeCombinations[this.form.secondPart]
+          return !this.form || !allowedPosValues || (allowedPosValues.indexOf(this.form.secondPos) === -1)
+        } else {
+          return false
+        }
       },
       missingSecondAmount: function () {
         return !this.form || !this.form.secondAmount || this.form.secondAmount.toString().trim() === ''
