@@ -15,9 +15,9 @@
       </b-tab>
       <b-tab class="appTab">
         <template slot="title">
-          <img src="~@/assets/report-blue.png" class="appTabsIcon">  {{phrases.reports}}
+          <img src="~@/assets/report-blue.png" class="appTabsIcon">  {{phrases.annualReport}}
         </template>
-        <reports-pane></reports-pane>
+        <annual-report-pane></annual-report-pane>
       </b-tab>
       <b-tab class="appTab">
         <template slot="title">
@@ -32,7 +32,7 @@
 <script>
   import ReceiptsTable from './AppTabs/ReceiptsTable'
   import PaymentSlipsTable from './AppTabs/PaymentSlipsTable'
-  import ReportsPane from './AppTabs/ReportsPane'
+  import AnnualReportPane from './AppTabs/AnnualReportPane'
   import SettingsPane from './AppTabs/SettingsPane'
   const i18n = require('../../translations/i18n')
 
@@ -42,12 +42,12 @@
         phrases: {
           receipts: i18n.getTranslation('Receipts'),
           paymentSlips: i18n.getTranslation('Payment slips'),
-          reports: i18n.getTranslation('Reports'),
+          annualReport: i18n.getTranslation('Annual report'),
           settings: i18n.getTranslation('Settings')
         }
       }
     },
-    components: { ReceiptsTable, PaymentSlipsTable, ReportsPane, SettingsPane }
+    components: { ReceiptsTable, PaymentSlipsTable, AnnualReportPane, SettingsPane }
   }
 </script>
 
