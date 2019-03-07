@@ -1,6 +1,6 @@
-const {ipcMain} = require('electron')
-const {PaymentSlip, DefaultPaymentSlip} = require('./model/paymentSlip')
-const {Receipt, DefaultReceipt} = require('./model/receipt')
+const { ipcMain } = require('electron')
+const { PaymentSlip, DefaultPaymentSlip } = require('./model/paymentSlip')
+const { Receipt, DefaultReceipt } = require('./model/receipt')
 const annualReport = require('./model/annualReport')
 
 ipcMain.on('get-income-codes', function (event) {

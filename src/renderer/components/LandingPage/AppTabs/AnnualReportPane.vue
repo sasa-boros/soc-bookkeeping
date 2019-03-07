@@ -1,6 +1,10 @@
 <template>
   <b-container fluid>    
     <h3>Дневник благајне</h3>
+    
+      <b-button variant="primary" @click.stop="print()">
+        print
+      </b-button>
     <b-form inline @submit="annualReportCreateSubmit" no-validation> 
       Српске православне цркве  
       <b-form-group>
@@ -40,6 +44,7 @@
   const annualReportController = require('../../../controllers/annualReport.controller')
   const i18n = require('../../../translations/i18n')
   const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
+  const { ipcRenderer } = require('electron')
 
   export default {
     data () {
@@ -81,6 +86,9 @@
         if (this.reportData && this.pageRendered < this.reportData.pages.length - 1) {
           this.pageRendered++
         }
+      },
+      print: function () {
+        ipcRenderer.send('printPDF', '')
       }
     },
     components: { AnnualReportFirstPage, AnnualReportManual }

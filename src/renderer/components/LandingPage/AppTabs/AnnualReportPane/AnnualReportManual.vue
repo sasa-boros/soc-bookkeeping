@@ -51,8 +51,8 @@
     border: solid 1px;
     border-color: #ddeeee;
     background-color: white;
-    width: 1191px !important;
-    height: 842px !important;
+    width: 41.9cm !important;
+    height: 29.6cm !important;
     padding: 0px !important;
     margin: 0px !important;
   }

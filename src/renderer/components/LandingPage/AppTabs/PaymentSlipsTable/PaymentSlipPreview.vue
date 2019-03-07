@@ -1030,9 +1030,11 @@
       visibility:visible;
     }
     #print {
+      /*
       position:absolute;
       left:0;
       top:0;
+      */
     }
     .ignoreInPrint {
       visibility:hidden !important;

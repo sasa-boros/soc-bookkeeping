@@ -1,8 +1,10 @@
 'use strict'
 
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain, shell } = require('electron')
 const mongoose = require('mongoose')
 const path = require('path')
+const os = require('os')
+const fs = require('fs')
 const config = require('../config/config')
 // eslint-disable-next-line no-unused-vars
 const ipcRouter = require('./ipcRouter')
@@ -18,8 +20,9 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
+let workerWindow
 const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
+  ? `http://localhost:9080/`
   : `file://${__dirname}/index.html`
 
 function createWindow () {
@@ -27,7 +30,8 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    useContentSize: true
+    useContentSize: true,
+    backgroundColor: 'white'
   })
 
   mainWindow.maximize()
@@ -36,7 +40,38 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  workerWindow = new BrowserWindow()
+  workerWindow.loadURL(winURL + '/#/annualReportPrint')
+  // workerWindow.hide()
+  workerWindow.webContents.openDevTools()
+  workerWindow.on('closed', () => {
+    workerWindow = null
+  })
 }
+
+ipcMain.on('printPDF', (event, content) => {
+  workerWindow.webContents.send('printPDF', content)
+})
+
+ipcMain.on('readyToPrintPDF', (event) => {
+  const pdfPath = path.join(os.tmpdir(), 'print.pdf')
+  const options = { landscape: true,
+    printBackground: true,
+    pageSize: 'A3',
+    marginsType: 1 }
+
+  workerWindow.webContents.printToPDF(options, function (error, data) {
+    if (error) throw error
+    fs.writeFile(pdfPath, data, function (error) {
+      if (error) {
+        throw error
+      }
+      shell.openItem(pdfPath)
+      event.sender.send('wrote-pdf', pdfPath)
+    })
+  })
+})
 
 app.on('ready', createWindow)
 
