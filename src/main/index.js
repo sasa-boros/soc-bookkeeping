@@ -1,5 +1,6 @@
 'use strict'
 
+import '../renderer/store'
 const { app, BrowserWindow, ipcMain, shell } = require('electron')
 const mongoose = require('mongoose')
 const path = require('path')

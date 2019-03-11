@@ -1,5 +1,6 @@
 <template>
-  <b-container fluid id="printPageContainer">
+  <b-container fluid id="printPageContainer"> 
+        {{annualReport}}
     <div id="print">
       <div class="page-break-div">      
         <annual-report-first-page year='2019' church='church'></annual-report-first-page>
@@ -11,13 +12,14 @@
         asdasdasdas
       </div>
       <div class="page-break-div"> 
-        kkasdaapppp
+        {{annualReport}}
       </div>
     </div>
   </b-container fluid>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   import AnnualReportFirstPage from './LandingPage/AppTabs/AnnualReportPane/AnnualReportFirstPage'
   import AnnualReportManual from './LandingPage/AppTabs/AnnualReportPane/AnnualReportManual'
   const ipcRenderer = require('electron').ipcRenderer
@@ -29,6 +31,13 @@
 
   export default {
     name: 'annual-report-print-page',
+    computed: {
+      ...mapState(
+        {
+          annualReport: state => state.AnnualReportValues.annualReport
+        }
+      )
+    },
     components: { AnnualReportFirstPage, AnnualReportManual }
   }
 </script>

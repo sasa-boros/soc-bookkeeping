@@ -72,6 +72,7 @@
           if (!res.err) {
             self.reportData = res.data
             self.showReportData = true
+            self.$store.dispatch('SET_ANNUAL_REPORT', res.data)
           } else {
             showErrorDialog(res.err)
           }
