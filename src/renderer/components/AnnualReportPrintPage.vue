@@ -1,18 +1,22 @@
 <template>
-  <b-container fluid id="printPageContainer"> 
-        {{annualReport}}
-    <div id="print">
+  <b-container fluid id="printPageContainer">
+    <div>
       <div class="page-break-div">      
-        <annual-report-first-page year='2019' church='church'></annual-report-first-page>
+        <annual-report-first-page :year='annualReportData.year' :church='church'></annual-report-first-page>
       </div>
       <div class="page-break-div"> 
+        <annual-report-blank-page></annual-report-blank-page>
+      </div>
+      <div class="page-break-div">
         <annual-report-manual></annual-report-manual>
       </div>
-      <div class="page-break-div"> 
-        asdasdasdas
+      <div v-for="page in annualReportData.pages">
+        <div class="page-break-div"> 
+          <annual-report-receiving-page :pageData="page"></annual-report-receiving-page>
+        </div>
       </div>
       <div class="page-break-div"> 
-        {{annualReport}}
+        {{annualReportData}}
       </div>
     </div>
   </b-container fluid>
@@ -20,8 +24,11 @@
 
 <script>
   import { mapState } from 'vuex'
+  import AnnualReportBlankPage from './LandingPage/AppTabs/AnnualReportPane/AnnualReportBlankPage'
   import AnnualReportFirstPage from './LandingPage/AppTabs/AnnualReportPane/AnnualReportFirstPage'
   import AnnualReportManual from './LandingPage/AppTabs/AnnualReportPane/AnnualReportManual'
+  import AnnualReportReceivingPage from './LandingPage/AppTabs/AnnualReportPane/AnnualReportReceivingPage'
+  import AnnualReportIssuingPage from './LandingPage/AppTabs/AnnualReportPane/AnnualReportIssuingPage'
   const ipcRenderer = require('electron').ipcRenderer
 
   ipcRenderer.on('printPDF', (event, content) => {
@@ -34,11 +41,12 @@
     computed: {
       ...mapState(
         {
-          annualReport: state => state.AnnualReportValues.annualReport
+          annualReportData: state => state.AnnualReportValues.annualReportData,
+          church: state => state.AnnualReportValues.church
         }
       )
     },
-    components: { AnnualReportFirstPage, AnnualReportManual }
+    components: { AnnualReportBlankPage, AnnualReportFirstPage, AnnualReportManual, AnnualReportReceivingPage, AnnualReportIssuingPage }
   }
 </script>
 

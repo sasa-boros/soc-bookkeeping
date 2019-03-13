@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid> 
+  <b-container fluid>
     <b-btn @click.stop="openDefaultReceiptModal()">
       {{ phrases.setDefaultsReceipts }}           
     </b-btn>

@@ -73,6 +73,7 @@
             self.reportData = res.data
             self.showReportData = true
             self.$store.dispatch('SET_ANNUAL_REPORT', res.data)
+            self.$store.dispatch('SET_CHURCH', self.church)
           } else {
             showErrorDialog(res.err)
           }
