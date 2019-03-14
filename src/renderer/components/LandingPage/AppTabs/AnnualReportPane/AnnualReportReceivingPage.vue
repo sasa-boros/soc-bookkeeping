@@ -1,149 +1,64 @@
 <template>
   <b-container fluid class="pageDiv">
-  ПРИМАЊА
+    ПРИМАЊА
 
-  Страна <div class="underscore-div">{{ pageData.ordinal }}</div>
+    Страна <div class="underscore-div">{{ pageData.ordinal }}</div>
 
-  У месецу <div class="underscore-div">{{ pageData.monthText }}</div>
+    У месецу <div class="underscore-div">{{ pageData.monthText }}</div>
 
-  <table>
-    <tr>
-      <td class="ordinal-column" rowspan="3">Редни број</td>
-      <td class="day-column" rowspan="3">Дан књижења</td>
-      <td class="reason-column" rowspan="3">КО ЈЕ И НА ИМЕ ЧЕГА УПЛАТИО</td>
-      <td class="" colspan="33">ПАРТИЈА И ПОЗИЦИЈА</td>
-    </tr>
-    <tr>
-      <td class="part-pos-cell" colspan="2">I/1</td>
-      <td class="part-pos-cell" colspan="2">I/2</td>
-      <td class="part-pos-cell" colspan="2">I/3</td>
-      <td class="part-pos-cell" colspan="2">II/1</td>
-      <td class="part-pos-cell" colspan="2">II/2</td>
-      <td class="part-pos-cell" colspan="2">II/3</td>
-      <td class="part-pos-cell" colspan="2">II/4</td>
-      <td class="part-pos-cell" colspan="2">II/5</td>
-      <td class="part-pos-cell" colspan="2">II/6</td>
-      <td class="part-pos-cell" colspan="2">III/1</td>
-      <td class="part-pos-cell" colspan="2">III/2</td>
-      <td class="part-pos-cell" colspan="2">III/3</td>
-      <td class="part-pos-cell" colspan="2">III/4</td>
-      <td class="part-pos-cell" colspan="2">III/5</td>
-      <td class="part-pos-cell" colspan="2">IV</td>
-      <td class="" colspan="2">УКУПНО</td>
-      <td class="after-total-cell"></td>
-    </tr>
-    <tr>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax">дин.</td>
-      <td class="tg-0lax">п.</td>
-      <td class="tg-0lax"></td>
-    </tr>
-    <tr  v-for="paymentSlip in pageData.paymentSlips">
-      <td class="tg-0lax">{{ paymentSlip.ordinal }}</td>
-      <td class="tg-0lax">{{ paymentSlip.date | getDayFromDate }}</td>
-      <td class="tg-0lax">{{ paymentSlip.reason }}</td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-    </tr>
-    <tr v-for="n in numberOfEmptyRows">
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-      <td class="tg-0lax"></td>
-    </tr>
-  </table>
+    <table>
+      <tr>
+        <td class="ordinal-column" rowspan="3">Редни број</td>
+        <td class="day-column" rowspan="3">Дан књижења</td>
+        <td class="reason-column" rowspan="3" colspan="2">КО ЈЕ И НА ИМЕ ЧЕГА УПЛАТИО</td>
+        <td class="" colspan="33">ПАРТИЈА И ПОЗИЦИЈА</td>
+      </tr>
+      <tr>
+        <td v-for="incomeCodeCombination in incomeCodeCombinations" class="part-pos-cell" colspan="2">{{ incomeCodeCombination }}</td>
+        <td class="" colspan="2">УКУПНО</td>
+        <td class="after-total-cell"></td>
+      </tr>
+      <tr>
+        <template v-for="noCodes in (incomeCodeCombinations.length + 1)">
+          <td class="">дин.</td>
+          <td class="">п.</td>
+        </template>
+        <td class=""></td>
+      </tr>
+
+      <!-- Rows representing payment slips -->
+      <tr  v-for="paymentSlip in pageData.paymentSlips">
+        <td class="data-cell">{{ paymentSlip.ordinal }}.</td>
+        <td class="data-cell">{{ paymentSlip.date | getDayFromDate }}.</td>
+        <td class="data-cell reason-column" colspan="2">{{ paymentSlip.reason }}</td>
+        <template v-for="incomeCodeCombination in incomeCodeCombinations">
+          <td class="data-cell int-cell">{{ incomePerCodePerPaymentSlip[paymentSlip._id][incomeCodeCombination] | getInt }}</td>
+          <td class="data-cell decimal-cell">{{ incomePerCodePerPaymentSlip[paymentSlip._id][incomeCodeCombination] | getDecimal }}</td>
+        </template>
+        <td class="data-cell int-cell">{{ paymentSlip.amount | getInt }}</td>
+        <td class="data-cell decimal-cell">{{ paymentSlip.amount | getDecimal }}</td>
+        <td></td>
+      </tr>
+
+      <!-- Empty table rows to have total of 26 rows per page -->
+      <tr v-for="n in numberOfEmptyRows">
+        <td></td>
+        <td></td>
+        <td colspan="2"></td>
+        <td v-for="noEmptyFields in (2 * (incomeCodeCombinations.length + 1) + 1)"></td>
+      </tr>
+      <tr>
+        <td class="totals-cell bottomless-cell rightless-cell" colspan="3"></td>
+        <td class="totals-cell width-55 leftless-cell bottom-bold-cell bottom-right-content">Свега примања:</td>
+        <template v-for="incomeCodeCombination in incomeCodeCombinations">
+          <td class="data-cell int-cell totals-cell bottom-bold-cell">{{ pageData.totalIncomePerCode[incomeCodeCombination] | getInt }}</td>
+          <td class="data-cell decimal-cell totals-cell bottom-bold-cell">{{ pageData.totalIncomePerCode[incomeCodeCombination] | getDecimal }}</td>
+        </template>
+        <td class="data-cell int-cell totals-cell bottom-bold-cell">{{ pageData.totalIncome | getInt }}</td>
+        <td class="data-cell decimal-cell totals-cell bottom-bold-cell">{{ pageData.totalIncome | getDecimal }}</td>
+        <td class="totals-cell bottom-bold-cell"></td>
+      </tr>
+    </table>
   </b-container>
 </template>
 
@@ -168,12 +83,41 @@
         }
       }
     },
+    data () {
+      return {
+        incomeCodeCombinations: ['I/1', 'I/2', 'I/3',
+          'II/1', 'II/2', 'II/3', 'II/4', 'II/5', 'II/6',
+          'III/1', 'III/2', 'III/3', 'III/4', 'III/5',
+          'IV']
+      }
+    },
     computed: {
       numberOfEmptyRows: function () {
         if (!this.pageData || !this.pageData.paymentSlips) {
           return 26
         }
         return 26 - this.pageData.paymentSlips.length
+      },
+      incomePerCodePerPaymentSlip: function () {
+        var incomePerCodePerPaymentSlip = {}
+        this.pageData.paymentSlips.forEach(function (paymentSlip) {
+          if (!incomePerCodePerPaymentSlip[paymentSlip._id]) {
+            incomePerCodePerPaymentSlip[paymentSlip._id] = {}
+          }
+          const firstPartPos = (paymentSlip.firstPart ? paymentSlip.firstPart : '') + (paymentSlip.firstPos ? '/' + paymentSlip.firstPos : '')
+          if (firstPartPos) {
+            incomePerCodePerPaymentSlip[paymentSlip._id][firstPartPos] = paymentSlip.firstAmount
+          }
+          const secondPartPos = (paymentSlip.secondPart ? paymentSlip.secondPart : '') + (paymentSlip.secondPos ? '/' + paymentSlip.secondPos : '')
+          if (secondPartPos) {
+            if (!incomePerCodePerPaymentSlip[paymentSlip._id][secondPartPos]) {
+              incomePerCodePerPaymentSlip[paymentSlip._id][secondPartPos] = paymentSlip.secondAmount
+            } else {
+              incomePerCodePerPaymentSlip[paymentSlip._id][secondPartPos] += paymentSlip.secondAmount
+            }
+          }
+        })
+        return incomePerCodePerPaymentSlip
       }
     },
     filters: {
@@ -181,6 +125,24 @@
         const options = { day: 'numeric' }
         const language = i18n.usedLanguage
         return (new Date(date)).toLocaleDateString(language, options)
+      },
+      getInt (amount) {
+        if (amount) {
+          amount = amount + ''
+          return amount.split('.')[0]
+        }
+        return ''
+      },
+      getDecimal (amount) {
+        if (amount) {
+          amount = amount + ''
+          var decimal = amount.split('.').length > 1 ? amount.split('.')[1] : '00'
+          if (decimal.length < 2) {
+            decimal += '0'
+          }
+          return decimal
+        }
+        return ''
       }
     }
   }
@@ -209,8 +171,12 @@
   table  {
     border-collapse: collapse;
     border-spacing: 0;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-top: 2px solid black;
     text-align: center;
     vertical-align: center;
+    table-layout: fixed;
   }
   table td {
     height: 5mm;
@@ -219,6 +185,9 @@
     overflow: hidden;
     word-break: normal;
   }
+  table td.data-cell {
+    font-weight: bold;
+  }
   table .ordinal-column {
     width: 12mm;
   }
@@ -226,7 +195,8 @@
     width: 14mm;
   }
   table .reason-column {
-    width: 83mm;
+    min-width: 83mm;
+    max-width: 83mm;
   }
   table .part-pos-cell {
     height: 25mm;
@@ -235,5 +205,39 @@
   }
   table .after-total-cell {
     width: 15mm;
+  }
+  table .decimal-cell {
+    width: 5mm;
+    text-align: left;
+    vertical-align: bottom;
+    font-size: 110%;
+    padding-left: 0.5mm;
+  }
+  table .int-cell {
+    text-align: right;
+    vertical-align: bottom;
+    padding-right: 0.5mm;
+  }
+  table td.bottomless-cell {
+    border-bottom: none;
+  }
+  table td.bottom-bold-cell {
+    border-bottom: 2px solid black;
+  }
+  table td.leftless-cell {
+    border-left: none;
+  }
+  table td.rightless-cell {
+    border-right: none;
+  }
+  table td.totals-cell {
+    height: 20mm;
+  }
+  table td.bottom-right-content {
+    text-align: right;
+    vertical-align: bottom;
+  }
+  table td.width-55 {
+    width: 55mm;
   }
 </style>
