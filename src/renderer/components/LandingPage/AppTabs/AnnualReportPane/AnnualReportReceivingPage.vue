@@ -58,6 +58,20 @@
         <td class="data-cell decimal-cell totals-cell bottom-bold-cell">{{ pageData.totalIncome | getDecimal }}</td>
         <td class="totals-cell bottom-bold-cell"></td>
       </tr>
+      <tr>
+        <td class="bottomless-cell topless-cell rightless-cell height-10" colspan="24"></td>
+        <td class="leftless-cell bottom-bold-cell bottom-right-content height-10" colspan="10">Пренос готовине из прошлог месеца:</td>
+        <td class="data-cell int-cell bottom-bold-cell height-10">{{ pageData.transferFromPreviousMonth | getInt }}</td>
+        <td class="data-cell decimal-cell bottom-bold-cell height-10">{{ pageData.transferFromPreviousMonth | getDecimal }}</td>
+        <td class="bottom-bold-cell height-10"></td>
+      </tr>
+      <tr>
+        <td class="bottomless-cell topless-cell rightless-cell height-10" colspan="24"></td>
+        <td class="leftless-cell bottom-bold-cell bottom-right-content height-10" colspan="10">У к у п н о:</td>
+        <td class="data-cell int-cell bottom-bold-cell height-10">{{ pageData.total | getInt }}</td>
+        <td class="data-cell decimal-cell bottom-bold-cell height-10">{{ pageData.total | getDecimal }}</td>
+        <td class="bottom-bold-cell height-10"></td>
+      </tr>
     </table>
   </b-container>
 </template>
@@ -230,14 +244,21 @@
   table td.rightless-cell {
     border-right: none;
   }
+  table td.topless-cell {
+    border-top: none;
+  }
   table td.totals-cell {
     height: 20mm;
   }
   table td.bottom-right-content {
     text-align: right;
     vertical-align: bottom;
+    padding-right: 2px;
   }
   table td.width-55 {
     width: 55mm;
+  }
+  table td.height-10 {
+    height: 10mm;
   }
 </style>
