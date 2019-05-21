@@ -4,10 +4,24 @@ const { app, BrowserWindow } = require('electron')
 const mongoose = require('mongoose')
 const path = require('path')
 const config = require('../config/config')
-// eslint-disable-next-line no-unused-vars
-const ipcRouter = require('./ipcRouter')
 
-mongoose.connect(config.dbUrl)
+// eslint-disable-next-line no-unused-vars
+const annualReportRouter = require('./router/annualReportRouter')
+// eslint-disable-next-line no-unused-vars
+const defaultPaymentSlipRouter = require('./router/defaultPaymentSlipRouter')
+// eslint-disable-next-line no-unused-vars
+const defaultReceiptRouter = require('./router/defaultReceiptRouter')
+// eslint-disable-next-line no-unused-vars
+const incomeCodeRouter = require('./router/incomeCodeRouter')
+// eslint-disable-next-line no-unused-vars
+const outcomeCodeRouter = require('./router/outcomeCodeRouter')
+// eslint-disable-next-line no-unused-vars
+const paymentSlipRouter = require('./router/paymentSlipRouter')
+// eslint-disable-next-line no-unused-vars
+const receiptRouter = require('./router/receiptRouter')
+
+// connecting to database
+mongoose.connect(config.dbUrl, { useNewUrlParser: true })
 
 /**
  * Set `__static` path to static files in production

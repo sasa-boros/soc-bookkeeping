@@ -1,4 +1,4 @@
-const {ipcRenderer} = require('electron')
+const { ipcRenderer } = require('electron')
 
 function getPaymentSlips (year) {
   return new Promise(function (resolve) {
