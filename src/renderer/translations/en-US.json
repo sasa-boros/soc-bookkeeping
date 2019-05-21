@@ -1,7 +1,7 @@
 {
     "Payment slips": "Payment slips",
     "Receipts": "Receipts",
-    "Reports": "Reports",
+    "Annual report": "Annual report",
     "Settings": "Settings",
 
     "Delete selected": "Delete selected",
@@ -15,6 +15,10 @@
     "Error": "Error",
     "The value will be generated": "The value will be generated",
     "Enter a value": "Enter a value",
+    "Enter at least one partition, position, amount": "Enter at least one partition, position, amount",
+    "Enter partition": "Enter partition",
+    "Needs to equal to sum of amounts by partitions and position": "Needs to equal to sum of amounts by partitions and position",
+    "Generate annual report": "Generate annual report",
     "Pick a date": "Pick a date",
     "January.lokativ": "January",
     "February.lokativ": "February",

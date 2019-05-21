@@ -181,19 +181,35 @@ function getLastNYears (n) {
   return nYears
 }
 
+function getCodeCombinationsForRendering (incomeCodes) {
+  var parts = getCodeCombinations(incomeCodes)
+  if (!parts['']) {
+    parts[''] = ['']
+  }
+  Object.keys(parts).forEach(function (key) {
+    const i = parts[key].indexOf('')
+    if (i > -1) {
+      parts[key].splice(i)
+    }
+    parts[key].unshift('')
+  })
+  return parts
+}
+
 function getCodeCombinations (incomeCodes) {
   var parts = {}
-  parts[''] = ['']
   if (incomeCodes) {
     incomeCodes.forEach(function (code) {
       const part = code.split('/')[0]
       const pos = code.split('/')[1]
       if (!parts[part]) {
         parts[part] = []
-        parts[part].push('')
       }
       if (pos) {
         parts[part].push(pos)
+      } else {
+        /* If no pos is defined, we allow for empty pos option */
+        parts[part].push('')
       }
     })
   }
@@ -216,5 +232,6 @@ module.exports = {
   numberToSerbianDinars: numberToSerbianDinars,
   getLastNYears: getLastNYears,
   getCodeCombinations: getCodeCombinations,
+  getCodeCombinationsForRendering: getCodeCombinationsForRendering,
   showErrorDialog: showErrorDialog
 }
