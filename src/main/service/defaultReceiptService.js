@@ -1,60 +1,28 @@
 const { DefaultReceipt } = require('../model/receipt')
 
-function getDefaultReceipt () {
-  return new Promise((resolve, reject) => {
-    console.log('Getting default receipt')
-    DefaultReceipt
-      .find({})
-      .exec()
-      .then((defaultReceipts) => {
-        if (defaultReceipts && defaultReceipts.length > 0) {
-          console.log(`Returning: \n${JSON.stringify(defaultReceipts[0], null, 2)}`)
-          resolve(defaultReceipts[0])
-        } else {
-          console.log('Returning: null')
-          resolve(null)
-        }
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
+async function getDefaultReceipt () {
+  console.log('Getting default receipt')
+  let defaultReceipts = await DefaultReceipt.find({}).exec()
+  if (defaultReceipts && defaultReceipts.length > 0) {
+    console.log(`Returning: \n${JSON.stringify(defaultReceipts[0], null, 2)}`)
+    return defaultReceipts[0]
+  } else {
+    console.log('Returning: null')
+    return null
+  }
 }
 
-function createDefaultReceipt (defaultReceipt) {
-  return new Promise((resolve, reject) => {
-    console.log(`Creating default receipt: \n${JSON.stringify(defaultReceipt, null, 2)}`)
-    delete defaultReceipt['_id']
-    DefaultReceipt
-      .deleteOne({}, (err) => {
-        if (err) {
-          reject(err)
-        }
-        var newDefaultReceipt = DefaultReceipt(defaultReceipt)
-        newDefaultReceipt
-          .save((err, createdDefaultReceipt) => {
-            if (err) {
-              reject(err)
-            }
-            console.log(`Returning: \n${createdDefaultReceipt}`)
-            resolve(createdDefaultReceipt)
-          })
-      })
-  })
+async function createDefaultReceipt (defaultReceipt) {
+  console.log(`Creating default receipt: \n${JSON.stringify(defaultReceipt, null, 2)}`)
+  await DefaultReceipt.deleteOne({}).exec()
+  await DefaultReceipt(defaultReceipt).save()
+  console.log('Successfully created default receipt')
 }
 
-function deleteDefaultReceipt () {
-  return new Promise((resolve, reject) => {
-    console.log('Deleting default receipt')
-    DefaultReceipt
-      .deleteOne({}, (err, deletedDefaultReceipt) => {
-        if (err) {
-          reject(err)
-        }
-        console.log(`Returning: \n${deletedDefaultReceipt}`)
-        resolve(deletedDefaultReceipt)
-      })
-  })
+async function deleteDefaultReceipt () {
+  console.log('Deleting default receipt')
+  await DefaultReceipt.deleteOne({}).exec()
+  console.log('Successfully deleted default receipt')
 }
 
 module.exports = {

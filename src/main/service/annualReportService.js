@@ -29,17 +29,17 @@ async function getAnnualReport (year) {
     annualReportPage.transferToNextMonth = Big(0.0)
     annualReportPage.total = Big(0.0)
 
-    const paymentSlips = await findAndSortEntitiesPerMonth(PaymentSlip, year, i, 1)
-    const receipts = await findAndSortEntitiesPerMonth(Receipt, year, i, 1)
+    const paymentSlips = await PaymentSlip.find({ 'date': { '$gte': new Date(year, i, 1), '$lt': new Date(year, i + 1, 1) } }).sort({ 'date': 1 }).exec()
+    const receipts = await Receipt.find({ 'date': { '$gte': new Date(year, i, 1), '$lt': new Date(year, i + 1, 1) } }).sort({ 'date': 1 }).exec()
 
     if (paymentSlips) {
       for (let j = 0; j < paymentSlips.length; j++) {
         const paymentSlip = paymentSlips[j]
         if (paymentSlip.firstPart && paymentSlip.firstPos && paymentSlip.firstAmount) {
-          calculateTotalPayments(paymentSlip.firstPart, paymentSlip.firstPos, paymentSlip.firstAmount, annualReportPage.totalIncomePerCode)
+          calculateTotalPaymentsPerCode(paymentSlip.firstPart, paymentSlip.firstPos, paymentSlip.firstAmount, annualReportPage.totalIncomePerCode)
         }
         if (paymentSlip.secondPart && paymentSlip.secondPos && paymentSlip.secondAmount) {
-          calculateTotalPayments(paymentSlip.secondPart, paymentSlip.secondPos, paymentSlip.secondAmount, annualReportPage.totalIncomePerCode)
+          calculateTotalPaymentsPerCode(paymentSlip.secondPart, paymentSlip.secondPos, paymentSlip.secondAmount, annualReportPage.totalIncomePerCode)
         }
         annualReportPage.paymentSlips.push(paymentSlip)
       }
@@ -58,10 +58,10 @@ async function getAnnualReport (year) {
       for (let j = 0; j < receipts.length; j++) {
         const receipt = receipts[j]
         if (receipt.firstPart && receipt.firstPos && receipt.firstAmount) {
-          calculateTotalPayments(receipt.firstPart, receipt.firstPos, receipt.firstAmount, annualReportPage.totalOutcomePerCode)
+          calculateTotalPaymentsPerCode(receipt.firstPart, receipt.firstPos, receipt.firstAmount, annualReportPage.totalOutcomePerCode)
         }
         if (receipt.secondPart && receipt.secondPos && receipt.secondAmount) {
-          calculateTotalPayments(receipt.secondPart, receipt.secondPos, receipt.secondAmount, annualReportPage.totalOutcomePerCode)
+          calculateTotalPaymentsPerCode(receipt.secondPart, receipt.secondPos, receipt.secondAmount, annualReportPage.totalOutcomePerCode)
         }
         annualReportPage.receipts.push(receipt)
       }
@@ -90,29 +90,7 @@ async function getAnnualReport (year) {
   return annualReport
 }
 
-function findAndSortEntitiesPerMonth (entity, year, monthOrdinal, sortingOrder) {
-  return new Promise((resolve, reject) => {
-    entity
-      .find({
-        'date': {
-          '$gte': new Date(year, monthOrdinal, 1),
-          '$lt': new Date(year, monthOrdinal + 1, 1)
-        }
-      })
-      .sort({
-        'date': sortingOrder
-      })
-      .exec()
-      .then((entities) => {
-        resolve(entities)
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
-}
-
-function calculateTotalPayments (part, pos, amount, totalPayments) {
+function calculateTotalPaymentsPerCode (part, pos, amount, totalPayments) {
   const code = part + '/' + pos
   if (totalPayments[code]) {
     totalPayments[code] = totalPayments[code].plus(Big(amount))

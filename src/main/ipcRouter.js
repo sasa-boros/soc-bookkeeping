@@ -7,210 +7,147 @@ const defaultPaymentSlipService = require('./service/defaultPaymentSlipService')
 const defaultReceiptService = require('./service/defaultReceiptService')
 const annualReportService = require('./service/annualReportService')
 
-ipcMain.on('get-income-codes', (event) => {
-  incomeCodeService
-    .getIncomeCodes()
-    .then((incomeCodes) => {
-      basicReply(event, 'get-income-codes-reply', incomeCodes)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'get-income-codes-reply', undefined, err.message)
-    })
+ipcMain.on('get-income-codes', async (event) => {
+  try {
+    reply(event, 'get-income-codes-reply', await incomeCodeService.getIncomeCodes())
+  } catch (err) {
+    replyError(event, 'get-income-codes-reply', err.message)
+  }
 })
 
-ipcMain.on('get-outcome-codes', (event) => {
-  outcomeCodeService
-    .getOutcomeCodes()
-    .then((outcomeCodes) => {
-      basicReply(event, 'get-outcome-codes-reply', outcomeCodes)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'get-outcome-codes-reply', undefined, err.message)
-    })
+ipcMain.on('get-outcome-codes', async (event) => {
+  try {
+    reply(event, 'get-outcome-codes-reply', await outcomeCodeService.getOutcomeCodes())
+  } catch (err) {
+    replyError(event, 'get-outcome-codes-reply', err.message)
+  }
 })
 
-ipcMain.on('get-payment-slips', (event, year) => {
-  paymentSlipService
-    .getPaymentSlips(year)
-    .then((paymentSlips) => {
-      basicReply(event, 'get-payment-slips-reply', paymentSlips)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'get-payment-slips-reply', undefined, err.message)
-    })
+ipcMain.on('get-payment-slips', async (event, year) => {
+  try {
+    reply(event, 'get-payment-slips-reply', await paymentSlipService.getPaymentSlips(year))
+  } catch (err) {
+    replyError(event, 'get-payment-slips-reply', err.message)
+  }
 })
 
-ipcMain.on('create-payment-slip', (event, paymentSlip) => {
-  paymentSlipService
-    .createPaymentSlip(paymentSlip)
-    .then((createdPaymentSlip) => {
-      basicReply(event, 'create-payment-slip-reply', createdPaymentSlip)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'create-payment-slip-reply', undefined, err.message)
-    })
+ipcMain.on('create-payment-slip', async (event, paymentSlip) => {
+  try {
+    reply(event, 'create-payment-slip-reply', await paymentSlipService.createPaymentSlip(paymentSlip))
+  } catch (err) {
+    replyError(event, 'create-payment-slip-reply', err.message)
+  }
 })
 
-ipcMain.on('delete-payment-slip', (event, paymentSlipId) => {
-  paymentSlipService
-    .deletePaymentSlip(paymentSlipId)
-    .then((deletedPaymentSlip) => {
-      basicReply(event, 'delete-payment-slip-reply', deletedPaymentSlip)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'delete-payment-slip-reply', undefined, err.message)
-    })
+ipcMain.on('delete-payment-slip', async (event, paymentSlipId) => {
+  try {
+    reply(event, 'delete-payment-slip-reply', await paymentSlipService.deletePaymentSlip(paymentSlipId))
+  } catch (err) {
+    replyError(event, 'delete-payment-slip-reply', err.message)
+  }
 })
 
-ipcMain.on('update-payment-slip', (event, paymentSlip) => {
-  paymentSlipService
-    .updatePaymentSlip(paymentSlip)
-    .then((updatedPaymentSlip) => {
-      basicReply(event, 'update-payment-slip-reply', updatedPaymentSlip)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'update-payment-slip-reply', undefined, err.message)
-    })
+ipcMain.on('update-payment-slip', async (event, paymentSlip) => {
+  try {
+    reply(event, 'update-payment-slip-reply', await paymentSlipService.updatePaymentSlip(paymentSlip))
+  } catch (err) {
+    replyError(event, 'update-payment-slip-reply', err.message)
+  }
 })
 
-ipcMain.on('get-receipts', (event, year) => {
-  receiptService
-    .getReceipts(year)
-    .then((receipts) => {
-      basicReply(event, 'get-receipts-reply', receipts)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'get-receipts-reply', undefined, err.message)
-    })
+ipcMain.on('get-receipts', async (event, year) => {
+  try {
+    reply(event, 'get-receipts-reply', await receiptService.getReceipts(year))
+  } catch (err) {
+    replyError(event, 'get-receipts-reply', err.message)
+  }
 })
 
-ipcMain.on('create-receipt', (event, receipt) => {
-  receiptService
-    .createReceipt(receipt)
-    .then((createdReceipt) => {
-      basicReply(event, 'create-receipt-reply', createdReceipt)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'create-receipt-reply', undefined, err.message)
-    })
+ipcMain.on('create-receipt', async (event, receipt) => {
+  try {
+    reply(event, 'create-receipt-reply', await receiptService.createReceipt(receipt))
+  } catch (err) {
+    replyError(event, 'create-receipt-reply', err.message)
+  }
 })
 
-ipcMain.on('delete-receipt', (event, receiptId) => {
-  receiptService
-    .deleteReceipt(receiptId)
-    .then((deletedReceipt) => {
-      basicReply(event, 'delete-receipt-reply', deletedReceipt)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'delete-receipt-reply', undefined, err.message)
-    })
+ipcMain.on('delete-receipt', async (event, receiptId) => {
+  try {
+    reply(event, 'delete-receipt-reply', await receiptService.deleteReceipt(receiptId))
+  } catch (err) {
+    replyError(event, 'delete-receipt-reply', err.message)
+  }
 })
 
-ipcMain.on('update-receipt', (event, receipt) => {
-  receiptService
-    .updateReceipt(receipt)
-    .then((updatedReceipt) => {
-      basicReply(event, 'update-receipt-reply', updatedReceipt)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'update-receipt-reply', undefined, err.message)
-    })
+ipcMain.on('update-receipt', async (event, receipt) => {
+  try {
+    reply(event, 'update-receipt-reply', await receiptService.updateReceipt(receipt))
+  } catch (err) {
+    replyError(event, 'update-receipt-reply', err.message)
+  }
 })
 
-ipcMain.on('get-default-payment-slip', (event) => {
-  defaultPaymentSlipService
-    .getDefaultPaymentSlip()
-    .then((defaultPaymentSlip) => {
-      basicReply(event, 'get-default-payment-slip-reply', defaultPaymentSlip)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'get-default-payment-slip-reply', undefined, err.message)
-    })
+ipcMain.on('get-default-payment-slip', async (event) => {
+  try {
+    reply(event, 'get-default-payment-slip-reply', await defaultPaymentSlipService.getDefaultPaymentSlip())
+  } catch (err) {
+    replyError(event, 'get-default-payment-slip-reply', err.message)
+  }
 })
 
-ipcMain.on('create-default-payment-slip', (event, defaultPaymentSlip) => {
-  defaultPaymentSlipService
-    .createDefaultPaymentSlip(defaultPaymentSlip)
-    .then((createdDefaultPaymentSlip) => {
-      basicReply(event, 'create-default-payment-slip-reply', createdDefaultPaymentSlip)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'create-default-payment-slip-reply', undefined, err.message)
-    })
+ipcMain.on('create-default-payment-slip', async (event, defaultPaymentSlip) => {
+  try {
+    reply(event, 'create-default-payment-slip-reply', await defaultPaymentSlipService.createDefaultPaymentSlip(defaultPaymentSlip))
+  } catch (err) {
+    replyError(event, 'create-default-payment-slip-reply', err.message)
+  }
 })
 
-ipcMain.on('delete-default-payment-slip', (event) => {
-  defaultPaymentSlipService
-    .deleteDefaultPaymentSlip()
-    .then((deletedDefaultPaymentSlip) => {
-      basicReply(event, 'delete-default-payment-slip-reply', deletedDefaultPaymentSlip)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'delete-default-payment-slip-reply', undefined, err.message)
-    })
+ipcMain.on('delete-default-payment-slip', async (event) => {
+  try {
+    reply(event, 'delete-default-payment-slip-reply', await defaultPaymentSlipService.deleteDefaultPaymentSlip())
+  } catch (err) {
+    replyError(event, 'delete-default-payment-slip-reply', err.message)
+  }
 })
 
-ipcMain.on('get-default-receipt', (event) => {
-  defaultReceiptService
-    .getDefaultReceipt()
-    .then((defaultReceipt) => {
-      basicReply(event, 'get-default-receipt-reply', defaultReceipt)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'get-default-receipt-reply', undefined, err.message)
-    })
+ipcMain.on('get-default-receipt', async (event) => {
+  try {
+    reply(event, 'get-default-receipt-reply', await defaultReceiptService.getDefaultReceipt())
+  } catch (err) {
+    replyError(event, 'get-default-receipt-reply', err.message)
+  }
 })
 
-ipcMain.on('create-default-receipt', (event, defaultReceipt) => {
-  defaultReceiptService
-    .createDefaultReceipt(defaultReceipt)
-    .then((createdDefaultReceipt) => {
-      basicReply(event, 'create-default-receipt-reply', createdDefaultReceipt)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'create-default-receipt-reply', undefined, err.message)
-    })
+ipcMain.on('create-default-receipt', async (event, defaultReceipt) => {
+  try {
+    reply(event, 'create-default-receipt-reply', await defaultReceiptService.createDefaultReceipt(defaultReceipt))
+  } catch (err) {
+    replyError(event, 'create-default-receipt-reply', err.message)
+  }
 })
 
-ipcMain.on('delete-default-receipt', (event) => {
-  defaultReceiptService
-    .deleteDefaultReceipt()
-    .then((deletedDefaultReceipt) => {
-      basicReply(event, 'delete-default-receipt-reply', deletedDefaultReceipt)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'delete-default-receipt-reply', undefined, err.message)
-    })
+ipcMain.on('delete-default-receipt', async (event) => {
+  try {
+    reply(event, 'delete-default-receipt-reply', await defaultReceiptService.deleteDefaultReceipt())
+  } catch (err) {
+    replyError(event, 'delete-default-receipt-reply', err.message)
+  }
 })
 
-ipcMain.on('get-annual-report', (event, year) => {
-  annualReportService
-    .getAnnualReport(year)
-    .then((annualReport) => {
-      basicReply(event, 'get-annual-report-reply', annualReport)
-    })
-    .catch((err) => {
-      console.error(err)
-      basicReply(event, 'get-annual-report-reply', undefined, err.message)
-    })
+ipcMain.on('get-annual-report', async (event, year) => {
+  try {
+    reply(event, 'get-annual-report-reply', await annualReportService.getAnnualReport(year))
+  } catch (err) {
+    replyError(event, 'get-annual-report-reply', err.message)
+  }
 })
 
-function basicReply (event, target, data, error) {
-  event.sender.send(target, JSON.stringify({ error: error, data: data }))
+function reply (event, target, data) {
+  event.sender.send(target, JSON.stringify({ data: data }))
+}
+
+function replyError (event, target, error) {
+  console.error(error)
+  event.sender.send(target, JSON.stringify({ error: error }))
 }

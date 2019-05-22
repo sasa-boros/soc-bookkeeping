@@ -3,8 +3,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const paymentCodeSchema = new Schema({
-  partition: {type: Number},
-  position: {type: Number},
+  partition: {type: String},
+  position: {type: String},
   description: { type: String },
   isTaxed: {type: Boolean}
 })

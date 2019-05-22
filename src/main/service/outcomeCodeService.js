@@ -1,5 +1,6 @@
-// const {PaymentCode} = require('../model/incomeCode')
+const { OutcomeCode } = require('../model/paymentCode')
 
+// TO BE REMOVED
 const CODES = {
   'I/1': 'плата пароху',
   'I/2': 'помоћ',
@@ -19,14 +20,32 @@ const CODES = {
   'IV': 'епарх. разрез'
 }
 
-function getOutcomeCodes () {
-  return new Promise((resolve) => {
-    console.log('Getting outcome codes')
-    console.log(`Returning: \n${JSON.stringify(CODES, null, 2)}`)
-    resolve(CODES)
-  })
+// TO BE REMOVED
+async function getOutcomeCodes () {
+  console.log('Getting outcome codes')
+  console.log(`Returning: \n${JSON.stringify(CODES, null, 2)}`)
+  return CODES
+}
+
+/* USE AFTER FE HAS A WAY OF ADDING CODES
+async function getOutcomeCodes () {
+  console.log('Getting outcome codes')
+  let outcomeCodes = await OutcomeCode.find({}).exec()
+  console.log(`Returning: \n${JSON.stringify(outcomeCodes, null, 2)}`)
+  return outcomeCodes
+}
+*/
+
+async function createOutcomeCodes (outcomeCodes) {
+  console.log(`Creating outcome codes: \n${JSON.stringify(outcomeCodes, null, 2)}`)
+  await OutcomeCode.remove({}).exec()
+  for (let i = 0; i < outcomeCodes.length; i++) {
+    await OutcomeCode(outcomeCodes[i]).save()
+  }
+  console.log('Successfully created outcome codes')
 }
 
 module.exports = {
-  getOutcomeCodes: getOutcomeCodes
+  getOutcomeCodes: getOutcomeCodes,
+  createOutcomeCodes: createOutcomeCodes
 }
