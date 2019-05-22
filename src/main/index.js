@@ -8,20 +8,8 @@ const os = require('os')
 const fs = require('fs')
 const config = require('../config/config')
 
-// eslint-disable-next-line no-unused-vars
-const annualReportRouter = require('./router/annualReportRouter')
-// eslint-disable-next-line no-unused-vars
-const defaultPaymentSlipRouter = require('./router/defaultPaymentSlipRouter')
-// eslint-disable-next-line no-unused-vars
-const defaultReceiptRouter = require('./router/defaultReceiptRouter')
-// eslint-disable-next-line no-unused-vars
-const incomeCodeRouter = require('./router/incomeCodeRouter')
-// eslint-disable-next-line no-unused-vars
-const outcomeCodeRouter = require('./router/outcomeCodeRouter')
-// eslint-disable-next-line no-unused-vars
-const paymentSlipRouter = require('./router/paymentSlipRouter')
-// eslint-disable-next-line no-unused-vars
-const receiptRouter = require('./router/receiptRouter')
+// loading ipc main router
+require('./ipcRouter')
 
 // connecting to database
 mongoose.connect(config.dbUrl, { useNewUrlParser: true })

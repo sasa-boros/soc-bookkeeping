@@ -1,7 +1,6 @@
-const {ipcMain} = require('electron')
 // const {PaymentCode} = require('../model/incomeCode')
 
-const OUTCOME_CODES = {
+const CODES = {
   'I/1': 'плата пароху',
   'I/2': 'помоћ',
   'II/1': 'огрев, осветљење, телефон',
@@ -20,12 +19,14 @@ const OUTCOME_CODES = {
   'IV': 'епарх. разрез'
 }
 
-ipcMain.on('get-outcome-codes', (event) => {
-  console.log('Initiated get outcome codes')
-  console.log(`Found: \n${JSON.stringify(OUTCOME_CODES, null, 2)}`)
-  reply(event, 'get-outcome-codes-reply', OUTCOME_CODES, null)
-})
+function getOutcomeCodes () {
+  return new Promise((resolve) => {
+    console.log('Getting outcome codes')
+    console.log(`Returning: \n${JSON.stringify(CODES, null, 2)}`)
+    resolve(CODES)
+  })
+}
 
-function reply (event, target, data, error) {
-  event.sender.send(target, JSON.stringify({error: error, data: data}))
+module.exports = {
+  getOutcomeCodes: getOutcomeCodes
 }
