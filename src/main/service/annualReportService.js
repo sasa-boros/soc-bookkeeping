@@ -7,12 +7,12 @@ const Big = require('big.js')
 
 async function getAnnualReport (year) {
   console.log(`Getting annual report for year ${year}`)
-  
-  const annualReport = initAnnualReport();
-  annualReport.year = year;
+
+  const annualReport = initAnnualReport()
+  annualReport.year = year
   for (let i = 0; i < 12; i++) {
-    const annualReportPage = initAnnualReportPage();
-    annualReportPage.ordinal = i + 1;
+    const annualReportPage = initAnnualReportPage()
+    annualReportPage.ordinal = i + 1
 
     const paymentSlips = await getEntitiesByDate(PaymentSlip, new Date(year, i, 1), new Date(year, i + 1, 1), true)
     const receipts = await getEntitiesByDate(Receipt, new Date(year, i, 1), new Date(year, i + 1, 1), true)
@@ -37,28 +37,28 @@ async function getAnnualReport (year) {
 }
 
 function initAnnualReport () {
-  var annualReport = AnnualReport();
-  annualReport.pages = [];
-  annualReport.totalIncomePerCode = [];
-  annualReport.totalOutcomePerCode = [];
-  annualReport.totalIncome = Big(0.0);
-  annualReport.totalOutcome = Big(0.0);
-  annualReport.total = Big(0.0);
-  return annualReport;
+  var annualReport = AnnualReport()
+  annualReport.pages = []
+  annualReport.totalIncomePerCode = []
+  annualReport.totalOutcomePerCode = []
+  annualReport.totalIncome = Big(0.0)
+  annualReport.totalOutcome = Big(0.0)
+  annualReport.total = Big(0.0)
+  return annualReport
 }
 
 function initAnnualReportPage () {
-  var annualReportPage = AnnualReportPage();
-  annualReportPage.paymentSlips = [];
-  annualReportPage.receipts = [];
-  annualReportPage.totalIncomePerCode = [];
-  annualReportPage.totalOutcomePerCode = [];
-  annualReportPage.totalIncome = Big(0.0);
-  annualReportPage.totalOutcome = Big(0.0);
-  annualReportPage.transferFromPreviousMonth = Big(0.0);
-  annualReportPage.transferToNextMonth = Big(0.0);
-  annualReportPage.total = Big(0.0);
-  return annualReportPage;
+  var annualReportPage = AnnualReportPage()
+  annualReportPage.paymentSlips = []
+  annualReportPage.receipts = []
+  annualReportPage.totalIncomePerCode = []
+  annualReportPage.totalOutcomePerCode = []
+  annualReportPage.totalIncome = Big(0.0)
+  annualReportPage.totalOutcome = Big(0.0)
+  annualReportPage.transferFromPreviousMonth = Big(0.0)
+  annualReportPage.transferToNextMonth = Big(0.0)
+  annualReportPage.total = Big(0.0)
+  return annualReportPage
 }
 
 function calculateIncomes (paymentSlips, annualReportPage, annualReport) {
@@ -66,7 +66,7 @@ function calculateIncomes (paymentSlips, annualReportPage, annualReport) {
     paymentSlip.incomePerCode.forEach((incomePerCode) => {
       annualReportPage.totalIncome = annualReportPage.totalIncome.plus(incomePerCode.amount)
       const pageTotalIncomePerCode = annualReportPage.totalIncomePerCode.find((element) => {
-        return element.incomeCode.partition == incomePerCode.incomeCode.partition && element.incomeCode.position == incomePerCode.incomeCode.position
+        return element.incomeCode.partition === incomePerCode.incomeCode.partition && element.incomeCode.position === incomePerCode.incomeCode.position
       })
       if (pageTotalIncomePerCode) {
         pageTotalIncomePerCode.amount = pageTotalIncomePerCode.amount.plus(Big(incomePerCode.amount))
@@ -74,7 +74,7 @@ function calculateIncomes (paymentSlips, annualReportPage, annualReport) {
         annualReportPage.totalIncomePerCode.push({ incomeCode: incomePerCode.incomeCode, amount: Big(incomePerCode.amount) })
       }
       const reportTotalIncomePerCode = annualReport.totalIncomePerCode.find((element) => {
-        return element.incomeCode.partition == incomePerCode.incomeCode.partition && element.incomeCode.position == incomePerCode.incomeCode.position
+        return element.incomeCode.partition === incomePerCode.incomeCode.partition && element.incomeCode.position === incomePerCode.incomeCode.position
       })
       if (reportTotalIncomePerCode) {
         reportTotalIncomePerCode.amount = reportTotalIncomePerCode.amount.plus(Big(incomePerCode.amount))
@@ -92,7 +92,7 @@ function calculateOutcomes (receipts, annualReportPage, annualReport) {
     receipt.outcomePerCode.forEach((outcomePerCode) => {
       annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(outcomePerCode.amount)
       const pageTotalOutcomePerCode = annualReportPage.totalOutcomePerCode.find((element) => {
-        return element.outcomeCode.partition == outcomePerCode.outcomeCode.partition && element.outcomeCode.position == outcomePerCode.outcomeCode.position
+        return element.outcomeCode.partition === outcomePerCode.outcomeCode.partition && element.outcomeCode.position === outcomePerCode.outcomeCode.position
       })
       if (pageTotalOutcomePerCode) {
         pageTotalOutcomePerCode.amount = pageTotalOutcomePerCode.amount.plus(Big(outcomePerCode.amount))
@@ -100,7 +100,7 @@ function calculateOutcomes (receipts, annualReportPage, annualReport) {
         annualReportPage.totalOutcomePerCode.push({ outcomeCode: outcomePerCode.outcomeCode, amount: Big(outcomePerCode.amount) })
       }
       const reportTotalOutcomePerCode = annualReport.totalOutcomePerCode.find((element) => {
-        return element.outcomeCode.partition == outcomePerCode.outcomeCode.partition && element.outcomeCode.position == outcomePerCode.outcomeCode.position
+        return element.outcomeCode.partition === outcomePerCode.outcomeCode.partition && element.outcomeCode.position === outcomePerCode.outcomeCode.position
       })
       if (reportTotalOutcomePerCode) {
         reportTotalOutcomePerCode.amount = reportTotalOutcomePerCode.amount.plus(Big(outcomePerCode.amount))

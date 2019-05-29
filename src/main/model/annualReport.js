@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 const annualReportSchema = new Schema({
   year: { type: Number },
   pages: { type: Array },
-  totalIncomePerCode: { type: Array }, 
+  totalIncomePerCode: { type: Array },
   totalOutcomePerCode: { type: Array },
   totalIncome: { type: Schema.Types.Mixed }, // BIG
   totalOutcome: { type: Schema.Types.Mixed }, // BIG
