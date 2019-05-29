@@ -6,20 +6,13 @@ const receiptSchema = new Schema({
   ordinal: { type: Number },
   annualReportPage: { type: Number },
   date: { type: Date },
-  amount: { type: Number },
-  amountText: { type: String },
+  outcome: { type: Number },
+  outcomeAsText: { type: String },
   churchMunicipality: { type: String },
   town: { type: String },
   reason: { type: String },
-  payed: { type: String },
   received: { type: String },
-  firstPart: { type: String },
-  firstPos: { type: String },
-  firstAmount: { type: Number },
-  secondPart: { type: String },
-  secondPos: { type: String },
-  secondAmount: { type: Number },
-  municipalityPresident: { type: String }
+  outcomesPerCode: { type: Array }
 })
 
 receiptSchema.pre('save', function (next) {

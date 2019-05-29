@@ -5,11 +5,11 @@ const Schema = mongoose.Schema
 const annualReportSchema = new Schema({
   year: { type: Number },
   pages: { type: Array },
-  totalIncomePerCode: { type: Schema.Types.Mixed },
-  totalOutcomePerCode: { type: Schema.Types.Mixed },
-  totalIncome: { type: Schema.Types.Mixed },
-  totalOutcome: { type: Schema.Types.Mixed },
-  total: { type: Schema.Types.Mixed }
+  totalIncomePerCode: { type: Array }, 
+  totalOutcomePerCode: { type: Array },
+  totalIncome: { type: Schema.Types.Mixed }, // BIG
+  totalOutcome: { type: Schema.Types.Mixed }, // BIG
+  total: { type: Schema.Types.Mixed } // BIG
 })
 
 annualReportSchema.pre('save', function (next) {

@@ -6,19 +6,12 @@ const paymentSlipSchema = new Schema({
   ordinal: { type: Number },
   annualReportPage: { type: Number },
   date: { type: Date },
-  amount: { type: Number },
-  amountText: { type: String },
+  income: { type: Number },
+  incomeAsText: { type: String },
   town: { type: String },
   reason: { type: String },
   payed: { type: String },
-  received: { type: String },
-  firstPart: { type: String },
-  firstPos: { type: String },
-  firstAmount: { type: Number },
-  secondPart: { type: String },
-  secondPos: { type: String },
-  secondAmount: { type: Number },
-  municipalityPresident: { type: String }
+  incomesPerCode: { type: Array }
 })
 
 paymentSlipSchema.pre('save', function (next) {
