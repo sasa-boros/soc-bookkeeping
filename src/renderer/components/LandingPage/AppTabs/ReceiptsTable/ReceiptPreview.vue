@@ -6,20 +6,20 @@
       </b-button>
       <div class="receipt-preview-text">
         <h1> ПРИЗНАНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" ref="amountInputFormGroup"><b-form-input ref="amountInput" v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingAmount }" id="amountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="amountTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" contenteditable="false" id="amountTextDivWrapper1">{{generatedAmountTextLine1}}</div>
-      <br/><div class="amountTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" id="amountTextDivWrapper2">{{generatedAmountTextLine2}}</div>
+      <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input ref="outcomeInput" v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingOutcome }" id="outcomeInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="outcomeAsTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" contenteditable="false" id="outcomeAsTextDivWrapper1">{{generatedOutcomeTextLine1}}</div>
+      <br/><div class="outcomeAsTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" id="outcomeAsTextDivWrapper2">{{generatedOutcomeTextLine2}}</div>
       <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input v-model="form.churchMunicipality" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingChurchMunicipality }" id="churchMunicipalityInput" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        П р и м и о,
-                                                                                                          <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input v-model="form.payed" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
+                                                                                                          <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                        Да се исплати на терет расхода<datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker>
-                                                                                                          Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><b-form-select v-model="form.firstPart" id="part1Select" :disabled="defaultReceiptPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstAmountInputFormGroup"><b-form-input v-model="form.firstAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstAmount && atLeastOnePartPosNotSet }" id="firstAmountInput" :disabled="defaultReceiptPreview || missingFirstPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
-                 Исплатио благајник,                                                      Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><b-form-select v-model="form.secondPart" id="part2Select" :disabled="defaultReceiptPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPart && atLeastOnePartPosNotSet }"/></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondAmountInputFormGroup"><b-form-input v-model="form.secondAmount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondAmount && atLeastOnePartPosNotSet }" id="secondAmountInput" :disabled="defaultReceiptPreview || missingSecondPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                                                                                                          Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><b-form-select v-model="form.firstPart" id="part1Select" :disabled="defaultReceiptPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup"><b-form-input v-model="form.firstOutcome" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstOutcome && atLeastOnePartPosNotSet }" id="firstOutcomeInput" :disabled="defaultReceiptPreview || missingFirstPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                 Исплатио благајник,                                                      Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><b-form-select v-model="form.secondPart" id="part2Select" :disabled="defaultReceiptPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPart && atLeastOnePartPosNotSet }"/></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup"><b-form-input v-model="form.secondOutcome" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondOutcome && atLeastOnePartPosNotSet }" id="secondOutcomeInput" :disabled="defaultReceiptPreview || missingSecondPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
                                                            
-      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalAmountInputFormGroup"><b-form-input v-model="form.amount" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && ( missingTotalAmount || totalAmountNotValid ) }" id="totalAmountInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
+      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup"><b-form-input disabled v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && ( missingTotalOutcome || totalOutcomeNotValid ) }" id="totalOutcomeInput" :disabled="defaultReceiptPreview" type="number" min="0" step=".01"></b-form-input></b-form-group>
       <div class="my-0 line-spacing-small">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
-      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group ref="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input v-model="form.municipalityPresident" class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
+      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group ref="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
       </div></div>
 
 
@@ -44,7 +44,7 @@
         </b-button>
       </div>
               
-      <b-tooltip ref="amountInputTooltip" :disabled.sync="disableAmountTooltip" :target="() => $refs.amountInputFormGroup">
+      <b-tooltip ref="outcomeInputTooltip" :disabled.sync="disableOutcomeTooltip" :target="() => $refs.outcomeInputFormGroup">
         <div class="tooltipInnerText">
           {{phrases.enterValue}}
         </div>
@@ -71,7 +71,7 @@
 
       <b-tooltip ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip" :target="() => $refs.firstPartInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosAmount}}
+          {{phrases.atLeastOnePartPosOutcome}}
         </div>
       </b-tooltip>
 
@@ -81,15 +81,15 @@
         </div>
       </b-tooltip>
 
-      <b-tooltip ref="firstAmountInputTooltip" :disabled.sync="disableFirstAmountTooltip" :target="() => $refs.firstAmountInputFormGroup">
+      <b-tooltip ref="firstOutcomeInputTooltip" :disabled.sync="disableFirstOutcomeTooltip" :target="() => $refs.firstOutcomeInputFormGroup">
         <div class="tooltipInnerText">
-          {{firstAmountTooltipText}}
+          {{firstOutcomeTooltipText}}
         </div>
       </b-tooltip>
 
       <b-tooltip ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip" :target="() => $refs.secondPartInputFormGroup">
         <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosAmount}}
+          {{phrases.atLeastOnePartPosOutcome}}
         </div>
       </b-tooltip>
 
@@ -99,16 +99,16 @@
         </div>
       </b-tooltip>
 
-      <b-tooltip ref="secondAmountInputTooltip" :disabled.sync="disableSecondAmountTooltip" :target="() => $refs.secondAmountInputFormGroup">
+      <b-tooltip ref="secondOutcomeInputTooltip" :disabled.sync="disableSecondOutcomeTooltip" :target="() => $refs.secondOutcomeInputFormGroup">
         <div class="tooltipInnerText">
-          {{secondAmountTooltipText}}
+          {{secondOutcomeTooltipText}}
         </div>
       </b-tooltip>
 
 
-      <b-tooltip ref="totalAmountInputTooltip" :disabled.sync="disableTotalAmountTooltip" :target="() => $refs.totalAmountInputFormGroup">
+      <b-tooltip ref="totalOutcomeInputTooltip" :disabled.sync="disableTotalOutcomeTooltip" :target="() => $refs.totalOutcomeInputFormGroup">
         <div class="tooltipInnerText">
-          {{totalAmountTooltipText}}
+          {{totalOutcomeTooltipText}}
         </div>
       </b-tooltip>
 
@@ -152,39 +152,37 @@
 </template>
 
 <script>
+  import store from '@/store'
   import { mapState } from 'vuex'
   import Datepicker from 'vuejs-datepicker'
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
-  const receiptsController = require('../../../../controllers/receipt.controller')
-  const annualReportController = require('../../../../controllers/annualReport.controller')
-  const { numberToSerbianDinars, getLastNYears, getCodeCombinations, getCodeCombinationsForRendering, showErrorDialog } = require('../../../../utils/utils')
+  const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
+  const receiptController = require('../../../../controllers/receiptController')
+  const { numberToSerbianDinars, getLastNYears, getCodeCombinations, showErrorDialog } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
 
   export default {
+    store: store,
     props: {
       item: {
         type: Object,
         default: function () {
           return {
-            amount: null,
-            reason: null,
-            town: null,
-            churchMunicipality: null,
-            amountText: null,
-            payed: null,
-            received: null,
-            firstPart: '',
-            firstPos: '',
-            firstAmount: null,
-            secondPart: '',
-            secondPos: '',
-            secondAmount: null,
-            annualReportPage: null,
             ordinal: null,
-            municipalityPresident: null,
+            annualReportPage: null,
             date: null,
-            created_at: null,
-            updated_at: null
+            firstPart: null,
+            firstPos: null,
+            firstOutcome: null,
+            secondPart: null,
+            secondPos: null,
+            secondOutcome: null,
+            outcome: null,
+            outcomeAsText: null,
+            churchMunicipality: null,
+            town: null,
+            reason: null,
+            received: null
           }
         }
       },
@@ -210,10 +208,8 @@
         yearSelected: null,
         preDatepickerJustBlurred: false,
         postDatepickerJustBlurred: false,
-        incomeCodeCombinations: null,
-        incomeCodeCombinationsForRendering: {
-          '': ['']
-        },
+        outcomeCodes: null,
+        outcomeCodeCombinations: null,
         phrases: {
           save: i18n.getTranslation('Save'),
           print: i18n.getTranslation('Print'),
@@ -221,9 +217,9 @@
           willBeGenerated: i18n.getTranslation('The value will be generated'),
           enterValue: i18n.getTranslation('Enter a value'),
           pickDate: i18n.getTranslation('Pick a date'),
-          atLeastOnePartPosAmount: i18n.getTranslation('Enter at least one partition, position, amount'),
+          atLeastOnePartPosOutcome: i18n.getTranslation('Enter at least one partition, position, outcome'),
           enterPartition: i18n.getTranslation('Enter partition'),
-          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of amounts by partitions and position')
+          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of outcomes by partitions and position')
         },
         calendarLanguages: {
           sr: sr,
@@ -235,10 +231,10 @@
       this.form = JSON.parse(JSON.stringify(this.defaultForm))
       const self = this
 
-      annualReportController.getIncomeCodes().then(function (res) {
+      outcomeCodeController.getOutcomeCodes().then(function (res) {
         if (!res.err) {
-          self.incomeCodeCombinations = getCodeCombinations(Object.keys(res.data))
-          self.incomeCodeCombinationsForRendering = getCodeCombinationsForRendering(Object.keys(res.data))
+          self.outcomeCodes = (res.data || [])
+          self.outcomeCodeCombinations = getCodeCombinations(self.outcomeCodes)
         } else {
           showErrorDialog(res.err)
         }
@@ -264,48 +260,48 @@
         }
       },
       'form.firstPart': function (newValue) {
-        if (this.incomeCodeCombinations) {
-          const allowedPosValues = this.incomeCodeCombinations[newValue]
+        if (this.outcomeCodeCombinations) {
+          const allowedPosValues = this.outcomeCodeCombinations[newValue]
           if (!allowedPosValues || allowedPosValues.indexOf(this.form.firstPos) === -1) {
             /* Pos value needs to be reset since it is not allowed with the new part */
             this.form.firstPos = ''
           }
         }
-        /* If new value is null, i.e. the part is reset, reset the amount too */
+        /* If new value is null, i.e. the part is reset, reset the outcome too */
         if (!newValue) {
-          this.form.firstAmount = null
+          this.form.firstOutcome = null
         }
       },
       'form.secondPart': function (newValue) {
-        if (this.incomeCodeCombinations) {
-          const allowedPosValues = this.incomeCodeCombinations[newValue]
+        if (this.outcomeCodeCombinations) {
+          const allowedPosValues = this.outcomeCodeCombinations[newValue]
           if (!allowedPosValues || allowedPosValues.indexOf(this.form.secondPos) === -1) {
             /* Pos value needs to be reset since it is not allowed with the new part */
             this.form.secondPos = ''
           }
         }
-        /* If new value is null, i.e. the part is reset, reset the amount too */
+        /* If new value is null, i.e. the part is reset, reset the outcome too */
         if (!newValue) {
-          this.form.secondAmount = null
+          this.form.secondOutcome = null
         }
       }
     },
     computed: {
       ...mapState(
         {
-          defaultForm: state => state.DefaultValues.defaultReceipt,
-          emptyForm: state => state.DefaultValues.emptyReceipt
+          defaultForm: state => state.DefaultValues.receiptForm,
+          emptyForm: state => state.DefaultValues.emptyReceiptForm
         }
       ),
-      generatedAmountText: {
+      generatedOutcomeText: {
         get: function () {
           var placeholder = ''
           if (this.form) {
-            var generatedText = numberToSerbianDinars(this.form.amount)
+            var generatedText = numberToSerbianDinars(this.form.outcome)
             if (!generatedText) {
               return placeholder
             } else {
-              this.form.amountText = generatedText
+              this.form.outcomeAsText = generatedText
               return generatedText
             }
           } else {
@@ -315,33 +311,33 @@
         set: function (newValue) {
         }
       },
-      generatedAmountTextLine1: {
+      generatedOutcomeTextLine1: {
         get: function () {
-          if (this.generatedAmountText.length <= 52) {
-            return this.generatedAmountText
+          if (this.generatedOutcomeText.length <= 52) {
+            return this.generatedOutcomeText
           }
-          const firstSubstring = this.generatedAmountText.substring(0, 52)
+          const firstSubstring = this.generatedOutcomeText.substring(0, 52)
           const spaceInd = firstSubstring.lastIndexOf(' ')
           if (spaceInd !== -1) {
-            return this.generatedAmountText.substring(0, spaceInd)
+            return this.generatedOutcomeText.substring(0, spaceInd)
           } else {
-            return this.generatedAmountText.substring(0, 52)
+            return this.generatedOutcomeText.substring(0, 52)
           }
         },
         set: function (newValue) {
         }
       },
-      generatedAmountTextLine2: {
+      generatedOutcomeTextLine2: {
         get: function () {
-          if (this.generatedAmountText.length <= 52) {
+          if (this.generatedOutcomeText.length <= 52) {
             return ''
           }
-          const firstSubstring = this.generatedAmountText.substring(0, 52)
+          const firstSubstring = this.generatedOutcomeText.substring(0, 52)
           const spaceInd = firstSubstring.lastIndexOf(' ')
           if (spaceInd !== -1) {
-            return this.generatedAmountText.substring(spaceInd)
+            return this.generatedOutcomeText.substring(spaceInd)
           } else {
-            return this.generatedAmountText.substring(52)
+            return this.generatedOutcomeText.substring(52)
           }
         },
         set: function (newValue) {
@@ -351,45 +347,45 @@
         if (this.missingFirstPart) {
           return this.phrases.enterPartition
         } else {
-          return this.phrases.atLeastOnePartPosAmount
+          return this.phrases.atLeastOnePartPosOutcome
         }
       },
-      firstAmountTooltipText: function () {
+      firstOutcomeTooltipText: function () {
         if (this.missingFirstPart) {
           return this.phrases.enterPartition
         } else {
-          return this.phrases.atLeastOnePartPosAmount
+          return this.phrases.atLeastOnePartPosOutcome
         }
       },
       secondPosTooltipText: function () {
         if (this.missingSecondPart) {
           return this.phrases.enterPartition
         } else {
-          return this.phrases.atLeastOnePartPosAmount
+          return this.phrases.atLeastOnePartPosOutcome
         }
       },
-      secondAmountTooltipText: function () {
+      secondOutcomeTooltipText: function () {
         if (this.missingSecondPart) {
           return this.phrases.enterPartition
         } else {
-          return this.phrases.atLeastOnePartPosAmount
+          return this.phrases.atLeastOnePartPosOutcome
         }
       },
-      totalAmountTooltipText: function () {
-        if (this.totalAmountNotValid) {
+      totalOutcomeTooltipText: function () {
+        if (this.totalOutcomeNotValid) {
           return this.phrases.needsToBeEqualToSum
         } else {
           return this.phrases.enterValue
         }
       },
-      disableAmountTooltip: {
+      disableOutcomeTooltip: {
         get: function () {
-          return !this.missingAmount || !this.attemptSubmit
+          return !this.missingOutcome || !this.attemptSubmit
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.amountInputTooltip.$emit('close')
+            this.$refs.outcomeInputTooltip.$emit('close')
           }
         }
       },
@@ -453,19 +449,19 @@
           }
         }
       },
-      disableFirstAmountTooltip: {
+      disableFirstOutcomeTooltip: {
         get: function () {
           if (this.missingFirstPart) {
             /* If missing part, pos is disabled, so show the tooltip */
             return false
           } else {
-            return !this.atLeastOnePartPosNotSet || !this.missingFirstAmount || !this.attemptSubmit
+            return !this.atLeastOnePartPosNotSet || !this.missingFirstOutcome || !this.attemptSubmit
           }
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.firstAmountInputTooltip.$emit('close')
+            this.$refs.firstOutcomeInputTooltip.$emit('close')
           }
         }
       },
@@ -496,30 +492,30 @@
           }
         }
       },
-      disableSecondAmountTooltip: {
+      disableSecondOutcomeTooltip: {
         get: function () {
           if (this.missingSecondPart) {
             /* If missing part, pos is disabled, so show the tooltip */
             return false
           } else {
-            return !this.atLeastOnePartPosNotSet || !this.missingSecondAmount || !this.attemptSubmit
+            return !this.atLeastOnePartPosNotSet || !this.missingSecondOutcome || !this.attemptSubmit
           }
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.secondAmountInputTooltip.$emit('close')
+            this.$refs.secondOutcomeInputTooltip.$emit('close')
           }
         }
       },
-      disableTotalAmountTooltip: {
+      disableTotalOutcomeTooltip: {
         get: function () {
-          return (!this.missingTotalAmount && !this.totalAmountNotValid) || !this.attemptSubmit
+          return (!this.missingTotalOutcome && !this.totalOutcomeNotValid) || !this.attemptSubmit
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.totalAmountInputTooltip.$emit('close')
+            this.$refs.totalOutcomeInputTooltip.$emit('close')
           }
         }
       },
@@ -560,19 +556,23 @@
         return getLastNYears(10)
       },
       partOptions: function () {
-        const options = Object.keys(this.incomeCodeCombinationsForRendering)
-        const i = options.indexOf('')
-        if (i > -1) {
-          options.splice(i)
-          options.unshift('')
+        if (!this.outcomeCodeCombinations) {
+          return []
         }
-        return options
+        var keys = Object.keys(this.outcomeCodeCombinations)
+        return keys
       },
       pos1Options: function () {
-        return this.incomeCodeCombinationsForRendering[this.form.firstPart]
+        if (!this.outcomeCodeCombinations) {
+          return []
+        }
+        return this.outcomeCodeCombinations[this.form.firstPart]
       },
       pos2Options: function () {
-        return this.incomeCodeCombinationsForRendering[this.form.secondPart]
+        if (!this.outcomeCodeCombinations) {
+          return []
+        }
+        return this.outcomeCodeCombinations[this.form.secondPart]
       },
       missingReason: function () {
         return !this.form || !this.form.reason || this.form.reason.toString().trim() === ''
@@ -583,50 +583,50 @@
       missingChurchMunicipality: function () {
         return !this.form || !this.form.churchMunicipality || this.form.churchMunicipality.toString().trim() === ''
       },
-      missingAmount: function () {
-        return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
+      missingOutcome: function () {
+        return !this.form || !this.form.outcome || this.form.outcome.toString().trim() === ''
       },
       missingFirstPart: function () {
         return !this.form || !this.form.firstPart
       },
       missingFirstPos: function () {
-        /* IncomeCodeCombinations may not be ready right away */
-        if (this.incomeCodeCombinations) {
+        /* OutcomeCodeCombinations may not be ready right away */
+        if (this.outcomeCodeCombinations) {
           /* Empty string is not considered missing if it is an allowed pos for a given part */
-          const allowedPosValues = this.incomeCodeCombinations[this.form.firstPart]
+          const allowedPosValues = this.outcomeCodeCombinations[this.form.firstPart]
           return !this.form || !allowedPosValues || (allowedPosValues.indexOf(this.form.firstPos) === -1)
         } else {
           return false
         }
       },
-      missingFirstAmount: function () {
-        return !this.form || !this.form.firstAmount || this.form.firstAmount.toString().trim() === ''
+      missingFirstOutcome: function () {
+        return !this.form || !this.form.firstOutcome || this.form.firstOutcome.toString().trim() === ''
       },
       missingSecondPart: function () {
         return !this.form || !this.form.secondPart
       },
       missingSecondPos: function () {
-        /* IncomeCodeCombinations may not be ready right away */
-        if (this.incomeCodeCombinations) {
+        /* OutcomeCodeCombinations may not be ready right away */
+        if (this.outcomeCodeCombinations) {
           /* Empty string is not considered missing if it is an allowed pos for a given part */
-          const allowedPosValues = this.incomeCodeCombinations[this.form.secondPart]
+          const allowedPosValues = this.outcomeCodeCombinations[this.form.secondPart]
           return !this.form || !allowedPosValues || (allowedPosValues.indexOf(this.form.secondPos) === -1)
         } else {
           return false
         }
       },
-      missingSecondAmount: function () {
-        return !this.form || !this.form.secondAmount || this.form.secondAmount.toString().trim() === ''
+      missingSecondOutcome: function () {
+        return !this.form || !this.form.secondOutcome || this.form.secondOutcome.toString().trim() === ''
       },
-      missingTotalAmount: function () {
-        return !this.form || !this.form.amount || this.form.amount.toString().trim() === ''
+      missingTotalOutcome: function () {
+        return !this.form || !this.form.outcome || this.form.outcome.toString().trim() === ''
       },
-      totalAmountNotValid: function () {
-        if (this.form && this.form.amount) {
-          const totalAmount = parseFloat(this.form.amount)
-          const firstAmount = this.missingFirstAmount ? 0 : parseFloat(this.form.firstAmount)
-          const secondAmount = this.missingSecondAmount ? 0 : parseFloat(this.form.secondAmount)
-          if (firstAmount + secondAmount !== totalAmount) {
+      totalOutcomeNotValid: function () {
+        if (this.form && this.form.outcome) {
+          const totalOutcome = parseFloat(this.form.outcome)
+          const firstOutcome = this.missingFirstOutcome ? 0 : parseFloat(this.form.firstOutcome)
+          const secondOutcome = this.missingSecondOutcome ? 0 : parseFloat(this.form.secondOutcome)
+          if (firstOutcome + secondOutcome !== totalOutcome) {
             return true
           }
         }
@@ -643,8 +643,8 @@
       },
       atLeastOnePartPosNotSet: function () {
         /* True if not a single part-pos combination is set. At least one combination should be set. */
-        const firstCombinationSet = !this.missingFirstPart && !this.missingFirstPos && !this.missingFirstAmount
-        const secondCombinationSet = !this.missingSecondPart && !this.missingSecondPos && !this.missingSecondAmount
+        const firstCombinationSet = !this.missingFirstPart && !this.missingFirstPos && !this.missingFirstOutcome
+        const secondCombinationSet = !this.missingSecondPart && !this.missingSecondPos && !this.missingSecondOutcome
 
         return !firstCombinationSet && !secondCombinationSet
       }
@@ -681,9 +681,10 @@
       },
       onSubmit (evt) {
         evt.preventDefault()
+        const receipt = this.createReceiptObj()
         if (this.defaultReceiptPreview) {
           /* Set the default values for receipts */
-          this.$store.dispatch('SET_DEFAULT_RECEIPT', this.form)
+          this.$store.dispatch('SET_DEFAULT_RECEIPT', receipt)
           if (this.parentModal) {
             this.$root.$emit('bv::hide::modal', this.parentModal)
           }
@@ -692,7 +693,7 @@
           if (this.checkForm()) {
             if (this.form._id) {
               /* Update the item */
-              receiptsController.updateReceipt(this.form).then((res) => {
+              receiptController.updateReceipt(receipt).then((res) => {
                 if (!res.err) {
                   this.$root.$emit('bv::refresh::table', 'receipts-table')
                 } else {
@@ -701,7 +702,7 @@
               })
             } else {
               /* Create new item */
-              receiptsController.createReceipt(this.form).then((res) => {
+              receiptController.createReceipt(receipt).then((res) => {
                 if (!res.err) {
                   this.$root.$emit('bv::refresh::table', 'receipts-table')
                 } else {
@@ -716,11 +717,35 @@
           }
         }
       },
+      createReceiptObj () {
+        var receipt = {}
+        receipt.date = this.form.date
+        receipt.outcome = this.form.outcome
+        receipt.outcomeAsText = this.generatedOutcomeText
+        receipt.churchMunicipality = this.form.churchMunicipality
+        receipt.town = this.form.town
+        receipt.reason = this.form.reason
+        receipt.received = this.form.received
+        receipt.outcomesPerCode = []
+        const firstOutcomeCode = this.outcomeCodes.find(outcomeCode => {
+          return outcomeCode.partition === this.form.firstPart && outcomeCode.position === this.form.firstPos
+        })
+        const secondOutcomeCode = this.outcomeCodes.find(outcomeCode => {
+          return outcomeCode.partition === this.form.secondPart && outcomeCode.position === this.form.secondPos
+        })
+        if (firstOutcomeCode.length > 0) {
+          receipt.outcomesPerCode.push({outcomeCode: firstOutcomeCode, outcome: this.form.firstOutcome})
+        }
+        if (secondOutcomeCode.length > 0) {
+          receipt.outcomesPerCode.push({outcomeCode: secondOutcomeCode, outcome: this.form.secondOutcome})
+        }
+        return receipt
+      },
       resetModal () {
         this.resetForm()
         /* Focus the first input field */
-        console.log(this.$refs.amountInput)
-        // this.$refs.amountInput.focus()
+        console.log(this.$refs.outcomeInput)
+        // this.$refs.outcomeInput.focus()
         /* Trick to reset/clear native browser form validation state */
         this.show = false
         this.$nextTick(() => { this.show = true })
@@ -729,13 +754,13 @@
         this.form = JSON.parse(JSON.stringify(this.emptyForm))
       },
       checkForm () {
-        if (this.missingAmount ||
+        if (this.missingOutcome ||
             this.missingReason ||
             this.missingTown ||
             this.missingChurchMunicipality ||
             this.missingDate ||
             this.atLeastOnePartPosNotSet ||
-            this.totalAmountNotValid) {
+            this.totalOutcomeNotValid) {
           return false
         }
         return true
@@ -861,13 +886,13 @@
   .line-spacing-small {
     line-height: 1.3;
   }
-  #amountInput {
+  #outcomeInput {
     width: 140px;
   }
-  #amountTextInput {
+  #outcomeAsTextInput {
     width: 410px;
   }
-  #amountTextInputPt2 {
+  #outcomeAsTextInputPt2 {
     width: 255px;
   }
   #townInput {
@@ -910,10 +935,10 @@
     padding-left:5px;
     margin-bottom: 8px;
   }
-  #firstAmountInput {
+  #firstOutcomeInput {
     width: 92px;
   }
-  #secondAmountInput {
+  #secondOutcomeInput {
     width: 92px;
   }
   #divContentEditable {
@@ -929,7 +954,7 @@
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
-  #totalAmountInput {
+  #totalOutcomeInput {
     width: 100px;
   }
   #annualReportPageInput {
@@ -959,7 +984,7 @@
   .displayNone {
     display:none;
   }
-  .amountTextDivWrapper {
+  .outcomeAsTextDivWrapper {
     display: inline;
     font-weight: bold;
     color: black;
@@ -972,7 +997,7 @@
     display: inline-block;
     margin: 0;
   }
-  #amountTextDivWrapper1 {
+  #outcomeAsTextDivWrapper1 {
     height: 25px;
     width: 405px;
     white-space: nowrap;
@@ -980,7 +1005,7 @@
     display: inline-block;
     margin-bottom: -2px;
   }
-  #amountTextDivWrapper2 {
+  #outcomeAsTextDivWrapper2 {
     height: 25px;
     width: 670px;
     white-space: nowrap;

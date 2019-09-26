@@ -14,12 +14,9 @@ npm run dev
 # build electron application for production
 npm run build
 
-# run unit & end-to-end tests
+# run unit tests
 npm test
 
-
-# lint all JS/Vue component files in `src/`
-npm run lint
 
 ```
 

@@ -16,6 +16,10 @@
     <b-modal hide-footer hide-header size="a5" id="modalDefaultSlip">
       <payment-slip-preview :item='defaultPaymentSlipForm' parentModal="modalDefaultSlip" defaultPaymentSlipPreview></payment-slip-preview>
     </b-modal>
+    <h1>{{phrases.incomeCodes}}</h1>
+    <income-codes-table></income-codes-table>
+    <h1>{{phrases.outcomeCodes}}</h1>
+    <outcome-codes-table></outcome-codes-table>
   </b-container>
 </template>
 
@@ -23,6 +27,8 @@
   import { mapState } from 'vuex'
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
   import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
+  import IncomeCodesTable from './IncomeCodesTable'
+  import OutcomeCodesTable from './OutcomeCodesTable'
 
   const i18n = require('../../../translations/i18n')
 
@@ -31,7 +37,9 @@
       return {
         phrases: {
           setDefaultPaymentSlip: i18n.getTranslation('Set default values for payment slips'),
-          setDefaultsReceipts: i18n.getTranslation('Set default values for receipts')
+          setDefaultsReceipts: i18n.getTranslation('Set default values for receipts'),
+          incomeCodes: i18n.getTranslation('Income codes'),
+          outcomeCodes: i18n.getTranslation('Outcome codes'),
         }
       }
     },
@@ -61,7 +69,7 @@
         this.$root.$emit('bv::show::modal', 'modalDefaultSlip')
       }
     },
-    components: { PaymentSlipPreview, ReceiptPreview }
+    components: { PaymentSlipPreview, ReceiptPreview, IncomeCodesTable, OutcomeCodesTable }
   }
 </script>
 

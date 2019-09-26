@@ -8,7 +8,7 @@
        Генериши дневник благајне
       </b-button>
       <div v-for="page in reportData.pages" class="pageDiv">
-        <h5>У месецу {{page.monthText}}</h5>
+        <h5>У месецу {{page.ordinal}}</h5>
         <h6> Свега: <em><b>{{page.total}}</b></em></h6>
         <b-row class="lighterDiv">
           <b-col>
@@ -16,7 +16,7 @@
             <h6>Признанице:</h6>
               <ul class="itemsList">
                 <li v-for="receipt in page.receipts">
-                  <em><b>{{receipt.amount}}</b></em> дин, на име <em><b>{{receipt.reason}}</b></em>
+                  <em><b>{{receipt.outcome}}</b></em> дин, на име <em><b>{{receipt.reason}}</b></em>
                 </li>
               </ul>
             </div>  
@@ -26,7 +26,7 @@
             <h6>Уплатнице:</h6>
               <ul class="itemsList">
                 <li v-for="paymentSlip in page.paymentSlips">
-                  <em><b>{{paymentSlip.amount}}</b></em> дин, на име <em><b>{{paymentSlip.reason}}</b></em>
+                  <em><b>{{paymentSlip.income}}</b></em> дин, на име <em><b>{{paymentSlip.reason}}</b></em>
                 </li>
               </ul>
             </div>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-  const annualReportController = require('../../../controllers/annualReport.controller')
+  const annualReportController = require('../../../controllers/annualReportController')
   const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
 
   export default {

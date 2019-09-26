@@ -96,7 +96,7 @@
   const { dialog } = require('electron').remote
 
   const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
-  const receiptsController = require('../../../controllers/receipt.controller')
+  const receiptController = require('../../../controllers/receiptController')
   const i18n = require('../../../translations/i18n')
 
   export default {
@@ -188,7 +188,7 @@
           console.log(response)
           if (response === 1) {
             const self = this
-            receiptsController.deleteReceipt(item._id).then((res) => {
+            receiptController.deleteReceipt(item._id).then((res) => {
               console.log(res)
               if (!res.err) {
                 self.$root.$emit('bv::refresh::table', 'receipts-table')
@@ -217,7 +217,7 @@
           if (response === 1) {
             const self = this
             this.checkedItems.forEach(function (item) {
-              receiptsController.deleteReceipt(item._id).then((res) => {
+              receiptController.deleteReceipt(item._id).then((res) => {
                 if (!res.err) {
                   self.$root.$emit('bv::refresh::table', 'receipts-table')
                   const itemCheckedIndex = self.checkedItems.indexOf(item)
@@ -248,7 +248,7 @@
         this.currentPage = 1
       },
       receiptsProvider (ctx) {
-        return receiptsController.getReceipts(this.yearToFilter).then((res) => {
+        return receiptController.getReceipts(this.yearToFilter).then((res) => {
           if (!res.err) {
             const items = res.data
             return (items || [])

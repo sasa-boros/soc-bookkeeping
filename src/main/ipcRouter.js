@@ -15,11 +15,27 @@ ipcMain.on('get-income-codes', async (event) => {
   }
 })
 
+ipcMain.on('create-income-codes', async (event, incomeCodes) => {
+  try {
+    reply(event, 'create-income-codes-reply', await incomeCodeService.createIncomeCodes(incomeCodes))
+  } catch (err) {
+    replyError(event, 'create-income-codes-reply', err.message)
+  }
+})
+
 ipcMain.on('get-outcome-codes', async (event) => {
   try {
     reply(event, 'get-outcome-codes-reply', await outcomeCodeService.getOutcomeCodes())
   } catch (err) {
     replyError(event, 'get-outcome-codes-reply', err.message)
+  }
+})
+
+ipcMain.on('create-outcome-codes', async (event, outcomeCodes) => {
+  try {
+    reply(event, 'create-outcome-codes-reply', await outcomeCodeService.createOutcomeCodes(outcomeCodes))
+  } catch (err) {
+    replyError(event, 'create-outcome-codes-reply', err.message)
   }
 })
 

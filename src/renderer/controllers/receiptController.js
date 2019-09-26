@@ -1,0 +1,44 @@
+const { ipcRenderer } = require('electron')
+
+function getReceipts (year) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('get-receipts', year)
+    ipcRenderer.once('get-receipts-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
+function createReceipt (receipt) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('create-receipt', receipt)
+    ipcRenderer.once('create-receipt-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
+function updateReceipt (receipt) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('update-receipt', receipt)
+    ipcRenderer.once('update-receipt-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
+function deleteReceipt (receiptId) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('delete-receipt', receiptId)
+    ipcRenderer.once('delete-receipt-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
+module.exports = {
+  getReceipts: getReceipts,
+  createReceipt: createReceipt,
+  updateReceipt: updateReceipt,
+  deleteReceipt: deleteReceipt
+}

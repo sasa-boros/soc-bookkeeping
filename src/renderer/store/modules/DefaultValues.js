@@ -1,110 +1,99 @@
-const paymentSlipsController = require('../../controllers/paymentSlip.controller')
-const receiptsController = require('../../controllers/receipt.controller')
+const defaultPaymentSlipController = require('../../controllers/defaultPaymentSlipController')
+const defaultReceiptController = require('../../controllers/defaultReceiptController')
 // const { showErrorDialog } = require('../../utils/utils')
 
 const state = {
-  emptyPaymentSlip: {
-    amount: null,
-    amountText: null,
-    reason: null,
-    town: null,
-    payed: null,
-    received: null,
+  emptyPaymentSlipForm: {
+    ordinal: null,
+    annualReportPage: null,
+    date: null,
     firstPart: '',
     firstPos: '',
-    firstAmount: null,
+    firstIncome: null,
     secondPart: '',
     secondPos: '',
-    secondAmount: null,
-    annualReportPage: null,
-    ordinal: null,
-    municipalityPresident: null,
-    date: null,
-    created_at: null,
-    updated_at: null
-  },
-  emptyReceipt: {
-    amount: null,
-    amountText: null,
+    secondIncome: null,
+    income: null,
+    incomeAsText: null,
+    town: null,
     reason: null,
+    payed: null
+  },
+  emptyReceiptForm: {
+    ordinal: null,
+    annualReportPage: null,
+    date: null,
+    firstPart: '',
+    firstPos: '',
+    firstOutcome: null,
+    secondPart: '',
+    secondPos: '',
+    secondOutcome: null,
+    outcome: null,
+    outcomeAsText: null,
     churchMunicipality: null,
     town: null,
-    payed: null,
-    received: null,
+    reason: null,
+    received: null
+  },
+  paymentSlipForm: {
+    ordinal: null,
+    annualReportPage: null,
+    date: null,
     firstPart: '',
     firstPos: '',
-    firstAmount: null,
+    firstIncome: null,
     secondPart: '',
     secondPos: '',
-    secondAmount: null,
-    annualReportPage: null,
-    ordinal: null,
-    municipalityPresident: null,
-    date: null,
-    created_at: null,
-    updated_at: null
-  },
-  defaultPaymentSlip: {
-    amount: null,
-    amountText: null,
-    reason: null,
+    secondIncome: null,
+    income: null,
+    incomeAsText: null,
     town: null,
-    payed: null,
-    received: null,
+    reason: null,
+    payed: null
+  },
+  receiptForm: {
+    ordinal: null,
+    annualReportPage: null,
+    date: null,
     firstPart: '',
     firstPos: '',
-    firstAmount: null,
+    firstOutcome: null,
     secondPart: '',
     secondPos: '',
-    secondAmount: null,
-    annualReportPage: null,
-    ordinal: null,
-    municipalityPresident: null,
-    date: null,
-    created_at: null,
-    updated_at: null
-  },
-  defaultReceipt: {
-    amount: null,
-    amountText: null,
-    reason: null,
+    secondOutcome: null,
+    outcome: null,
+    outcomeAsText: null,
     churchMunicipality: null,
     town: null,
-    payed: null,
-    received: null,
-    firstPart: '',
-    firstPos: '',
-    firstAmount: null,
-    secondPart: '',
-    secondPos: '',
-    secondAmount: null,
-    annualReportPage: null,
-    ordinal: null,
-    municipalityPresident: null,
-    date: null,
-    created_at: null,
-    updated_at: null
+    reason: null,
+    received: null
   }
 }
 
 const mutations = {
-  SET_DEFAULT_PAYMENT_SLIP (state, newPaymentSlip) {
-    state.defaultPaymentSlip = newPaymentSlip
+  SET_DEFAULT_PAYMENT_SLIP (state, paymentSlip) {
+    state.paymentSlipForm.date = paymentSlip.date
+    state.paymentSlipForm.town = paymentSlip.town
+    state.paymentSlipForm.reason = paymentSlip.reason
+    state.paymentSlipForm.payed = paymentSlip.payed
   },
-  SET_DEFAULT_RECEIPT (state, newReceipt) {
-    state.defaultReceipt = newReceipt
+  SET_DEFAULT_RECEIPT (state, receipt) {
+    state.receiptForm.date = receipt.date
+    state.receiptForm.churchMunicipality = receipt.churchMunicipality
+    state.receiptForm.town = receipt.town
+    state.receiptForm.reason = receipt.reason
+    state.receiptForm.received = receipt.received
   }
 }
 
 const actions = {
   LOAD_DEFAULT_PAYMENT_SLIP ({ commit }) {
-    paymentSlipsController.getDefaultPaymentSlip().then(function (res) {
+    defaultPaymentSlipController.getDefaultPaymentSlip().then(function (res) {
       if (!res.err) {
         const defaultPaymentSlipFromDB = res.data
         if (defaultPaymentSlipFromDB) {
           defaultPaymentSlipFromDB._id = null
-          defaultPaymentSlipFromDB.created_at = null
-          defaultPaymentSlipFromDB.updated_at = null
           commit('SET_DEFAULT_PAYMENT_SLIP', defaultPaymentSlipFromDB)
         }
       } else {
@@ -113,13 +102,11 @@ const actions = {
     })
   },
   LOAD_DEFAULT_RECEIPT ({ commit }) {
-    receiptsController.getDefaultReceipt().then(function (res) {
+    defaultReceiptController.getDefaultReceipt().then(function (res) {
       if (!res.err) {
         const defaultReceiptFromDB = res.data
         if (defaultReceiptFromDB) {
           defaultReceiptFromDB._id = null
-          defaultReceiptFromDB.created_at = null
-          defaultReceiptFromDB.updated_at = null
           commit('SET_DEFAULT_RECEIPT', defaultReceiptFromDB)
         }
       } else {
@@ -128,11 +115,9 @@ const actions = {
     })
   },
   SET_DEFAULT_PAYMENT_SLIP ({ commit }, paymentSlip) {
-    paymentSlipsController.createDefaultPaymentSlip(paymentSlip).then(function (res) {
+    defaultPaymentSlipController.createDefaultPaymentSlip(paymentSlip).then(function (res) {
       if (!res.err) {
         paymentSlip._id = null
-        paymentSlip.created_at = null
-        paymentSlip.updated_at = null
         commit('SET_DEFAULT_PAYMENT_SLIP', paymentSlip)
       } else {
         // showErrorDialog(res.err)
@@ -140,11 +125,9 @@ const actions = {
     })
   },
   SET_DEFAULT_RECEIPT ({ commit }, receipt) {
-    receiptsController.createDefaultReceipt(receipt).then(function (res) {
+    defaultReceiptController.createDefaultReceipt(receipt).then(function (res) {
       if (!res.err) {
         receipt._id = null
-        receipt.created_at = null
-        receipt.updated_at = null
         commit('SET_DEFAULT_RECEIPT', receipt)
       } else {
         // showErrorDialog(res.err)

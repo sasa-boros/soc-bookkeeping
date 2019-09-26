@@ -96,7 +96,7 @@
   const { dialog } = require('electron').remote
 
   const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
-  const paymentSlipsController = require('../../../controllers/paymentSlip.controller')
+  const paymentSlipController = require('../../../controllers/paymentSlipController')
   const i18n = require('../../../translations/i18n')
 
   export default {
@@ -187,7 +187,7 @@
         dialog.showMessageBox(null, options, (response) => {
           if (response === 1) {
             const self = this
-            paymentSlipsController.deletePaymentSlip(item._id).then((res) => {
+            paymentSlipController.deletePaymentSlip(item._id).then((res) => {
               if (!res.err) {
                 self.$root.$emit('bv::refresh::table', 'payment-slips-table')
                 const itemCheckedIndex = self.checkedItems.indexOf(item)
@@ -215,7 +215,7 @@
           if (response === 1) {
             const self = this
             this.checkedItems.forEach(function (item) {
-              paymentSlipsController.deletePaymentSlip(item._id).then((res) => {
+              paymentSlipController.deletePaymentSlip(item._id).then((res) => {
                 if (!res.err) {
                   self.$root.$emit('bv::refresh::table', 'payment-slips-table')
                   const itemCheckedIndex = self.checkedItems.indexOf(item)
@@ -246,7 +246,7 @@
         this.currentPage = 1
       },
       paymentSlipsProvider (ctx) {
-        return paymentSlipsController.getPaymentSlips(this.yearToFilter).then((res) => {
+        return paymentSlipController.getPaymentSlips(this.yearToFilter).then((res) => {
           if (!res.err) {
             const items = res.data
             return (items || [])

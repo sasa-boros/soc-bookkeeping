@@ -2,7 +2,6 @@ const { PaymentSlip } = require('../model/paymentSlip')
 const { Receipt } = require('../model/receipt')
 const { AnnualReportPage } = require('../model/annualReportPage')
 const { AnnualReport } = require('../model/annualReport')
-const { getEntitiesByDate } = require('../service/entityService')
 const Big = require('big.js')
 
 async function getAnnualReport (year) {
@@ -59,6 +58,14 @@ function initAnnualReportPage () {
   annualReportPage.transferToNextMonth = Big(0.0)
   annualReportPage.total = Big(0.0)
   return annualReportPage
+}
+
+async function getEntitiesByDate (entity, startDate, endDate, isSorted) {
+  if (isSorted) {
+    return entity.find({ 'date': { '$gte': startDate, '$lt': endDate } }).sort({ 'date': 1 }).exec()
+  } else {
+    return entity.find({ 'date': { '$gte': startDate, '$lt': endDate } }).exec()
+  }
 }
 
 function calculateIncomes (paymentSlips, annualReportPage, annualReport) {

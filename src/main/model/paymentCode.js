@@ -3,10 +3,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const paymentCodeSchema = new Schema({
-  partition: {type: String},
-  position: {type: String},
-  description: { type: String },
-  isTaxed: {type: Boolean}
+  partition: {type: Number},
+  position: {type: Number},
+  description: { type: String }
 })
 
 paymentCodeSchema.pre('save', function (next) {
