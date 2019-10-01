@@ -7,12 +7,12 @@
               :items="outcomeCodes"
               :fields="fields">
           <template v-slot:cell(partition)="row">
-              <input type="text" class="form-control-sm"
+              <input type="number" class="form-control-sm"
                            style="width:5em"
                            v-model="row.item.partition" v-on:input="isValidOutcomeCode(row.item)"/>
           </template>
           <template v-slot:cell(position)="row">
-              <input type="text" class="form-control-sm"
+              <input type="number" class="form-control-sm"
                            style="width:5em"
                            v-model="row.item.position" v-on:input="isValidOutcomeCode(row.item)"/>
           </template>
@@ -107,11 +107,12 @@
         this.outcomeCodes.splice(index, 1);
       },
       saveOutcomeCodes() {
+        const self = this;
         outcomeCodeController.createOutcomeCodes(this.outcomeCodes).then(function (res) {
-          if (res.err) {
-            showErrorDialog(res.err)
+          if (!res.err) {
+            self.toggleSavingOutcomeCode(false);
           } else {
-            this.toggleSavingOutcomeCode(false);
+            showErrorDialog(res.err)
           }
         })
       },

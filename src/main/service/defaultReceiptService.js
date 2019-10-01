@@ -16,6 +16,8 @@ async function createDefaultReceipt (defaultReceipt) {
   console.log(`Creating default receipt: \n${JSON.stringify(defaultReceipt, null, 2)}`)
   await DefaultReceipt.deleteOne({}).exec()
   await DefaultReceipt(defaultReceipt).save()
+  const defaultReceiptFromDb = await getDefaultReceipt()
+  return defaultReceiptFromDb
   console.log('Successfully created default receipt')
 }
 

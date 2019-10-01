@@ -16,10 +16,10 @@ async function getAnnualReport (year) {
     const paymentSlips = await getEntitiesByDate(PaymentSlip, new Date(year, i, 1), new Date(year, i + 1, 1), true)
     const receipts = await getEntitiesByDate(Receipt, new Date(year, i, 1), new Date(year, i + 1, 1), true)
     if (paymentSlips) {
-      calculateIncomes(paymentSlips, annualReportPage, annualReport)
+      calculateIncome(paymentSlips, annualReportPage, annualReport)
     }
     if (receipts) {
-      calculateOutcomes(receipts, annualReportPage, annualReport)
+      calculateOutcome(receipts, annualReportPage, annualReport)
     }
     if (i !== 0) {
       annualReportPage.transferFromPreviousMonth = annualReport.pages[i - 1].transferToNextMonth
@@ -31,6 +31,7 @@ async function getAnnualReport (year) {
   }
   annualReport.total = annualReport.totalIncome.minus(annualReport.totalOutcome)
 
+  transformBigsToNumbers(annualReport);
   console.log(`Returning: \n${JSON.stringify(annualReport, null, 2)}`)
   return annualReport
 }
@@ -68,25 +69,25 @@ async function getEntitiesByDate (entity, startDate, endDate, isSorted) {
   }
 }
 
-function calculateIncomes (paymentSlips, annualReportPage, annualReport) {
+function calculateIncome (paymentSlips, annualReportPage, annualReport) {
   paymentSlips.forEach((paymentSlip) => {
     paymentSlip.incomePerCode.forEach((incomePerCode) => {
-      annualReportPage.totalIncome = annualReportPage.totalIncome.plus(incomePerCode.amount)
+      annualReportPage.totalIncome = annualReportPage.totalIncome.plus(incomePerCode.income)
       const pageTotalIncomePerCode = annualReportPage.totalIncomePerCode.find((element) => {
         return element.incomeCode.partition === incomePerCode.incomeCode.partition && element.incomeCode.position === incomePerCode.incomeCode.position
       })
       if (pageTotalIncomePerCode) {
-        pageTotalIncomePerCode.amount = pageTotalIncomePerCode.amount.plus(Big(incomePerCode.amount))
+        pageTotalIncomePerCode.income = pageTotalIncomePerCode.income.plus(Big(incomePerCode.income))
       } else {
-        annualReportPage.totalIncomePerCode.push({ incomeCode: incomePerCode.incomeCode, amount: Big(incomePerCode.amount) })
+        annualReportPage.totalIncomePerCode.push({ incomeCode: incomePerCode.incomeCode, income: Big(incomePerCode.income) })
       }
       const reportTotalIncomePerCode = annualReport.totalIncomePerCode.find((element) => {
         return element.incomeCode.partition === incomePerCode.incomeCode.partition && element.incomeCode.position === incomePerCode.incomeCode.position
       })
       if (reportTotalIncomePerCode) {
-        reportTotalIncomePerCode.amount = reportTotalIncomePerCode.amount.plus(Big(incomePerCode.amount))
+        reportTotalIncomePerCode.income = reportTotalIncomePerCode.income.plus(Big(incomePerCode.income))
       } else {
-        annualReport.totalIncomePerCode.push({ incomeCode: incomePerCode.incomeCode, amount: Big(incomePerCode.amount) })
+        annualReport.totalIncomePerCode.push({ incomeCode: incomePerCode.incomeCode, income: Big(incomePerCode.income) })
       }
     })
     annualReportPage.paymentSlips.push(paymentSlip)
@@ -94,31 +95,57 @@ function calculateIncomes (paymentSlips, annualReportPage, annualReport) {
   annualReport.totalIncome = annualReport.totalIncome.plus(annualReportPage.totalIncome)
 }
 
-function calculateOutcomes (receipts, annualReportPage, annualReport) {
+function calculateOutcome (receipts, annualReportPage, annualReport) {
   receipts.forEach((receipt) => {
     receipt.outcomePerCode.forEach((outcomePerCode) => {
-      annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(outcomePerCode.amount)
+      annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(outcomePerCode.outcome)
       const pageTotalOutcomePerCode = annualReportPage.totalOutcomePerCode.find((element) => {
         return element.outcomeCode.partition === outcomePerCode.outcomeCode.partition && element.outcomeCode.position === outcomePerCode.outcomeCode.position
       })
       if (pageTotalOutcomePerCode) {
-        pageTotalOutcomePerCode.amount = pageTotalOutcomePerCode.amount.plus(Big(outcomePerCode.amount))
+        pageTotalOutcomePerCode.outcome = pageTotalOutcomePerCode.outcome.plus(Big(outcomePerCode.outcome))
       } else {
-        annualReportPage.totalOutcomePerCode.push({ outcomeCode: outcomePerCode.outcomeCode, amount: Big(outcomePerCode.amount) })
+        annualReportPage.totalOutcomePerCode.push({ outcomeCode: outcomePerCode.outcomeCode, outcome: Big(outcomePerCode.outcome) })
       }
       const reportTotalOutcomePerCode = annualReport.totalOutcomePerCode.find((element) => {
         return element.outcomeCode.partition === outcomePerCode.outcomeCode.partition && element.outcomeCode.position === outcomePerCode.outcomeCode.position
       })
       if (reportTotalOutcomePerCode) {
-        reportTotalOutcomePerCode.amount = reportTotalOutcomePerCode.amount.plus(Big(outcomePerCode.amount))
+        reportTotalOutcomePerCode.outcome = reportTotalOutcomePerCode.outcome.plus(Big(outcomePerCode.outcome))
       } else {
-        annualReport.totalOutcomePerCode.push({ outcomeCode: outcomePerCode.outcomeCode, amount: Big(outcomePerCode.amount) })
+        annualReport.totalOutcomePerCode.push({ outcomeCode: outcomePerCode.outcomeCode, outcome: Big(outcomePerCode.outcome) })
       }
     })
 
     annualReportPage.receipts.push(receipt)
   })
   annualReport.totalOutcome = annualReport.totalOutcome.plus(annualReportPage.totalOutcome)
+}
+
+function transformBigsToNumbers(annualReport) {
+  for(let i=0; i<annualReport.pages.length; i++) {
+    const page = annualReport.pages[i];
+    for(let j=0; j<page.totalIncomePerCode.length; j++) {
+      page.totalIncomePerCode[j].income = parseFloat(page.totalIncomePerCode[j].income);
+    }
+    for(let j=0; j<page.totalOutcomePerCode.length; j++) {
+      page.totalOutcomePerCode[j].outcome = parseFloat(page.totalOutcomePerCode[j].outcome);
+    }
+    page.totalIncome = parseFloat(page.totalIncome);
+    page.totalOutcome = parseFloat(page.totalOutcome);
+    page.transferFromPreviousMonth = parseFloat(page.transferFromPreviousMonth);
+    page.transferToNextMonth = parseFloat(page.transferToNextMonth);
+    page.total = parseFloat(page.total);
+  }
+  for(let i=0; i<annualReport.totalIncomePerCode.length; i++) {
+    annualReport.totalIncomePerCode[i].income = parseFloat(annualReport.totalIncomePerCode[i].income);
+  }
+  for(let i=0; i<annualReport.totalOutcomePerCode.length; i++) {
+    annualReport.totalOutcomePerCode[i].outcome = parseFloat(annualReport.totalOutcomePerCode[i].outcome);
+  }
+  annualReport.totalIncome = parseFloat(annualReport.totalIncome);
+  annualReport.totalOutcome = parseFloat(annualReport.totalOutcome);
+  annualReport.total = parseFloat(annualReport.total);
 }
 
 module.exports = {

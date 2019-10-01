@@ -109,10 +109,10 @@
       saveIncomeCodes() {
         const self = this;
         incomeCodeController.createIncomeCodes(this.incomeCodes).then(function (res) {
-          if (res.err) {
-            showErrorDialog(res.err)
-          } else {
+          if (!res.err) {
             self.toggleSavingIncomeCode(false);
+            } else {
+            showErrorDialog(res.err)
           }
         })
       },

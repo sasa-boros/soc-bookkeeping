@@ -7,11 +7,16 @@
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
-    "dev": "node .electron-vue/dev-runner.js"
+    "dev": "node .electron-vue/dev-runner.js",
+    "postinstall": "npm run download-webviewer",
+    "download-webviewer": "npx @pdftron/webviewer-downloader"
   },
   "build": {
     "productName": "soc-bookkeeping",
     "appId": "soc.bookeping",
+    "extraResources": [
+      "./public/**"
+    ],
     "directories": {
       "output": "build"
     },
@@ -48,13 +53,13 @@
     "big.js": "^5.2.2",
     "bootstrap-vue": "^2.0.0-rc.11",
     "mongoose": "^5.4.1",
+    "mustache": "^3.1.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuejs-datepicker": "^1.5.4",
     "vuex": "^3.0.1",
-    "vuex-electron": "^1.0.0",
-    "xlsx-populate": "^1.20.1"
+    "vuex-electron": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

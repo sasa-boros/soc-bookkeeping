@@ -16,6 +16,8 @@ async function createDefaultPaymentSlip (defaultPaymentSlip) {
   console.log(`Creating default payment slip: \n${JSON.stringify(defaultPaymentSlip, null, 2)}`)
   await DefaultPaymentSlip.deleteOne({}).exec()
   await DefaultPaymentSlip(defaultPaymentSlip).save()
+  const defaultPaymentSlipFromDb = await getDefaultPaymentSlip()
+  return defaultPaymentSlipFromDb
   console.log('Successfully created default payment slip')
 }
 

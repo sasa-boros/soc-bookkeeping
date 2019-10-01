@@ -196,6 +196,106 @@ function getCodeCombinations (codes) {
   return parts
 }
 
+function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
+  const paymentSlipForm = {};
+  paymentSlipForm._id = paymentSlip._id;
+  paymentSlipForm.ordinal =  paymentSlip.ordinal;
+  paymentSlipForm.annualReportPage = paymentSlip.annualReportPage;
+  paymentSlipForm.date = paymentSlip.date;
+  if (paymentSlip.incomePerCode && paymentSlip.incomePerCode.length > 0) {
+    paymentSlipForm.firstPartition = paymentSlip.incomePerCode[0].incomeCode.partition;
+    paymentSlipForm.firstPosition = paymentSlip.incomePerCode[0].incomeCode.position;
+    paymentSlipForm.firstIncome = paymentSlip.incomePerCode[0].income;
+    if(paymentSlip.incomePerCode > 1) {
+      paymentSlipForm.secondPartition = paymentSlip.incomePerCode[1].incomeCode.partition;
+      paymentSlipForm.secondPosition = paymentSlip.incomePerCode[1].incomeCode.position;
+      paymentSlipForm.secondIncome = paymentSlip.incomePerCode[1].income;
+    }
+  }
+  paymentSlipForm.income = paymentSlip.income;
+  paymentSlipForm.incomeAsText = numberToSerbianDinars(paymentSlip.income);
+  paymentSlipForm.town = paymentSlip.town;
+  paymentSlipForm.reason = paymentSlip.reason;
+  paymentSlipForm.payed = paymentSlip.payed;
+
+  return paymentSlipForm;
+}
+
+function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
+  var paymentSlip = {};
+  paymentSlip._id = paymentSlipForm._id;
+  paymentSlip.date = paymentSlipForm.date;
+  paymentSlip.income = paymentSlipForm.income;
+  paymentSlip.town = paymentSlipForm.town;
+  paymentSlip.reason = paymentSlipForm.reason;
+  paymentSlip.payed = paymentSlipForm.payed;
+  paymentSlip.incomePerCode = [];
+  const firstIncomeCode = incomeCodes.find(incomeCode => {
+    return incomeCode.partition == paymentSlipForm.firstPartition && incomeCode.position == paymentSlipForm.firstPosition;
+  })
+  const secondIncomeCode = incomeCodes.find(incomeCode => {
+    return incomeCode.partition == paymentSlipForm.secondPartition && incomeCode.position == paymentSlipForm.secondPosition;
+  })
+  if (firstIncomeCode) {
+    paymentSlip.incomePerCode.push({incomeCode: firstIncomeCode, income: paymentSlipForm.firstIncome ? paymentSlipForm.firstIncome : 0});
+  }
+  if (secondIncomeCode) {
+    paymentSlip.incomePerCode.push({incomeCode: secondIncomeCode, income: paymentSlipForm.secondIncome ? paymentSlipForm.secondIncome : 0});
+  }
+  return paymentSlip;
+}
+
+function mapReceiptToReceiptForm (receipt) {
+    const receiptForm = {};
+    receiptForm._id = receipt._id;
+    receiptForm.ordinal =  receipt.ordinal;
+    receiptForm.annualReportPage = receipt.annualReportPage;
+    receiptForm.date = receipt.date;
+    if (receipt.outcomePerCode && receipt.outcomePerCode.length > 0) {
+      receiptForm.firstPartition = receipt.outcomePerCode[0].outcomeCode.partition;
+      receiptForm.firstPosition = receipt.outcomePerCode[0].outcomeCode.position;
+      receiptForm.firstOutcome = receipt.outcomePerCode[0].outcome;
+      if(receipt.outcomePerCode > 1) {
+        receiptForm.secondPartition = receipt.outcomePerCode[1].outcomeCode.partition;
+        receiptForm.secondPosition = receipt.outcomePerCode[1].outcomeCode.position;
+        receiptForm.secondOutcome = receipt.outcomePerCode[1].outcome;
+      }
+    }
+    receiptForm.outcome = receipt.outcome;
+    receiptForm.outcomeAsText = numberToSerbianDinars(receipt.outcome);
+    receiptForm.churchMunicipality = receipt.churchMunicipality;
+    receiptForm.town = receipt.town;
+    receiptForm.reason = receipt.reason;
+    receiptForm.received = receipt.received;
+
+    return receiptForm;
+}
+
+function mapReceiptFormToReceipt (receiptForm, outcomeCodes) {
+    var receipt = {};
+    receipt._id = receiptForm._id;
+    receipt.date = receiptForm.date;
+    receipt.outcome = receiptForm.outcome;
+    receipt.churchMunicipality = receiptForm.churchMunicipality;
+    receipt.town = receiptForm.town;
+    receipt.reason = receiptForm.reason;
+    receipt.received = receiptForm.received;
+    receipt.outcomePerCode = [];
+    const firstOutcomeCode = outcomeCodes.find(outcomeCode => {
+      return outcomeCode.partition == receiptForm.firstPartition && outcomeCode.position == receiptForm.firstPosition;
+    })
+    const secondOutcomeCode = outcomeCodes.find(outcomeCode => {
+      return outcomeCode.partition == receiptForm.secondPartition && outcomeCode.position == receiptForm.secondPosition;
+    })
+    if (firstOutcomeCode) {
+      receipt.outcomePerCode.push({outcomeCode: firstOutcomeCode, outcome: receiptForm.firstOutcome ? receiptForm.firstOutcome : 0});
+    }
+    if (secondOutcomeCode) {
+      receipt.outcomePerCode.push({outcomeCode: secondOutcomeCode, outcome: receiptForm.secondOutcome ? receiptForm.secondOutcome : 0});
+    }
+    return receipt;
+}
+
 function showErrorDialog (error) {
   error = JSON.stringify(error)
   const options = {
@@ -208,9 +308,24 @@ function showErrorDialog (error) {
   dialog.showMessageBox(null, options)
 }
 
+function compareCodes( codeA, codeB ) {
+  if ((codeA.partition.toString() + codeA.position.toString()) < (codeB.partition.toString() + codeB.position.toString())) {
+    return -1;
+  }
+  if ((codeA.partition.toString() + codeA.position.toString()) > (codeB.partition.toString() + codeB.position.toString())) {
+    return 1;
+  }
+  return 0;
+}
+
 module.exports = {
   numberToSerbianDinars: numberToSerbianDinars,
   getLastNYears: getLastNYears,
   getCodeCombinations: getCodeCombinations,
-  showErrorDialog: showErrorDialog
+  mapPaymentSlipToPaymentSlipForm: mapPaymentSlipToPaymentSlipForm,
+  mapPaymentSlipFormToPaymentSlip: mapPaymentSlipFormToPaymentSlip,
+  mapReceiptToReceiptForm, mapReceiptToReceiptForm,
+  mapReceiptFormToReceipt: mapReceiptFormToReceipt,
+  showErrorDialog: showErrorDialog,
+  compareCodes: compareCodes
 }

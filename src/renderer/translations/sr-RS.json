@@ -6,7 +6,6 @@
 
     "Delete selected": "Обриши означено",
     "See details": "Види детаље",
-    "Search": "Претражи",
     "Save": "Сачувај",
     "Print": "Штампај",
     "Clear": "Обриши",
@@ -18,7 +17,7 @@
     "Enter at least one partition, position, amount": "Унеси бар једну партицију, позицију, вредност",
     "Enter partition": "Унеси партицију",
     "Needs to equal to sum of amounts by partitions and position": "Мора бити једнако суми износа по партицијама и позицијама",
-    "Generate annual report": "Генериши дневник благајне",
+    "Show annual report": "Прикажи дневник благајне",
     "Pick a date": "Изабери датум",
     "January.lokativ": "Јануару",
     "February.lokativ": "Фебруару",
@@ -32,10 +31,6 @@
     "October.lokativ": "Октобру",
     "November.lokativ": "Новембру",
     "December.lokativ": "Децембру",
-    "year.genitiv": "године",
-    "page": "страна",
-    "in month": "у месецу",
-    "by partition and position": "по партијама и позицијама",
 
     "Add a payment slip": "Додај нову уплатницу",
     "Delete payment slip": "Обриши уплатницу",

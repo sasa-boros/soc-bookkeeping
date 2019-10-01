@@ -1,38 +1,57 @@
 <template>
   <b-container fluid>    
-    <h3>Дневник благајне</h3>
-    
-      <b-button variant="primary" @click.stop="print()">
-        print
-      </b-button>
-      за годину 
-      <b-form-group>
-        <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
-      </b-form-group>
-      <b-button type="submit" v-on:click="createAnnualReport">
-        <img src="~@/assets/accounting.png" class="btn-img-sm">
-      </b-button>
+      <b-row class="text-center">
+        <b-col>
+          <b-button type="submit" v-on:click="createAnnualReport" ref="annualReportBtn">
+            <img src="~@/assets/accounting.png" class="btn-img-sm">
+          </b-button>
+        </b-col>
+        <b-col cols="10">
+          <b-form-group>
+            <b-form-select v-model="year" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
+          </b-form-group>
+        </b-col>
+      </b-row>
+
+      <!-- Annual report preview modal -->
+      <div>
+      <b-modal hide-footer hide-header id="annual-report-preview-modal" size="ar">
+        <annual-report-preview :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
+      </b-modal>
+      </div>
+      <b-tooltip ref="annualReportBtnTooltip" :target="() => $refs.annualReportBtn">
+        <div class="tooltipInnerText">
+          {{phrases.showAnnualReport}}
+        </div>
+      </b-tooltip>
   </b-container>
 </template>
 
 <script>
-  import AnnualReportFirstPage from './AnnualReportPane/AnnualReportFirstPage'
-  import AnnualReportManual from './AnnualReportPane/AnnualReportManual'
+  import AnnualReportPreview from './AnnualReportPreview'
   const annualReportController = require('../../../controllers/annualReportController')
   const i18n = require('../../../translations/i18n')
-  const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
+  const { getLastNYears, showErrorDialog, compareCodes } = require('../../../utils/utils')
   const { ipcRenderer } = require('electron')
-  const XlsxPopulate = require('xlsx-populate');
   const incomeCodeController = require('../../../controllers/incomeCodeController')
   const outcomeCodeController = require('../../../controllers/outcomeCodeController')
+  const fs = require('fs');
+  const util = require('util');
+  const readFile = util.promisify(fs.readFile);
+  const Mustache = require('mustache');
 
   export default {
     data () {
       return {
-        yearToFilter: (new Date()).getFullYear(),
+        year: (new Date()).getFullYear(),
         phrases: {
-          createAnnualReport: i18n.getTranslation('Create annual report')
-        }
+          showAnnualReport: i18n.getTranslation('Show annual report')
+        },
+        publicPath: process.env.BASE_URL,
+        monthNames:["January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ],
+        annualReportPages: []
       }
     },
     computed: {
@@ -43,164 +62,238 @@
     methods: {
       createAnnualReport: function () {
         const self = this
-        annualReportController.getAnnualReport(this.yearToFilter).then(function (res) {
+        annualReportController.getAnnualReport(this.year).then(async function (res) {
           if (!res.err) {
-            self.populateExcel(res.data);
+            await self.populateAnnualReportHtmlPages(res.data);
+            self.openAnnualReportPreviewModal();
           } else {
             showErrorDialog(res.err);
           }
         })
       },
-      populateExcel(annualReport) {
-        const self = this
-        function compareCodes( codeA, codeB ) {
-          if ((codeA.partition.toString() + codeA.position.toString()) < (codeB.partition.toString() + codeB.position.toString())) {
-            return -1;
-          }
-          if ((codeA.partition.toString() + codeA.position.toString()) > (codeB.partition.toString() + codeB.position.toString())) {
-            return 1;
-          }
-          return 0;
+      async populateAnnualReportHtmlPages(annualReport) {
+        const self = this;
+        this.annualReportPages = [];
+        await this.populateHeadline(annualReport);
+
+        const incomeCodes = await this.getIncomeCodes();
+        const outcomeCodes = await this.getOutcomeCodes();
+        const incomePageTemplate = await readFile("./static/annual-report/income-page.html", { encoding: 'utf8'})
+        const outcomePageTemplate = await readFile("./static/annual-report/outcome-page.html", { encoding: 'utf8'});
+        for(let i=0; i<annualReport.pages.length; i++) {
+          await this.populateIncomeOutcomePage(annualReport, annualReport.pages[i], incomeCodes, outcomeCodes, new String(incomePageTemplate).toString(), new String(outcomePageTemplate).toString());
         }
-        const monthNames = ["January", "February", "March", "April", "May", "June",
-          "July", "August", "September", "October", "November", "December"
-        ];
-        XlsxPopulate.fromFileAsync("static/annualReport.xlsx")
-          .then(async function(workbook) {
-            var incomeCodes = await incomeCodeController.getIncomeCodes();
-            incomeCodes = self.uniqueArray(incomeCodes);
-            incomeCodes.sort(compareCodes);
-            var outcomeCodes = await outcomeCodeController.getOutcomeCodes();
-            outcomeCodes = self.uniqueArray(outcomeCodes);
-            outcomeCodes.sort(compareCodes);
-            
-            for(let i=0; i<annualReport.pages.length; i++) {
-                const incomeSheet = workbook.sheet(i);
-                const outcomeSheet = workbook.sheet(i+1);
-                const incomeAnnualReportPage = annualReport.pages()[i];
-                const outcomeAnnualReportPage = annualReport.pages()[i+1];
-                
-                incomeSheet.cell('A1').value(i18n.getTranslation('page') + ' ' + (i + 1));
-                incomeSheet.cell('O1').value(i18n.getTranslation('in month') + ' ' + i18n.getTranslation(monthNames[i] + '.lokativ'));
-                outcomeSheet.cell('A1').value(annualReport.year + '. ' + i18n.getTranslation('year.genitiv'));
-                outcomeSheet.cell('P1').value(i18n.getTranslation('page') + ' ' + (i + 1));
+        await this.populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcomeCodes);
+        await this.populateSharesPage(annualReport);
+        await this.populateTotalPage(annualReport);
+      },
+      async getIncomeCodes () {
+        const incomeCodesRes = await incomeCodeController.getIncomeCodes();
+        if(incomeCodesRes.err) {
+          showErrorDialog(incomeCodesRes.err);
+          return;
+        }
+        var incomeCodes = incomeCodesRes.data;
+        incomeCodes.sort(compareCodes);
+        return incomeCodes;
+      },
+      async getOutcomeCodes () {
+        const outcomeCodesRes = await outcomeCodeController.getOutcomeCodes();
+        if(outcomeCodesRes.err) {
+          showErrorDialog(outcomeCodesRes.err);
+          return;
+        }
+        var outcomeCodes = outcomeCodesRes.data;
+        outcomeCodes.sort(compareCodes);
+        return outcomeCodes;
+      },
+      async populateHeadline(annualReport) {
+        const headlineContext = {};
+        headlineContext.year = annualReport.year;
 
-                var columnsPerIncomeCodes = {}
-                var columnsPerOutcomeCodes = {}
+        const headline = await readFile("./static/annual-report/headline.html", { encoding: 'utf8'});
+        Mustache.parse(headline);   // optional, speeds up future uses
+        this.annualReportPages.push(Mustache.render(headline, headlineContext));
+      },
+      async populateIncomeOutcomePage (annualReport, annualReportPage, incomeCodes, outcomeCodes, incomePageTemplate, outcomePageTemplate) {
+        var incomePageContext = {};
+        var outcomePageContext = {};
 
-                var column = 'D';
-                for(let j=0; j<incomeCodes.length; j++) {
-                  let incomeCodeText = incomeCodes[j].partition + '/' + incomeCodes[j].position;
-                  incomeSheet.cell(column+'4').value(incomeCodeText);
-                  incomeSheet.cell(column+'5').value(incomeCodes[j].description);
-                  columnsPerIncomeCodes[incomeCodeText] = column;
-                  column++;
-                }
-                var column = 'D';
-                for(let j=0; j<outcomeCodes.length; j++) {
-                  let outcomeCodeText = outcomeCodes[j].partition + '/' + outcomeCodes[j].position;
-                  outcomeSheet.cell(column+'4').value(outcomeCodeText);
-                  outcomeSheet.cell(column+'5').value(outcomeCodes[j].description);
-                  columnsPerOutcomeCodes[outcomeCodeText] = column;
-                  column++;
-                }
-                var row = 6;
-                for(let j=0; j<incomeAnnualReportPage.paymentSlips.length; j++) {
-                  let paymentSlip = incomeAnnualReportPage.paymentSlips[j];
-                  incomeSheet.cell('A'+row).value(paymentSlip.ordinal);
-                  incomeSheet.cell('B'+row).value(paymentSlip.date.getDate());
-                  incomeSheet.cell('C'+row).value(paymentSlip.reason);
-                  for(let k=0; k<paymentSlip.incomesPerCode.length; k++) {
-                    let incomeCodeText = paymentSlip.incomesPerCode[k].incomeCode.partition + '/' + paymentSlip.incomesPerCode[k].incomeCode.position;
-                    incomeSheet.cell(columnsPerIncomeCodes[incomeCodeText] + row).value(paymentSlip.incomesPerCode[k].amount);
-                  }
-                  row++;
-                }
-                var row = 6;
-                for(let j=0; j<outcomeAnnualReportPage.receipts.length; j++) {
-                  let receipt = outcomeAnnualReportPage.receipts[j];
-                  outcomeSheet.cell('A'+row).value(receipt.ordinal);
-                  outcomeSheet.cell('B'+row).value(receipt.date.getDate());
-                  outcomeSheet.cell('C'+row).value(receipt.reason);
-                  for(let k=0; k<receipt.outcomesPerCode.length; k++) {
-                    let outcomeCodeText = receipt.outcomesPerCode[k].outcomeCode.partition + '/' + receipt.outcomesPerCode[k].outcomeCode.position;
-                    outcomeSheet.cell(columnsPerOutcomeCodes[outcomeCodeText] + row).value(receipt.outcomesPerCode[k].amount);
-                  }
-                  row++;
-                }
-                incomeSheet.cell('S33').value(incomeAnnualReportPage.totalIncome);
-                incomeSheet.cell('S35').value(incomeAnnualReportPage.transferFromPreviousMonth);
-                incomeSheet.cell('S36').value(incomeAnnualReportPage.total);
-                outcomeSheet.cell('T33').value(outcomeAnnualReportPage.totalOutcome);
-                outcomeSheet.cell('T34').value(outcomeAnnualReportPage.transferToNextMonth);
-                outcomeSheet.cell('T35').value(outcomeAnnualReportPage.total);
-            }
-            const totalIncomeSheet = workbook.sheet(24);
-            const totalOutcomeSheet = workbook.sheet(25);
+        incomePageContext.page = annualReportPage.ordinal;
+        incomePageContext.monthLokativ = i18n.getTranslation(this.monthNames[annualReportPage.ordinal-1] + '.lokativ');
+        outcomePageContext.page = annualReportPage.ordinal;
+        outcomePageContext.year = annualReport.year;
 
-            totalOutcomeSheet.cell('A2').value(i18n.getTranslation('year.akuzativ') + ' ' + annualReport.year + '. ' + i18n.getTranslation('by partition and position'));
+        var colsPerIncomeCodes = {}
+        var colsPerOutcomeCodes = {}
 
-            var columnsPerIncomeCodes = {}
-            var columnsPerOutcomeCodes = {}
-            var column = 'B';
-            for(let i=0; i<incomeCodes.length; i++) {
-              let incomeCodeText = incomeCodes[i].partition + '/' + incomeCodes[i].position;
-              totalIncomeSheet.cell(column+'4').value(incomeCodeText);
-              totalIncomeSheet.cell(column+'5').value(incomeCodes[i].description);
-              columnsPerIncomeCodes[incomeCodeText] = column;
-              column++;
-            }
-            var column = 'B';
-            for(let i=0; i<outcomeCodes.length; i++) {
-              let outcomeCodeText = outcomeCodes[i].partition + '/' + outcomeCodes[i].position;
-              totalOutcomeSheet.cell(column+'4').value(outcomeCodeText);
-              totalOutcomeSheet.cell(column+'5').value(outcomeCodes[i].description);
-              columnsPerOutcomeCodes[outcomeCodeText] = column;
-              column++;
-            }
-            var row = 7;
-            for(let i=0; i<annualReport.pages.length; i++) {
-              for(let j=0; j<annualReport.pages[i].totalIncomePerCode.length; j++) {
-                let incomeCodeText = annualReport.pages[i].totalIncomePerCode[j].incomeCode.partition + '/' + annualReport.pages[i].totalIncomePerCode[j].incomeCode.position;
-                totalIncomeSheet.cell(columnsPerIncomeCodes[incomeCodeText] + row).value(annualReport.pages[i].totalIncomePerCode[j].amount)
-              }
-              for(let j=0; j<annualReport.pages[i].totalOutcomePerCode.length; j++) {
-                let outcomeCodeText = annualReport.pages[i].totalOutcomePerCode[j].outcomeCode.partition + '/' + annualReport.pages[i].totalOutcomePerCode[j].outcomeCode.position;
-                totalOutcomeSheet.cell(columnsPerOutcomeCodes[outcomeCodeText] + row).value(annualReport.pages[i].totalOutcomePerCode[j].amount)
-              }
-              row++;
-            }
-            for(let i=0; i<annualReport.totalIncomePerCode.length; i++) {
-                let incomeCodeText = annualReport.totalIncomePerCode[i].incomeCode.partition + '/' + annualReport.totalIncomePerCode[i].incomeCode.position;
-                totalIncomeSheet.cell(columnsPerIncomeCodes[incomeCodeText] + '19').value(annualReport.totalIncomePerCode[i].amount)
-            }
-            for(let i=0; i<annualReport.totalOutcomePerCode.length; i++) {
-              let outcomeCodeText = annualReport.totalOutcomePerCode[i].outcomeCode.partition + '/' + annualReport.totalOutcomePerCode[i].outcomeCode.position;
-              totalOutcomeSheet.cell(columnsPerOutcomeCodes[outcomeCodeText] + '19').value(annualReport.totalOutcomePerCode[i].amount)
-            }
-
-            totalOutcomeSheet.cell('R24').value(annualReport.totalIncome);
-            totalOutcomeSheet.cell('R25').value(annualReport.totalOutcome);
-            totalOutcomeSheet.cell('R26').value(annualReport.total);
-            
-            return workbook.toFileAsync("static/out.xlsx");
+        var col = 'D';
+        // income codes
+        incomeCodes.forEach(incomeCode => {
+          let incomeCodeText = incomeCode.partition + '/' + incomeCode.position;
+          incomePageContext[col+'6'] = incomeCodeText;
+          incomePageContext[col+'7'] = incomeCode.description;
+          colsPerIncomeCodes[incomeCodeText] = col;
+          col = String.fromCharCode(col.charCodeAt() + 1);
+        });
+        var col = 'D';
+         // outcome codes
+        outcomeCodes.forEach(outcomeCode => {
+          let outcomeCodeText = outcomeCode.partition + '/' + outcomeCode.position;
+          outcomePageContext[col+'6'] = outcomeCodeText;
+          outcomePageContext[col+'7'] = outcomeCode.description;
+          colsPerOutcomeCodes[outcomeCodeText] = col;
+          col = String.fromCharCode(col.charCodeAt() + 1);
+        });
+        var row = 14;
+        annualReportPage.paymentSlips.forEach(paymentSlip => {
+          // payment slip ordinal/date(day)/reason
+          incomePageContext['A'+row] = paymentSlip.ordinal;
+          let date = new Date(paymentSlip.date).getUTCDate();
+          incomePageContext['B'+row] = date ? date + '.' : date;
+          incomePageContext['C'+row] = paymentSlip.reason;
+          // payment slip income per code
+          paymentSlip.incomePerCode.forEach(incomePerCode => {
+            let incomeCodeText = incomePerCode.incomeCode.partition + '/' + incomePerCode.incomeCode.position;
+            incomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = incomePerCode.income;
           });
+          // payment slip total income
+          incomePageContext['S'+row] = paymentSlip.income
+          row++;
+        });
+        var row = 14;
+        annualReportPage.receipts.forEach(receipt => {
+           // receipt ordinal/date(day)/reason
+          outcomePageContext['A'+row] = receipt.ordinal;
+          let date = new Date(receipt.date).getUTCDate();
+          outcomePageContext['B'+row] = date ? date + '.' : date;
+          outcomePageContext['C'+row] = receipt.reason;
+          // receipt outcome per code
+          receipt.outcomePerCode.forEach(outcomePerCode => {
+            let outcomeCodeText = outcomePerCode.outcomeCode.partition + '/' + outcomePerCode.outcomeCode.position;
+            outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = outcomePerCode.outcome;
+          });
+          // receipt total outcome
+          outcomePageContext['S'+row] = receipt.outcome
+          row++;
+        });
+        // total per income code
+        annualReportPage.totalIncomePerCode.forEach(totalIncomePerCode => {
+          let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
+          incomePageContext[colsPerIncomeCodes[incomeCodeText] + 40] = totalIncomePerCode.income;
+        });
+        // total per outcome code
+        annualReportPage.totalOutcomePerCode.forEach(totalOutcomePerCode => {
+          let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
+          outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + 40] = totalOutcomePerCode.outcome;
+        });
+        // total incomes and outcomes per page
+        incomePageContext['S40'] = annualReportPage.totalIncome;
+        incomePageContext['S41'] = annualReportPage.transferFromPreviousMonth;
+        incomePageContext['S42'] = annualReportPage.total;
+        outcomePageContext['S40'] = annualReportPage.totalOutcome;
+        outcomePageContext['S41'] = annualReportPage.transferToNextMonth;
+        outcomePageContext['S42'] = annualReportPage.total;
+
+        Mustache.parse(incomePageTemplate);   // optional, speeds up future uses
+        Mustache.parse(outcomePageTemplate);
+        this.annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext));
+        this.annualReportPages.push(Mustache.render(outcomePageTemplate, outcomePageContext));
       },
-      uniqueArray(arr) {
-        function onlyUnique(value, index, self) { 
-          return self.indexOf(value) === index;
-        }
-        return arr.filter( onlyUnique );
+      async populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcomeCodes) {
+        var totalIncomePageContext = {};
+        var totalOutcomePageContext = {};
+
+        totalOutcomePageContext.year = annualReport.year;
+
+        var colsPerIncomeCodes = {}
+        var colsPerOutcomeCodes = {}
+
+        var col = 'B';
+        // income codes
+        incomeCodes.forEach(incomeCode => {
+          let incomeCodeText = incomeCode.partition + '/' + incomeCode.position;
+          totalIncomePageContext[col+'5'] = incomeCodeText;
+          totalIncomePageContext[col+'6'] = incomeCode.description;
+          colsPerIncomeCodes[incomeCodeText] = col;
+          col = String.fromCharCode(col.charCodeAt() + 1);
+        });
+        var col = 'B';
+        // outcome codes
+        outcomeCodes.forEach(outcomeCode => {
+          let outcomeCodeText = outcomeCode.partition + '/' + outcomeCode.position;
+          totalOutcomePageContext[col+'5'] = outcomeCodeText;
+          totalOutcomePageContext[col+'6'] = outcomeCode.description;
+          colsPerOutcomeCodes[outcomeCodeText] = col;
+          col = String.fromCharCode(col.charCodeAt() + 1);
+        });
+        // totals per code per page
+        var row = 8;
+        annualReport.pages.forEach((page) => {
+          page.totalIncomePerCode.forEach(totalIncomePerCode => {
+            let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
+            totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = totalIncomePerCode.income;
+          })
+          page.totalOutcomePerCode.forEach(totalOutcomePerCode => {
+            let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
+            totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = totalOutcomePerCode.outcome;
+          });
+          totalIncomePageContext['R'+row] = page.totalIncome;
+          totalOutcomePageContext['R'+row] = page.totalOutcome;
+          row++;
+        });
+        annualReport.totalIncomePerCode.forEach(totalIncomePerCode => {
+          let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
+          totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + '19'] = totalIncomePerCode.income;
+        });
+        annualReport.totalOutcomePerCode.forEach(totalOutcomePerCode => {
+          let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
+          totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = totalOutcomePerCode.outcome;
+        });
+        totalOutcomePageContext['Q24'] = annualReport.totalIncome;
+        totalOutcomePageContext['Q25'] = annualReport.totalOutcome;
+        totalOutcomePageContext['Q26'] = annualReport.total;
+
+        const totalIncomePageTemplate = await readFile("./static/annual-report/total-income-page.html", { encoding: 'utf8'})
+        const totalOutcomePageTemplate = await readFile("./static/annual-report/total-outcome-page.html", { encoding: 'utf8'});
+        Mustache.parse(totalIncomePageTemplate);   // optional, speeds up future uses
+        Mustache.parse(totalOutcomePageTemplate);
+        this.annualReportPages.push(Mustache.render(totalIncomePageTemplate, totalIncomePageContext));
+        this.annualReportPages.push(Mustache.render(totalOutcomePageTemplate, totalOutcomePageContext));
       },
-      print: function () {
-        ipcRenderer.send('printPDF', '')
+      async populateTotalPage(annualReport) {
+        const totalPageContext = {};
+
+        totalPageContext.year = annualReport.year;
+        totalPageContext['E5'] = annualReport.total;
+
+        const totalPageTemplate = await readFile("./static/annual-report/total-page.html", { encoding: 'utf8'});
+        Mustache.parse(totalPageTemplate);   // optional, speeds up future uses
+        this.annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext));
+      },
+      async populateSharesPage(annualReport) {
+        this.annualReportPages.push(await readFile("./static/annual-report/shares-page.html", { encoding: 'utf8'}));
+      },
+      openAnnualReportPreviewModal() {
+        this.$root.$emit('bv::show::modal', 'annual-report-preview-modal')
       }
     },
-    components: { AnnualReportFirstPage, AnnualReportManual }
+    components: { AnnualReportPreview }
   }
 </script>
 
+<style>
+  .modal .modal-ar {
+    max-width: 830px;
+    width: 830px;
+    max-height: 550px;
+    height: 550px;
+    overflow: hidden;
+  }
+</style>
+
 <style scoped>
+
 #yearSelect {
   width: 95px;
   padding-left:5px;

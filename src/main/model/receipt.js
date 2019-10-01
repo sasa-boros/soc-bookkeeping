@@ -6,25 +6,26 @@ const receiptSchema = new Schema({
   ordinal: { type: Number },
   annualReportPage: { type: Number },
   date: { type: Date },
+  createdAt: {type: Date},
+  updatedAt: {type: Date},
   outcome: { type: Number },
-  outcomeAsText: { type: String },
   churchMunicipality: { type: String },
   town: { type: String },
   reason: { type: String },
   received: { type: String },
-  outcomesPerCode: { type: Array }
+  outcomePerCode: { type: Array }
 })
 
 receiptSchema.pre('save', function (next) {
   const currentDate = new Date()
-  this.updated_at = currentDate
-  this.created_at = currentDate
+  this.updatedAt = currentDate
+  this.createdAt = currentDate
   next()
 })
 
 receiptSchema.pre('findOneAndUpdate', function (next) {
   const currentDate = new Date()
-  this._update.updated_at = currentDate
+  this._update.updatedAt = currentDate
   next()
 })
 

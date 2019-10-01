@@ -6,14 +6,14 @@
       </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" ref="incomeInputFormGroup"><b-form-input ref="incomeInput" v-model="form.income" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingIncome }" id="incomeInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="incomeAsTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" contenteditable="false" id="incomeAsTextDivWrapper1">{{generatedIncomeTextLine1}}</div>
+      <br/>На дин. <b-form-group class="input-form-group" ref="incomeInputFormGroup"><b-form-input ref="incomeInput" v-model="form.income" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" id="incomeInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step=".01"></b-form-input></b-form-group> и словима  <div class="incomeAsTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" contenteditable="false" id="incomeAsTextDivWrapper1">{{generatedIncomeTextLine1}}</div>
       <br/><div class="incomeAsTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" id="incomeAsTextDivWrapper2">{{generatedIncomeTextLine2}}</div>
-      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
+      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input v-model="form.payed" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': attemptSubmit && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker> г.
-                                                                                                            Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><b-form-select v-model="form.firstPart" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup"><b-form-select v-model="form.firstPos" id="pos1Select" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup"><b-form-input v-model="form.firstIncome" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingFirstIncome && atLeastOnePartPosNotSet }" id="firstIncomeInput" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
-                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><b-form-select v-model="form.secondPart" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="partOptions" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPart && atLeastOnePartPosNotSet }"/></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup"><b-form-select v-model="form.secondPos" id="pos2Select" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondIncomeInputFormGroup"><b-form-input v-model="form.secondIncome" class="input-small" v-bind:class="{ 'is-invalid': attemptSubmit && missingSecondIncome && atLeastOnePartPosNotSet }" id="secondIncomeInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker> г.
+                                                                                                            Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><b-form-select v-model="form.firstPartition" id="part1Select" :disabled="defaultPaymentSlipPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup"><b-form-select v-model="form.firstPosition" id="pos1Select" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup"><b-form-input v-model="form.firstIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstIncome && atLeastOnePartPosNotSet }" id="firstIncomeInput" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
+                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><b-form-select v-model="form.secondPartition" id="part2Select" :disabled="defaultPaymentSlipPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup"><b-form-select v-model="form.secondPosition" id="pos2Select" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondIncomeInputFormGroup"><b-form-input v-model="form.secondIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondIncome && atLeastOnePartPosNotSet }" id="secondIncomeInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="number" min="0" step=".01"></b-form-input></b-form-group>
                                                            
       <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalIncomeInputFormGroup"><b-form-input disabled v-model="form.income" class="input-small" id="totalIncomeInput" type="number" min="0" step=".01"></b-form-input></b-form-group>
       <div class="my-0 line-spacing-small">
@@ -21,13 +21,6 @@
                                                                                                                                   Председник црквене општине,
       </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group ref="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
       </div></div>
-
-
-  
-
-
-
-      
 
       </div>
       <div id="printBtnDiv">
@@ -110,18 +103,6 @@
         </div>
       </b-tooltip>
 
-      <b-tooltip ref="annualReportPageInputTooltip" :disabled.sync="disableAnnualReportPageTooltip" :target="() => $refs.annualReportPageInputFormGroup">
-        <div class="tooltipInnerText">
-          {{phrases.willBeGenerated}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip ref="ordinalInputTooltip" :disabled.sync="disableOrdinalTooltip" :target="() => $refs.ordinalInputFormGroup">
-        <div class="tooltipInnerText">
-          {{phrases.willBeGenerated}}
-        </div>
-      </b-tooltip>
-
       <b-tooltip ref="paymentSlipPrintBtnTooltip" :target="() => $refs.paymentSlipPrintBtn">
         <div class="tooltipInnerText">
           {{phrases.print}}
@@ -150,36 +131,20 @@
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const paymentSlipController = require('../../../../controllers/paymentSlipController')
-  const { numberToSerbianDinars, getLastNYears, getCodeCombinations, showErrorDialog } = require('../../../../utils/utils')
+  const defaultPaymentSlipController = require('../../../../controllers/defaultPaymentSlipController')
+  const { numberToSerbianDinars, getLastNYears, getCodeCombinations, showErrorDialog, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
 
   export default {
     store: store,
     props: {
-      item: {
+      paymentSlip: {
         type: Object,
-        default: function () {
-          return {
-            ordinal: null,
-            annualReportPage: null,
-            date: null,
-            firstPart: null,
-            firstPos: null,
-            firstIncome: null,
-            secondPart: null,
-            secondPos: null,
-            secondIncome: null,
-            income: null,
-            incomeAsText: null,
-            town: null,
-            reason: null,
-            payed: null
-          }
-        }
+        default: null,
       },
-      newlyOpened: {
+      paymentSlipPreview: {
         type: Boolean,
-        default: true
+        default: false
       },
       defaultPaymentSlipPreview: {
         type: Boolean,
@@ -193,8 +158,7 @@
     data () {
       return {
         form: null,
-        attemptSubmit: !this.newlyOpened,
-        fresh: this.newlyOpened,
+        shouldValidate: false,
         show: true,
         yearSelected: null,
         preDatepickerJustBlurred: false,
@@ -219,9 +183,15 @@
       }
     },
     created () {
-      this.form = JSON.parse(JSON.stringify(this.defaultForm))
-      const self = this
-
+      if(this.paymentSlipPreview) {
+        var paymentSlip = JSON.parse(JSON.stringify(this.paymentSlip));
+        this.form = mapPaymentSlipToPaymentSlipForm(paymentSlip);
+      } else {
+        var defaultPaymentSlip = JSON.parse(JSON.stringify(this.defaultPaymentSlip));
+        defaultPaymentSlip._id = undefined;
+        this.form = mapPaymentSlipToPaymentSlipForm(defaultPaymentSlip);
+      }
+      const self = this;
       incomeCodeController.getIncomeCodes().then(function (res) {
         if (!res.err) {
           self.incomeCodes = (res.data || [])
@@ -232,43 +202,25 @@
       })
     },
     watch: {
-      item: function () {
-        /* Deep clone the item using JSON parsing */
-        if (this.item) {
-          this.form = JSON.parse(JSON.stringify(this.item))
-        } else {
-          this.form = JSON.parse(JSON.stringify(this.defaultForm))
-        }
-      },
-      newlyOpened: function () {
-        /* If the form is reseted from the parent component */
-        if (this.newlyOpened) {
-          this.attemptSubmit = false
-          this.fresh = true
-          this.resetModal()
-          /* Needs to be stale, so that any reset from the parent will be detected */
-          this.$emit('update:newlyOpened', false)
-        }
-      },
-      'form.firstPart': function (newValue) {
+      'form.firstPartition' : function (newValue) {
         if (this.incomeCodeCombinations) {
           const allowedPosValues = this.incomeCodeCombinations[newValue]
-          if (!allowedPosValues || allowedPosValues.indexOf(this.form.firstPos) === -1) {
+          if (!allowedPosValues || allowedPosValues.indexOf(this.form.firstPosition) === -1) {
             /* Pos value needs to be reset since it is not allowed with the new part */
-            this.form.firstPos = ''
+            this.form.firstPosition = ''
           }
         }
         /* If new value is null, i.e. the part is reset, reset the income too */
         if (!newValue) {
-          this.form.firstIncome = null
+          this.form.secondIncome = null
         }
       },
-      'form.secondPart': function (newValue) {
+      'form.secondPartition' : function (newValue) {
         if (this.incomeCodeCombinations) {
           const allowedPosValues = this.incomeCodeCombinations[newValue]
-          if (!allowedPosValues || allowedPosValues.indexOf(this.form.secondPos) === -1) {
+          if (!allowedPosValues || allowedPosValues.indexOf(this.form.secondPosition) === -1) {
             /* Pos value needs to be reset since it is not allowed with the new part */
-            this.form.secondPos = ''
+            this.form.secondPosition = ''
           }
         }
         /* If new value is null, i.e. the part is reset, reset the income too */
@@ -280,8 +232,7 @@
     computed: {
       ...mapState(
         {
-          defaultForm: state => state.DefaultValues.paymentSlipForm,
-          emptyForm: state => state.DefaultValues.emptyPaymentSlipForm
+          defaultPaymentSlip: state => state.DefaultValues.defaultPaymentSlip
         }
       ),
       generatedIncomeText: {
@@ -371,7 +322,7 @@
       },
       disableIncomeTooltip: {
         get: function () {
-          return !this.missingIncome || !this.attemptSubmit
+          return !this.missingIncome || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -382,7 +333,7 @@
       },
       disableTownTooltip: {
         get: function () {
-          return !this.missingTown || !this.attemptSubmit
+          return !this.missingTown || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -393,7 +344,7 @@
       },
       disableReasonTooltip: {
         get: function () {
-          return !this.missingReason || !this.attemptSubmit
+          return !this.missingReason || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -404,7 +355,7 @@
       },
       disableFirstPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstPart || !this.attemptSubmit
+          return !this.atLeastOnePartPosNotSet || !this.missingFirstPart || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -419,7 +370,7 @@
             /* If missing part, pos is disabled, so show the tooltip */
             return false
           } else {
-            return !this.atLeastOnePartPosNotSet || !this.missingFirstPos || !this.attemptSubmit
+            return !this.atLeastOnePartPosNotSet || !this.missingFirstPos || !this.shouldValidate
           }
         },
         set: function (newValue) {
@@ -435,7 +386,7 @@
             /* If missing part, pos is disabled, so show the tooltip */
             return false
           } else {
-            return !this.atLeastOnePartPosNotSet || !this.missingFirstIncome || !this.attemptSubmit
+            return !this.atLeastOnePartPosNotSet || !this.missingFirstIncome || !this.shouldValidate
           }
         },
         set: function (newValue) {
@@ -447,7 +398,7 @@
       },
       disableSecondPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondPart || !this.attemptSubmit
+          return !this.atLeastOnePartPosNotSet || !this.missingSecondPart || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -462,7 +413,7 @@
             /* If missing part, pos is disabled, so show the tooltip */
             return false
           } else {
-            return !this.atLeastOnePartPosNotSet || !this.missingSecondPos || !this.attemptSubmit
+            return !this.atLeastOnePartPosNotSet || !this.missingSecondPos || !this.shouldValidate
           }
         },
         set: function (newValue) {
@@ -478,7 +429,7 @@
             /* If missing part, pos is disabled, so show the tooltip */
             return false
           } else {
-            return !this.atLeastOnePartPosNotSet || !this.missingSecondIncome || !this.attemptSubmit
+            return !this.atLeastOnePartPosNotSet || !this.missingSecondIncome || !this.shouldValidate
           }
         },
         set: function (newValue) {
@@ -490,7 +441,7 @@
       },
       disableTotalIncomeTooltip: {
         get: function () {
-          return (!this.missingTotalIncome && !this.totalIncomeNotValid) || !this.attemptSubmit
+          return (!this.missingTotalIncome && !this.totalIncomeNotValid) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -501,7 +452,7 @@
       },
       disableDateTooltip: {
         get: function () {
-          return !this.missingDate || !this.attemptSubmit
+          return !this.missingDate || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -510,49 +461,44 @@
           }
         }
       },
-      disableAnnualReportPageTooltip: {
-        get: function () {
-          return !this.missingAnnualReportPage
-        },
-        set: function (newValue) {
-          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-          if (newValue) {
-            this.$refs.annualReportPageInputTooltip.$emit('close')
-          }
-        }
-      },
-      disableOrdinalTooltip: {
-        get: function () {
-          return !this.missingOrdinal
-        },
-        set: function (newValue) {
-          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-          if (newValue) {
-            this.$refs.ordinalInputTooltip.$emit('close')
-          }
-        }
-      },
       yearOptions: function () {
         return getLastNYears(10)
       },
-      partOptions: function () {
+      part1Options: function () {
         if (!this.incomeCodeCombinations) {
-          return []
+          return [];
         }
-        var keys = Object.keys(this.incomeCodeCombinations)
-        return keys
+        var keys = Object.keys(this.incomeCodeCombinations);
+        var index = keys.indexOf(this.form.secondPartition);
+        if (index != -1) {
+            keys.splice(index, 1);
+        }
+        keys.unshift('');
+        return keys;
+      },
+      part2Options: function () {
+        if (!this.incomeCodeCombinations) {
+          return [];
+        }
+        var keys = Object.keys(this.incomeCodeCombinations);
+        var index = keys.indexOf(this.form.firstPartition);
+        if (index != -1) {
+            keys.splice(index, 1);
+        }
+        keys.unshift('');
+        return keys;
       },
       pos1Options: function () {
         if (!this.incomeCodeCombinations) {
           return []
         }
-        return this.incomeCodeCombinations[this.form.firstPart]
+        return this.incomeCodeCombinations[this.form.firstPartition]
       },
       pos2Options: function () {
         if (!this.incomeCodeCombinations) {
           return []
         }
-        return this.incomeCodeCombinations[this.form.secondPart]
+        return this.incomeCodeCombinations[this.form.secondPartition]
       },
       missingReason: function () {
         return !this.form || !this.form.reason || this.form.reason.toString().trim() === ''
@@ -564,14 +510,14 @@
         return !this.form || !this.form.income || this.form.income.toString().trim() === ''
       },
       missingFirstPart: function () {
-        return !this.form || !this.form.firstPart
+        return !this.form || !this.form.firstPartition
       },
       missingFirstPos: function () {
         /* IncomeCodeCombinations may not be ready right away */
         if (this.incomeCodeCombinations) {
           /* Empty string is not considered missing if it is an allowed pos for a given part */
-          const allowedPosValues = this.incomeCodeCombinations[this.form.firstPart]
-          return !this.form || !allowedPosValues || (allowedPosValues.indexOf(this.form.firstPos) === -1)
+          const allowedPosValues = this.incomeCodeCombinations[this.form.firstPartition]
+          return !this.form || !allowedPosValues || (allowedPosValues.indexOf(this.form.firstPosition) === -1)
         } else {
           return false
         }
@@ -580,14 +526,14 @@
         return !this.form || !this.form.firstIncome || this.form.firstIncome.toString().trim() === ''
       },
       missingSecondPart: function () {
-        return !this.form || !this.form.secondPart
+        return !this.form || !this.form.secondPartition
       },
       missingSecondPos: function () {
         /* IncomeCodeCombinations may not be ready right away */
         if (this.incomeCodeCombinations) {
           /* Empty string is not considered missing if it is an allowed pos for a given part */
-          const allowedPosValues = this.incomeCodeCombinations[this.form.secondPart]
-          return !this.form || !allowedPosValues || (allowedPosValues.indexOf(this.form.secondPos) === -1)
+          const allowedPosValues = this.incomeCodeCombinations[this.form.secondPartition]
+          return !this.form || !allowedPosValues || (allowedPosValues.indexOf(this.form.secondPosition) === -1)
         } else {
           return false
         }
@@ -611,12 +557,6 @@
       },
       missingDate: function () {
         return !this.form || !this.form.date
-      },
-      missingAnnualReportPage: function () {
-        return !this.form || !this.form.annualReportPage
-      },
-      missingOrdinal: function () {
-        return !this.form || !this.form.ordinal
       },
       atLeastOnePartPosNotSet: function () {
         /* True if not a single part-pos combination is set. At least one combination should be set. */
@@ -651,83 +591,59 @@
       postDatepickerOnBlur (evt) {
         this.postDatepickerJustBlurred = true
       },
-      setAttemptSubmit (val) {
-        this.attemptSubmit = val
-        /* Sync the prop used by the parent */
-        this.$emit('update:newlyOpened', !val)
-      },
       onSubmit (evt) {
-        evt.preventDefault()
-        const paymentSlip = this.createPaymentSlipObj()
+        evt.preventDefault();
+        const self = this;
         if (this.defaultPaymentSlipPreview) {
-          /* Set the default values for payment slips */
-          this.$store.dispatch('SET_DEFAULT_PAYMENT_SLIP', paymentSlip)
-          if (this.parentModal) {
-            this.$root.$emit('bv::hide::modal', this.parentModal)
-          }
+          defaultPaymentSlipController.createDefaultPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then(function (res) {
+            if (!res.err) {
+              self.$store.dispatch('SET_DEFAULT_PAYMENT_SLIP', res.data)
+              self.closeModal();
+            } else {
+              showErrorDialog(res.err)
+            }
+          })
         } else {
-          this.setAttemptSubmit(true)
+          this.shouldValidate = true;
           if (this.checkForm()) {
-            if (this.form._id) {
-              /* Update the item */
-              paymentSlipController.updatePaymentSlip(paymentSlip).then((res) => {
+            if (this.paymentSlipPreview) {
+              paymentSlipController.updatePaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then((res) => {
                 if (!res.err) {
-                  this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                  self.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                  self.closeModal();
                 } else {
                   showErrorDialog(res.err)
                 }
               })
             } else {
-              /* Create new item */
-              paymentSlipController.createPaymentSlip(paymentSlip).then((res) => {
+              paymentSlipController.createPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then((res) => {
                 if (!res.err) {
-                  this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                  self.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                  self.closeModal();
                 } else {
                   showErrorDialog(res.err)
                 }
               })
             }
-            this.resetModal()
-            if (this.parentModal) {
-              this.$root.$emit('bv::hide::modal', this.parentModal)
-            }
           }
         }
       },
-      createPaymentSlipObj () {
-        var paymentSlip = {}
-        paymentSlip.date = this.form.date
-        paymentSlip.income = this.form.income
-        paymentSlip.incomeAsText = this.generatedIncomeText
-        paymentSlip.town = this.form.town
-        paymentSlip.reason = this.form.reason
-        paymentSlip.payed = this.form.payed
-        paymentSlip.incomesPerCode = []
-        const firstIncomeCode = this.incomeCodes.find(incomeCode => {
-          return incomeCode.partition === this.form.firstPart && incomeCode.position === this.form.firstPos
-        })
-        const secondIncomeCode = this.incomeCodes.find(incomeCode => {
-          return incomeCode.partition === this.form.secondPart && incomeCode.position === this.form.secondPos
-        })
-        if (firstIncomeCode.length > 0) {
-          paymentSlip.incomesPerCode.push({incomeCode: firstIncomeCode, income: this.form.firstIncome})
-        }
-        if (secondIncomeCode.length > 0) {
-          paymentSlip.incomesPerCode.push({incomeCode: secondIncomeCode, income: this.form.secondIncome})
-        }
-        return paymentSlip
-      },
-      resetModal () {
-        this.resetForm()
-        /* Focus the first input field */
-        console.log(this.$refs.incomeInput)
-        // this.$refs.incomeInput.focus()
-        /* Trick to reset/clear native browser form validation state */
-        this.show = false
-        this.$nextTick(() => { this.show = true })
-      },
       clearForm () {
-        this.form = JSON.parse(JSON.stringify(this.emptyForm))
+        this.form = {};
+        this.form.ordinal = null;
+        this.form. annualReportPage = null;
+        this.form.date = null;
+        this.form.firstPartition = null;
+        this.form.firstPosition = null;
+        this.form.firstIncome = null;
+        this.form.secondPartition = null;
+        this.form.secondPosition = null;
+        this.form.secondIncome = null;
+        this.form.income = null;
+        this.form.incomeAsText = null;
+        this.form.town = null;
+        this.form.reason = null;
+        this.form.payed = null;
       },
       checkForm () {
         if (this.missingIncome ||
@@ -739,10 +655,6 @@
           return false
         }
         return true
-      },
-      resetForm () {
-        this.form = JSON.parse(JSON.stringify(this.defaultForm))
-        this.setAttemptSubmit(false)
       },
       printPaymentSlip () {
         const modal = document.getElementById('payment-slip-preview-container')
@@ -760,10 +672,7 @@
         window.print()
       },
       closeModal () {
-        if (this.parentModal) {
-          this.$root.$emit('bv::hide::modal', this.parentModal)
-        }
-        this.resetModal()
+        this.$root.$emit('bv::hide::modal', this.parentModal)
       }
     },
     components: { Datepicker }

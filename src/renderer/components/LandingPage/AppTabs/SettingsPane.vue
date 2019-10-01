@@ -8,22 +8,25 @@
     </b-btn>
 
     <!-- Default receipt modal -->
-    <b-modal hide-footer hide-header size="a5" id="modalDefaultReceipt">
-      <receipt-preview :item='defaultReceiptForm' parentModal="modalDefaultReceipt" defaultReceiptPreview></receipt-preview>
+    <b-modal hide-footer hide-header size="a5" id="default-receipt-modal">
+      <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true'></receipt-preview>
     </b-modal>
 
     <!-- Default slip modal -->
-    <b-modal hide-footer hide-header size="a5" id="modalDefaultSlip">
-      <payment-slip-preview :item='defaultPaymentSlipForm' parentModal="modalDefaultSlip" defaultPaymentSlipPreview></payment-slip-preview>
+    <b-modal hide-footer hide-header size="a5" id="default-payment-slip-modal">
+      <payment-slip-preview parentModal="default-payment-slip-modal" :defaultPaymentSlipPreview='true'></payment-slip-preview>
     </b-modal>
+
     <h1>{{phrases.incomeCodes}}</h1>
     <income-codes-table></income-codes-table>
+
     <h1>{{phrases.outcomeCodes}}</h1>
     <outcome-codes-table></outcome-codes-table>
   </b-container>
 </template>
 
 <script>
+  import store from '@/store'
   import { mapState } from 'vuex'
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
   import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
@@ -31,6 +34,8 @@
   import OutcomeCodesTable from './OutcomeCodesTable'
 
   const i18n = require('../../../translations/i18n')
+  const defaultPaymentSlipController = require('../../../controllers/defaultPaymentSlipController')
+  const defaultReceiptController = require('../../../controllers/defaultReceiptController')
 
   export default {
     data () {
@@ -58,15 +63,30 @@
       }
     },
     created () {
-      this.$store.dispatch('LOAD_DEFAULT_PAYMENT_SLIP')
-      this.$store.dispatch('LOAD_DEFAULT_RECEIPT')
+      const self = this;
+      defaultPaymentSlipController.getDefaultPaymentSlip().then(function (res) {
+        if (!res.err) {
+          const defaultPaymentSlipFromDB = res.data
+          self.$store.dispatch('SET_DEFAULT_PAYMENT_SLIP', defaultPaymentSlipFromDB)
+        } else {
+          showErrorDialog(res.err)
+        }
+      })
+      defaultReceiptController.getDefaultReceipt().then(function (res) {
+        if (!res.err) {
+          const defaultReceiptFromDB = res.data
+          self.$store.dispatch('SET_DEFAULT_RECEIPT', defaultReceiptFromDB)
+        } else {
+          showErrorDialog(res.err)
+        }
+      })
     },
     methods: {
       openDefaultReceiptModal: function () {
-        this.$root.$emit('bv::show::modal', 'modalDefaultReceipt')
+        this.$root.$emit('bv::show::modal', 'default-receipt-modal')
       },
       openDefaultPaymentSlipModal: function () {
-        this.$root.$emit('bv::show::modal', 'modalDefaultSlip')
+        this.$root.$emit('bv::show::modal', 'default-payment-slip-modal')
       }
     },
     components: { PaymentSlipPreview, ReceiptPreview, IncomeCodesTable, OutcomeCodesTable }

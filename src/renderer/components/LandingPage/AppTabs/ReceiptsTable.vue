@@ -14,18 +14,7 @@
       </b-col>
       <b-col md="7" class="my-1">
         <b-form-group horizontal class="my-0">
-          <b-form-group class="my-0" id="filterInputFormGroup">
-            <div class="inputWithIcon">
-              <b-form-input v-model="filter" :placeholder="phrases.search" />
-              <img src="~@/assets/search-blue.png" class="btn-img fa fa-user fa-lg fa-fw" aria-hidden="true">
-            </div>
-          </b-form-group>
           <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
-        </b-form-group>
-      </b-col>
-      <b-col md="3" class="my-1">
-        <b-form-group horizontal class="mb-0" size="sm">
-          <b-form-select :options="pageOptions" v-model="perPage" id="perPageSelect" size="sm"/>
         </b-form-group>
       </b-col>
     </b-row>
@@ -53,11 +42,11 @@
              :empty-text="phrases.noRecordsToShow"
              :empty-filtered-text="phrases.noRecordsToShowFiltered"
     >
-      <template slot="HEAD_select" scope="data">
+      <template v-slot:cell(HEAD_select)="row">
         <b-form-checkbox @click.native.stop="toggleCheckAll" v-model="checkAll">
         </b-form-checkbox>
       </template>
-      <template slot="actions" slot-scope="row">
+      <template v-slot:cell(actions)="row">
         <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
         <b-button-group size="sm">
           <b-button v-b-tooltip.hover.html="phrases.seeDetails" @click.stop="openUpdateReceiptModal(row.item)" class="mr-1 btn-xs" size="sm" >
@@ -68,12 +57,14 @@
           </b-button>     
         </b-button-group>                
       </template>
-      <template slot="select" slot-scope="row">
+      <template v-slot:cell(select)="row">
         <b-form-checkbox :value="row.item" v-model="checkedItems">
         </b-form-checkbox>
       </template>
-      <template slot="formatedDate" slot-scope="row">{{ row.item.date | formatDate }}</template>
-      <template slot="formatedUpdatedAt" slot-scope="row">{{ row.item.updated_at | formatDate }}</template>
+      <template v-slot:cell(outcome)="row">{{ row.item.outcome }}</template>
+      <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
+      <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
+      <template v-slot:cell(formatedUpdatedAt)="row">{{ row.item.updatedAt | formatDate }}</template>
     </b-table>
     </div>
 
@@ -84,8 +75,8 @@
     </b-row>
 
     <!-- Create receipt modal -->
-    <b-modal hide-footer hide-header size="a5" id="modalCreateReceipt" @hide="resetModal">
-      <receipt-preview :item='selectedItem' :newlyOpened.sync='modalNewlyOpened' parentModal="modalCreateReceipt"></receipt-preview>
+    <b-modal hide-footer hide-header size="a5" id="create-receipt-modal">
+      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal"></receipt-preview>
     </b-modal>
 
   </b-container>
@@ -110,9 +101,8 @@
           seeDetails: i18n.getTranslation('See details'),
           deleteReceipt: i18n.getTranslation('Delete the receipt'),
           deleteReceipts: i18n.getTranslation('Delete receipt'),
-          search: i18n.getTranslation('Search'),
           town: i18n.getTranslation('Town'),
-          amount: i18n.getTranslation('Amount'),
+          outcome: i18n.getTranslation('Amount'),
           payed: i18n.getTranslation('Payed'),
           received: i18n.getTranslation('Received'),
           reason: i18n.getTranslation('Reason'),
@@ -126,7 +116,6 @@
         currentPage: 1,
         perPage: 10,
         totalRows: null,
-        pageOptions: [ 10, 25, 50 ],
         sortBy: null,
         sortDesc: false,
         sortDirection: 'asc',
@@ -135,8 +124,8 @@
         itemsShownInTable: [],
         checkAll: false,
         yearToFilter: (new Date()).getFullYear(),
-        modalNewlyOpened: false,
-        selectedItem: null
+        selectedItem: null,
+        isPreview: false
       }
     },
     computed: {
@@ -150,7 +139,7 @@
         return [
           { key: 'select', label: '', thClass: 'table-col-5' },
           { key: 'actions', label: '', thClass: 'table-col-10' },
-          { key: 'amount', label: this.phrases.amount, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' },
+          { key: 'outcome', label: this.phrases.outcome, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' },
           { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-20' },
           { key: 'formatedDate', label: this.phrases.forDate, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' },
           { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' }
@@ -159,9 +148,10 @@
     },
     methods: {
       openCreateReceiptModal (button) {
-        this.resetModal()
+        this.isPreview = false;
+        this.selectedItem = null;
         this.$root.$emit('bv::hide::tooltip')
-        this.$root.$emit('bv::show::modal', 'modalCreateReceipt', button)
+        this.$root.$emit('bv::show::modal', 'create-receipt-modal', button)
       },
       toggleCheckAll () {
         /* Before the checkAll changes based on the click, so the logic is reversed in the check */
@@ -171,7 +161,7 @@
         this.openUpdateReceiptModal(record)
       },
       formatReceiptForDialog (receipt) {
-        return this.phrases.amount + ':   ' + receipt.amount + '\n' + this.phrases.reason + ':   ' + receipt.reason
+        return this.phrases.outcome + ':   ' + receipt.outcome + '\n' + this.phrases.reason + ':   ' + receipt.reason
       },
       deleteReceipt (item) {
         const options = {
@@ -235,12 +225,9 @@
         })
       },
       openUpdateReceiptModal (item) {
+        this.isPreview = true
         this.selectedItem = item
-        this.$root.$emit('bv::show::modal', 'modalCreateReceipt')
-      },
-      resetModal () {
-        this.resetSelectedItem()
-        this.modalNewlyOpened = true
+        this.$root.$emit('bv::show::modal', 'create-receipt-modal')
       },
       onFiltered (filteredItems) {
         // Trigger pagination to update the number of buttons/pages due to filtering

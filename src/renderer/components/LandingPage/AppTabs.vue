@@ -3,15 +3,15 @@
     <b-tabs card>
       <b-tab active class="appTab">
         <template slot="title">
-          <img src="~@/assets/income-blue.png" class="appTabsIcon">  {{phrases.receipts}}
-        </template>
-        <receipts-table></receipts-table>
-      </b-tab>
-      <b-tab class="appTab">
-        <template slot="title">
           <img src="~@/assets/outcome-blue.png" class="appTabsIcon">  {{phrases.paymentSlips}}
         </template>
         <payment-slips-table></payment-slips-table>
+      </b-tab>
+      <b-tab class="appTab">
+        <template slot="title">
+          <img src="~@/assets/income-blue.png" class="appTabsIcon">  {{phrases.receipts}}
+        </template>
+        <receipts-table></receipts-table>
       </b-tab>
       <b-tab class="appTab">
         <template slot="title">
