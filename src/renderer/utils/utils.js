@@ -12,6 +12,9 @@ function numberToSerbianDinars (n) {
   var nFloored = Math.floor(n)
   var flooredAndDecimalStrings = n.toString().split('.')
   var flooredString = flooredAndDecimalStrings[0]
+  if(flooredString == '') {
+    flooredString = '0'
+  }
   var decimalString
   var unitsMale
   var unitsFemale
@@ -202,11 +205,18 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   paymentSlipForm.ordinal =  paymentSlip.ordinal;
   paymentSlipForm.annualReportPage = paymentSlip.annualReportPage;
   paymentSlipForm.date = paymentSlip.date;
+  // ensures reactivity
+  paymentSlipForm.firstPartition = null;
+  paymentSlipForm.firstPosition = null;
+  paymentSlipForm.firstIncome = null;
+  paymentSlipForm.secondPartition = null;
+  paymentSlipForm.secondPosition = null;
+  paymentSlipForm.secondIncome = null;
   if (paymentSlip.incomePerCode && paymentSlip.incomePerCode.length > 0) {
     paymentSlipForm.firstPartition = paymentSlip.incomePerCode[0].incomeCode.partition;
     paymentSlipForm.firstPosition = paymentSlip.incomePerCode[0].incomeCode.position;
     paymentSlipForm.firstIncome = paymentSlip.incomePerCode[0].income;
-    if(paymentSlip.incomePerCode > 1) {
+    if(paymentSlip.incomePerCode.length > 1) {
       paymentSlipForm.secondPartition = paymentSlip.incomePerCode[1].incomeCode.partition;
       paymentSlipForm.secondPosition = paymentSlip.incomePerCode[1].incomeCode.position;
       paymentSlipForm.secondIncome = paymentSlip.incomePerCode[1].income;
@@ -251,15 +261,22 @@ function mapReceiptToReceiptForm (receipt) {
     receiptForm.ordinal =  receipt.ordinal;
     receiptForm.annualReportPage = receipt.annualReportPage;
     receiptForm.date = receipt.date;
+    // ensures reactivity
+    receiptForm.firstPartition = null;
+    receiptForm.firstPosition = null;
+    receiptForm.firstOutcome = null;
+    receiptForm.secondPartition = null;
+    receiptForm.secondPosition = null;
+    receiptForm.secondOutcome = null;
     if (receipt.outcomePerCode && receipt.outcomePerCode.length > 0) {
       receiptForm.firstPartition = receipt.outcomePerCode[0].outcomeCode.partition;
       receiptForm.firstPosition = receipt.outcomePerCode[0].outcomeCode.position;
       receiptForm.firstOutcome = receipt.outcomePerCode[0].outcome;
-      if(receipt.outcomePerCode > 1) {
+      if(receipt.outcomePerCode.length > 1) {
         receiptForm.secondPartition = receipt.outcomePerCode[1].outcomeCode.partition;
         receiptForm.secondPosition = receipt.outcomePerCode[1].outcomeCode.position;
         receiptForm.secondOutcome = receipt.outcomePerCode[1].outcome;
-      }
+      } 
     }
     receiptForm.outcome = receipt.outcome;
     receiptForm.outcomeAsText = numberToSerbianDinars(receipt.outcome);
