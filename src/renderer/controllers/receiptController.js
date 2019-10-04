@@ -1,5 +1,14 @@
 const { ipcRenderer } = require('electron')
 
+function areReceiptsValid () {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('are-receipts-valid')
+    ipcRenderer.once('are-receipts-valid-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
 function getReceipts (year) {
   return new Promise(function (resolve) {
     ipcRenderer.send('get-receipts', year)
@@ -37,6 +46,7 @@ function deleteReceipt (receiptId) {
 }
 
 module.exports = {
+  areReceiptsValid: areReceiptsValid,
   getReceipts: getReceipts,
   createReceipt: createReceipt,
   updateReceipt: updateReceipt,

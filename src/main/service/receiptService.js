@@ -1,5 +1,19 @@
 const { Receipt } = require('../model/receipt')
 
+async function areReceiptsValid () {
+  console.log('Checking if all receipts are valid')
+  const receipts = await Receipt.find({}).exec()
+  var result = true
+  for (let i=0; i < receipts.length; i++) {
+    if (!receipts[i].isValid) {
+      result = false
+      break
+    }
+  }
+  console.log(`Returning valid receipts check result: \n${JSON.stringify(result, null, 2)}`)
+  return result
+}
+
 async function getReceipts (year) {
   console.log(`Getting receipts for year ${year}`)
   var receipts
@@ -45,6 +59,7 @@ async function assignAnnualReportValues () {
 }
 
 module.exports = {
+  areReceiptsValid: areReceiptsValid,
   getReceipts: getReceipts,
   createReceipt: createReceipt,
   deleteReceipt: deleteReceipt,

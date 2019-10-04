@@ -1,5 +1,19 @@
 const { PaymentSlip } = require('../model/paymentSlip')
 
+async function arePaymentSlipsValid () {
+  console.log('Checking if all payment slips are valid')
+  const paymentSlips = await PaymentSlip.find({}).exec()
+  var result = true
+  for (let i=0; i < paymentSlips.length; i++) {
+    if (!paymentSlips[i].isValid) {
+      result = false
+      break
+    }
+  }
+  console.log(`Returning valid payment slips check result: \n${JSON.stringify(result, null, 2)}`)
+  return result
+}
+
 async function getPaymentSlips (year) {
   console.log(`Getting payment slips for year ${year}`)
   var paymentSlips
@@ -45,6 +59,7 @@ async function assignAnnualReportValues () {
 }
 
 module.exports = {
+  arePaymentSlipsValid: arePaymentSlipsValid,
   getPaymentSlips: getPaymentSlips,
   createPaymentSlip: createPaymentSlip,
   deletePaymentSlip: deletePaymentSlip,

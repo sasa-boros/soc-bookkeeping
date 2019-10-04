@@ -1,152 +1,171 @@
 <template>
   <b-container fluid>
+    <b-button v-b-tooltip.hover.html="phrases.createOutcomeCode" v-on:click="openCreateOutcomeCodeModal()" size="sm">
+      <img src="~@/assets/add1.png" class="btnImgSm">
+    </b-button>
     <b-table show-empty
               stacked="md"
-              empty-text=""
               class="mt-3"
               :items="outcomeCodes"
-              :fields="fields">
-          <template v-slot:cell(partition)="row">
-              <input type="number" class="form-control-sm"
-                           style="width:5em"
-                           v-model="row.item.partition" v-on:input="isValidOutcomeCode(row.item)"/>
-          </template>
-          <template v-slot:cell(position)="row">
-              <input type="number" class="form-control-sm"
-                           style="width:5em"
-                           v-model="row.item.position" v-on:input="isValidOutcomeCode(row.item)"/>
-          </template>
-          <template v-slot:cell(description)="row">
-              <input type="text" class="form-control-sm"
-                           style="width:5em"
-                           v-model="row.item.description" v-on:input="isValidOutcomeCode(row.item)"/>
-          </template>
-          <template v-slot:cell()="row">
-              <b-button size="sm" variant="danger" v-on:click="removeOutcomeCode(row.index)">
-                  {{phrases.remove}}
-              </b-button>
-          </template>
+              responsive
+              hover
+              small
+              :fields="fields"
+              @row-dblclicked="rowDblClickHandler" 
+              :empty-text="phrases.noRecordsToShow"
+              :empty-filtered-text="phrases.noRecordsToShow"
+              >
+        <template v-slot:cell(preview)="row">
+          <b-button v-b-tooltip.hover.html="phrases.seeDetails" v-on:click="openCreateOutcomeCodeModal(row.item)" size="sm">
+            <img src="~@/assets/see-more1.png" class="btnImgSm">                                           
+          </b-button>
+        </template>
+        <template v-slot:cell(partition)="row">
+          {{ row.item.partition }}
+        </template>
+        <template v-slot:cell(position)="row">
+          {{ row.item.position }}
+        </template>
+        <template v-slot:cell(description)="row">
+          {{ row.item.description }}
+        </template>
+        <template v-slot:cell(remove)="row">
+            <b-button v-b-tooltip.hover.html="phrases.deleteOutcomeCode" v-on:click="deleteOutcomeCode(row.item)" size="sm">
+                <img src="~@/assets/delete.png" class="btnImgSm">
+            </b-button>
+        </template>
       </b-table>
-       <b-button size="sm"  v-on:click="newOutcomeCode()">
-        {{phrases.new}}
-      </b-button>
-      <b-button size="sm"  v-on:click="cancelOutcomeCodeChanges()">
-        {{phrases.cancel}}
-      </b-button>
-      <b-button size="sm"  v-on:click="saveOutcomeCodes()" :disabled="!saveOutcomeCodesEnabled">
-        {{phrases.save}}
-      </b-button>
+
+      <b-modal hide-footer hide-header size="sm" id="create-outcome-code-modal">
+        <outcome-code-preview :outcomeCode='selectedOutcomeCode' :isUpdate='isUpdate' :existingOutcomeCodes="outcomeCodes" parentModal="create-outcome-code-modal" v-on:updateOutcomeCodes="update"></outcome-code-preview>
+      </b-modal>
   </b-container>
 </template>
 
 <script>
+  import OutcomeCodePreview from './OutcomeCodePreview';
+  import { EventBus } from '../../../eventbus/event-bus.js';
+
+  const { dialog } = require('electron').remote
   const outcomeCodeController = require('../../../controllers/outcomeCodeController')
   const i18n = require('../../../translations/i18n')
+  const { showErrorDialog, compareCodes } = require('../../../utils/utils')
 
   export default {
     data () {
       return {
         phrases: {
-          remove: i18n.getTranslation('Remove'),
-          new: i18n.getTranslation('New'),
+          noRecordsToShow: i18n.getTranslation('There are no outcome codes to show'),
+          createOutcomeCode: i18n.getTranslation('Create outcome code'),
+          deleteOutcomeCode: i18n.getTranslation('Delete outcome code'),
+          seeDetails: i18n.getTranslation('See details'),
           cancel: i18n.getTranslation('Cancel'),
-          save: i18n.getTranslation('Save')
+          delete: i18n.getTranslation('Delete'),
+          areYouSureToDeleteOutcomeCode: i18n.getTranslation('Are you sure you want to delete outcome code?'),
+          outcomeCodeDeleteConsequences: i18n.getTranslation('By deleting outcome code you will possibly make some of receipts invalid.')
         },
-        originalOutcomeCodes: [],
-        outcomeCodes: [],
-        saveOutcomeCodesEnabled: false,
         fields: [
+          {
+            key: 'preview',
+            label: ''
+          },
           {
             key: 'partition',
             label: i18n.getTranslation('Partition'),
-            sortable: true
+            class: 'text-center'
           },
           {
             key: 'position',
             label: i18n.getTranslation('Position'),
-            sortable: true
+            class: 'text-center'
           },
           {
             key: 'description',
             label: i18n.getTranslation('Description'),
-            sortable: true
+            class: 'text-center'
           },
           {
             key: 'remove',
             label: ''
           }
         ],
+        outcomeCodes: [],
+        selectedOutcomeCode: null,
+        isUpdate: false
       }
     },
-    computed: {
-    },
     created () {
-      const self = this
-      outcomeCodeController.getOutcomeCodes().then(function (res) {
-        if (!res.err) {
-          self.outcomeCodes = (res.data || [])
-          self.originalOutcomeCodes = self.outcomeCodes
-        } else {
-          showErrorDialog(res.err)
-        }
-      })
+      this.loadOutcomeCodes()
     },
     methods: {
-      newOutcomeCode() {
-        if(this.outcomeCodes.length > 0) {
-          if(!this.outcomeCodes[this.outcomeCodes.length-1].partition 
-          && !this.outcomeCodes[this.outcomeCodes.length-1].position 
-          && !this.outcomeCodes[this.outcomeCodes.length-1].description) {
-            return;
-          }
-        }
-        this.toggleSavingOutcomeCode(false);
-        this.outcomeCodes.push({});
-      },
-      removeOutcomeCode(index) {
-        this.outcomeCodes.splice(index, 1);
-      },
-      saveOutcomeCodes() {
-        const self = this;
-        outcomeCodeController.createOutcomeCodes(this.outcomeCodes).then(function (res) {
+      loadOutcomeCodes () {
+        const self = this
+        outcomeCodeController.getOutcomeCodes().then((res) => {
           if (!res.err) {
-            self.toggleSavingOutcomeCode(false);
+            var outcomeCodes = res.data ? res.data : []
+            self.outcomeCodes = outcomeCodes.sort(compareCodes)
           } else {
             showErrorDialog(res.err)
           }
         })
       },
-      isValidOutcomeCode(validatedOutcomeCode) {
-        var tmpArr = [];
-        if (!validatedOutcomeCode.partition || !validatedOutcomeCode.position || !validatedOutcomeCode.description) {
-          this.toggleSavingOutcomeCode(false);
-          return false;
+      openCreateOutcomeCodeModal (outcomeCode) {
+        if(outcomeCode) {
+          this.selectedOutcomeCode = outcomeCode
+          this.isUpdate = true
+        } else {
+          this.selectedOutcomeCode = null
+          this.isUpdate = false    
         }
-        for (let i=0; i<this.outcomeCodes.length; i++) {
-          const outcomeCode = this.outcomeCodes[i];
-          if(tmpArr.indexOf(outcomeCode.partition + outcomeCode.position) < 0) {
-            tmpArr.push(outcomeCode.partition + outcomeCode.position);
-          } else {
-            // paint red
-            this.toggleSavingOutcomeCode(false);
-            return false;
+        this.$root.$emit('bv::show::modal', 'create-outcome-code-modal')
+      },
+      rowDblClickHandler (record, index) {
+        this.openCreateOutcomeCodeModal(record)
+      },
+      deleteOutcomeCode (outcomeCode) {
+        const options = {
+          type: 'question',
+          buttons: [this.phrases.cancel, this.phrases.delete],
+          defaultId: 1,
+          message: this.phrases.areYouSureToDeleteOutcomeCode,
+          detail: this.phrases.outcomeCodeDeleteConsequences,
+          noLink: true,
+          cancelId: 0
+        }
+        dialog.showMessageBox(null, options, (response) => {
+          if (response === 1) {
+            const self = this
+            outcomeCodeController.deleteOutcomeCode(outcomeCode._id).then((res) => {
+              if (!res.err) {
+                self.update()
+                EventBus.$emit('updateReceiptTable');
+              } else {
+                showErrorDialog(res.err)
+              }
+            })
           }
-        }
-        // paint normal
-        this.toggleSavingOutcomeCode(true);
-        return true;
+        })
       },
-      toggleSavingOutcomeCode(sw) {
-        this.saveOutcomeCodesEnabled = sw;
-      },
-      cancelOutcomeCodeChanges() {
-        this.outcomeCodes = this.originalOutcomeCodes;
-        this.toggleSavingOutcomeCode(false);
+      update () {
+        this.loadOutcomeCodes()
       }
     },
-    components: { }
+    components: { OutcomeCodePreview }
   }
 </script>
 
-<style scoped>
+<style>
+  .modal .modal-sm {
+    max-width: 500px;
+    width: 500px;
+  }
+ .tooltipInnerText {
+    font-size: 95%;
+    line-height: 1;
+    margin: 1px;
+  }
+  .btnImgSm {
+    width: 25px;
+    height: auto;
+  }
 </style>

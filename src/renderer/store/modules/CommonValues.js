@@ -1,7 +1,7 @@
 const state = {
   defaultPaymentSlip: {},
   defaultReceipt: {},
-  yearsBooked: []
+  bookedYears: []
 }
 
 const mutations = {
@@ -11,8 +11,8 @@ const mutations = {
   SET_DEFAULT_RECEIPT (state, receipt) {
     state.defaultReceipt = receipt ? receipt : {};
   },
-  SET_YEAR_OPTIONS (state, yearOptions) {
-    state.yearOptions = yearOptions;
+  SET_BOOKED_YEARS (state, bookedYears) {
+    state.bookedYears = bookedYears;
   }
 }
 
@@ -23,8 +23,8 @@ const actions = {
   SET_DEFAULT_RECEIPT ({ commit }, receipt) {
         commit('SET_DEFAULT_RECEIPT', receipt);
   },
-  SET_YEAR_OPTIONS ({ commit }, yearOptions) {
-    commit('SET_YEAR_OPTIONS', yearOptions);
+  SET_BOOKED_YEARS ({ commit }, bookedYears) {
+    commit('SET_BOOKED_YEARS', bookedYears);
   }
 }
 

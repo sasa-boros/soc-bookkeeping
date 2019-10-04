@@ -44,6 +44,8 @@
     "Adapt payment slips": "Подеси уплатнице",
     "Adapt receipts": "Подеси признанице",
 
+    "Filter by year": "Филтрирај према години",
+
     "Add a receipt": "Додај нову признаницу",
     "Delete the receipt": "Обриши признаницу",
     "Delete the receipts": "Обриши признанице",
@@ -67,11 +69,20 @@
     "Delete outcome code": "Обриши код издавања",
     "Enter position": "Унеси позицију",
     "Enter description": "Унеси опис",
-    "Partition and position not unique": "Већ постоји код примања са наведеном партицијом и позицијом",
+    "Income code partition and position not unique": "Већ постоји код примања са наведеном партицијом и позицијом",
+    "Outcome code partition and position not unique": "Већ постоји код издавања са наведеном партицијом и позицијом",
     "Are you sure you want to delete income code?" : "Да ли сте сигурни да желите да обришете код примања?",
     "By deleting income code you will possibly make some of payment slips invalid." : "Брисањем кода примања потенцијално ћете учинити неке од уплатница невалидним.",
     "Are you sure you want to delete outcome code?" : "Да ли сте сигурни да желите да обришете код издавања?",
     "By deleting outcome code you will possibly make some of receipts invalid." : "Брисањем кода издавања потенцијално ћете учинити неке од признаница невалидним.",
+
+    "To generate annual report input at least one payment slip or receipt": "Како бисте генерисали дневник благајне, додајте барем једну уплатницу или признаницу.",
+    "Invalid payment slips found": "Пронађене су невалидне уплатнице које су резултат брисања кодова примања. Исправите их како бисте могли генерисати дневник благајне.",
+    "Invalid payment slip": "Уплатница није валидна услед брисања кода примања",
+    "Invalid receipt": "Признаница није валидна услед брисања кода издавања",
+    "Invalid receipts found": "Пронађене су невалидне признанице које су резултат брисања кодова издавања. Исправите их како бисте могли генерисати дневник благајне.",
+    "Invalid payment slips exist": "Постоје невалидне уплатнице",
+    "Invalid receipts exist": "Постоје невалидне признанице",
 
     "Town": "Место",
     "Amount": "Износ",

@@ -44,7 +44,7 @@
         <b-col cols="8">
         </b-col>
         <b-col cols="4">
-          <b-button id="saveIncomeCodeBtn" type="submit" variant="secondary">
+          <b-button id="saveOutcomeCodeBtn" type="submit" variant="secondary">
             <img src="~@/assets/save1.png" class="btnImgSm">
           </b-button>
           <b-button id="clearFormBtn" @click.stop="clearForm()" variant="secondary">
@@ -54,7 +54,7 @@
       </b-row>
     </b-form>
 
-    <b-tooltip target="saveIncomeCodeBtn" triggers="hover" placement="top" ref="saveIncomeCodeBtnTooltip">
+    <b-tooltip target="saveOutcomeCodeBtn" triggers="hover" placement="top" ref="saveOutcomeCodeBtnTooltip">
         <div class="tooltipInnerText">
           {{phrases.save}}
         </div>
@@ -88,17 +88,17 @@
 
 <script>
 
-const incomeCodeController = require('../../../controllers/incomeCodeController')
+const outcomeCodeController = require('../../../controllers/outcomeCodeController')
 const i18n = require('../../../translations/i18n');
  const { showErrorDialog } = require('../../../utils/utils')
 
 export default {
   props: {
-    existingIncomeCodes: {
+    existingOutcomeCodes: {
       type: Array,
       default: []
     },
-    incomeCode: Object,
+    outcomeCode: Object,
     isUpdate: {
       type: Boolean,
       default: false
@@ -112,7 +112,7 @@ export default {
         clear: i18n.getTranslation('Clear'),
         enterPartition: i18n.getTranslation('Enter partition'),
         enterPosition: i18n.getTranslation('Enter position'),
-        notUnique: i18n.getTranslation('Income code partition and position not unique'),
+        notUnique: i18n.getTranslation('Outcome code partition and position not unique'),
         enterDescription: i18n.getTranslation('Enter description')
       },
       form: { 
@@ -121,14 +121,14 @@ export default {
         description: null
       },
       shouldValidate: false,
-      incomeCodes: []
+      outcomeCodes: []
     }
   },
   created () {
     if (this.isUpdate) {
-      this.form = JSON.parse(JSON.stringify(this.incomeCode))
+      this.form = JSON.parse(JSON.stringify(this.outcomeCode))
     }
-    this.incomeCodes = JSON.parse(JSON.stringify(this.existingIncomeCodes))
+    this.outcomeCodes = JSON.parse(JSON.stringify(this.existingOutcomeCodes))
   },
   computed: {
     disablePartitionTooltip: {
@@ -191,8 +191,8 @@ export default {
     },
     notUnique: function () {
       const self = this
-      var euqivalentInstance = this.incomeCodes.filter(incomeCode => {
-        return incomeCode.partition == self.form.partition && incomeCode.position == self.form.position && incomeCode._id != self.form._id
+      var euqivalentInstance = this.outcomeCodes.filter(outcomeCode => {
+        return outcomeCode.partition == self.form.partition && outcomeCode.position == self.form.position && outcomeCode._id != self.form._id
       })
 
       if (euqivalentInstance && euqivalentInstance.length > 0) {
@@ -208,18 +208,18 @@ export default {
       const self = this;
       if (this.isFormValid()) {
         if (this.isUpdate) {
-          incomeCodeController.updateIncomeCode(this.form).then((res) => {
+          outcomeCodeController.updateOutcomeCode(this.form).then((res) => {
               if (!res.err) {
-                self.$emit('updateIncomeCodes')
+                self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
                 showErrorDialog(res.err)
               }
           })
         } else {
-          incomeCodeController.createIncomeCode(this.form).then((res) => {
+          outcomeCodeController.createOutcomeCode(this.form).then((res) => {
               if (!res.err) {
-                self.$emit('updateIncomeCodes')
+                self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
                 showErrorDialog(res.err)

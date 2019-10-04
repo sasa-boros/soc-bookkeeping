@@ -8,8 +8,10 @@
               class="mt-3"
               :items="incomeCodes"
               responsive
+              hover
               small
               :fields="fields"
+              @row-dblclicked="rowDblClickHandler" 
               :empty-text="phrases.noRecordsToShow"
               :empty-filtered-text="phrases.noRecordsToShow"
               >
@@ -42,6 +44,7 @@
 
 <script>
   import IncomeCodePreview from './IncomeCodePreview';
+  import { EventBus } from '../../../eventbus/event-bus.js';
 
   const { dialog } = require('electron').remote
   const incomeCodeController = require('../../../controllers/incomeCodeController')
@@ -116,6 +119,9 @@
         }
         this.$root.$emit('bv::show::modal', 'create-income-code-modal')
       },
+      rowDblClickHandler (record, index) {
+        this.openCreateIncomeCodeModal(record)
+      },
       deleteIncomeCode (incomeCode) {
         const options = {
           type: 'question',
@@ -132,6 +138,7 @@
             incomeCodeController.deleteIncomeCode(incomeCode._id).then((res) => {
               if (!res.err) {
                 self.update()
+                EventBus.$emit('updatePaymentSlipTable');
               } else {
                 showErrorDialog(res.err)
               }

@@ -15,10 +15,21 @@ async function getAnnualReport (year) {
 
     const paymentSlips = await getEntitiesByDate(PaymentSlip, new Date(year, i, 1), new Date(year, i + 1, 1), true)
     const receipts = await getEntitiesByDate(Receipt, new Date(year, i, 1), new Date(year, i + 1, 1), true)
+    
     if (paymentSlips) {
+      for (let j=0; j < paymentSlips.length; j++) {
+        if (!paymentSlips[j].isValid) {
+          throw new Error('Invalid payment slips found')
+        }
+      }
       calculateIncome(paymentSlips, annualReportPage, annualReport)
     }
     if (receipts) {
+      for (let j=0; j < receipts.length; j++) {
+        if (!receipts[j].isValid) {
+          throw new Error('Invalid receipts found')
+        }
+      }
       calculateOutcome(receipts, annualReportPage, annualReport)
     }
     if (i !== 0) {

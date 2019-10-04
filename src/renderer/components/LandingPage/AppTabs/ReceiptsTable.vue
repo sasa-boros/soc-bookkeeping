@@ -2,7 +2,7 @@
   <b-container fluid>
     <!-- User Interface controls -->
      <b-row>
-      <b-col md="2" class="my-1">
+      <b-col cols="6" class="my-1">
         <b-button-group size="sm">
           <b-btn v-b-tooltip.hover.html="phrases.addReceipt" @click.stop="openCreateReceiptModal($event.target)">
             <img src="~@/assets/add1.png" class="btn-img">               
@@ -12,8 +12,9 @@
           </b-btn>
         </b-button-group> 
       </b-col>
-      <b-col md="7" class="my-1">
+      <b-col cols="6" class="my-1">
         <b-form-group horizontal class="my-0">
+          <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
           <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-form-group>
       </b-col>
@@ -47,15 +48,11 @@
         <b-form-checkbox @click.native.stop="toggleCheckAll" v-model="checkAll">
         </b-form-checkbox>
       </template>
-      <template v-slot:cell(actions)="row">
-        <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
+      <template v-slot:cell(preview)="row">
         <b-button-group size="sm">
           <b-button v-b-tooltip.hover.html="phrases.seeDetails" @click.stop="openUpdateReceiptModal(row.item)" class="mr-1 btn-xs" size="sm" >
             <img src="~@/assets/see-more1.png" class="btnImgSm">                                           
           </b-button>
-          <b-button v-b-tooltip.hover.html="phrases.deleteReceipt" @click.stop="deleteReceipt(row.item)" class="mr-1 btn-xs" size="sm" >
-            <img src="~@/assets/delete.png" class="btnImgSm">                                           
-          </b-button>     
         </b-button-group>                
       </template>
       <template v-slot:cell(select)="row">
@@ -66,6 +63,23 @@
       <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
       <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
       <template v-slot:cell(formatedUpdatedAt)="row">{{ row.item.updatedAt | formatUpdatedAt }}</template>
+      <template v-slot:cell(invalid)="row">
+        <div v-show="!isValid(row.item)">
+          <img :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="imgSm">
+          <b-tooltip :target="'invalid' + row.item._id">
+            <div class="tooltipInnerText">
+              {{phrases.invalidReceipt}}
+            </div>
+          </b-tooltip>
+        </div>
+      </template>
+      <template v-slot:cell(delete)="row">
+        <b-button-group size="sm">
+          <b-button v-b-tooltip.hover.html="phrases.deleteReceipt" @click.stop="deleteReceipt(row.item)" class="mr-1 btn-xs" size="sm" >
+            <img src="~@/assets/delete.png" class="btnImgSm">                                           
+          </b-button>     
+        </b-button-group>                
+      </template>
     </b-table>
     </div>
 
@@ -87,6 +101,7 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
+  import { EventBus } from '../../../eventbus/event-bus.js';
   
   const { dialog } = require('electron').remote
   const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
@@ -114,7 +129,9 @@
           updatedAt: i18n.getTranslation('Updated at'),
           areYouSureToDeleteReceipt: i18n.getTranslation('Are you sure you want to delete the receipt?'),
           areYouSureToDeleteCheckedReceipts: i18n.getTranslation('Are you sure you want to delete selected receipts?'),
-          noRecordsToShow: i18n.getTranslation('There are no receipts to show')
+          noRecordsToShow: i18n.getTranslation('There are no receipts to show'),
+          filterByYear: i18n.getTranslation('Filter by year'),
+          invalidReceipt: i18n.getTranslation('Invalid receipt')
         },
         receipts: [],
         items: [],
@@ -135,11 +152,19 @@
     },
     created () {
       this.loadReceipts()
+      EventBus.$on('updateReceiptTable', () => {
+        this.update()
+        this.$emit('updateInvalidReceiptsInfo')
+      });
     },
     computed: {
       ...mapState(
         {
-          yearOptions: state => state.CommonValues.yearOptions
+          yearOptions: state => {
+            var yearOptions = JSON.parse(JSON.stringify(state.CommonValues.bookedYears))
+            yearOptions.unshift('')
+            return yearOptions
+          }
         }
       ),
       noRowChecked () {
@@ -148,18 +173,22 @@
       fields () {
         return [
           { key: 'select', label: '' },
-          { key: 'actions', label: '' },
+          { key: 'preview', label: '' },
           { key: 'outcome', label: this.phrases.outcome, sortable: true, class: 'text-center' },
           { key: 'reason', label: this.phrases.reason, sortable: true, class: 'text-center' },
           { key: 'formatedDate', label: this.phrases.forDate, sortable: true, class: 'text-center' },
-          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center'}
+          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center'},
+          { key: 'invalid', label: '' },
+          { key: 'delete', label: '' }
         ]
       }
     },
     methods: {
       update() {
         this.loadReceipts()
-        this.$emit('updateYearOptions')
+        this.$emit('updateBookedYears')
+        this.$emit('updateInvalidReceiptsInfo')
+        this.yearToFilter = ''
       },
       loadReceipts () {
         const self = this
@@ -167,7 +196,6 @@
           if (!res.err) {
             self.receipts = res.data ? res.data : []
             self.items = self.receipts
-            self.yearToFilter = ''
           } else {
             showErrorDialog(res.err)
           }
@@ -201,11 +229,9 @@
           cancelId: 0
         }
         dialog.showMessageBox(null, options, (response) => {
-          console.log(response)
           if (response === 1) {
             const self = this
             receiptController.deleteReceipt(item._id).then((res) => {
-              console.log(res)
               if (!res.err) {
                 self.update()
                 const itemCheckedIndex = self.checkedItems.indexOf(item)
@@ -218,6 +244,9 @@
             })
           }
         })
+      },
+      isValid (receipt) {
+        return receipt.isValid
       },
       deleteCheckedReceipts () {
         const options = {
@@ -344,6 +373,10 @@
   .tableDiv{
     display: block;
     overflow: auto;
+  }
+  .imgSm{
+    width: 25px;
+    height: auto;
   }
   .btnImgSm{
     width: 25px;

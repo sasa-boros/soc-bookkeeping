@@ -2,18 +2,19 @@
   <b-container fluid>
     <!-- User Interface controls -->
      <b-row>
-      <b-col md="2" class="my-1">
+      <b-col cols="6" class="my-1">
         <b-button-group size="sm">
-          <b-btn v-b-tooltip.hover.html="phrases.addPaymentSlip" @click.stop="openCreatePayslipModal($event.target)">
+          <b-btn v-b-tooltip.hover.html="phrases.addPaymentSlip" @click.stop="openCreatePaymentSlipModal($event.target)">
             <img src="~@/assets/add1.png" class="btn-img">               
           </b-btn>
-          <b-btn v-b-tooltip.hover.html="phrases.deleteSelected" @click.stop="deleteCheckedSlips()" :disabled="noRowChecked" id="deleteSelectedBtn">
+          <b-btn v-b-tooltip.hover.html="phrases.deleteSelected" @click.stop="deleteCheckedPaymentSlips()" :disabled="noRowChecked" id="deleteSelectedBtn">
             <img src="~@/assets/trash1.png" class="btn-img">               
           </b-btn>
         </b-button-group> 
       </b-col>
-      <b-col md="7" class="my-1">
+      <b-col cols="6" class="my-1">
         <b-form-group horizontal class="my-0">
+          <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
           <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-form-group>
       </b-col>
@@ -47,15 +48,11 @@
         <b-form-checkbox @click.native.stop="toggleCheckAll" v-model="checkAll">
         </b-form-checkbox>
       </template>
-      <template v-slot:cell(actions)="row">
-        <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->   
+      <template v-slot:cell(preview)="row">
         <b-button-group size="sm">
-          <b-button v-b-tooltip.hover.html="phrases.seeDetails" @click.stop="openUpdateSlipModal(row.item)" class="mr-1 btn-xs" size="sm" >
+          <b-button v-b-tooltip.hover.html="phrases.seeDetails" @click.stop="openUpdatePaymentSlipModal(row.item)" class="mr-1 btn-xs" size="sm" >
             <img src="~@/assets/see-more1.png" class="btnImgSm">                                           
           </b-button>
-          <b-button v-b-tooltip.hover.html="phrases.deletePaymentSlip" @click.stop="deleteSlip(row.item)" class="mr-1 btn-xs" size="sm" >
-            <img src="~@/assets/delete.png" class="btnImgSm">                                           
-          </b-button>     
         </b-button-group>                
       </template>
       <template v-slot:cell(select)="row">
@@ -66,6 +63,23 @@
       <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
       <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
       <template v-slot:cell(formatedUpdatedAt)="row">{{ row.item.updatedAt | formatUpdatedAt }}</template>
+      <template v-slot:cell(invalid)="row">
+        <div v-show="!isValid(row.item)">
+          <img :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="imgSm">
+          <b-tooltip :target="'invalid' + row.item._id">
+            <div class="tooltipInnerText">
+              {{phrases.invalidPaymentSlip}}
+            </div>
+          </b-tooltip>
+        </div>
+      </template>
+      <template v-slot:cell(delete)="row">
+        <b-button-group size="sm">
+          <b-button v-b-tooltip.hover.html="phrases.deletePaymentSlip" @click.stop="deletePaymentSlip(row.item)" class="mr-1 btn-xs" size="sm" >
+            <img src="~@/assets/delete.png" class="btnImgSm">                                           
+          </b-button>     
+        </b-button-group>                
+      </template>
     </b-table>
     </div>
 
@@ -87,6 +101,7 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
+  import { EventBus } from '../../../eventbus/event-bus.js';
   
   const { dialog } = require('electron').remote
   const { showErrorDialog } = require('../../../utils/utils')
@@ -114,7 +129,9 @@
           updatedAt: i18n.getTranslation('Updated at'),
           areYouSureToDeleteSlip: i18n.getTranslation('Are you sure you want to delete the payment slip?'),
           areYouSureToDeleteCheckedSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
-          noRecordsToShow: i18n.getTranslation('There are no payment slips to show')
+          noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
+          filterByYear: i18n.getTranslation('Filter by year'),
+          invalidPaymentSlip: i18n.getTranslation('Invalid payment slip')
         },
         paymentSlips: [],
         items: [],
@@ -135,11 +152,19 @@
     },
     created () {
       this.loadPaymentSlips()
+      EventBus.$on('updatePaymentSlipTable', () => {
+        this.update()
+        this.$emit('updateInvalidPaymentSlipsInfo')
+      });
     },
     computed: {
       ...mapState(
         {
-          yearOptions: state => state.CommonValues.yearOptions
+          yearOptions: state => {
+            var yearOptions = JSON.parse(JSON.stringify(state.CommonValues.bookedYears))
+            yearOptions.unshift('')
+            return yearOptions
+          }
         }
       ),
       noRowChecked () {
@@ -148,18 +173,22 @@
       fields () {
         return [
           { key: 'select', label: '' },
-          { key: 'actions', label: '' },
+          { key: 'preview', label: '' },
           { key: 'income', label: this.phrases.income, sortable: true, class: 'text-center' },
           { key: 'reason', label: this.phrases.reason, sortable: true, class: 'text-center' },
           { key: 'formatedDate', label: this.phrases.forDate, sortable: true, class: 'text-center' },
-          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center' }
+          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center' },
+          { key: 'invalid', label: '' },
+          { key: 'delete', label: '' }
         ]
       }
     },
     methods: {
       update() {
         this.loadPaymentSlips()
-        this.$emit('updateYearOptions')
+        this.$emit('updateBookedYears')
+        this.$emit('updateInvalidPaymentSlipsInfo')
+        this.yearToFilter = ''
       },
       loadPaymentSlips () {
         const self = this
@@ -167,13 +196,12 @@
           if (!res.err) {
             self.paymentSlips = res.data ? res.data : []
             self.items = self.paymentSlips
-            self.yearToFilter = ''
           } else {
             showErrorDialog(res.err)
           }
         })
       },
-      openCreatePayslipModal (button) {
+      openCreatePaymentSlipModal (button) {
         this.isPreview = false
         this.selectedItem = null
         this.$root.$emit('bv::hide::tooltip')
@@ -184,12 +212,12 @@
         this.checkedItems = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
-        this.openUpdateSlipModal(record)
+        this.openUpdatePaymentSlipModal(record)
       },
       formatSlipForDialog (slip) {
         return this.phrases.income + ':   ' + slip.income + '\n' + this.phrases.reason + ':   ' + slip.reason
       },
-      deleteSlip (item) {
+      deletePaymentSlip (item) {
         const options = {
           type: 'question',
           buttons: [this.phrases.cancel, this.phrases.delete],
@@ -217,7 +245,10 @@
           }
         })
       },
-      deleteCheckedSlips () {
+      isValid (paymentSlip) {
+        return paymentSlip.isValid
+      },
+      deleteCheckedPaymentSlips () {
         const options = {
           type: 'question',
           buttons: [this.phrases.cancel, this.phrases.delete],
@@ -248,7 +279,7 @@
           }
         })
       },
-      openUpdateSlipModal (item) {
+      openUpdatePaymentSlipModal (item) {
         this.selectedItem = item
         this.isPreview = true
         this.$root.$emit('bv::show::modal', 'create-payment-slip-modal')
@@ -336,12 +367,19 @@
     max-width: 830px;
     width: 830px;
   }
+  .is-invalid {
+    background: lightcoral;
+  }
 </style>
 
 <style scoped>
   .tableDiv{
     display: block;
     overflow: auto;
+  }
+  .imgSm{
+    width: 25px;
+    height: auto;
   }
   .btnImgSm{
     width: 25px;

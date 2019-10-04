@@ -1,5 +1,14 @@
 const { ipcRenderer } = require('electron')
 
+function arePaymentSlipsValid () {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('are-payment-slips-valid')
+    ipcRenderer.once('are-payment-slips-valid-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
 function getPaymentSlips (year) {
   return new Promise(function (resolve) {
     ipcRenderer.send('get-payment-slips', year)
@@ -36,6 +45,7 @@ function deletePaymentSlip (paymentSlipId) {
 }
 
 module.exports = {
+  arePaymentSlipsValid: arePaymentSlipsValid,
   getPaymentSlips: getPaymentSlips,
   createPaymentSlip: createPaymentSlip,
   deletePaymentSlip: deletePaymentSlip,

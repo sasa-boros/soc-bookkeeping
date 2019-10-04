@@ -1,12 +1,13 @@
 <template>
-  <b-container fluid>    
+  <b-container fluid>
+    <div v-if="yearOptions.length > 0">
       <b-row class="text-center">
           {{phrases.annualReport}}:
           <b-button type="submit" v-on:click="createAnnualReport" id="annualReportBtn" ref="annualReportBtn">
             <img src="~@/assets/accounting.png" class="btn-img-sm">
           </b-button>
           {{phrases.forYear}}:
-          <b-form-select v-model="year" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
+          <b-form-select v-model="year" id="yearSelect" ref="yearSelectR" :options="yearOptions" size="sm" class="my-0"/>
       </b-row>
 
       <!-- Annual report preview modal -->
@@ -20,6 +21,10 @@
           {{phrases.showAnnualReport}}
         </div>
       </b-tooltip>
+    </div>
+    <div v-else>
+        {{ phrases.inputAtleastOne }}
+    </div>
   </b-container>
 </template>
 
@@ -46,7 +51,10 @@
         phrases: {
           annualReport: i18n.getTranslation('Annual report'),
           showAnnualReport: i18n.getTranslation('Show annual report'),
-          forYear: i18n.getTranslation('for year')
+          forYear: i18n.getTranslation('for year'),
+          invalidPaymentSlipsFound: i18n.getTranslation('Invalid payment slips found'),
+          invalidReceiptsFound: i18n.getTranslation('Invalid receipts found'),
+          inputAtleastOne: i18n.getTranslation('To generate annual report input at least one payment slip or receipt')
         },
         publicPath: process.env.BASE_URL,
         monthNames:["January", "February", "March", "April", "May", "June",
@@ -58,7 +66,13 @@
     computed: {
       ...mapState(
         {
-          yearOptions: state => state.CommonValues.yearOptions
+          yearOptions: function (state) {
+            var bookedYears = state.CommonValues.bookedYears
+            if (bookedYears && bookedYears.length > 0) {
+              this.year = bookedYears[0]
+            }
+            return bookedYears
+          }
         }
       )
     },
@@ -70,7 +84,13 @@
             await self.populateAnnualReportHtmlPages(res.data);
             self.openAnnualReportPreviewModal();
           } else {
-            showErrorDialog(res.err);
+            if (res.err == "Invalid payment slips found") {
+              showErrorDialog(self.phrases.invalidPaymentSlipsFound);
+            } else if (res.err == "Invalid receipts found") {
+              showErrorDialog(self.phrases.invalidReceiptsFound);
+            } else {
+              showErrorDialog(res.err);
+            }
           }
         })
       },
