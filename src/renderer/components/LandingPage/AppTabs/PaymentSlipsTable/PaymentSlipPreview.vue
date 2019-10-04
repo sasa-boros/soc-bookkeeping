@@ -29,7 +29,7 @@
         </b-button>
       </div>
       <div id="clearSaveBtnsDiv">
-        <b-button ref="paymentSlipSaveBtn" id="paymentSlipSaveBtn" type="submit" variant="secondary" class="ignoreInPrint">
+        <b-button ref="paymentSlipSaveBtn" id="paymentSlipSaveBtn" type="submit" variant="secondary" class="ignoreInPrint" @blur="postDatepickerDefaultOnBlur">
           <img src="~@/assets/save1.png" class="btn-img ignoreInPrint">
         </b-button>
         <b-button ref="paymentSlipClearBtn" id="paymentSlipClearBtn" @click.stop="clearForm()" variant="secondary" class="ignoreInPrint">
@@ -160,7 +160,6 @@
         form: null,
         shouldValidate: false,
         show: true,
-        yearSelected: null,
         preDatepickerJustBlurred: false,
         postDatepickerJustBlurred: false,
         incomeCodes: null,
@@ -186,6 +185,7 @@
       if(this.paymentSlipPreview) {
         var paymentSlip = JSON.parse(JSON.stringify(this.paymentSlip));
         this.form = mapPaymentSlipToPaymentSlipForm(paymentSlip);
+        this.shouldValidate = true;
       } else {
         var defaultPaymentSlip = JSON.parse(JSON.stringify(this.defaultPaymentSlip));
         defaultPaymentSlip._id = undefined;
@@ -209,6 +209,9 @@
           this.form.firstIncome = null
           return;
         }
+        if (!this.incomeCodeCombinations) {
+          return;
+        }
         const allowedPosValues = this.incomeCodeCombinations[newValue]
         if (!allowedPosValues || allowedPosValues.indexOf(this.form.firstPosition) === -1) {
           /* Pos value needs to be reset since it is not allowed with the new part */
@@ -222,6 +225,9 @@
           this.form.secondIncome = null
           return;
         }
+        if (!this.incomeCodeCombinations) {
+          return;
+        }
         const allowedPosValues = this.incomeCodeCombinations[newValue]
         if (!allowedPosValues || allowedPosValues.indexOf(this.form.secondPosition) === -1) {
           /* Pos value needs to be reset since it is not allowed with the new part */
@@ -232,7 +238,7 @@
     computed: {
       ...mapState(
         {
-          defaultPaymentSlip: state => state.DefaultValues.defaultPaymentSlip
+          defaultPaymentSlip: state => state.CommonValues.defaultPaymentSlip
         }
       ),
       generatedIncomeText: {
@@ -442,9 +448,6 @@
           }
         }
       },
-      yearOptions: function () {
-        return getLastNYears(10)
-      },
       part1Options: function () {
         if (!this.incomeCodeCombinations) {
           return [];
@@ -551,6 +554,7 @@
         this.preDatepickerJustBlurred = false
       },
       shiftTabPressedHandler (evt) {
+        
         if (this.postDatepickerJustBlurred) {
           /* Manually put focus on the datepicker object */
           this.$refs.dateInput.showCalendar()
@@ -565,13 +569,18 @@
       postDatepickerOnBlur (evt) {
         this.postDatepickerJustBlurred = true
       },
+      postDatepickerDefaultOnBlur (evt) {
+        if(this.defaultPaymentSlipPreview) {
+          this.postDatepickerJustBlurred = true
+        }
+      },
       onSubmit (evt) {
         evt.preventDefault();
         const self = this;
         if (this.defaultPaymentSlipPreview) {
           defaultPaymentSlipController.createDefaultPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then(function (res) {
             if (!res.err) {
-              self.$store.dispatch('SET_DEFAULT_PAYMENT_SLIP', res.data)
+              self.$emit('updateDefaultPaymentSlip')
               self.closeModal();
             } else {
               showErrorDialog(res.err)
@@ -581,18 +590,24 @@
           this.shouldValidate = true;
           if (this.checkForm()) {
             if (this.paymentSlipPreview) {
+              var isValid = this.form.isValid
+              this.form.isValid = true
               paymentSlipController.updatePaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then((res) => {
                 if (!res.err) {
-                  self.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                  self.$emit('updatePaymentSlipTable')
                   self.closeModal();
                 } else {
                   showErrorDialog(res.err)
+                  if(!isValid) {
+                    self.form.isValid = false
+                  }
                 }
               })
             } else {
+              this.form.isValid = true
               paymentSlipController.createPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then((res) => {
                 if (!res.err) {
-                  self.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                  self.$emit('updatePaymentSlipTable')
                   self.closeModal();
                 } else {
                   showErrorDialog(res.err)
@@ -763,11 +778,6 @@
   }
   #receivedInput {
     width: 230px;
-  }
-  #yearSelect {
-    width: 95px;
-    padding-left:5px;
-    margin-bottom: 8px;
   }
   #firstPartSelect {
     width: 50px;

@@ -11,11 +11,6 @@ export default new Router({
       component: require('@/components/LandingPage').default
     },
     {
-      path: '/annualReportPrint',
-      name: 'annual-report-print-page',
-      component: require('@/components/AnnualReportPrintPage').default
-    },
-    {
       path: '*',
       redirect: '/'
     }

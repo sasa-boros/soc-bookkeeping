@@ -43,12 +43,6 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-  workerWindow = new BrowserWindow()
-  workerWindow.loadURL(winURL + '/#/annualReportPrint')
-  // workerWindow.hide()
-  workerWindow.on('closed', () => {
-    workerWindow = null
-  })
 }
 
 ipcMain.on('printPDF', (event, content) => {

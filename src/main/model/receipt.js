@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const receiptSchema = new Schema({
+  isValid: { type: Boolean, default: true },
   ordinal: { type: Number },
   annualReportPage: { type: Number },
   date: { type: Date },
@@ -25,7 +26,10 @@ receiptSchema.pre('save', function (next) {
 
 receiptSchema.pre('findOneAndUpdate', function (next) {
   const currentDate = new Date()
-  this._update.updatedAt = currentDate
+  // if we are assigning annual report values we don't update 'updatedAt'
+  if(!this._update.ordinal) {
+    this._update.updatedAt = currentDate
+  }
   next()
 })
 

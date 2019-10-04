@@ -1,16 +1,12 @@
 <template>
   <b-container fluid>    
       <b-row class="text-center">
-        <b-col>
-          <b-button type="submit" v-on:click="createAnnualReport" ref="annualReportBtn">
+          {{phrases.annualReport}}:
+          <b-button type="submit" v-on:click="createAnnualReport" id="annualReportBtn" ref="annualReportBtn">
             <img src="~@/assets/accounting.png" class="btn-img-sm">
           </b-button>
-        </b-col>
-        <b-col cols="10">
-          <b-form-group>
-            <b-form-select v-model="year" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
-          </b-form-group>
-        </b-col>
+          {{phrases.forYear}}:
+          <b-form-select v-model="year" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
       </b-row>
 
       <!-- Annual report preview modal -->
@@ -19,7 +15,7 @@
         <annual-report-preview :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
       </b-modal>
       </div>
-      <b-tooltip ref="annualReportBtnTooltip" :target="() => $refs.annualReportBtn">
+      <b-tooltip target="annualReportBtn" triggers="hover" placement="top" ref="annualReportBtnTooltip">
         <div class="tooltipInnerText">
           {{phrases.showAnnualReport}}
         </div>
@@ -28,7 +24,10 @@
 </template>
 
 <script>
+  import store from '@/store'
+  import { mapState } from 'vuex'
   import AnnualReportPreview from './AnnualReportPreview'
+  
   const annualReportController = require('../../../controllers/annualReportController')
   const i18n = require('../../../translations/i18n')
   const { getLastNYears, showErrorDialog, compareCodes } = require('../../../utils/utils')
@@ -43,9 +42,11 @@
   export default {
     data () {
       return {
-        year: (new Date()).getFullYear(),
+        year: '',
         phrases: {
-          showAnnualReport: i18n.getTranslation('Show annual report')
+          annualReport: i18n.getTranslation('Annual report'),
+          showAnnualReport: i18n.getTranslation('Show annual report'),
+          forYear: i18n.getTranslation('for year')
         },
         publicPath: process.env.BASE_URL,
         monthNames:["January", "February", "March", "April", "May", "June",
@@ -55,9 +56,11 @@
       }
     },
     computed: {
-      yearOptions: function () {
-        return getLastNYears(50)
-      }
+      ...mapState(
+        {
+          yearOptions: state => state.CommonValues.yearOptions
+        }
+      )
     },
     methods: {
       createAnnualReport: function () {
@@ -244,12 +247,15 @@
         });
         annualReport.totalIncomePerCode.forEach(totalIncomePerCode => {
           let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-          totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + '19'] = totalIncomePerCode.income;
+          totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + '20'] = totalIncomePerCode.income;
         });
         annualReport.totalOutcomePerCode.forEach(totalOutcomePerCode => {
           let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-          totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = totalOutcomePerCode.outcome;
+          totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + '20'] = totalOutcomePerCode.outcome;
         });
+        // totals
+        totalIncomePageContext['R20'] = annualReport.totalIncome;
+        totalOutcomePageContext['R20'] = annualReport.totalOutcome;
         totalOutcomePageContext['Q24'] = annualReport.totalIncome;
         totalOutcomePageContext['Q25'] = annualReport.totalOutcome;
         totalOutcomePageContext['Q26'] = annualReport.total;
@@ -293,6 +299,12 @@
 </style>
 
 <style scoped>
+
+  .tooltipInnerText {
+    font-size: 95%;
+    line-height: 1;
+    margin: 1px;
+  }
 
 #yearSelect {
   width: 95px;

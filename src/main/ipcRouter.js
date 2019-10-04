@@ -6,6 +6,7 @@ const receiptService = require('./service/receiptService')
 const defaultPaymentSlipService = require('./service/defaultPaymentSlipService')
 const defaultReceiptService = require('./service/defaultReceiptService')
 const annualReportService = require('./service/annualReportService')
+const commonService = require('./service/commonService')
 
 ipcMain.on('get-income-codes', async (event) => {
   try {
@@ -15,11 +16,27 @@ ipcMain.on('get-income-codes', async (event) => {
   }
 })
 
-ipcMain.on('create-income-codes', async (event, incomeCodes) => {
+ipcMain.on('create-income-code', async (event, incomeCode) => {
   try {
-    reply(event, 'create-income-codes-reply', await incomeCodeService.createIncomeCodes(incomeCodes))
+    reply(event, 'create-income-code-reply', await incomeCodeService.createIncomeCode(incomeCode))
   } catch (err) {
-    replyError(event, 'create-income-codes-reply', err.message)
+    replyError(event, 'create-income-code-reply', err.message)
+  }
+})
+
+ipcMain.on('update-income-code', async (event, incomeCode) => {
+  try {
+    reply(event, 'update-income-code-reply', await incomeCodeService.updateIncomeCode(incomeCode))
+  } catch (err) {
+    replyError(event, 'update-income-code-reply', err.message)
+  }
+})
+
+ipcMain.on('delete-income-code', async (event, incomeCodeId) => {
+  try {
+    reply(event, 'delete-income-code-reply', await incomeCodeService.deleteIncomeCode(incomeCodeId))
+  } catch (err) {
+    replyError(event, 'delete-income-code-reply', err.message)
   }
 })
 
@@ -31,11 +48,27 @@ ipcMain.on('get-outcome-codes', async (event) => {
   }
 })
 
-ipcMain.on('create-outcome-codes', async (event, outcomeCodes) => {
+ipcMain.on('create-outcome-code', async (event, outcomeCode) => {
   try {
-    reply(event, 'create-outcome-codes-reply', await outcomeCodeService.createOutcomeCodes(outcomeCodes))
+    reply(event, 'create-outcome-code-reply', await outcomeCodeService.createOutcomeCode(outcomeCode))
   } catch (err) {
-    replyError(event, 'create-outcome-codes-reply', err.message)
+    replyError(event, 'create-outcome-code-reply', err.message)
+  }
+})
+
+ipcMain.on('update-outcome-code', async (event, outcomeCode) => {
+  try {
+    reply(event, 'update-outcome-code-reply', await outcomeCodeService.updateOutcomeCode(outcomeCode))
+  } catch (err) {
+    replyError(event, 'update-outcome-code-reply', err.message)
+  }
+})
+
+ipcMain.on('delete-outcome-code', async (event, outcomeCodeId) => {
+  try {
+    reply(event, 'delete-outcome-code-reply', await outcomeCodeService.deleteOutcomeCode(outcomeCodeId))
+  } catch (err) {
+    replyError(event, 'delete-outcome-code-reply', err.message)
   }
 })
 
@@ -156,6 +189,14 @@ ipcMain.on('get-annual-report', async (event, year) => {
     reply(event, 'get-annual-report-reply', await annualReportService.getAnnualReport(year))
   } catch (err) {
     replyError(event, 'get-annual-report-reply', err.message)
+  }
+})
+
+ipcMain.on('get-booked-years', async (event) => {
+  try {
+    reply(event, 'get-booked-years-reply', await commonService.getBookedYears())
+  } catch (err) {
+    replyError(event, 'get-booked-years-reply', err.message)
   }
 })
 

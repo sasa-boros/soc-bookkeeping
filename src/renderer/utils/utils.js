@@ -171,19 +171,6 @@ function numberToSerbianDinars (n) {
   return dinars + ((paras !== '') ? ', ' : '') + paras
 }
 
-function getLastNYears (n) {
-  const currentYear = (new Date()).getFullYear()
-  var nYears = [currentYear]
-  var i = 1
-  do {
-    nYears.push(currentYear - i)
-    n--
-    i++
-  }
-  while (n)
-  return nYears
-}
-
 function getCodeCombinations (codes) {
   var parts = {}
   if (codes) {
@@ -202,6 +189,7 @@ function getCodeCombinations (codes) {
 function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   const paymentSlipForm = {};
   paymentSlipForm._id = paymentSlip._id;
+  paymentSlipForm.isValid = paymentSlip.isValid;
   paymentSlipForm.ordinal =  paymentSlip.ordinal;
   paymentSlipForm.annualReportPage = paymentSlip.annualReportPage;
   paymentSlipForm.date = paymentSlip.date;
@@ -234,6 +222,7 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
 function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
   var paymentSlip = {};
   paymentSlip._id = paymentSlipForm._id;
+  paymentSlip.isValid = paymentSlipForm.isValid;
   paymentSlip.date = paymentSlipForm.date;
   paymentSlip.income = paymentSlipForm.income;
   paymentSlip.town = paymentSlipForm.town;
@@ -258,9 +247,11 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
 function mapReceiptToReceiptForm (receipt) {
     const receiptForm = {};
     receiptForm._id = receipt._id;
+    receiptForm.isValid = receipt.isValid;
     receiptForm.ordinal =  receipt.ordinal;
     receiptForm.annualReportPage = receipt.annualReportPage;
     receiptForm.date = receipt.date;
+    receiptForm.isValid = receipt.isValid;
     // ensures reactivity
     receiptForm.firstPartition = null;
     receiptForm.firstPosition = null;
@@ -291,6 +282,7 @@ function mapReceiptToReceiptForm (receipt) {
 function mapReceiptFormToReceipt (receiptForm, outcomeCodes) {
     var receipt = {};
     receipt._id = receiptForm._id;
+    receipt.isValid = receiptForm.isValid;
     receipt.date = receiptForm.date;
     receipt.outcome = receiptForm.outcome;
     receipt.churchMunicipality = receiptForm.churchMunicipality;
@@ -337,7 +329,6 @@ function compareCodes( codeA, codeB ) {
 
 module.exports = {
   numberToSerbianDinars: numberToSerbianDinars,
-  getLastNYears: getLastNYears,
   getCodeCombinations: getCodeCombinations,
   mapPaymentSlipToPaymentSlipForm: mapPaymentSlipToPaymentSlipForm,
   mapPaymentSlipFormToPaymentSlip: mapPaymentSlipFormToPaymentSlip,

@@ -40,8 +40,9 @@
     "Are you sure you want to delete the payment slip?": "Да ли сте сигурни да желите да обришете уплатницу?",
     "Are you sure you want to delete selected payment slips?": "Да ли сте сигурни да желите да обришете означене уплатнице?",
     "There are no payment slips to show": "Нема уплатница за приказ", 
-    "There are no payment slips that pass the filters": "Нема уплатница које задовољавају претрагу",
     "Set default values for payment slips": "Подеси подразумеване вредности за уплатнице",
+    "Adapt payment slips": "Подеси уплатнице",
+    "Adapt receipts": "Подеси признанице",
 
     "Add a receipt": "Додај нову признаницу",
     "Delete the receipt": "Обриши признаницу",
@@ -49,15 +50,28 @@
     "Are you sure you want to delete the receipt?": "Да ли сте сигурни да желите да обришете признаницу?",
     "Are you sure you want to delete selected receipts?": "Да ли сте сигурни да желите да обришете означене признанице?",
     "There are no receipts to show": "Нема признаница за приказ",
-    "There are no receipts that pass the filters": "Нема признаница које задовољавају претрагу",
     "Set default values for receipts": "Подеси подразумеване вредности за признанице",
     "New": "Нови",
     "Remove": "Обриши",
     "Partition": "Партиција",
     "Position": "Позиција",
     "Description": "Опис",
-    "Income codes": "Кодови прилива",
-    "Outcome codes": "Кодови одлива",
+
+    "Income codes": "Кодови примања",
+    "Outcome codes": "Кодови издавања",
+    "There are no income codes to show": "Нема кодова за приказ",
+    "There are no outcome codes to show": "Нема кодова за приказ",
+    "Create income code": "Додај нови код примања",
+    "Delete income code": "Обриши код примања",
+    "Create outcome code": "Додај нови код издавања",
+    "Delete outcome code": "Обриши код издавања",
+    "Enter position": "Унеси позицију",
+    "Enter description": "Унеси опис",
+    "Partition and position not unique": "Већ постоји код примања са наведеном партицијом и позицијом",
+    "Are you sure you want to delete income code?" : "Да ли сте сигурни да желите да обришете код примања?",
+    "By deleting income code you will possibly make some of payment slips invalid." : "Брисањем кода примања потенцијално ћете учинити неке од уплатница невалидним.",
+    "Are you sure you want to delete outcome code?" : "Да ли сте сигурни да желите да обришете код издавања?",
+    "By deleting outcome code you will possibly make some of receipts invalid." : "Брисањем кода издавања потенцијално ћете учинити неке од признаница невалидним.",
 
     "Town": "Место",
     "Amount": "Износ",
@@ -67,5 +81,7 @@
     "For date": "На датум",
     "Created at": "Креирано",
     "Updated at": "Ажурирано",
-    "Default value can not be set": "Подразумевана вредност се не може задати"
+    "Default value can not be set": "Подразумевана вредност се не може задати",
+
+    "for year" : "за годину"
 }

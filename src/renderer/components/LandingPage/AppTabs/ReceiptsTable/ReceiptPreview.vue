@@ -8,14 +8,14 @@
         <h1> ПРИЗНАНИЦА </h1>
       <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input ref="outcomeInput" v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" id="outcomeInput" :disabled="defaultReceiptPreview" type="number" min="0" step="1"></b-form-input></b-form-group> и словима  <div class="outcomeAsTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" contenteditable="false" id="outcomeAsTextDivWrapper1">{{generatedOutcomeTextLine1}}</div>
       <br/><div class="outcomeAsTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" id="outcomeAsTextDivWrapper2">{{generatedOutcomeTextLine2}}</div>
-      <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input v-model="form.churchMunicipality" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingChurchMunicipality }" id="churchMunicipalityInput" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
+      <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input v-model="form.churchMunicipality" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingChurchMunicipality }" id="churchMunicipalityInput" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" id="reasonInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        П р и м и о,
                                                                                                           <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                        Да се исплати на терет расхода<datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker>
                                                                                                           Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><b-form-select v-model="form.firstPartition" id="firstPartSelect" :disabled="defaultReceiptPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><b-form-select v-model="form.firstPosition" id="firstPosSelect" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><b-form-input v-model="form.firstOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstOutcome && atLeastOnePartPosNotSet }" id="firstOutcomeInput" :disabled="defaultReceiptPreview || missingFirstPart" type="number" min="0" step="1"></b-form-input></b-form-group>
                  Исплатио благајник,                                                      Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><b-form-select v-model="form.secondPartition" id="secondPartSelect" :disabled="defaultReceiptPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><b-form-select v-model="form.secondPosition" id="secondPosSelect" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><b-form-input v-model="form.secondOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondOutcome && atLeastOnePartPosNotSet }" id="secondOutcomeInput" :disabled="defaultReceiptPreview || missingSecondPart" type="number" min="0" step="1"></b-form-input></b-form-group>
                                                            
-      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><b-form-input disabled v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalOutcome || totalOutcomeNotValid ) }" id="totalOutcomeInput" type="number" min="0" step=".01"></b-form-input></b-form-group>
+      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerDefaultOnBlur"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><b-form-input disabled v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalOutcome || totalOutcomeNotValid ) }" id="totalOutcomeInput" type="number" min="0" step=".01"></b-form-input></b-form-group>
       <div class="my-0 line-spacing-small">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
@@ -167,7 +167,6 @@
         form: null,
         shouldValidate: false,
         show: true,
-        yearSelected: null,
         preDatepickerJustBlurred: false,
         postDatepickerJustBlurred: false,
         outcomeCodes: null,
@@ -193,6 +192,7 @@
       if(this.receiptPreview) {
         var receipt = JSON.parse(JSON.stringify(this.receipt));
         this.form = mapReceiptToReceiptForm(receipt);
+        this.shouldValidate = true;
       } else {
         var defaultReceipt = JSON.parse(JSON.stringify(this.defaultReceipt))
         defaultReceipt._id = undefined;
@@ -216,6 +216,9 @@
           this.form.firstOutcome = null
           return;
         }
+        if (!this.outcomeCodeCombinations) {
+          return;
+        }
         const allowedPosValues = this.outcomeCodeCombinations[newValue]
         if (!allowedPosValues || allowedPosValues.indexOf(this.form.firstPosition) === -1) {
           /* Pos value needs to be reset since it is not allowed with the new part */
@@ -229,6 +232,9 @@
           this.form.secondOutcome = null
           return;
         }
+        if (!this.outcomeCodeCombinations) {
+          return;
+        }
         const allowedPosValues = this.outcomeCodeCombinations[newValue]
         if (!allowedPosValues || allowedPosValues.indexOf(this.form.secondPosition) === -1) {
           /* Pos value needs to be reset since it is not allowed with the new part */
@@ -239,7 +245,7 @@
     computed: {
       ...mapState(
         {
-          defaultReceipt: state => state.DefaultValues.defaultReceipt
+          defaultReceipt: state => state.CommonValues.defaultReceipt
         }
       ),
       generatedOutcomeText: {
@@ -459,9 +465,6 @@
           }
         }
       },
-      yearOptions: function () {
-        return getLastNYears(10)
-      },
       part1Options: function () {
         if (!this.outcomeCodeCombinations) {
           return [];
@@ -585,13 +588,18 @@
       postDatepickerOnBlur (evt) {
         this.postDatepickerJustBlurred = true
       },
+      postDatepickerDefaultOnBlur (evt) {
+        if(this.defaultReceiptPreview) {
+          this.postDatepickerJustBlurred = true
+        }
+      },
       onSubmit (evt) {
         evt.preventDefault()
         const self = this;
         if (this.defaultReceiptPreview) {
           defaultReceiptController.createDefaultReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then(function (res) {
             if (!res.err) {
-              self.$store.dispatch('SET_DEFAULT_RECEIPT', res.data)
+              self.$emit('updateDefaultReceipt')
               self.closeModal();
             } else {
               showErrorDialog(res.err)
@@ -601,18 +609,24 @@
           this.shouldValidate = true;
           if (this.checkForm()) {
             if (this.receiptPreview) {
+              var isValid = this.form.isValid
+              this.form.isValid = true
               receiptController.updateReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then((res) => {
                 if (!res.err) {
-                  self.$root.$emit('bv::refresh::table', 'receipts-table')
+                  self.$emit('updateReceiptTable')
                   self.closeModal();
                 } else {
                   showErrorDialog(res.err)
+                  if(!isValid) {
+                    self.form.isValid = false
+                  }
                 }
               })
             } else {
+              this.form.isValid = true
               receiptController.createReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then((res) => {
                 if (!res.err) {
-                  self.$root.$emit('bv::refresh::table', 'receipts-table')
+                  self.$emit('updateReceiptTable')
                   self.closeModal();
                 } else {
                   showErrorDialog(res.err)
@@ -788,11 +802,6 @@
   }
   #receivedInput {
     width: 230px;
-  }
-  #yearSelect {
-    width: 95px;
-    padding-left:5px;
-    margin-bottom: 8px;
   }
   #firstPartSelect {
     width: 50px;

@@ -1,152 +1,164 @@
 <template>
   <b-container fluid>
+    <b-button v-b-tooltip.hover.html="phrases.createIncomeCode" v-on:click="openCreateIncomeCodeModal()" size="sm">
+      <img src="~@/assets/add1.png" class="btnImgSm">
+    </b-button>
     <b-table show-empty
               stacked="md"
-              empty-text=""
               class="mt-3"
               :items="incomeCodes"
-              :fields="fields">
-          <template v-slot:cell(partition)="row">
-              <input type="number" min="1" class="form-control-sm"
-                           style="width:5em"
-                           v-model="row.item.partition" v-on:input="isValidIncomeCode(row.item)"/>
-          </template>
-          <template v-slot:cell(position)="row">
-              <input type="number" min="1" class="form-control-sm"
-                           style="width:5em"
-                           v-model="row.item.position" v-on:input="isValidIncomeCode(row.item)"/>
-          </template>
-          <template v-slot:cell(description)="row">
-              <input type="text" class="form-control-sm"
-                           style="width:5em"
-                           v-model="row.item.description" v-on:input="isValidIncomeCode(row.item)"/>
-          </template>
-          <template v-slot:cell()="row">
-              <b-button size="sm" variant="danger" v-on:click="removeIncomeCode(row.index)">
-                  {{phrases.remove}}
-              </b-button>
-          </template>
+              responsive
+              small
+              :fields="fields"
+              :empty-text="phrases.noRecordsToShow"
+              :empty-filtered-text="phrases.noRecordsToShow"
+              >
+        <template v-slot:cell(preview)="row">
+          <b-button v-b-tooltip.hover.html="phrases.seeDetails" v-on:click="openCreateIncomeCodeModal(row.item)" size="sm">
+            <img src="~@/assets/see-more1.png" class="btnImgSm">                                           
+          </b-button>
+        </template>
+        <template v-slot:cell(partition)="row">
+          {{ row.item.partition }}
+        </template>
+        <template v-slot:cell(position)="row">
+          {{ row.item.position }}
+        </template>
+        <template v-slot:cell(description)="row">
+          {{ row.item.description }}
+        </template>
+        <template v-slot:cell(remove)="row">
+            <b-button v-b-tooltip.hover.html="phrases.deleteIncomeCode" v-on:click="deleteIncomeCode(row.item)" size="sm">
+                <img src="~@/assets/delete.png" class="btnImgSm">
+            </b-button>
+        </template>
       </b-table>
-       <b-button size="sm"  v-on:click="newIncomeCode()">
-        {{phrases.new}}
-      </b-button>
-      <b-button size="sm"  v-on:click="cancelIncomeCodeChanges()">
-        {{phrases.cancel}}
-      </b-button>
-      <b-button size="sm"  v-on:click="saveIncomeCodes()" :disabled="!saveIncomeCodesEnabled">
-        {{phrases.save}}
-      </b-button>
+
+      <b-modal hide-footer hide-header size="sm" id="create-income-code-modal">
+        <income-code-preview :incomeCode='selectedIncomeCode' :isUpdate='isUpdate' :existingIncomeCodes="incomeCodes" parentModal="create-income-code-modal" v-on:updateIncomeCodes="update"></income-code-preview>
+      </b-modal>
   </b-container>
 </template>
 
 <script>
+  import IncomeCodePreview from './IncomeCodePreview';
+
+  const { dialog } = require('electron').remote
   const incomeCodeController = require('../../../controllers/incomeCodeController')
   const i18n = require('../../../translations/i18n')
+  const { showErrorDialog, compareCodes } = require('../../../utils/utils')
 
   export default {
     data () {
       return {
         phrases: {
-          remove: i18n.getTranslation('Remove'),
-          new: i18n.getTranslation('New'),
+          noRecordsToShow: i18n.getTranslation('There are no income codes to show'),
+          createIncomeCode: i18n.getTranslation('Create income code'),
+          deleteIncomeCode: i18n.getTranslation('Delete income code'),
+          seeDetails: i18n.getTranslation('See details'),
           cancel: i18n.getTranslation('Cancel'),
-          save: i18n.getTranslation('Save')
+          delete: i18n.getTranslation('Delete'),
+          areYouSureToDeleteIncomeCode: i18n.getTranslation('Are you sure you want to delete income code?'),
+          incomeCodeDeleteConsequences: i18n.getTranslation('By deleting income code you will possibly make some of payment slips invalid.')
         },
-        originalIncomeCodes: [],
-        incomeCodes: [],
-        saveIncomeCodesEnabled: false,
         fields: [
+          {
+            key: 'preview',
+            label: ''
+          },
           {
             key: 'partition',
             label: i18n.getTranslation('Partition'),
-            sortable: true
+            class: 'text-center'
           },
           {
             key: 'position',
             label: i18n.getTranslation('Position'),
-            sortable: true
+            class: 'text-center'
           },
           {
             key: 'description',
             label: i18n.getTranslation('Description'),
-            sortable: true
+            class: 'text-center'
           },
           {
             key: 'remove',
             label: ''
           }
         ],
+        incomeCodes: [],
+        selectedIncomeCode: null,
+        isUpdate: false
       }
     },
-    computed: {
-    },
     created () {
-      const self = this
-      incomeCodeController.getIncomeCodes().then(function (res) {
-        if (!res.err) {
-          self.incomeCodes = (res.data || [])
-          self.originalIncomeCodes = self.incomeCodes
-        } else {
-          showErrorDialog(res.err)
-        }
-      })
+      this.loadIncomeCodes()
     },
     methods: {
-      newIncomeCode() {
-        if(this.incomeCodes.length > 0) {
-          if(!this.incomeCodes[this.incomeCodes.length-1].partition 
-          && !this.incomeCodes[this.incomeCodes.length-1].position 
-          && !this.incomeCodes[this.incomeCodes.length-1].description) {
-            return;
-          }
-        }
-        this.toggleSavingIncomeCode(false);
-        this.incomeCodes.push({});
-      },
-      removeIncomeCode(index) {
-        this.incomeCodes.splice(index, 1);
-      },
-      saveIncomeCodes() {
-        const self = this;
-        incomeCodeController.createIncomeCodes(this.incomeCodes).then(function (res) {
+      loadIncomeCodes () {
+        const self = this
+        incomeCodeController.getIncomeCodes().then((res) => {
           if (!res.err) {
-            self.toggleSavingIncomeCode(false);
-            } else {
+            var incomeCodes = res.data ? res.data : []
+            self.incomeCodes = incomeCodes.sort(compareCodes)
+          } else {
             showErrorDialog(res.err)
           }
         })
       },
-      isValidIncomeCode(validatedIncomeCode) {
-        var tmpArr = [];
-        if (!validatedIncomeCode.partition || !validatedIncomeCode.position || !validatedIncomeCode.description) {
-          this.toggleSavingIncomeCode(false);
-          return false;
+      openCreateIncomeCodeModal (incomeCode) {
+        if(incomeCode) {
+          this.selectedIncomeCode = incomeCode
+          this.isUpdate = true
+        } else {
+          this.selectedIncomeCode = null
+          this.isUpdate = false    
         }
-        for (let i=0; i<this.incomeCodes.length; i++) {
-          const incomeCode = this.incomeCodes[i];
-          if(tmpArr.indexOf(incomeCode.partition + incomeCode.position) < 0) {
-            tmpArr.push(incomeCode.partition + incomeCode.position);
-          } else {
-            // paint red
-            this.toggleSavingIncomeCode(false);
-            return false;
+        this.$root.$emit('bv::show::modal', 'create-income-code-modal')
+      },
+      deleteIncomeCode (incomeCode) {
+        const options = {
+          type: 'question',
+          buttons: [this.phrases.cancel, this.phrases.delete],
+          defaultId: 1,
+          message: this.phrases.areYouSureToDeleteIncomeCode,
+          detail: this.phrases.incomeCodeDeleteConsequences,
+          noLink: true,
+          cancelId: 0
+        }
+        dialog.showMessageBox(null, options, (response) => {
+          if (response === 1) {
+            const self = this
+            incomeCodeController.deleteIncomeCode(incomeCode._id).then((res) => {
+              if (!res.err) {
+                self.update()
+              } else {
+                showErrorDialog(res.err)
+              }
+            })
           }
-        }
-        // paint normal
-        this.toggleSavingIncomeCode(true);
-        return true;
+        })
       },
-      toggleSavingIncomeCode(sw) {
-        this.saveIncomeCodesEnabled = sw;
-      },
-      cancelIncomeCodeChanges() {
-        this.incomeCodes = this.originalIncomeCodes;
-        this.toggleSavingIncomeCode(false);
+      update () {
+        this.loadIncomeCodes()
       }
     },
-    components: { }
+    components: { IncomeCodePreview }
   }
 </script>
 
-<style scoped>
+<style>
+  .modal .modal-sm {
+    max-width: 500px;
+    width: 500px;
+  }
+ .tooltipInnerText {
+    font-size: 95%;
+    line-height: 1;
+    margin: 1px;
+  }
+  .btnImgSm {
+    width: 25px;
+    height: auto;
+  }
 </style>

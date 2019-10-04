@@ -32,7 +32,7 @@ async function getAnnualReport (year) {
   annualReport.total = annualReport.totalIncome.minus(annualReport.totalOutcome)
 
   transformBigsToNumbers(annualReport);
-  console.log(`Returning: \n${JSON.stringify(annualReport, null, 2)}`)
+  console.log(`Returning annual report: \n${JSON.stringify(annualReport, null, 2)}`)
   return annualReport
 }
 

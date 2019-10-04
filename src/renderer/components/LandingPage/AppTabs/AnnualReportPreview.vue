@@ -52,6 +52,16 @@ export default {
       currentPage: 1
     }
   },
+  mounted () {
+      var vm = this;
+      window.addEventListener('keyup', (event) => {
+        if (event.keyCode == 37) { 
+          this.decrementPage()
+        } else if (event.keyCode == 39) {
+          this.incrementPage()
+        }
+      });
+  },
   methods: {
     decrementPage() {
       if(this.currentPage == 1) {

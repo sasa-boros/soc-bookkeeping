@@ -9,10 +9,28 @@ function getIncomeCodes () {
   })
 }
 
-function createIncomeCodes (incomeCodes) {
+function createIncomeCode (incomeCode) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('create-income-codes', incomeCodes)
-    ipcRenderer.once('create-income-codes-reply', (event, res) => {
+    ipcRenderer.send('create-income-code', incomeCode)
+    ipcRenderer.once('create-income-code-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
+function deleteIncomeCode (incomeCodeId) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('delete-income-code', incomeCodeId)
+    ipcRenderer.once('delete-income-code-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
+function updateIncomeCode (incomeCode) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('update-income-code', incomeCode)
+    ipcRenderer.once('update-income-code-reply', (event, res) => {
       resolve(JSON.parse(res))
     })
   })
@@ -20,5 +38,7 @@ function createIncomeCodes (incomeCodes) {
 
 module.exports = {
   getIncomeCodes: getIncomeCodes,
-  createIncomeCodes: createIncomeCodes
+  createIncomeCode: createIncomeCode,
+  updateIncomeCode: updateIncomeCode,
+  deleteIncomeCode: deleteIncomeCode
 }

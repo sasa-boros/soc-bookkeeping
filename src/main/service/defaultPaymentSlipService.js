@@ -4,20 +4,19 @@ async function getDefaultPaymentSlip () {
   console.log('Getting default payment slip')
   let defaultPaymentSlips = await DefaultPaymentSlip.find({}).exec()
   if (defaultPaymentSlips && defaultPaymentSlips.length > 0) {
-    console.log(`Returning: \n${JSON.stringify(defaultPaymentSlips[0], null, 2)}`)
+    console.log(`Returning default payment slip: \n${JSON.stringify(defaultPaymentSlips[0], null, 2)}`)
     return defaultPaymentSlips[0]
   } else {
-    console.log('Returning: null')
+    console.log('Returning default payment slip: null')
     return null
   }
 }
 
 async function createDefaultPaymentSlip (defaultPaymentSlip) {
+  delete defaultPaymentSlip._id
   console.log(`Creating default payment slip: \n${JSON.stringify(defaultPaymentSlip, null, 2)}`)
   await DefaultPaymentSlip.deleteOne({}).exec()
   await DefaultPaymentSlip(defaultPaymentSlip).save()
-  const defaultPaymentSlipFromDb = await getDefaultPaymentSlip()
-  return defaultPaymentSlipFromDb
   console.log('Successfully created default payment slip')
 }
 

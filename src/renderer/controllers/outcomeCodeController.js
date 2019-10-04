@@ -9,10 +9,28 @@ function getOutcomeCodes () {
   })
 }
 
-function createOutcomeCodes (outcomeCodes) {
+function createOutcomeCode (outcomeCode) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('create-outcome-codes', outcomeCodes)
-    ipcRenderer.once('create-outcome-codes-reply', (event, res) => {
+    ipcRenderer.send('create-outcome-code', outcomeCode)
+    ipcRenderer.once('create-outcome-code-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
+function deleteOutcomeCode (outcomeCodeId) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('delete-outcome-code', outcomeCodeId)
+    ipcRenderer.once('delete-outcome-code-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
+function updateOutcomeCode (outcomeCode) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('update-outcome-code', outcomeCode)
+    ipcRenderer.once('update-outcome-code-reply', (event, res) => {
       resolve(JSON.parse(res))
     })
   })
@@ -20,5 +38,7 @@ function createOutcomeCodes (outcomeCodes) {
 
 module.exports = {
   getOutcomeCodes: getOutcomeCodes,
-  createOutcomeCodes: createOutcomeCodes
+  createOutcomeCode: createOutcomeCode,
+  updateOutcomeCode: updateOutcomeCode,
+  deleteOutcomeCode: deleteOutcomeCode
 }

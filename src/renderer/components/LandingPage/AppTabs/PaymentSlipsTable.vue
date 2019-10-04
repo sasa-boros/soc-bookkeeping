@@ -23,12 +23,13 @@
     <!-- Main table element -->
     <b-table show-empty hover small id="payment-slips-table" class="mt-3"
              stacked="md"
-             :items="paymentSlipsProvider"
+             :items="items"
              v-model="itemsShownInTable"
              :fields="fields"
              :current-page="currentPage"
              :per-page="perPage"
              :filter="filter"
+             :sort-compare="sortCompare"
              :sort-by.sync="sortBy"
              :sort-desc.sync="sortDesc"
              :sort-direction="sortDirection"
@@ -40,7 +41,7 @@
              responsive
              no-sort-reset
              :empty-text="phrases.noRecordsToShow"
-             :empty-filtered-text="phrases.noRecordsToShowFiltered"
+             :empty-filtered-text="phrases.noRecordsToShow"
     >
       <template v-slot:cell(HEAD_select)="row">
         <b-form-checkbox @click.native.stop="toggleCheckAll" v-model="checkAll">
@@ -64,7 +65,7 @@
       <template v-slot:cell(income)="row">{{ row.item.income }}</template>
       <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
       <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
-      <template v-slot:cell(formatedUpdatedAt)="row">{{ row.item.updatedAt | formatDate }}</template>
+      <template v-slot:cell(formatedUpdatedAt)="row">{{ row.item.updatedAt | formatUpdatedAt }}</template>
     </b-table>
     </div>
 
@@ -76,18 +77,21 @@
 
     <!-- Create slip modal -->
     <b-modal hide-footer hide-header size="a5" id="create-payment-slip-modal">
-      <payment-slip-preview :paymentSlip='selectedItem' :paymentSlipPreview='isPreview' parentModal="create-payment-slip-modal"></payment-slip-preview>
+      <payment-slip-preview :paymentSlip='selectedItem' :paymentSlipPreview='isPreview' parentModal="create-payment-slip-modal" v-on:updatePaymentSlipTable="update"></payment-slip-preview>
     </b-modal>
 
   </b-container>
 </template>
 
 <script>
+  import store from '@/store'
+  import { mapState } from 'vuex'
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
+  
   const { dialog } = require('electron').remote
-
-  const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
+  const { showErrorDialog } = require('../../../utils/utils')
   const paymentSlipController = require('../../../controllers/paymentSlipController')
+  const commonController = require('../../../controllers/commonController')
   const i18n = require('../../../translations/i18n')
 
   export default {
@@ -110,46 +114,68 @@
           updatedAt: i18n.getTranslation('Updated at'),
           areYouSureToDeleteSlip: i18n.getTranslation('Are you sure you want to delete the payment slip?'),
           areYouSureToDeleteCheckedSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
-          noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
-          noRecordsToShowFiltered: i18n.getTranslation('There are no payment slips that pass the filters')
+          noRecordsToShow: i18n.getTranslation('There are no payment slips to show')
         },
+        paymentSlips: [],
+        items: [],
+        yearToFilter: '',
         currentPage: 1,
         perPage: 10,
         totalRows: null,
-        sortBy: null,
-        sortDesc: false,
-        sortDirection: 'asc',
+        sortBy: 'formatedUpdatedAt',
+        sortDesc: true,
+        sortDirection: 'desc',
         filter: null,
         checkedItems: [],
         itemsShownInTable: [],
         checkAll: false,
-        yearToFilter: (new Date()).getFullYear(),
         selectedItem: null,
         isPreview: false
       }
     },
+    created () {
+      this.loadPaymentSlips()
+    },
     computed: {
-      yearOptions: function () {
-        return getLastNYears(50)
-      },
+      ...mapState(
+        {
+          yearOptions: state => state.CommonValues.yearOptions
+        }
+      ),
       noRowChecked () {
         return this.checkedItems.length === 0
       },
       fields () {
         return [
-          { key: 'select', label: '', thClass: 'table-col-5' },
-          { key: 'actions', label: '', thClass: 'table-col-10' },
-          { key: 'income', label: this.phrases.income, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-20' },
-          { key: 'reason', label: this.phrases.reason, sortable: true, sortDirection: 'desc', 'class': 'text-center', thClass: 'thSmall table-col-20' },
-          { key: 'formatedDate', label: this.phrases.forDate, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' },
-          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, 'class': 'text-center', thClass: 'thSmall table-col-15' }
+          { key: 'select', label: '' },
+          { key: 'actions', label: '' },
+          { key: 'income', label: this.phrases.income, sortable: true, class: 'text-center' },
+          { key: 'reason', label: this.phrases.reason, sortable: true, class: 'text-center' },
+          { key: 'formatedDate', label: this.phrases.forDate, sortable: true, class: 'text-center' },
+          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center' }
         ]
       }
     },
     methods: {
+      update() {
+        this.loadPaymentSlips()
+        this.$emit('updateYearOptions')
+      },
+      loadPaymentSlips () {
+        const self = this
+        paymentSlipController.getPaymentSlips().then((res) => {
+          if (!res.err) {
+            self.paymentSlips = res.data ? res.data : []
+            self.items = self.paymentSlips
+            self.yearToFilter = ''
+          } else {
+            showErrorDialog(res.err)
+          }
+        })
+      },
       openCreatePayslipModal (button) {
-        this.isPreview = false;
-        this.selectedItem = null;
+        this.isPreview = false
+        this.selectedItem = null
         this.$root.$emit('bv::hide::tooltip')
         this.$root.$emit('bv::show::modal', 'create-payment-slip-modal', button)
       },
@@ -179,7 +205,7 @@
             const self = this
             paymentSlipController.deletePaymentSlip(item._id).then((res) => {
               if (!res.err) {
-                self.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                self.update()
                 const itemCheckedIndex = self.checkedItems.indexOf(item)
                 if (itemCheckedIndex !== -1) {
                   self.checkedItems.splice(itemCheckedIndex, 1)
@@ -207,7 +233,7 @@
             this.checkedItems.forEach(function (item) {
               paymentSlipController.deletePaymentSlip(item._id).then((res) => {
                 if (!res.err) {
-                  self.$root.$emit('bv::refresh::table', 'payment-slips-table')
+                  self.update()
                   const itemCheckedIndex = self.checkedItems.indexOf(item)
                   if (itemCheckedIndex !== -1) {
                     self.checkedItems.splice(itemCheckedIndex, 1)
@@ -223,8 +249,8 @@
         })
       },
       openUpdateSlipModal (item) {
-        this.selectedItem = item;
-        this.isPreview = true;
+        this.selectedItem = item
+        this.isPreview = true
         this.$root.$emit('bv::show::modal', 'create-payment-slip-modal')
       },
       onFiltered (filteredItems) {
@@ -232,24 +258,49 @@
         this.totalRows = filteredItems.length
         this.currentPage = 1
       },
-      paymentSlipsProvider (ctx) {
-        return paymentSlipController.getPaymentSlips(this.yearToFilter).then((res) => {
-          if (!res.err) {
-            const items = res.data
-            return (items || [])
-          } else {
-            showErrorDialog(res.err)
-          }
-          return null
-        })
-      },
       resetSelectedItem () {
         this.selectedItem = null
+      },
+      sortCompare(aRow, bRow, key, sortDesc, formatter, compareOptions, compareLocale) {
+        var a,b
+        if(key == 'formatedDate' || key == 'formatedUpdatedAt') {
+          a = Date.parse(aRow['date'])
+          b = Date.parse(bRow['updatedAt'])
+        } else {
+          a = aRow[key]
+          b = bRow[key]
+        }
+        if (
+          (typeof a === 'number' && typeof b === 'number') ||
+          (a instanceof Date && b instanceof Date)
+        ) {
+          // If both compared fields are native numbers or both are native dates
+          return a < b ? -1 : a > b ? 1 : 0
+        } else {
+          return this.toString(a).localeCompare(this.toString(b))
+        }
+      },
+      toString(value) {
+        if (value === null || typeof value === 'undefined') {
+          return ''
+        } else if (value instanceof Object) {
+          return Object.keys(value)
+            .sort()
+            .map(key => toString(value[key]))
+            .join(' ')
+        } else {
+          return String(value)
+        }
       }
     },
     filters: {
       formatDate (date) {
         const options = { year: 'numeric', month: 'long', day: 'numeric' }
+        const language = i18n.usedLanguage
+        return (new Date(date)).toLocaleDateString(language, options)
+      },
+      formatUpdatedAt (date) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }
         const language = i18n.usedLanguage
         return (new Date(date)).toLocaleDateString(language, options)
       }
@@ -262,8 +313,17 @@
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
       },
-      yearToFilter (newValue) {
-        this.$root.$emit('bv::refresh::table', 'payment-slips-table')
+      yearToFilter (newYearValue) {
+        if(newYearValue == '') {
+          this.items = this.paymentSlips;
+        } else {
+          this.items = this.paymentSlips.filter(value => {
+            if(new Date(value.date).getUTCFullYear() == newYearValue) {
+              return true;
+            }
+            return false;
+          })
+        }
         this.checkedItems = []
       }
     },
@@ -316,17 +376,5 @@
   #filterInputFormGroup{
     width: 200px;
     display: inline;
-  }
-  .thSmall{
-    font-size: 80%;
-  }
-  .table-col-5{
-    width: 5% !important;
-  }
-  .table-col-10{
-    width: 10% !important;
-  }
-  .table-col-30{
-    width: 30% !important;
   }
 </style>

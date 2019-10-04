@@ -5,7 +5,7 @@
       <app-tabs></app-tabs>
     </main>
   </div>
-  </b-container fluid>
+  </b-container>
 </template>
 
 <script>
