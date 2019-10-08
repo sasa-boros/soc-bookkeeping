@@ -1,7 +1,7 @@
 'use strict'
 
 import '../renderer/store'
-const { app, BrowserWindow, ipcMain, shell } = require('electron')
+const { app, BrowserWindow } = require('electron')
 const mongoose = require('mongoose')
 const path = require('path')
 const os = require('os')
@@ -44,29 +44,6 @@ function createWindow () {
     mainWindow = null
   })
 }
-
-ipcMain.on('printPDF', (event, content) => {
-  workerWindow.webContents.send('printPDF', content)
-})
-
-ipcMain.on('readyToPrintPDF', (event) => {
-  const pdfPath = path.join(os.tmpdir(), 'print.pdf')
-  const options = { landscape: true,
-    printBackground: true,
-    pageSize: 'A3',
-    marginsType: 1 }
-
-  workerWindow.webContents.printToPDF(options, function (error, data) {
-    if (error) throw error
-    fs.writeFile(pdfPath, data, function (error) {
-      if (error) {
-        throw error
-      }
-      shell.openItem(pdfPath)
-      event.sender.send('wrote-pdf', pdfPath)
-    })
-  })
-})
 
 app.on('ready', createWindow)
 

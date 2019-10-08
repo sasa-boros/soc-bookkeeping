@@ -668,17 +668,17 @@
       printReceipt () {
         const modal = document.getElementById('receipt-preview-container')
         const cloned = modal.cloneNode(true)
-        let section = document.getElementById('print')
 
-        if (!section) {
-          section = document.createElement('div')
-          section.id = 'print'
-          document.body.appendChild(section)
+        var section = document.createElement('div')
+        section.id = 'print-receipt'
+        document.body.appendChild(section)
+        try {
+          section.innerHTML = ''
+          section.appendChild(cloned)
+          window.print()
+        } finally {
+          document.body.removeChild(section)
         }
-
-        section.innerHTML = ''
-        section.appendChild(cloned)
-        window.print()
       },
       closeModal () {
           this.$root.$emit('bv::hide::modal', this.parentModal)
@@ -695,6 +695,12 @@
     border-bottom: 1px solid black !important;
     border-radius: 0 !important;
   }
+  select {
+    border-bottom: 1px solid black !important;
+    border-radius: 0 !important;
+    height: 20px;
+    min-height: 20px;
+  }
   .tooltipInnerText {
     font-size: 95%;
     line-height: 1;
@@ -703,8 +709,6 @@
   #receipt-preview-container {
     width: 794px;
     height: 559px;
-    border-style: solid;
-    border-width: thin;
     position: relative;
   }
   .receipt-preview-text {
@@ -957,24 +961,25 @@
     line-height: 35px !important;
     padding: 0 !important;
   }
+
   @media screen {
-    #print {
+    #print-receipt {
       display: none;
     }
   }
   @media print {
-    * {
-      visibility:hidden;
-    }
-    #print, #print * {
+    #print-receipt, #print-receipt * {
       visibility:visible;
     }
-    #print {
-      /*
-      position:absolute;
-      left:0;
-      top:0;
-      */
+    #print-receipt {
+      position: absolute;
+      top:0px;
+      left:0px;
+    }
+    #receipt-preview-container {
+      top:150px;
+      left:210px;
+      transform: scale(1.5);
     }
     .ignoreInPrint {
       visibility:hidden !important;

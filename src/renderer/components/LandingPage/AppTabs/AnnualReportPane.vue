@@ -320,62 +320,19 @@
 
 <style scoped>
 
-  .tooltipInnerText {
-    font-size: 95%;
-    line-height: 1;
-    margin: 1px;
-  }
+.tooltipInnerText {
+  font-size: 95%;
+  line-height: 1;
+  margin: 1px;
+}
 
 #yearSelect {
   width: 95px;
   padding-left:5px;
   margin-bottom: 8px;
 }
-.reportPagesDiv {
-  position: relative;
-  border: solid 1px;
-  border-color: #ddeeee;
-  background-color: #ddeeee;
-  margin-top: 10px;
-  width: 1201px;
-  height: 852px;
-  padding: 5px;
-}
-.arrowBtn {
-  position: absolute;
-  bottom: 50%;
-}
-.btn-img {
-  width: 50%;
-  height: auto;
-}
 .btn-img-sm {
   width: 30%;
   height: auto;
-}
-#arrowBtnRight {
-  right: -30px;
-}
-#arrowBtnLeft {
-  left: -30px;
-}
-
-.pageDivv{
-  border-style: solid;
-  border-color: #ddeeee;
-  border-radius: 10px;
-  border-width: 1px;
-  margin: 10px;
-  padding: 10px;
-  background-color: #ddeeee;
-}
-.itemsDiv{
-  min-height: 5px;
-}
-.lighterDiv{
-  background-color: #eeffff;
-}
-.itemsList{
-  padding-left: 20px;
 }
 </style>

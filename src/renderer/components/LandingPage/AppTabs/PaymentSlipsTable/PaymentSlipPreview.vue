@@ -647,17 +647,17 @@
       printPaymentSlip () {
         const modal = document.getElementById('payment-slip-preview-container')
         const cloned = modal.cloneNode(true)
-        let section = document.getElementById('print')
 
-        if (!section) {
-          section = document.createElement('div')
-          section.id = 'print'
-          document.body.appendChild(section)
+        var section = document.createElement('div')
+        section.id = 'print-payment-slip'
+        document.body.appendChild(section)
+        try {
+          section.innerHTML = ''
+          section.appendChild(cloned)
+          window.print()
+        } finally {
+          document.body.removeChild(section)
         }
-
-        section.innerHTML = ''
-        section.appendChild(cloned)
-        window.print()
       },
       closeModal () {
         this.$root.$emit('bv::hide::modal', this.parentModal)
@@ -674,6 +674,12 @@
     border-bottom: 1px solid black !important;
     border-radius: 0 !important;
   }
+  select {
+    border-bottom: 1px solid black !important;
+    border-radius: 0 !important;
+    height: 20px;
+    min-height: 20px;
+  }
   .tooltipInnerText {
     font-size: 95%;
     line-height: 1;
@@ -682,8 +688,6 @@
   #payment-slip-preview-container {
     width: 794px;
     height: 559px;
-    border-style: solid;
-    border-width: thin;
     position: relative;
   }
   .payment-slip-preview-text {
@@ -933,8 +937,9 @@
     line-height: 35px !important;
     padding: 0 !important;
   }
+
   @media screen {
-    #print {
+    #print-payment-slip {
       display: none;
     }
   }
@@ -942,15 +947,18 @@
     * {
       visibility:hidden;
     }
-    #print, #print * {
+    #print-payment-slip, #print-payment-slip * {
       visibility:visible;
     }
-    #print {
-      /*
-      position:absolute;
-      left:0;
-      top:0;
-      */
+    #print-payment-slip {
+      position: absolute;
+      top:0px;
+      left:0px;
+    }
+    #payment-slip-preview-container {
+      top:150px;
+      left:200px;
+      transform: scale(1.5);
     }
     .ignoreInPrint {
       visibility:hidden !important;
