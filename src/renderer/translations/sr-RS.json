@@ -78,6 +78,8 @@
     "By deleting outcome code you will possibly make some of receipts invalid." : "Брисањем кода издавања потенцијално ћете учинити неке од признаница невалидним.",
 
     "To generate annual report input at least one payment slip or receipt": "Како бисте генерисали дневник благајне, додајте барем једну уплатницу или признаницу.",
+    "Previous page": "Претходна страница",
+    "Next page": "Наредна страница",
     "Invalid payment slips found": "Пронађене су невалидне уплатнице које су резултат брисања кодова примања. Исправите их како бисте могли генерисати дневник благајне.",
     "Invalid payment slip": "Уплатница није валидна услед брисања кода примања",
     "Invalid receipt": "Признаница није валидна услед брисања кода издавања",

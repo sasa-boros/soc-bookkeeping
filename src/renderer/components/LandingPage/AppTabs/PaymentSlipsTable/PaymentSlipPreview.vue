@@ -644,6 +644,16 @@
         return true
       },
       printPaymentSlip () {
+        // ensuring clean screen
+        var receiptSection = document.getElementById('print-receipt')
+        if (receiptSection) {
+          document.body.removeChild(receiptSection)
+        }
+        var annualReportSection = document.getElementById('print-annual-report')
+        if (annualReportSection) {
+          document.body.removeChild(annualReportSection)
+        }
+
         const modal = document.getElementById('payment-slip-preview-container')
         const cloned = modal.cloneNode(true)
 

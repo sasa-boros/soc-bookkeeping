@@ -1,22 +1,23 @@
 <template>
   <b-container fluid id="annual-report-preview">
+    <br>
       <b-row class="text-center">
         <b-col>
-          <b-button ref="annualReportPrintBtn" @click.stop="printAnnualReport()" variant="secondary">
-            <img src="~@/assets/print.png" class="btn-lg">
+          <b-button ref="annualReportPrintBtn" @click.stop="printAnnualReport()" variant="link" class="btn-lg">
+            <img src="~@/assets/print.png">
           </b-button>
         </b-col>
         <b-col cols="8">
-          <b-button v-on:click='decrementPage'>
+          <b-button ref="decrementPageBtn" variant="link" v-on:click='decrementPage'>
             <i class="arrow left"></i>
           </b-button>
-          <b-button v-on:click='incrementPage'>
+          <b-button ref="incrementPageBtn" variant="link" v-on:click='incrementPage'>
             <i class="arrow right"></i>
           </b-button>
         </b-col>
         <b-col>
-          <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn">
-            <img src="~@/assets/delete.png" class="btn-lg">
+          <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" class="btn-xs">
+            <img src="~@/assets/delete.png">
           </b-button>
         </b-col>
       </b-row>
@@ -27,6 +28,16 @@
       <b-tooltip ref="annualReportPrintBtnTooltip" :target="() => $refs.annualReportPrintBtn">
           <div class="tooltipInnerText">
             {{phrases.print}}
+          </div>
+      </b-tooltip>
+      <b-tooltip ref="decrementPageBtnTooltip" :target="() => $refs.decrementPageBtn">
+          <div class="tooltipInnerText">
+            {{phrases.previousPage}}
+          </div>
+      </b-tooltip>
+      <b-tooltip ref="incrementPageBtnTooltip" :target="() => $refs.incrementPageBtn">
+          <div class="tooltipInnerText">
+            {{phrases.nextPage}}
           </div>
       </b-tooltip>
   </b-container>
@@ -47,7 +58,9 @@ export default {
   data () {
     return {
       phrases: {
-        print: i18n.getTranslation('Print')
+        print: i18n.getTranslation('Print'),
+        previousPage: i18n.getTranslation('Previous page'),
+        nextPage: i18n.getTranslation('Next page')
       },
       currentPage: 1
     }
@@ -122,6 +135,16 @@ export default {
       }
     },
     printAnnualReport () {
+      // ensuring clean screen
+      var paymentSlipSection = document.getElementById('print-payment-slip')
+      if (paymentSlipSection) {
+        document.body.removeChild(paymentSlipSection)
+      }
+      var receiptSection = document.getElementById('print-receipt')
+      if (receiptSection) {
+        document.body.removeChild(receiptSection)
+      }
+
       var section = document.createElement('div')
       section.id = 'print-annual-report'
       document.body.appendChild(section)
@@ -152,7 +175,7 @@ export default {
 .headline >>> #headline {
 	transform: scale(0.4);
 	position:relative;
-	bottom: 240px;
+	bottom: 200px;
 	right: 50px;
 }
 
@@ -198,8 +221,8 @@ export default {
 }
 
 i {
-  border: solid white;
-  border-width: 0 3px 3px 0;
+  border: solid black;
+  border-width: 0 5px 5px 0;
   display: inline-block;
   padding: 3px;
 }
