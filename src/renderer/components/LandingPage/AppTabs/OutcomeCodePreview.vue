@@ -2,11 +2,12 @@
   <b-container fluid>
     <b-form v-on:submit="onSubmit" no-validation>
       <b-row>
-        <b-col cols="10"/>
         <b-col>
-          <b-button v-on:click="closeModal()" size="sm" variant="link">
-            <img src="~@/assets/delete.png" class="btnImgSm">
-          </b-button>
+          <b-button-group class="float-right">
+            <b-button v-on:click="closeModal()" variant="link" class="btn-xs">
+              <img src="~@/assets/delete.png">
+            </b-button>
+          </b-button-group>
         </b-col>
       </b-row>
       <hr/>
@@ -16,7 +17,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="partitionInput" type="number" min="0" step="1" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }"/>
+            <b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="partitionInput" type="number" min="0" step="1" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -26,7 +27,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="positionInput" type="number" min="0" step="1" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
+            <b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="positionInput" type="number" min="0" step="1" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -36,20 +37,20 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-bind:class="{ 'is-invalid': shouldValidate && missingDescription }"/>
+            <b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-bind:class="{ 'is-invalid': shouldValidate && missingDescription }"/>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row >
-        <b-col cols="8">
-        </b-col>
-        <b-col cols="4">
-          <b-button id="saveOutcomeCodeBtn" type="submit" variant="secondary">
-            <img src="~@/assets/save1.png" class="btnImgSm">
-          </b-button>
-          <b-button id="clearFormBtn" @click.stop="clearForm()" variant="secondary">
-            <img src="~@/assets/clear.png" class="btnImgSm ">
-          </b-button>
+        <b-col>
+          <b-button-group class="float-right">
+            <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="saveOutcomeCodeBtn" type="submit" variant="link" class="btn-lg">
+              <img src="~@/assets/save1.png">
+            </b-button>
+            <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="clearFormBtn" @click.stop="clearForm()" variant="link" class="btn-lg">
+              <img src="~@/assets/clear.png">
+            </b-button>
+          </b-button-group>
         </b-col>
       </b-row>
     </b-form>

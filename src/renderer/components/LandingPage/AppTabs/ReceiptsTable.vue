@@ -1,20 +1,24 @@
 <template> 
   <b-container fluid>
     <!-- User Interface controls -->
+     <br>
      <b-row>
-      <b-col cols="6" class="my-1">
-        <b-button-group size="sm">
-          <b-btn v-b-tooltip.hover.html="phrases.addReceipt" @click.stop="openCreateReceiptModal($event.target)">
-            <img src="~@/assets/add1.png" class="btn-img">               
+      <b-col cols="6">
+        <b-button-group class="float-left">
+          <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.addReceipt, customClass: 'tooltipInnerText'}" @click.stop="openCreateReceiptModal($event.target)" variant="link" class="btn-xs">
+            <img src="~@/assets/add1.png">               
           </b-btn>
-          <b-btn v-b-tooltip.hover.html="phrases.deleteSelected" @click.stop="deleteCheckedReceipts()" :disabled="noRowChecked" id="deleteSelectedBtn">
-            <img src="~@/assets/trash1.png" class="btn-img">               
+        </b-button-group>
+        <b-button-group class="float-left">
+          <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="deleteCheckedReceipts()" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" id="deleteSelectedBtn" variant="link" class="btn-xs">
+            <img src="~@/assets/trash1.png">               
           </b-btn>
         </b-button-group> 
       </b-col>
-      <b-col cols="6" class="my-1">
-        <b-form-group horizontal class="my-0">
+      <b-col cols="6">
+        <b-form-group class="float-right">
           <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
+          &nbsp;
           <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-form-group>
       </b-col>
@@ -49,14 +53,14 @@
         </b-form-checkbox>
       </template>
       <template v-slot:cell(preview)="row">
-        <b-button-group size="sm">
-          <b-button v-b-tooltip.hover.html="phrases.seeDetails" @click.stop="openUpdateReceiptModal(row.item)" class="mr-1 btn-xs" size="sm" >
-            <img src="~@/assets/see-more1.png" class="btnImgSm">                                           
+        <b-button-group>
+          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.seeDetails, customClass: 'tooltipInnerText'}" @click.stop="openUpdateReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <img src="~@/assets/see-more1.png">                                           
           </b-button>
         </b-button-group>                
       </template>
       <template v-slot:cell(select)="row">
-        <b-form-checkbox :value="row.item" v-model="checkedItems">
+        <b-form-checkbox v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.select, customClass: 'tooltipInnerText'}" :value="row.item" v-model="checkedItems">
         </b-form-checkbox>
       </template>
       <template v-slot:cell(outcome)="row">{{ row.item.outcome }}</template>
@@ -74,9 +78,9 @@
         </div>
       </template>
       <template v-slot:cell(delete)="row">
-        <b-button-group size="sm">
-          <b-button v-b-tooltip.hover.html="phrases.deleteReceipt" @click.stop="deleteReceipt(row.item)" class="mr-1 btn-xs" size="sm" >
-            <img src="~@/assets/delete.png" class="btnImgSm">                                           
+        <b-button-group>
+          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteReceipt, customClass: 'tooltipInnerText'}" @click.stop="deleteReceipt(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <img src="~@/assets/delete.png">                                           
           </b-button>     
         </b-button-group>                
       </template>
@@ -84,8 +88,8 @@
     </div>
 
     <b-row>
-      <b-col md="6" class="my-4">
-        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
+      <b-col>
+        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center"/>
       </b-col>
     </b-row>
 
@@ -131,7 +135,8 @@
           areYouSureToDeleteCheckedReceipts: i18n.getTranslation('Are you sure you want to delete selected receipts?'),
           noRecordsToShow: i18n.getTranslation('There are no receipts to show'),
           filterByYear: i18n.getTranslation('Filter by year'),
-          invalidReceipt: i18n.getTranslation('Invalid receipt')
+          invalidReceipt: i18n.getTranslation('Invalid receipt'),
+          select: i18n.getTranslation('Select')
         },
         receipts: [],
         items: [],
@@ -370,15 +375,14 @@
 </style>
 
 <style scoped>
+  .disabledBtn {
+    background-color: gray;
+  }
   .tableDiv{
     display: block;
     overflow: auto;
   }
   .imgSm{
-    width: 25px;
-    height: auto;
-  }
-  .btnImgSm{
     width: 25px;
     height: auto;
   }

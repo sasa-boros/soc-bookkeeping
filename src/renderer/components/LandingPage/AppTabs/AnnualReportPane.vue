@@ -1,13 +1,16 @@
 <template>
   <b-container fluid>
+     <br>
     <div v-if="yearOptions.length > 0">
       <b-row class="text-center">
-          {{phrases.annualReport}}:
-          <b-button type="submit" v-on:click="createAnnualReport" id="annualReportBtn" ref="annualReportBtn">
-            <img src="~@/assets/accounting.png" class="btn-img-sm">
+        <b-col>
+          {{phrases.showAnnualReport}}:
+          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" type="submit" v-on:click="createAnnualReport" id="annualReportBtn" ref="annualReportBtn" variant="link" class="btn-xs">
+            <img src="~@/assets/report-blue.png">
           </b-button>
-          {{phrases.forYear}}:
-          <b-form-select v-model="year" id="yearSelect" ref="yearSelectR" :options="yearOptions" size="sm" class="my-0"/>
+          {{phrases.forYear}}:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
+         </b-col>
       </b-row>
 
       <!-- Annual report preview modal -->
@@ -49,7 +52,6 @@
       return {
         year: '',
         phrases: {
-          annualReport: i18n.getTranslation('Annual report'),
           showAnnualReport: i18n.getTranslation('Show annual report'),
           forYear: i18n.getTranslation('for year'),
           invalidPaymentSlipsFound: i18n.getTranslation('Invalid payment slips found'),
@@ -320,19 +322,9 @@
 
 <style scoped>
 
-.tooltipInnerText {
-  font-size: 95%;
-  line-height: 1;
-  margin: 1px;
-}
-
 #yearSelect {
   width: 95px;
   padding-left:5px;
   margin-bottom: 8px;
-}
-.btn-img-sm {
-  width: 30%;
-  height: auto;
 }
 </style>

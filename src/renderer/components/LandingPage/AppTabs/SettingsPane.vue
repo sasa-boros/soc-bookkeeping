@@ -1,23 +1,20 @@
 <template>
   <b-container fluid>
+    <br>
     <b-row>
-      <b-col cols="8">
-        {{ phrases.setDefaultPaymentSlip }}:
-      </b-col>
-      <b-col cols="4">
-        <b-btn id="defaultPaymentSlipBtn" @click.stop="openDefaultPaymentSlipModal()">
-          <img src="~@/assets/payment-slip-blue.png" class="icon">
+      <b-col>
+        {{ phrases.setDefaultPaymentSlip }}:&nbsp;&nbsp;&nbsp;&nbsp;
+        <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="defaultPaymentSlipBtn" @click.stop="openDefaultPaymentSlipModal()" variant="link" class="btn-lg">
+          <img src="~@/assets/payment-slip-blue.png">
         </b-btn>
       </b-col>
     </b-row>
-    <br>
+    <hr>
     <b-row>
-      <b-col cols="8">
-        {{ phrases.setDefaultsReceipts }}:
-      </b-col>
-      <b-col cols="4">      
-        <b-btn id="defaultReceiptBtn" @click.stop="openDefaultReceiptModal()">
-          <img src="~@/assets/receipt-blue.png" class="icon">
+      <b-col>
+        {{ phrases.setDefaultsReceipts }}:&nbsp;
+        <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="defaultReceiptBtn" @click.stop="openDefaultReceiptModal()" variant="link" class="btn-lg">
+          <img src="~@/assets/receipt-blue.png">
         </b-btn>
       </b-col>
     </b-row>
@@ -31,14 +28,16 @@
     <b-modal hide-footer hide-header size="a5" id="default-receipt-modal">
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
+    <br>
+    <div style="background-color:#d3e1f0">
+      <h3 style="text-align:center">{{phrases.incomeCodes}}</h3>
+      <income-codes-table></income-codes-table>
+    </div>
 
-    <h3>{{phrases.incomeCodes}}</h3>
-    <hr>
-    <income-codes-table></income-codes-table>
-
-    <h3>{{phrases.outcomeCodes}}</h3>
-    <hr>
-    <outcome-codes-table></outcome-codes-table>
+    <div>
+      <h3 style="text-align:center">{{phrases.outcomeCodes}}</h3>
+      <outcome-codes-table></outcome-codes-table>
+    </div>
 
     <b-tooltip target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip">
       <div class="tooltipInnerText">
@@ -96,18 +95,3 @@
     components: { PaymentSlipPreview, ReceiptPreview, IncomeCodesTable, OutcomeCodesTable }
   }
 </script>
-
-
-
-<style scoped>
-  .tooltipInnerText {
-    font-size: 95%;
-    line-height: 1;
-    margin: 1px;
-  }
- .icon {
-    height: 28px;
-    width: auto;
-    margin-right: 5px;
-  }
-</style>

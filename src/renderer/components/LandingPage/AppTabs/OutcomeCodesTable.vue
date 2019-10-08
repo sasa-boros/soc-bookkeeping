@@ -1,8 +1,10 @@
 <template>
   <b-container fluid>
-    <b-button v-b-tooltip.hover.html="phrases.createOutcomeCode" v-on:click="openCreateOutcomeCodeModal()" size="sm">
-      <img src="~@/assets/add1.png" class="btnImgSm">
-    </b-button>
+    <b-button-group class="float-left">
+      <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.createOutcomeCode, customClass: 'tooltipInnerText'}" v-on:click="openCreateOutcomeCodeModal()" variant="link" class="btn-xs">
+        <img src="~@/assets/add1.png">
+      </b-button>
+    </b-button-group>
     <b-table show-empty
               stacked="md"
               class="mt-3"
@@ -16,9 +18,11 @@
               :empty-filtered-text="phrases.noRecordsToShow"
               >
         <template v-slot:cell(preview)="row">
-          <b-button v-b-tooltip.hover.html="phrases.seeDetails" v-on:click="openCreateOutcomeCodeModal(row.item)" size="sm">
-            <img src="~@/assets/see-more1.png" class="btnImgSm">                                           
-          </b-button>
+          <b-button-group>
+            <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.seeDetails, customClass: 'tooltipInnerText'}" v-on:click="openCreateOutcomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+              <img src="~@/assets/see-more1.png">                                           
+            </b-button>
+          </b-button-group>
         </template>
         <template v-slot:cell(partition)="row">
           {{ row.item.partition }}
@@ -30,9 +34,11 @@
           {{ row.item.description }}
         </template>
         <template v-slot:cell(remove)="row">
-            <b-button v-b-tooltip.hover.html="phrases.deleteOutcomeCode" v-on:click="deleteOutcomeCode(row.item)" size="sm">
-                <img src="~@/assets/delete.png" class="btnImgSm">
+          <b-button-group>
+            <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteOutcomeCode, customClass: 'tooltipInnerText'}" v-on:click="deleteOutcomeCode(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+                <img src="~@/assets/delete.png">
             </b-button>
+          </b-button-group>
         </template>
       </b-table>
 
@@ -158,14 +164,5 @@
   .modal .modal-sm {
     max-width: 500px;
     width: 500px;
-  }
- .tooltipInnerText {
-    font-size: 95%;
-    line-height: 1;
-    margin: 1px;
-  }
-  .btnImgSm {
-    width: 25px;
-    height: auto;
   }
 </style>

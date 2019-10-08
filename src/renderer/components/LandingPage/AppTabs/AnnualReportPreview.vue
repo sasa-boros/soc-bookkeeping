@@ -3,7 +3,7 @@
       <b-row class="text-center">
         <b-col>
           <b-button ref="annualReportPrintBtn" @click.stop="printAnnualReport()" variant="secondary">
-            <img src="~@/assets/print.png" class="btn-img">
+            <img src="~@/assets/print.png" class="btn-lg">
           </b-button>
         </b-col>
         <b-col cols="8">
@@ -16,7 +16,7 @@
         </b-col>
         <b-col>
           <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn">
-            <img src="~@/assets/delete.png" class="btn-img">
+            <img src="~@/assets/delete.png" class="btn-lg">
           </b-button>
         </b-col>
       </b-row>

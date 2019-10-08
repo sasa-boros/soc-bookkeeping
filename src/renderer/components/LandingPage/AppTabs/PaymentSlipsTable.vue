@@ -1,20 +1,24 @@
 <template> 
   <b-container fluid>
     <!-- User Interface controls -->
+     <br>
      <b-row>
-      <b-col cols="6" class="my-1">
-        <b-button-group size="sm">
-          <b-btn v-b-tooltip.hover.html="phrases.addPaymentSlip" @click.stop="openCreatePaymentSlipModal($event.target)">
-            <img src="~@/assets/add1.png" class="btn-img">               
-          </b-btn>
-          <b-btn v-b-tooltip.hover.html="phrases.deleteSelected" @click.stop="deleteCheckedPaymentSlips()" :disabled="noRowChecked" id="deleteSelectedBtn">
-            <img src="~@/assets/trash1.png" class="btn-img">               
+      <b-col cols="6">
+        <b-button-group class="float-left">
+          <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.addPaymentSlip, customClass: 'tooltipInnerText'}" @click.stop="openCreatePaymentSlipModal($event.target)" variant="link" class="btn-xs">
+            <img src="~@/assets/add1.png">               
           </b-btn>
         </b-button-group> 
+        <b-button-group class="float-left">
+          <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="deleteCheckedPaymentSlips()" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" id="deleteSelectedBtn" variant="link" class="btn-xs">
+            <img src="~@/assets/trash1.png">               
+          </b-btn>
+        </b-button-group>
       </b-col>
-      <b-col cols="6" class="my-1">
-        <b-form-group horizontal class="my-0">
+      <b-col cols="6">
+        <b-form-group class="float-right">
           <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
+          &nbsp;
           <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-form-group>
       </b-col>
@@ -49,14 +53,14 @@
         </b-form-checkbox>
       </template>
       <template v-slot:cell(preview)="row">
-        <b-button-group size="sm">
-          <b-button v-b-tooltip.hover.html="phrases.seeDetails" @click.stop="openUpdatePaymentSlipModal(row.item)" class="mr-1 btn-xs" size="sm" >
-            <img src="~@/assets/see-more1.png" class="btnImgSm">                                           
+        <b-button-group>
+          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.html.top="{title: phrases.seeDetails, customClass: 'tooltipInnerText'}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <img src="~@/assets/see-more1.png">                                           
           </b-button>
         </b-button-group>                
       </template>
       <template v-slot:cell(select)="row">
-        <b-form-checkbox :value="row.item" v-model="checkedItems">
+        <b-form-checkbox v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.select, customClass: 'tooltipInnerText'}" :value="row.item" v-model="checkedItems">
         </b-form-checkbox>
       </template>
       <template v-slot:cell(income)="row">{{ row.item.income }}</template>
@@ -74,9 +78,9 @@
         </div>
       </template>
       <template v-slot:cell(delete)="row">
-        <b-button-group size="sm">
-          <b-button v-b-tooltip.hover.html="phrases.deletePaymentSlip" @click.stop="deletePaymentSlip(row.item)" class="mr-1 btn-xs" size="sm" >
-            <img src="~@/assets/delete.png" class="btnImgSm">                                           
+        <b-button-group>
+          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deletePaymentSlip, customClass: 'tooltipInnerText'}" @click.stop="deletePaymentSlip(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <img src="~@/assets/delete.png">                                           
           </b-button>     
         </b-button-group>                
       </template>
@@ -84,8 +88,8 @@
     </div>
 
     <b-row>
-      <b-col md="6" class="my-4">
-        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
+      <b-col>
+        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center"/>
       </b-col>
     </b-row>
 
@@ -131,7 +135,8 @@
           areYouSureToDeleteCheckedSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
           noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
           filterByYear: i18n.getTranslation('Filter by year'),
-          invalidPaymentSlip: i18n.getTranslation('Invalid payment slip')
+          invalidPaymentSlip: i18n.getTranslation('Invalid payment slip'),
+          select: i18n.getTranslation('Select')
         },
         paymentSlips: [],
         items: [],
@@ -178,7 +183,7 @@
           { key: 'reason', label: this.phrases.reason, sortable: true, class: 'text-center' },
           { key: 'formatedDate', label: this.phrases.forDate, sortable: true, class: 'text-center' },
           { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center' },
-          { key: 'invalid', label: '' },
+          { key: 'invalid', label: ''} ,
           { key: 'delete', label: '' }
         ]
       }
@@ -373,15 +378,14 @@
 </style>
 
 <style scoped>
+  .disabledBtn {
+    background-color: gray;
+  }
   .tableDiv{
     display: block;
     overflow: auto;
   }
   .imgSm{
-    width: 25px;
-    height: auto;
-  }
-  .btnImgSm{
     width: 25px;
     height: auto;
   }
