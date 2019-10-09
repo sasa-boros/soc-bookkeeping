@@ -10,7 +10,7 @@
           </b-btn>
         </b-button-group>
         <b-button-group class="float-left">
-          <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="deleteCheckedReceipts()" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" id="deleteSelectedBtn" variant="link" class="btn-xs">
+          <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="openDeleteCheckedReceiptsModal()" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" id="deleteSelectedBtn" variant="link" class="btn-xs">
             <img src="~@/assets/trash1.png">               
           </b-btn>
         </b-button-group> 
@@ -48,9 +48,11 @@
              :empty-text="phrases.noRecordsToShow"
              :empty-filtered-text="phrases.noRecordsToShow"
     >
-      <template v-slot:cell(HEAD_select)="row">
-        <b-form-checkbox @click.native.stop="toggleCheckAll" v-model="checkAll">
-        </b-form-checkbox>
+      <template v-slot:head(select)="row">
+        <span v-on:mouseleave="$root.$emit('bv::hide::tooltip')">
+          <b-form-checkbox  v-b-tooltip.hover.right="{title: phrases.selectAll, customClass: 'tooltipInnerText'}" @click.native.prevent="toggleCheckAll" v-model="checkAll">
+          </b-form-checkbox>
+         </span>
       </template>
       <template v-slot:cell(preview)="row">
         <b-button-group>
@@ -60,8 +62,10 @@
         </b-button-group>                
       </template>
       <template v-slot:cell(select)="row">
-        <b-form-checkbox v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.select, customClass: 'tooltipInnerText'}" :value="row.item" v-model="checkedItems">
-        </b-form-checkbox>
+        <span v-on:mouseleave="$root.$emit('bv::hide::tooltip')">
+          <b-form-checkbox v-b-tooltip.hover.top="{title: phrases.select, customClass: 'tooltipInnerText'}" :value="row.item" v-model="checkedReceipts">
+          </b-form-checkbox>
+        </span>
       </template>
       <template v-slot:cell(outcome)="row">{{ row.item.outcome }}</template>
       <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
@@ -69,7 +73,7 @@
       <template v-slot:cell(formatedUpdatedAt)="row">{{ row.item.updatedAt | formatUpdatedAt }}</template>
       <template v-slot:cell(invalid)="row">
         <div v-show="!isValid(row.item)">
-          <img :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="imgSm">
+          <img :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
           <b-tooltip :target="'invalid' + row.item._id">
             <div class="tooltipInnerText">
               {{phrases.invalidReceipt}}
@@ -79,7 +83,7 @@
       </template>
       <template v-slot:cell(delete)="row">
         <b-button-group>
-          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteReceipt, customClass: 'tooltipInnerText'}" @click.stop="deleteReceipt(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteReceipt, customClass: 'tooltipInnerText'}" @click.stop="openDeleteReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
             <img src="~@/assets/delete.png">                                           
           </b-button>     
         </b-button-group>                
@@ -93,11 +97,21 @@
       </b-col>
     </b-row>
 
-    <!-- Create receipt modal -->
     <b-modal hide-footer hide-header size="a5" id="create-receipt-modal">
       <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" v-on:updateReceiptTable="update"></receipt-preview>
     </b-modal>
 
+    <b-modal id="delete-receipt-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+      <message-confirm-dialog parentModal="delete-receipt-modal" type="confirm" :text="phrases.areYouSureToDeleteReceipt" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteReceipt"></message-confirm-dialog>
+    </b-modal>
+
+    <b-modal id="delete-checked-receipts-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+      <message-confirm-dialog parentModal="delete-checked-receipts-modal" type="confirm" :text="phrases.areYouSureToDeleteCheckedReceipts" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteCheckedReceipts"></message-confirm-dialog>
+    </b-modal>
+
+    <b-modal id="receipt-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="receipt-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
   </b-container>
 </template>
 
@@ -105,10 +119,9 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
+  import MessageConfirmDialog from './MessageConfirmDialog'
   import { EventBus } from '../../../eventbus/event-bus.js';
   
-  const { dialog } = require('electron').remote
-  const { getLastNYears, showErrorDialog } = require('../../../utils/utils')
   const receiptController = require('../../../controllers/receiptController')
   const commonController = require('../../../controllers/commonController')
   const i18n = require('../../../translations/i18n')
@@ -136,7 +149,9 @@
           noRecordsToShow: i18n.getTranslation('There are no receipts to show'),
           filterByYear: i18n.getTranslation('Filter by year'),
           invalidReceipt: i18n.getTranslation('Invalid receipt'),
-          select: i18n.getTranslation('Select')
+          select: i18n.getTranslation('Select'),
+          selectAll: i18n.getTranslation('Select all'),
+          ok: i18n.getTranslation('Ok')
         },
         receipts: [],
         items: [],
@@ -148,11 +163,13 @@
         sortDesc: true,
         sortDirection: 'desc',
         filter: null,
-        checkedItems: [],
+        deletedReceipt: null,
+        checkedReceipts: [],
         itemsShownInTable: [],
         checkAll: false,
         selectedItem: null,
-        isPreview: false
+        isPreview: false,
+        errorText: ""
       }
     },
     created () {
@@ -173,18 +190,18 @@
         }
       ),
       noRowChecked () {
-        return this.checkedItems.length === 0
+        return this.checkedReceipts.length === 0
       },
       fields () {
         return [
-          { key: 'select', label: '' },
-          { key: 'preview', label: '' },
+          { key: 'select', label: '', thStyle: {outline: 'none'} },
+          { key: 'preview', label: '', thStyle: {outline: 'none'} },
           { key: 'outcome', label: this.phrases.outcome, sortable: true, class: 'text-center' },
           { key: 'reason', label: this.phrases.reason, sortable: true, class: 'text-center' },
           { key: 'formatedDate', label: this.phrases.forDate, sortable: true, class: 'text-center' },
           { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center'},
-          { key: 'invalid', label: '' },
-          { key: 'delete', label: '' }
+          { key: 'invalid', label: '', thStyle: {outline: 'none'} },
+          { key: 'delete', label: '', thStyle: {outline: 'none'} }
         ]
       }
     },
@@ -194,6 +211,8 @@
         this.$emit('updateBookedYears')
         this.$emit('updateInvalidReceiptsInfo')
         this.yearToFilter = ''
+        this.checkAll = false
+        this.checkedReceipts = []
       },
       loadReceipts () {
         const self = this
@@ -202,7 +221,7 @@
             self.receipts = res.data ? res.data : []
             self.items = self.receipts
           } else {
-            showErrorDialog(res.err)
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -214,73 +233,42 @@
       },
       toggleCheckAll () {
         /* Before the checkAll changes based on the click, so the logic is reversed in the check */
-        this.checkedItems = this.checkAll ? [] : this.itemsShownInTable
+        this.checkedReceipts = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
         this.openUpdateReceiptModal(record)
       },
-      formatReceiptForDialog (receipt) {
-        return this.phrases.outcome + ':   ' + receipt.outcome + '\n' + this.phrases.reason + ':   ' + receipt.reason
-      },
-      deleteReceipt (item) {
-        const options = {
-          type: 'question',
-          buttons: [this.phrases.cancel, this.phrases.delete],
-          defaultId: 1,
-          title: this.phrases.deleteReceipt,
-          message: this.phrases.areYouSureToDeleteReceipt,
-          detail: this.formatReceiptForDialog(item),
-          noLink: true,
-          cancelId: 0
-        }
-        dialog.showMessageBox(null, options, (response) => {
-          if (response === 1) {
-            const self = this
-            receiptController.deleteReceipt(item._id).then((res) => {
-              if (!res.err) {
-                self.update()
-                const itemCheckedIndex = self.checkedItems.indexOf(item)
-                if (itemCheckedIndex !== -1) {
-                  self.checkedItems.splice(itemCheckedIndex, 1)
-                }
-              } else {
-                showErrorDialog(res.err)
-              }
-            })
-          }
-        })
-      },
       isValid (receipt) {
         return receipt.isValid
       },
+      openDeleteReceiptModal(receipt) {
+         this.deletedReceipt = receipt
+         this.$root.$emit('bv::show::modal', 'delete-receipt-modal')
+      },
+      deleteReceipt () {
+        const self = this
+        receiptController.deleteReceipt(this.deletedReceipt._id).then((res) => {
+          if (!res.err) {
+            self.update()
+          } else {
+            self.openErrorModal(res.err)
+          }
+        })
+      },
+      openDeleteCheckedReceiptsModal() {
+         this.$root.$emit('bv::show::modal', 'delete-checked-receipts-modal')
+      },
       deleteCheckedReceipts () {
-        const options = {
-          type: 'question',
-          buttons: [this.phrases.cancel, this.phrases.delete],
-          defaultId: 1,
-          title: this.phrases.deleteReceipts,
-          message: this.phrases.areYouSureToDeleteCheckedReceipts,
-          noLink: true,
-          cancelId: 0
-        }
-        dialog.showMessageBox(null, options, (response) => {
-          if (response === 1) {
-            const self = this
-            this.checkedItems.forEach(function (item) {
-              receiptController.deleteReceipt(item._id).then((res) => {
-                if (!res.err) {
-                  self.update()
-                  const itemCheckedIndex = self.checkedItems.indexOf(item)
-                  if (itemCheckedIndex !== -1) {
-                    self.checkedItems.splice(itemCheckedIndex, 1)
-                  }
-                } else {
-                  showErrorDialog(res.err)
-                }
-              })
-            })
-            // this.$root.$emit('bv::refresh::table', 'receipts-table')
-            // this.checkedItems = []
+        var checkedReceiptsIds = []
+        this.checkedReceipts.forEach(function (receipt) {
+          checkedReceiptsIds.push(receipt._id)
+        })
+        const self = this
+        receiptController.deleteReceipts(checkedReceiptsIds).then((res) => {
+          if (!res.err) {
+            self.update()
+          } else {
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -288,6 +276,10 @@
         this.isPreview = true
         this.selectedItem = item
         this.$root.$emit('bv::show::modal', 'create-receipt-modal')
+      },
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'receipt-table-error-modal')
       },
       onFiltered (filteredItems) {
         // Trigger pagination to update the number of buttons/pages due to filtering
@@ -342,7 +334,7 @@
       }
     },
     watch: {
-      checkedItems (newValue, oldValue) {
+      checkedReceipts (newValue, oldValue) {
         this.checkAll = (this.itemsShownInTable.length !== 0 && this.itemsShownInTable.length === newValue.length)
         if (newValue.length === 0) {
           /* Close delete-selected button tooltip before it gets disabled and stuck */
@@ -360,10 +352,10 @@
             return false;
           })
         }
-        this.checkedItems = []
+        this.checkedReceipts = []
       }
     },
-    components: { ReceiptPreview }
+    components: { ReceiptPreview, MessageConfirmDialog }
   }
 </script>
 
@@ -381,10 +373,6 @@
   .tableDiv{
     display: block;
     overflow: auto;
-  }
-  .imgSm{
-    width: 25px;
-    height: auto;
   }
   .inputWithIcon input[type="text"] {
     padding-left: 40px;

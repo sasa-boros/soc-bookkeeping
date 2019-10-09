@@ -29,6 +29,7 @@ async function getPaymentSlips (year) {
 async function createPaymentSlip (paymentSlip) {
   delete paymentSlip._id
   console.log(`Creating payment slip: \n${JSON.stringify(paymentSlip, null, 2)}`)
+  paymentSlip.isValid = true
   await PaymentSlip(paymentSlip).save()
   await assignAnnualReportValues()
   console.log('Successfully created payment slip')
@@ -41,8 +42,16 @@ async function deletePaymentSlip (paymentSlipId) {
   console.log('Successfully deleted payment slip')
 }
 
+async function deletePaymentSlips (paymentSlipsIds) {
+  console.log(`Deleting payment slips with ids ${paymentSlipsIds}`)
+  await PaymentSlip.deleteMany({ _id: { $in : paymentSlipsIds }}).exec()
+  await assignAnnualReportValues()
+  console.log('Successfully deleted payment slips')
+}
+
 async function updatePaymentSlip (paymentSlip) {
   console.log(`Updating payment slip: \n${JSON.stringify(paymentSlip, null, 2)}`)
+  paymentSlip.isValid = true
   await PaymentSlip.findByIdAndUpdate(paymentSlip._id, paymentSlip).exec()
   await assignAnnualReportValues()
   console.log('Successfully updated payment slip')
@@ -63,5 +72,6 @@ module.exports = {
   getPaymentSlips: getPaymentSlips,
   createPaymentSlip: createPaymentSlip,
   deletePaymentSlip: deletePaymentSlip,
+  deletePaymentSlips: deletePaymentSlips,
   updatePaymentSlip: updatePaymentSlip
 }

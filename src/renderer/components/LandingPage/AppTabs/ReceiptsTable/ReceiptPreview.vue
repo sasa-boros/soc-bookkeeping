@@ -128,6 +128,9 @@
         </div>
       </b-tooltip>
     </b-form>
+    <b-modal id="receipt-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="receipt-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
   </b-container>
 </template>
 
@@ -136,10 +139,11 @@
   import { mapState } from 'vuex'
   import Datepicker from 'vuejs-datepicker'
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
+  import MessageConfirmDialog from './../MessageConfirmDialog'
   const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
   const receiptController = require('../../../../controllers/receiptController')
   const defaultReceiptController = require('../../../../controllers/defaultReceiptController')
-  const { numberToSerbianDinars, getLastNYears, getCodeCombinations, showErrorDialog, mapReceiptToReceiptForm, mapReceiptFormToReceipt } = require('../../../../utils/utils')
+  const { numberToSerbianDinars, getCodeCombinations, mapReceiptToReceiptForm, mapReceiptFormToReceipt } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
 
   export default {
@@ -170,6 +174,7 @@
         postDatepickerJustBlurred: false,
         outcomeCodes: null,
         outcomeCodeCombinations: null,
+        errorText: "",
         phrases: {
           save: i18n.getTranslation('Save'),
           print: i18n.getTranslation('Print'),
@@ -179,7 +184,8 @@
           pickDate: i18n.getTranslation('Pick a date'),
           atLeastOnePartPosOutcome: i18n.getTranslation('Enter at least one partition, position, outcome'),
           enterPartition: i18n.getTranslation('Enter partition'),
-          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of outcomes by partitions and position')
+          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of outcomes by partitions and position'),
+          ok: i18n.getTranslation('Ok')
         },
         calendarLanguages: {
           sr: sr,
@@ -191,7 +197,9 @@
       if(this.receiptPreview) {
         var receipt = JSON.parse(JSON.stringify(this.receipt));
         this.form = mapReceiptToReceiptForm(receipt);
-        this.shouldValidate = true;
+        if (!this.form.isValid) {
+          this.shouldValidate = true;
+        }
       } else {
         var defaultReceipt = JSON.parse(JSON.stringify(this.defaultReceipt))
         defaultReceipt._id = undefined;
@@ -203,7 +211,7 @@
           self.outcomeCodes = (res.data || [])
           self.outcomeCodeCombinations = getCodeCombinations(self.outcomeCodes)
         } else {
-          showErrorDialog(res.err)
+          self.openErrorModal(res.err)
         }
       })
     },
@@ -601,34 +609,28 @@
               self.$emit('updateDefaultReceipt')
               self.closeModal();
             } else {
-              showErrorDialog(res.err)
+              self.openErrorModal(res.err)
             }
           })
         } else {
           this.shouldValidate = true;
           if (this.checkForm()) {
             if (this.receiptPreview) {
-              var isValid = this.form.isValid
-              this.form.isValid = true
               receiptController.updateReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then((res) => {
                 if (!res.err) {
                   self.$emit('updateReceiptTable')
                   self.closeModal();
                 } else {
-                  showErrorDialog(res.err)
-                  if(!isValid) {
-                    self.form.isValid = false
-                  }
+                  self.openErrorModal(res.err)
                 }
               })
             } else {
-              this.form.isValid = true
               receiptController.createReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then((res) => {
                 if (!res.err) {
                   self.$emit('updateReceiptTable')
                   self.closeModal();
                 } else {
-                  showErrorDialog(res.err)
+                  self.openErrorModal(res.err)
                 }
               })
             }
@@ -664,6 +666,10 @@
         }
         return true
       },
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'receipt-preview-error-modal')
+      },
       printReceipt () {
         // ensuring clean screen
         var paymentSlipSection = document.getElementById('print-payment-slip')
@@ -693,7 +699,7 @@
           this.$root.$emit('bv::hide::modal', this.parentModal)
       }
     },
-    components: { Datepicker }
+    components: { Datepicker, MessageConfirmDialog }
   }
 </script>
 

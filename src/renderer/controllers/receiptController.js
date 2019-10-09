@@ -45,10 +45,20 @@ function deleteReceipt (receiptId) {
   })
 }
 
+function deleteReceipts (receiptsIds) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('delete-receipts', receiptsIds)
+    ipcRenderer.once('delete-receipts-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
 module.exports = {
   areReceiptsValid: areReceiptsValid,
   getReceipts: getReceipts,
   createReceipt: createReceipt,
   updateReceipt: updateReceipt,
-  deleteReceipt: deleteReceipt
+  deleteReceipt: deleteReceipt,
+  deleteReceipts: deleteReceipts
 }

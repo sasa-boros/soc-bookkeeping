@@ -35,7 +35,7 @@
         </template>
         <template v-slot:cell(remove)="row">
           <b-button-group>
-            <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteOutcomeCode, customClass: 'tooltipInnerText'}" v-on:click="deleteOutcomeCode(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteOutcomeCode, customClass: 'tooltipInnerText'}" v-on:click="openDeleteOutcomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
                 <img src="~@/assets/delete.png">
             </b-button>
           </b-button-group>
@@ -45,17 +45,26 @@
       <b-modal hide-footer hide-header size="sm" id="create-outcome-code-modal">
         <outcome-code-preview :outcomeCode='selectedOutcomeCode' :isUpdate='isUpdate' :existingOutcomeCodes="outcomeCodes" parentModal="create-outcome-code-modal" v-on:updateOutcomeCodes="update"></outcome-code-preview>
       </b-modal>
+
+      <b-modal id="delete-outcome-code-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="delete-outcome-code-modal" type="confirm" :text="phrases.areYouSureToDeleteOutcomeCode" :subText="phrases.outcomeCodeDeleteConsequences" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteOutcomeCode"></message-confirm-dialog>
+      </b-modal>
+
+      <b-modal id="outcome-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="outcome-code-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      </b-modal>
   </b-container>
 </template>
 
 <script>
   import OutcomeCodePreview from './OutcomeCodePreview';
+  import MessageConfirmDialog from './MessageConfirmDialog'
   import { EventBus } from '../../../eventbus/event-bus.js';
 
   const { dialog } = require('electron').remote
   const outcomeCodeController = require('../../../controllers/outcomeCodeController')
   const i18n = require('../../../translations/i18n')
-  const { showErrorDialog, compareCodes } = require('../../../utils/utils')
+  const { compareCodes } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -68,7 +77,8 @@
           cancel: i18n.getTranslation('Cancel'),
           delete: i18n.getTranslation('Delete'),
           areYouSureToDeleteOutcomeCode: i18n.getTranslation('Are you sure you want to delete outcome code?'),
-          outcomeCodeDeleteConsequences: i18n.getTranslation('By deleting outcome code you will possibly make some of receipts invalid.')
+          outcomeCodeDeleteConsequences: i18n.getTranslation('By deleting outcome code you will possibly make some of receipts invalid.'),
+          ok: i18n.getTranslation('Ok')
         },
         fields: [
           {
@@ -97,7 +107,9 @@
         ],
         outcomeCodes: [],
         selectedOutcomeCode: null,
-        isUpdate: false
+        deletedOutcomeCode: null,
+        isUpdate: false,
+        errorText: ""
       }
     },
     created () {
@@ -111,7 +123,7 @@
             var outcomeCodes = res.data ? res.data : []
             self.outcomeCodes = outcomeCodes.sort(compareCodes)
           } else {
-            showErrorDialog(res.err)
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -128,35 +140,30 @@
       rowDblClickHandler (record, index) {
         this.openCreateOutcomeCodeModal(record)
       },
-      deleteOutcomeCode (outcomeCode) {
-        const options = {
-          type: 'question',
-          buttons: [this.phrases.cancel, this.phrases.delete],
-          defaultId: 1,
-          message: this.phrases.areYouSureToDeleteOutcomeCode,
-          detail: this.phrases.outcomeCodeDeleteConsequences,
-          noLink: true,
-          cancelId: 0
-        }
-        dialog.showMessageBox(null, options, (response) => {
-          if (response === 1) {
-            const self = this
-            outcomeCodeController.deleteOutcomeCode(outcomeCode._id).then((res) => {
-              if (!res.err) {
-                self.update()
-                EventBus.$emit('updateReceiptTable');
-              } else {
-                showErrorDialog(res.err)
-              }
-            })
+      openDeleteOutcomeCodeModal(outcomeCode) {
+         this.deletedOutcomeCode = outcomeCode
+         this.$root.$emit('bv::show::modal', 'delete-outcome-code-modal')
+      },
+      deleteOutcomeCode () {
+        const self = this
+        outcomeCodeController.deleteOutcomeCode(this.deletedOutcomeCode).then((res) => {
+          if (!res.err) {
+            self.update()
+            EventBus.$emit('updateReceiptTable');
+          } else {
+            self.openErrorModal(res.err)
           }
         })
+      },
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'outcome-code-table-error-modal')
       },
       update () {
         this.loadOutcomeCodes()
       }
     },
-    components: { OutcomeCodePreview }
+    components: { OutcomeCodePreview, MessageConfirmDialog }
   }
 </script>
 

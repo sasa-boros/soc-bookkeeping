@@ -28,6 +28,14 @@
     <div v-else>
         {{ phrases.inputAtleastOne }}
     </div>
+
+    <b-modal id="annual-report-preview-failed-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="annual-report-preview-failed-modal" type="warning" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
+
+    <b-modal id="annual-report-pane-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="annual-report-pane-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
   </b-container>
 </template>
 
@@ -35,17 +43,11 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import AnnualReportPreview from './AnnualReportPreview'
+  import MessageConfirmDialog from './MessageConfirmDialog'
   
   const annualReportController = require('../../../controllers/annualReportController')
   const i18n = require('../../../translations/i18n')
-  const { getLastNYears, showErrorDialog, compareCodes } = require('../../../utils/utils')
   const { ipcRenderer } = require('electron')
-  const incomeCodeController = require('../../../controllers/incomeCodeController')
-  const outcomeCodeController = require('../../../controllers/outcomeCodeController')
-  const fs = require('fs');
-  const util = require('util');
-  const readFile = util.promisify(fs.readFile);
-  const Mustache = require('mustache');
 
   export default {
     data () {
@@ -56,13 +58,11 @@
           forYear: i18n.getTranslation('for year'),
           invalidPaymentSlipsFound: i18n.getTranslation('Invalid payment slips found'),
           invalidReceiptsFound: i18n.getTranslation('Invalid receipts found'),
-          inputAtleastOne: i18n.getTranslation('To generate annual report input at least one payment slip or receipt')
+          inputAtleastOne: i18n.getTranslation('To generate annual report input at least one payment slip or receipt'),
+          ok: i18n.getTranslation('Ok')
         },
-        publicPath: process.env.BASE_URL,
-        monthNames:["January", "February", "March", "April", "May", "June",
-          "July", "August", "September", "October", "November", "December"
-        ],
-        annualReportPages: []
+        annualReportPages: [],
+        errorText: ""
       }
     },
     computed: {
@@ -81,241 +81,49 @@
     methods: {
       createAnnualReport: function () {
         const self = this
-        annualReportController.getAnnualReport(this.year).then(async function (res) {
+        annualReportController.getAnnualReport(this.year).then(function (res) {
           if (!res.err) {
-            await self.populateAnnualReportHtmlPages(res.data);
-            self.openAnnualReportPreviewModal();
+             annualReportController.getAnnualReportPages(res.data).then(function (res) {
+               if (!res.err) {
+                 self.annualReportPages = res.data ? res.data : []
+                 self.openAnnualReportPreviewModal()
+               } else {
+                 self.openErrorModal(res.err)
+                }
+             })
           } else {
             if (res.err == "Invalid payment slips found") {
-              showErrorDialog(self.phrases.invalidPaymentSlipsFound);
+              self.openAnnualReportPreviewFailedModal(self.phrases.invalidPaymentSlipsFound)
             } else if (res.err == "Invalid receipts found") {
-              showErrorDialog(self.phrases.invalidReceiptsFound);
+              self.openAnnualReportPreviewFailedModal(self.phrases.invalidReceiptsFound)
             } else {
-              showErrorDialog(res.err);
+              self.openErrorModal(res.err)
             }
           }
         })
       },
-      async populateAnnualReportHtmlPages(annualReport) {
-        const self = this;
-        this.annualReportPages = [];
-        await this.populateHeadline(annualReport);
-
-        const incomeCodes = await this.getIncomeCodes();
-        const outcomeCodes = await this.getOutcomeCodes();
-        const incomePageTemplate = await readFile("./static/annual-report/income-page.html", { encoding: 'utf8'})
-        const outcomePageTemplate = await readFile("./static/annual-report/outcome-page.html", { encoding: 'utf8'});
-        for(let i=0; i<annualReport.pages.length; i++) {
-          await this.populateIncomeOutcomePage(annualReport, annualReport.pages[i], incomeCodes, outcomeCodes, new String(incomePageTemplate).toString(), new String(outcomePageTemplate).toString());
-        }
-        await this.populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcomeCodes);
-        await this.populateSharesPage(annualReport);
-        await this.populateTotalPage(annualReport);
+      openAnnualReportPreviewFailedModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'annual-report-preview-failed-modal')
       },
-      async getIncomeCodes () {
-        const incomeCodesRes = await incomeCodeController.getIncomeCodes();
-        if(incomeCodesRes.err) {
-          showErrorDialog(incomeCodesRes.err);
-          return;
-        }
-        var incomeCodes = incomeCodesRes.data;
-        incomeCodes.sort(compareCodes);
-        return incomeCodes;
-      },
-      async getOutcomeCodes () {
-        const outcomeCodesRes = await outcomeCodeController.getOutcomeCodes();
-        if(outcomeCodesRes.err) {
-          showErrorDialog(outcomeCodesRes.err);
-          return;
-        }
-        var outcomeCodes = outcomeCodesRes.data;
-        outcomeCodes.sort(compareCodes);
-        return outcomeCodes;
-      },
-      async populateHeadline(annualReport) {
-        const headlineContext = {};
-        headlineContext.year = annualReport.year;
-
-        const headline = await readFile("./static/annual-report/headline.html", { encoding: 'utf8'});
-        Mustache.parse(headline);   // optional, speeds up future uses
-        this.annualReportPages.push(Mustache.render(headline, headlineContext));
-      },
-      async populateIncomeOutcomePage (annualReport, annualReportPage, incomeCodes, outcomeCodes, incomePageTemplate, outcomePageTemplate) {
-        var incomePageContext = {};
-        var outcomePageContext = {};
-
-        incomePageContext.page = annualReportPage.ordinal;
-        incomePageContext.monthLokativ = i18n.getTranslation(this.monthNames[annualReportPage.ordinal-1] + '.lokativ');
-        outcomePageContext.page = annualReportPage.ordinal;
-        outcomePageContext.year = annualReport.year;
-
-        var colsPerIncomeCodes = {}
-        var colsPerOutcomeCodes = {}
-
-        var col = 'D';
-        // income codes
-        incomeCodes.forEach(incomeCode => {
-          let incomeCodeText = incomeCode.partition + '/' + incomeCode.position;
-          incomePageContext[col+'6'] = incomeCodeText;
-          incomePageContext[col+'7'] = incomeCode.description;
-          colsPerIncomeCodes[incomeCodeText] = col;
-          col = String.fromCharCode(col.charCodeAt() + 1);
-        });
-        var col = 'D';
-         // outcome codes
-        outcomeCodes.forEach(outcomeCode => {
-          let outcomeCodeText = outcomeCode.partition + '/' + outcomeCode.position;
-          outcomePageContext[col+'6'] = outcomeCodeText;
-          outcomePageContext[col+'7'] = outcomeCode.description;
-          colsPerOutcomeCodes[outcomeCodeText] = col;
-          col = String.fromCharCode(col.charCodeAt() + 1);
-        });
-        var row = 14;
-        annualReportPage.paymentSlips.forEach(paymentSlip => {
-          // payment slip ordinal/date(day)/reason
-          incomePageContext['A'+row] = paymentSlip.ordinal;
-          let date = new Date(paymentSlip.date).getUTCDate();
-          incomePageContext['B'+row] = date ? date + '.' : date;
-          incomePageContext['C'+row] = paymentSlip.reason;
-          // payment slip income per code
-          paymentSlip.incomePerCode.forEach(incomePerCode => {
-            let incomeCodeText = incomePerCode.incomeCode.partition + '/' + incomePerCode.incomeCode.position;
-            incomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = incomePerCode.income;
-          });
-          // payment slip total income
-          incomePageContext['S'+row] = paymentSlip.income
-          row++;
-        });
-        var row = 14;
-        annualReportPage.receipts.forEach(receipt => {
-           // receipt ordinal/date(day)/reason
-          outcomePageContext['A'+row] = receipt.ordinal;
-          let date = new Date(receipt.date).getUTCDate();
-          outcomePageContext['B'+row] = date ? date + '.' : date;
-          outcomePageContext['C'+row] = receipt.reason;
-          // receipt outcome per code
-          receipt.outcomePerCode.forEach(outcomePerCode => {
-            let outcomeCodeText = outcomePerCode.outcomeCode.partition + '/' + outcomePerCode.outcomeCode.position;
-            outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = outcomePerCode.outcome;
-          });
-          // receipt total outcome
-          outcomePageContext['S'+row] = receipt.outcome
-          row++;
-        });
-        // total per income code
-        annualReportPage.totalIncomePerCode.forEach(totalIncomePerCode => {
-          let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-          incomePageContext[colsPerIncomeCodes[incomeCodeText] + 40] = totalIncomePerCode.income;
-        });
-        // total per outcome code
-        annualReportPage.totalOutcomePerCode.forEach(totalOutcomePerCode => {
-          let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-          outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + 40] = totalOutcomePerCode.outcome;
-        });
-        // total incomes and outcomes per page
-        incomePageContext['S40'] = annualReportPage.totalIncome;
-        incomePageContext['S41'] = annualReportPage.transferFromPreviousMonth;
-        incomePageContext['S42'] = annualReportPage.total;
-        outcomePageContext['S40'] = annualReportPage.totalOutcome;
-        outcomePageContext['S41'] = annualReportPage.transferToNextMonth;
-        outcomePageContext['S42'] = annualReportPage.total;
-
-        Mustache.parse(incomePageTemplate);   // optional, speeds up future uses
-        Mustache.parse(outcomePageTemplate);
-        this.annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext));
-        this.annualReportPages.push(Mustache.render(outcomePageTemplate, outcomePageContext));
-      },
-      async populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcomeCodes) {
-        var totalIncomePageContext = {};
-        var totalOutcomePageContext = {};
-
-        totalOutcomePageContext.year = annualReport.year;
-
-        var colsPerIncomeCodes = {}
-        var colsPerOutcomeCodes = {}
-
-        var col = 'B';
-        // income codes
-        incomeCodes.forEach(incomeCode => {
-          let incomeCodeText = incomeCode.partition + '/' + incomeCode.position;
-          totalIncomePageContext[col+'5'] = incomeCodeText;
-          totalIncomePageContext[col+'6'] = incomeCode.description;
-          colsPerIncomeCodes[incomeCodeText] = col;
-          col = String.fromCharCode(col.charCodeAt() + 1);
-        });
-        var col = 'B';
-        // outcome codes
-        outcomeCodes.forEach(outcomeCode => {
-          let outcomeCodeText = outcomeCode.partition + '/' + outcomeCode.position;
-          totalOutcomePageContext[col+'5'] = outcomeCodeText;
-          totalOutcomePageContext[col+'6'] = outcomeCode.description;
-          colsPerOutcomeCodes[outcomeCodeText] = col;
-          col = String.fromCharCode(col.charCodeAt() + 1);
-        });
-        // totals per code per page
-        var row = 8;
-        annualReport.pages.forEach((page) => {
-          page.totalIncomePerCode.forEach(totalIncomePerCode => {
-            let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-            totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = totalIncomePerCode.income;
-          })
-          page.totalOutcomePerCode.forEach(totalOutcomePerCode => {
-            let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-            totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = totalOutcomePerCode.outcome;
-          });
-          totalIncomePageContext['R'+row] = page.totalIncome;
-          totalOutcomePageContext['R'+row] = page.totalOutcome;
-          row++;
-        });
-        annualReport.totalIncomePerCode.forEach(totalIncomePerCode => {
-          let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-          totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + '20'] = totalIncomePerCode.income;
-        });
-        annualReport.totalOutcomePerCode.forEach(totalOutcomePerCode => {
-          let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-          totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + '20'] = totalOutcomePerCode.outcome;
-        });
-        // totals
-        totalIncomePageContext['R20'] = annualReport.totalIncome;
-        totalOutcomePageContext['R20'] = annualReport.totalOutcome;
-        totalOutcomePageContext['Q24'] = annualReport.totalIncome;
-        totalOutcomePageContext['Q25'] = annualReport.totalOutcome;
-        totalOutcomePageContext['Q26'] = annualReport.total;
-
-        const totalIncomePageTemplate = await readFile("./static/annual-report/total-income-page.html", { encoding: 'utf8'})
-        const totalOutcomePageTemplate = await readFile("./static/annual-report/total-outcome-page.html", { encoding: 'utf8'});
-        Mustache.parse(totalIncomePageTemplate);   // optional, speeds up future uses
-        Mustache.parse(totalOutcomePageTemplate);
-        this.annualReportPages.push(Mustache.render(totalIncomePageTemplate, totalIncomePageContext));
-        this.annualReportPages.push(Mustache.render(totalOutcomePageTemplate, totalOutcomePageContext));
-      },
-      async populateTotalPage(annualReport) {
-        const totalPageContext = {};
-
-        totalPageContext.year = annualReport.year;
-        totalPageContext['E5'] = annualReport.total;
-
-        const totalPageTemplate = await readFile("./static/annual-report/total-page.html", { encoding: 'utf8'});
-        Mustache.parse(totalPageTemplate);   // optional, speeds up future uses
-        this.annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext));
-      },
-      async populateSharesPage(annualReport) {
-        this.annualReportPages.push(await readFile("./static/annual-report/shares-page.html", { encoding: 'utf8'}));
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'annual-report-pane-error-modal')
       },
       openAnnualReportPreviewModal() {
         this.$root.$emit('bv::show::modal', 'annual-report-preview-modal')
       }
     },
-    components: { AnnualReportPreview }
+    components: { AnnualReportPreview, MessageConfirmDialog }
   }
 </script>
 
 <style>
   .modal .modal-ar {
-    max-width: 830px;
-    width: 830px;
-    max-height: 550px;
-    height: 550px;
+    max-width: 1000px;
+    width: 1000px;
+    max-height:707px;
+    height: 707px;
     overflow: hidden;
   }
 </style>

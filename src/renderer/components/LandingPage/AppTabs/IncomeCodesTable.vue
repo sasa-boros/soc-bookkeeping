@@ -35,7 +35,7 @@
         </template>
         <template v-slot:cell(remove)="row">
            <b-button-group>
-              <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteIncomeCode, customClass: 'tooltipInnerText'}" v-on:click="deleteIncomeCode(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+              <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteIncomeCode, customClass: 'tooltipInnerText'}" v-on:click="openDeleteIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
                   <img src="~@/assets/delete.png">
               </b-button>
            </b-button-group>
@@ -45,17 +45,26 @@
       <b-modal hide-footer hide-header size="sm" id="create-income-code-modal">
         <income-code-preview :incomeCode='selectedIncomeCode' :isUpdate='isUpdate' :existingIncomeCodes="incomeCodes" parentModal="create-income-code-modal" v-on:updateIncomeCodes="update"></income-code-preview>
       </b-modal>
+
+      <b-modal id="delete-income-code-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="delete-income-code-modal" type="confirm" :text="phrases.areYouSureToDeleteIncomeCode" :subText="phrases.incomeCodeDeleteConsequences" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteIncomeCode"></message-confirm-dialog>
+      </b-modal>
+
+      <b-modal id="income-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="income-code-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
   </b-container>
 </template>
 
 <script>
   import IncomeCodePreview from './IncomeCodePreview';
+  import MessageConfirmDialog from './MessageConfirmDialog';
   import { EventBus } from '../../../eventbus/event-bus.js';
 
   const { dialog } = require('electron').remote
   const incomeCodeController = require('../../../controllers/incomeCodeController')
   const i18n = require('../../../translations/i18n')
-  const { showErrorDialog, compareCodes } = require('../../../utils/utils')
+  const { compareCodes } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -68,7 +77,8 @@
           cancel: i18n.getTranslation('Cancel'),
           delete: i18n.getTranslation('Delete'),
           areYouSureToDeleteIncomeCode: i18n.getTranslation('Are you sure you want to delete income code?'),
-          incomeCodeDeleteConsequences: i18n.getTranslation('By deleting income code you will possibly make some of payment slips invalid.')
+          incomeCodeDeleteConsequences: i18n.getTranslation('By deleting income code you will possibly make some of payment slips invalid.'),
+          ok: i18n.getTranslation('Ok')
         },
         fields: [
           {
@@ -97,7 +107,9 @@
         ],
         incomeCodes: [],
         selectedIncomeCode: null,
-        isUpdate: false
+        deletedIncomeCode: null,
+        isUpdate: false,
+        errorText: ""
       }
     },
     created () {
@@ -111,7 +123,7 @@
             var incomeCodes = res.data ? res.data : []
             self.incomeCodes = incomeCodes.sort(compareCodes)
           } else {
-            showErrorDialog(res.err)
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -128,35 +140,30 @@
       rowDblClickHandler (record, index) {
         this.openCreateIncomeCodeModal(record)
       },
-      deleteIncomeCode (incomeCode) {
-        const options = {
-          type: 'question',
-          buttons: [this.phrases.cancel, this.phrases.delete],
-          defaultId: 1,
-          message: this.phrases.areYouSureToDeleteIncomeCode,
-          detail: this.phrases.incomeCodeDeleteConsequences,
-          noLink: true,
-          cancelId: 0
-        }
-        dialog.showMessageBox(null, options, (response) => {
-          if (response === 1) {
-            const self = this
-            incomeCodeController.deleteIncomeCode(incomeCode._id).then((res) => {
-              if (!res.err) {
-                self.update()
-                EventBus.$emit('updatePaymentSlipTable');
-              } else {
-                showErrorDialog(res.err)
-              }
-            })
+      openDeleteIncomeCodeModal(incomeCode) {
+         this.deletedIncomeCode = incomeCode
+         this.$root.$emit('bv::show::modal', 'delete-income-code-modal')
+      },
+      deleteIncomeCode () {
+        const self = this
+        incomeCodeController.deleteIncomeCode(this.deletedIncomeCode).then((res) => {
+          if (!res.err) {
+            self.update()
+            EventBus.$emit('updatePaymentSlipTable');
+          } else {
+            self.openErrorModal(res.err)
           }
         })
+      },
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'income-code-table-error-modal')
       },
       update () {
         this.loadIncomeCodes()
       }
     },
-    components: { IncomeCodePreview }
+    components: { IncomeCodePreview, MessageConfirmDialog }
   }
 </script>
 

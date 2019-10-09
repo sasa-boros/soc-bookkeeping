@@ -9,6 +9,16 @@ function getAnnualReport (year) {
   })
 }
 
+function getAnnualReportPages (annualReport) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('get-annual-report-pages', annualReport)
+    ipcRenderer.once('get-annual-report-pages-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
 module.exports = {
-  getAnnualReport: getAnnualReport
+  getAnnualReport: getAnnualReport,
+  getAnnualReportPages: getAnnualReportPages
 }

@@ -4,8 +4,6 @@ import '../renderer/store'
 const { app, BrowserWindow } = require('electron')
 const mongoose = require('mongoose')
 const path = require('path')
-const os = require('os')
-const fs = require('fs')
 const config = require('../config/config')
 
 // loading ipc main router
@@ -23,7 +21,6 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
-let workerWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080/`
   : `file://${__dirname}/index.html`

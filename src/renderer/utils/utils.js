@@ -1,10 +1,3 @@
-const { dialog } = require('electron').remote
-const i18n = require('../translations/i18n')
-
-let phrases = {
-  error: i18n.getTranslation('Error')
-}
-
 function numberToSerbianDinars (n) {
   if (!n || isNaN(n) || n.toString().trim() === '') {
     return null
@@ -305,18 +298,6 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes) {
     return receipt;
 }
 
-function showErrorDialog (error) {
-  error = JSON.stringify(error)
-  const options = {
-    type: 'error',
-    buttons: [],
-    title: phrases.error,
-    message: error,
-    noLink: true
-  }
-  dialog.showMessageBox(null, options)
-}
-
 function compareCodes( codeA, codeB ) {
   if ((codeA.partition.toString() + codeA.position.toString()) < (codeB.partition.toString() + codeB.position.toString())) {
     return -1;
@@ -334,6 +315,5 @@ module.exports = {
   mapPaymentSlipFormToPaymentSlip: mapPaymentSlipFormToPaymentSlip,
   mapReceiptToReceiptForm, mapReceiptToReceiptForm,
   mapReceiptFormToReceipt: mapReceiptFormToReceipt,
-  showErrorDialog: showErrorDialog,
   compareCodes: compareCodes
 }

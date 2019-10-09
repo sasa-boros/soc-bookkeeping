@@ -10,7 +10,7 @@
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="deleteCheckedPaymentSlips()" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" id="deleteSelectedBtn" variant="link" class="btn-xs">
+          <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="openDeleteCheckedPaymentSlipsModal()" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" id="deleteSelectedBtn" variant="link" class="btn-xs">
             <img src="~@/assets/trash1.png">               
           </b-btn>
         </b-button-group>
@@ -48,9 +48,11 @@
              :empty-text="phrases.noRecordsToShow"
              :empty-filtered-text="phrases.noRecordsToShow"
     >
-      <template v-slot:cell(HEAD_select)="row">
-        <b-form-checkbox @click.native.stop="toggleCheckAll" v-model="checkAll">
-        </b-form-checkbox>
+      <template v-slot:head(select)="row">
+        <span v-on:mouseleave="$root.$emit('bv::hide::tooltip')">
+          <b-form-checkbox  v-b-tooltip.hover.right="{title: phrases.selectAll, customClass: 'tooltipInnerText'}" @click.native.prevent="toggleCheckAll" v-model="checkAll">
+          </b-form-checkbox>
+         </span>
       </template>
       <template v-slot:cell(preview)="row">
         <b-button-group>
@@ -60,8 +62,10 @@
         </b-button-group>                
       </template>
       <template v-slot:cell(select)="row">
-        <b-form-checkbox v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.select, customClass: 'tooltipInnerText'}" :value="row.item" v-model="checkedItems">
-        </b-form-checkbox>
+        <span v-on:mouseleave="$root.$emit('bv::hide::tooltip')">
+          <b-form-checkbox v-b-tooltip.hover.top="{title: phrases.select, customClass: 'tooltipInnerText'}" :value="row.item" v-model="checkedPaymentSlips">
+          </b-form-checkbox>
+        </span>
       </template>
       <template v-slot:cell(income)="row">{{ row.item.income }}</template>
       <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
@@ -69,7 +73,7 @@
       <template v-slot:cell(formatedUpdatedAt)="row">{{ row.item.updatedAt | formatUpdatedAt }}</template>
       <template v-slot:cell(invalid)="row">
         <div v-show="!isValid(row.item)">
-          <img :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="imgSm">
+          <img :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
           <b-tooltip :target="'invalid' + row.item._id">
             <div class="tooltipInnerText">
               {{phrases.invalidPaymentSlip}}
@@ -79,7 +83,7 @@
       </template>
       <template v-slot:cell(delete)="row">
         <b-button-group>
-          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deletePaymentSlip, customClass: 'tooltipInnerText'}" @click.stop="deletePaymentSlip(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deletePaymentSlip, customClass: 'tooltipInnerText'}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
             <img src="~@/assets/delete.png">                                           
           </b-button>     
         </b-button-group>                
@@ -98,6 +102,17 @@
       <payment-slip-preview :paymentSlip='selectedItem' :paymentSlipPreview='isPreview' parentModal="create-payment-slip-modal" v-on:updatePaymentSlipTable="update"></payment-slip-preview>
     </b-modal>
 
+    <b-modal id="delete-payment-slip-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+      <message-confirm-dialog parentModal="delete-payment-slip-modal" type="confirm" :text="phrases.areYouSureToDeletePaymentSlip" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deletePaymentSlip"></message-confirm-dialog>
+    </b-modal>
+
+    <b-modal id="delete-checked-payment-slips-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+      <message-confirm-dialog parentModal="delete-checked-payment-slips-modal" type="confirm" :text="phrases.areYouSureToDeleteCheckedPaymentSlips" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteCheckedPaymentSlips"></message-confirm-dialog>
+    </b-modal>
+
+    <b-modal id="payment-slip-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="payment-slip-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
   </b-container>
 </template>
 
@@ -105,10 +120,9 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
+  import MessageConfirmDialog from './MessageConfirmDialog'
   import { EventBus } from '../../../eventbus/event-bus.js';
   
-  const { dialog } = require('electron').remote
-  const { showErrorDialog } = require('../../../utils/utils')
   const paymentSlipController = require('../../../controllers/paymentSlipController')
   const commonController = require('../../../controllers/commonController')
   const i18n = require('../../../translations/i18n')
@@ -131,12 +145,14 @@
           reason: i18n.getTranslation('Reason'),
           forDate: i18n.getTranslation('For date'),
           updatedAt: i18n.getTranslation('Updated at'),
-          areYouSureToDeleteSlip: i18n.getTranslation('Are you sure you want to delete the payment slip?'),
-          areYouSureToDeleteCheckedSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
+          areYouSureToDeletePaymentSlip: i18n.getTranslation('Are you sure you want to delete the payment slip?'),
+          areYouSureToDeleteCheckedPaymentSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
           noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
           filterByYear: i18n.getTranslation('Filter by year'),
           invalidPaymentSlip: i18n.getTranslation('Invalid payment slip'),
-          select: i18n.getTranslation('Select')
+          select: i18n.getTranslation('Select'),
+          selectAll: i18n.getTranslation('Select all'),
+          ok: i18n.getTranslation('Ok')
         },
         paymentSlips: [],
         items: [],
@@ -148,11 +164,13 @@
         sortDesc: true,
         sortDirection: 'desc',
         filter: null,
-        checkedItems: [],
+        deletedPaymentSlip: null,
+        checkedPaymentSlips: [],
         itemsShownInTable: [],
         checkAll: false,
         selectedItem: null,
-        isPreview: false
+        isPreview: false,
+        errorText: ""
       }
     },
     created () {
@@ -173,18 +191,18 @@
         }
       ),
       noRowChecked () {
-        return this.checkedItems.length === 0
+        return this.checkedPaymentSlips.length === 0
       },
       fields () {
         return [
-          { key: 'select', label: '' },
-          { key: 'preview', label: '' },
+          { key: 'select', label: '', thStyle: {outline: 'none'} },
+          { key: 'preview', label: '', thStyle: {outline: 'none'}  },
           { key: 'income', label: this.phrases.income, sortable: true, class: 'text-center' },
           { key: 'reason', label: this.phrases.reason, sortable: true, class: 'text-center' },
           { key: 'formatedDate', label: this.phrases.forDate, sortable: true, class: 'text-center' },
           { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center' },
-          { key: 'invalid', label: ''} ,
-          { key: 'delete', label: '' }
+          { key: 'invalid', label: '', thStyle: {outline: 'none'} } ,
+          { key: 'delete', label: '', thStyle: {outline: 'none'} }
         ]
       }
     },
@@ -194,6 +212,8 @@
         this.$emit('updateBookedYears')
         this.$emit('updateInvalidPaymentSlipsInfo')
         this.yearToFilter = ''
+        this.checkAll = false
+        this.checkedPaymentSlips = []
       },
       loadPaymentSlips () {
         const self = this
@@ -202,7 +222,7 @@
             self.paymentSlips = res.data ? res.data : []
             self.items = self.paymentSlips
           } else {
-            showErrorDialog(res.err)
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -214,73 +234,42 @@
       },
       toggleCheckAll () {
         /* Before the checkAll changes based on the click, so the logic is reversed in the check */
-        this.checkedItems = this.checkAll ? [] : this.itemsShownInTable
+        this.checkedPaymentSlips = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
         this.openUpdatePaymentSlipModal(record)
       },
-      formatSlipForDialog (slip) {
-        return this.phrases.income + ':   ' + slip.income + '\n' + this.phrases.reason + ':   ' + slip.reason
-      },
-      deletePaymentSlip (item) {
-        const options = {
-          type: 'question',
-          buttons: [this.phrases.cancel, this.phrases.delete],
-          defaultId: 1,
-          title: this.phrases.deletePaymentSlip,
-          message: this.phrases.areYouSureToDeleteSlip,
-          detail: this.formatSlipForDialog(item),
-          noLink: true,
-          cancelId: 0
-        }
-        dialog.showMessageBox(null, options, (response) => {
-          if (response === 1) {
-            const self = this
-            paymentSlipController.deletePaymentSlip(item._id).then((res) => {
-              if (!res.err) {
-                self.update()
-                const itemCheckedIndex = self.checkedItems.indexOf(item)
-                if (itemCheckedIndex !== -1) {
-                  self.checkedItems.splice(itemCheckedIndex, 1)
-                }
-              } else {
-                showErrorDialog(res.err)
-              }
-            })
-          }
-        })
-      },
       isValid (paymentSlip) {
         return paymentSlip.isValid
       },
+      openDeletePaymentSlipModal(paymentSlip) {
+         this.deletedPaymentSlip = paymentSlip
+         this.$root.$emit('bv::show::modal', 'delete-payment-slip-modal')
+      },
+      deletePaymentSlip () {
+        const self = this
+        paymentSlipController.deletePaymentSlip(this.deletedPaymentSlip._id).then((res) => {
+          if (!res.err) {
+            self.update()
+          } else {
+            self.openErrorModal(res.err)
+          }
+        })
+      },
+      openDeleteCheckedPaymentSlipsModal() {
+         this.$root.$emit('bv::show::modal', 'delete-checked-payment-slips-modal')
+      },
       deleteCheckedPaymentSlips () {
-        const options = {
-          type: 'question',
-          buttons: [this.phrases.cancel, this.phrases.delete],
-          defaultId: 1,
-          title: this.phrases.deletePaymentSlips,
-          message: this.phrases.areYouSureToDeleteCheckedSlips,
-          noLink: true,
-          cancelId: 0
-        }
-        dialog.showMessageBox(null, options, (response) => {
-          if (response === 1) {
-            const self = this
-            this.checkedItems.forEach(function (item) {
-              paymentSlipController.deletePaymentSlip(item._id).then((res) => {
-                if (!res.err) {
-                  self.update()
-                  const itemCheckedIndex = self.checkedItems.indexOf(item)
-                  if (itemCheckedIndex !== -1) {
-                    self.checkedItems.splice(itemCheckedIndex, 1)
-                  }
-                } else {
-                  showErrorDialog(res.err)
-                }
-              })
-            })
-            // this.$root.$emit('bv::refresh::table', 'payment-slips-table')
-            // this.checkedItems = []
+        var checkedPaymentSlipsIds = []
+        this.checkedPaymentSlips.forEach(function (paymentSlip) {
+          checkedPaymentSlipsIds.push(paymentSlip._id)
+        })
+        const self = this
+        paymentSlipController.deletePaymentSlips(checkedPaymentSlipsIds).then((res) => {
+          if (!res.err) {
+            self.update()
+          } else {
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -288,6 +277,10 @@
         this.selectedItem = item
         this.isPreview = true
         this.$root.$emit('bv::show::modal', 'create-payment-slip-modal')
+      },
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'payment-slip-table-error-modal')
       },
       onFiltered (filteredItems) {
         // Trigger pagination to update the number of buttons/pages due to filtering
@@ -342,7 +335,7 @@
       }
     },
     watch: {
-      checkedItems (newValue, oldValue) {
+      checkedPaymentSlips (newValue, oldValue) {
         this.checkAll = (this.itemsShownInTable.length !== 0 && this.itemsShownInTable.length === newValue.length)
         if (newValue.length === 0) {
           /* Close delete-selected button tooltip before it gets disabled and stuck */
@@ -360,10 +353,10 @@
             return false;
           })
         }
-        this.checkedItems = []
+        this.checkedPaymentSlips = []
       }
     },
-    components: { PaymentSlipPreview }
+    components: { PaymentSlipPreview, MessageConfirmDialog }
   }
 </script>
 
@@ -384,10 +377,6 @@
   .tableDiv{
     display: block;
     overflow: auto;
-  }
-  .imgSm{
-    width: 25px;
-    height: auto;
   }
   .inputWithIcon input[type="text"] {
     padding-left: 40px;

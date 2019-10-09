@@ -121,6 +121,9 @@
         </div>
       </b-tooltip>
     </b-form>
+    <b-modal id="payment-slip-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="payment-slip-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
   </b-container>
 </template>
 
@@ -129,10 +132,11 @@
   import { mapState } from 'vuex'
   import Datepicker from 'vuejs-datepicker'
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
+  import MessageConfirmDialog from './../MessageConfirmDialog'
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const paymentSlipController = require('../../../../controllers/paymentSlipController')
   const defaultPaymentSlipController = require('../../../../controllers/defaultPaymentSlipController')
-  const { numberToSerbianDinars, getLastNYears, getCodeCombinations, showErrorDialog, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip } = require('../../../../utils/utils')
+  const { numberToSerbianDinars, getCodeCombinations, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
 
   export default {
@@ -163,6 +167,7 @@
         postDatepickerJustBlurred: false,
         incomeCodes: null,
         incomeCodeCombinations: null,
+        errorText: "",
         phrases: {
           save: i18n.getTranslation('Save'),
           print: i18n.getTranslation('Print'),
@@ -172,7 +177,8 @@
           pickDate: i18n.getTranslation('Pick a date'),
           atLeastOnePartPosIncome: i18n.getTranslation('Enter at least one partition, position, income'),
           enterPartition: i18n.getTranslation('Enter partition'),
-          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of incomes by partitions and position')
+          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of incomes by partitions and position'),
+          ok: i18n.getTranslation('Ok')
         },
         calendarLanguages: {
           sr: sr,
@@ -184,7 +190,9 @@
       if(this.paymentSlipPreview) {
         var paymentSlip = JSON.parse(JSON.stringify(this.paymentSlip));
         this.form = mapPaymentSlipToPaymentSlipForm(paymentSlip);
-        this.shouldValidate = true;
+        if (!this.form.isValid) {
+          this.shouldValidate = true;
+        }
       } else {
         var defaultPaymentSlip = JSON.parse(JSON.stringify(this.defaultPaymentSlip));
         defaultPaymentSlip._id = undefined;
@@ -196,7 +204,7 @@
           self.incomeCodes = (res.data || [])
           self.incomeCodeCombinations = getCodeCombinations(self.incomeCodes)
         } else {
-          showErrorDialog(res.err)
+          self.openErrorModal(res.err)
         }
       })
     },
@@ -582,34 +590,28 @@
               self.$emit('updateDefaultPaymentSlip')
               self.closeModal();
             } else {
-              showErrorDialog(res.err)
+              self.openErrorModal(res.err)
             }
           })
         } else {
           this.shouldValidate = true;
           if (this.checkForm()) {
             if (this.paymentSlipPreview) {
-              var isValid = this.form.isValid
-              this.form.isValid = true
               paymentSlipController.updatePaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then((res) => {
                 if (!res.err) {
                   self.$emit('updatePaymentSlipTable')
                   self.closeModal();
                 } else {
-                  showErrorDialog(res.err)
-                  if(!isValid) {
-                    self.form.isValid = false
-                  }
+                  self.openErrorModal(res.err)
                 }
               })
             } else {
-              this.form.isValid = true
               paymentSlipController.createPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then((res) => {
                 if (!res.err) {
                   self.$emit('updatePaymentSlipTable')
                   self.closeModal();
                 } else {
-                  showErrorDialog(res.err)
+                  self.openErrorModal(res.err)
                 }
               })
             }
@@ -643,6 +645,10 @@
         }
         return true
       },
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'payment-slip-preview-error-modal')
+      },
       printPaymentSlip () {
         // ensuring clean screen
         var receiptSection = document.getElementById('print-receipt')
@@ -672,7 +678,7 @@
         this.$root.$emit('bv::hide::modal', this.parentModal)
       }
     },
-    components: { Datepicker }
+    components: { Datepicker, MessageConfirmDialog }
   }
 </script>
 

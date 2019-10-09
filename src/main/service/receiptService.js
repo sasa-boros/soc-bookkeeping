@@ -29,6 +29,7 @@ async function getReceipts (year) {
 async function createReceipt (receipt) {
   delete receipt._id
   console.log(`Creating receipt: \n${JSON.stringify(receipt, null, 2)}`)
+  receipt.isValid = true
   await Receipt(receipt).save()
   await assignAnnualReportValues()
   console.log('Successfully created receipt')
@@ -41,8 +42,16 @@ async function deleteReceipt (receiptId) {
   console.log('Successfully deleted receipt')
 }
 
+async function deleteReceipts (receiptsIds) {
+  console.log(`Deleting receipts with ids ${receiptsIds}`)
+  await Receipt.deleteMany({ _id: { $in : receiptsIds }}).exec()
+  await assignAnnualReportValues()
+  console.log('Successfully deleted receipts')
+}
+
 async function updateReceipt (receipt) {
   console.log(`Updating receipt: \n${JSON.stringify(receipt, null, 2)}`)
+  receipt.isValid = true
   await Receipt.findByIdAndUpdate(receipt._id, receipt).exec()
   await assignAnnualReportValues()
   console.log('Successfully updated receipt')
@@ -63,5 +72,6 @@ module.exports = {
   getReceipts: getReceipts,
   createReceipt: createReceipt,
   deleteReceipt: deleteReceipt,
+  deleteReceipts: deleteReceipts,
   updateReceipt: updateReceipt
 }

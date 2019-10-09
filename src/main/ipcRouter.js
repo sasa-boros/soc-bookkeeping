@@ -104,6 +104,14 @@ ipcMain.on('delete-payment-slip', async (event, paymentSlipId) => {
   }
 })
 
+ipcMain.on('delete-payment-slips', async (event, paymentSlipsIds) => {
+  try {
+    reply(event, 'delete-payment-slips-reply', await paymentSlipService.deletePaymentSlips(paymentSlipsIds))
+  } catch (err) {
+    replyError(event, 'delete-payment-slips-reply', err.message ? err.message : err)
+  }
+})
+
 ipcMain.on('update-payment-slip', async (event, paymentSlip) => {
   try {
     reply(event, 'update-payment-slip-reply', await paymentSlipService.updatePaymentSlip(paymentSlip))
@@ -141,6 +149,14 @@ ipcMain.on('delete-receipt', async (event, receiptId) => {
     reply(event, 'delete-receipt-reply', await receiptService.deleteReceipt(receiptId))
   } catch (err) {
     replyError(event, 'delete-receipt-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('delete-receipts', async (event, receiptsIds) => {
+  try {
+    reply(event, 'delete-receipts-reply', await receiptService.deleteReceipts(receiptsIds))
+  } catch (err) {
+    replyError(event, 'delete-receipts-reply', err.message ? err.message : err)
   }
 })
 
@@ -205,6 +221,14 @@ ipcMain.on('get-annual-report', async (event, year) => {
     reply(event, 'get-annual-report-reply', await annualReportService.getAnnualReport(year))
   } catch (err) {
     replyError(event, 'get-annual-report-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('get-annual-report-pages', async (event, annualReport) => {
+  try {
+    reply(event, 'get-annual-report-pages-reply', await annualReportService.getAnnualReportPages(annualReport))
+  } catch (err) {
+    replyError(event, 'get-annual-report-pages-reply', err.message ? err.message : err)
   }
 })
 

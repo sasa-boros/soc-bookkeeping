@@ -29,7 +29,7 @@
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
     <br>
-    <div style="background-color:#d3e1f0">
+    <div style="background-color:#e6f4ff">
       <h3 style="text-align:center">{{phrases.incomeCodes}}</h3>
       <income-codes-table></income-codes-table>
     </div>

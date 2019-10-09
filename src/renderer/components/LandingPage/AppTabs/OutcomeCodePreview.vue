@@ -10,7 +10,6 @@
           </b-button-group>
         </b-col>
       </b-row>
-      <hr/>
       <b-row>
         <b-col cols="3">
           <label :for="`partitionInput`">Партиција:</label>
@@ -84,14 +83,18 @@
           {{descriptionTooltipText}}
         </div>
       </b-tooltip>
+
+      <b-modal id="outcome-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="outcome-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      </b-modal>
   </b-container>
 </template>
 
 <script>
+import MessageConfirmDialog from './MessageConfirmDialog'
 
 const outcomeCodeController = require('../../../controllers/outcomeCodeController')
 const i18n = require('../../../translations/i18n');
- const { showErrorDialog } = require('../../../utils/utils')
 
 export default {
   props: {
@@ -114,7 +117,8 @@ export default {
         enterPartition: i18n.getTranslation('Enter partition'),
         enterPosition: i18n.getTranslation('Enter position'),
         notUnique: i18n.getTranslation('Outcome code partition and position not unique'),
-        enterDescription: i18n.getTranslation('Enter description')
+        enterDescription: i18n.getTranslation('Enter description'),
+        ok: i18n.getTranslation('Ok')
       },
       form: { 
         partition: null, 
@@ -122,7 +126,8 @@ export default {
         description: null
       },
       shouldValidate: false,
-      outcomeCodes: []
+      outcomeCodes: [],
+      errorText: ""
     }
   },
   created () {
@@ -214,7 +219,7 @@ export default {
                 self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
-                showErrorDialog(res.err)
+                self.openErrorModal(res.err)
               }
           })
         } else {
@@ -223,7 +228,7 @@ export default {
                 self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
-                showErrorDialog(res.err)
+                self.openErrorModal(res.err)
               }
           })
         }
@@ -240,10 +245,15 @@ export default {
       this.form.position = null;
       this.form.description = null;
     },
+    openErrorModal(error) {
+      this.errorText = error
+      this.$root.$emit('bv::show::modal', 'outcome-code-preview-error-modal')
+    },
     closeModal () {
         this.$root.$emit('bv::hide::modal', this.parentModal)
     }
-  }
+  },
+  components: { MessageConfirmDialog }
 }
 </script>
 

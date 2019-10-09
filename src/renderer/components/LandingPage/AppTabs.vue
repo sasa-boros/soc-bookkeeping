@@ -6,7 +6,8 @@
           <img src="~@/assets/payment-slip-blue.png" class="appTabsIcon">  
           {{phrases.paymentSlips}} 
           <span v-show="!arePaymentSlipsValid">
-            <img id="invalidPsImg" src="~@/assets/invalid.png" class="appTabsIcon">
+            &nbsp;
+            <img id="invalidPsImg" src="~@/assets/invalid.png" class="invalidIcon">
             <b-tooltip target="invalidPsImg">
               <div class="tooltipInnerText">
                 {{phrases.invalidPaymentSlipsExist}}
@@ -21,7 +22,8 @@
           <img src="~@/assets/receipt-blue.png" class="appTabsIcon">  
           {{phrases.receipts}}
           <span v-show="!areReceiptsValid">
-            <img id="invalidRImg" src="~@/assets/invalid.png" class="appTabsIcon">
+            &nbsp;
+            <img id="invalidRImg" src="~@/assets/invalid.png" class="invalidIcon">
             <b-tooltip target="invalidRImg">
               <div class="tooltipInnerText">
                 {{phrases.invalidReceiptsExist}}
@@ -46,6 +48,9 @@
         <settings-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></settings-pane>
       </b-tab>
     </b-tabs>
+    <b-modal id="app-tabs-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="app-tabs-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
   </b-card>
 </template>
 
@@ -55,6 +60,9 @@
   import PaymentSlipsTable from './AppTabs/PaymentSlipsTable'
   import AnnualReportPane from './AppTabs/AnnualReportPane'
   import SettingsPane from './AppTabs/SettingsPane'
+  import MessageConfirmDialog from './AppTabs/MessageConfirmDialog'
+
+
   const i18n = require('../../translations/i18n')
   const paymentSlipController = require('../../controllers/paymentSlipController')
   const receiptController = require('../../controllers/receiptController')
@@ -71,10 +79,12 @@
           annualReport: i18n.getTranslation('Annual report'),
           settings: i18n.getTranslation('Settings'),
           invalidPaymentSlipsExist: i18n.getTranslation('Invalid payment slips exist'),
-          invalidReceiptsExist: i18n.getTranslation('Invalid receipts exist')
+          invalidReceiptsExist: i18n.getTranslation('Invalid receipts exist'),
+          ok: i18n.getTranslation('Ok')
         },
         arePaymentSlipsValid: true,
-        areReceiptsValid: true
+        areReceiptsValid: true,
+        errorText: ""
       }
     },
     created () {
@@ -91,7 +101,7 @@
           if (!res.err) {
             self.arePaymentSlipsValid = res.data
           } else {
-            showErrorDialog(res.err)
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -101,7 +111,7 @@
           if (!res.err) {
             self.areReceiptsValid = res.data
           } else {
-            showErrorDialog(res.err)
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -112,7 +122,7 @@
             const defaultPaymentSlip = res.data
             self.$store.dispatch('SET_DEFAULT_PAYMENT_SLIP', defaultPaymentSlip)
           } else {
-            showErrorDialog(res.err)
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -123,7 +133,7 @@
             const defaultReceipt = res.data
             self.$store.dispatch('SET_DEFAULT_RECEIPT', defaultReceipt)
           } else {
-            showErrorDialog(res.err)
+            self.openErrorModal(res.err)
           }
         })
       },
@@ -134,12 +144,16 @@
             var bookedYears = (res.data || [])
             self.$store.dispatch('SET_BOOKED_YEARS', bookedYears)
           } else {
-            showErrorDialog(res.err)
+            self.openErrorModal(res.err)
           }
         })
+      },
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'app-tabs-error-modal')
       }
     },
-    components: { ReceiptsTable, PaymentSlipsTable, AnnualReportPane, SettingsPane }
+    components: { ReceiptsTable, PaymentSlipsTable, AnnualReportPane, SettingsPane, MessageConfirmDialog }
   }
 </script>
 

@@ -1,13 +1,18 @@
 <template>
   <b-container fluid id="annual-report-preview">
     <br>
-      <b-row class="text-center">
-        <b-col>
-          <b-button ref="annualReportPrintBtn" @click.stop="printAnnualReport()" variant="link" class="btn-lg">
+      <b-row>
+        <b-col cols="3">
+          <b-button ref="annualReportPrintBtn" @click.stop="printAnnualReport()" variant="link" class="btn-lg float-left">
             <img src="~@/assets/print.png">
           </b-button>
         </b-col>
-        <b-col cols="8">
+        <b-col cols="2">
+          <div class="float-right pageCount">
+            {{currentPage | formatPageCount}}/{{annualReportPages.length}}
+          </div>
+        </b-col>
+        <b-col cols="2" class="text-center">
           <b-button ref="decrementPageBtn" variant="link" v-on:click='decrementPage'>
             <i class="arrow left"></i>
           </b-button>
@@ -15,8 +20,8 @@
             <i class="arrow right"></i>
           </b-button>
         </b-col>
-        <b-col>
-          <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" class="btn-xs">
+        <b-col cols="5">
+          <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" class="btn-xs float-right">
             <img src="~@/assets/delete.png">
           </b-button>
         </b-col>
@@ -119,6 +124,14 @@ export default {
         }
       });
   },
+  filters: {
+    formatPageCount (pageCount) {
+      if (pageCount < 10) {
+        return '0' + pageCount
+      }
+      return pageCount
+    }
+  },
   methods: {
     decrementPage() {
       if(this.currentPage == 1) {
@@ -172,52 +185,57 @@ export default {
 
 <style scoped>
 
+.pageCount {
+  position: relative;
+  top: 7px;
+}
+
 .headline >>> #headline {
-	transform: scale(0.4);
+	transform: scale(0.6);
 	position:relative;
-	bottom: 200px;
-	right: 50px;
+  bottom: 120px;
+  left:35px;
 }
 
 .incomePage >>> #income-page {
-	transform: scale(0.4);
+	transform: scale(0.5);
 	position:relative;
-	bottom: 300px;
-	right: 450px;
+	bottom: 240px;
+	right: 360px;
 }
 .outcomePage >>> #outcome-page {
-	transform: scale(0.4);
+	transform: scale(0.5);
 	position:relative;
-	bottom: 305px;
-	right: 450px;
+	bottom: 245px;
+	right: 360px;
 }
 
 .totalIncomePage >>> #total-income-page {
-  transform: scale(0.4);
+  transform: scale(0.5);
 	position:relative;
-	bottom: 250px;
-	right: 485px;
+	bottom: 215px;
+	right: 400px;
 }
 
 .totalOutcomePage >>> #total-outcome-page {
-  transform: scale(0.4);
+  transform: scale(0.5);
 	position:relative;
-	bottom: 298px;
-	right: 485px;
+	bottom: 255px;
+	right: 400px;
 }
 
 .sharesPage >>> #shares-page {
-  transform: scale(0.4);
+  transform: scale(0.5);
   position:relative;
-  bottom: 270px;
-  right: 520px;
+  bottom: 230px;
+  right: 430px;
 }
 
 .totalPage >>> #total-page {
-	transform: scale(0.4);
+	transform: scale(0.5);
 	position:relative;
-	bottom: 270px;
-	right: 275px;
+	bottom: 220px;
+	right: 190px;
 }
 
 i {
@@ -253,7 +271,7 @@ i {
     }
     #headline {
       position: relative;
-      bottom: 1300px;
+      bottom: 1265px;
       left: 250px;
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -278,7 +296,7 @@ i {
     #total-income-page {
       page-break-before: always;
       position: relative;
-      bottom: 900px;
+      bottom: 895px;
       left: 50px;
       transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -286,7 +304,7 @@ i {
     #total-outcome-page {
       page-break-before: always;
       position: relative;
-      bottom: 900px;
+      bottom: 895px;
       left: 50px;
       transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -294,19 +312,19 @@ i {
     #shares-page {
       page-break-before: always;
       position: relative;
-      bottom: 870px;
+      bottom: 865px;
       left: 70px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     .last-page {
       position:relative; 
-      top:450px;
+      top:440px;
     }
     #total-page {
       page-break-before: always;
       position: absolute;
-      bottom: 0;
+      bottom:0px;
       left: 70px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;

@@ -1,5 +1,9 @@
 .tooltipInnerText {
-    font-size: 80%;
-    line-height: 1;
-    margin: 1px;
-  }
+  font-size: 80%;
+  line-height: 1;
+  margin: 1px;
+}
+.invalidIcon {
+  height: 20px;
+  width: auto;
+}
