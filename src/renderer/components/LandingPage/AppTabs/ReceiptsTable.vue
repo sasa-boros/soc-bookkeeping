@@ -34,14 +34,10 @@
              :current-page="currentPage"
              :per-page="perPage"
              :filter="filter"
-             :sort-by.sync="sortBy"
-             :sort-desc.sync="sortDesc"
-             :sort-direction="sortDirection"
-             :sort-compare="sortCompare"
              :no-provider-sorting="true"
              :no-provider-filtering="true"
              :no-provider-paging="true"
-             @filtered="onFiltered"
+              head-variant="light"
              @row-dblclicked="rowDblClickHandler" 
              responsive
              no-sort-reset
@@ -50,7 +46,7 @@
     >
       <template v-slot:head(select)="row">
         <span v-on:mouseleave="$root.$emit('bv::hide::tooltip')">
-          <b-form-checkbox  v-b-tooltip.hover.right="{title: phrases.selectAll, customClass: 'tooltipInnerText'}" @click.native.prevent="toggleCheckAll" v-model="checkAll">
+          <b-form-checkbox  v-b-tooltip.hover.right="{title: phrases.selectAll, customClass: 'tooltipInnerText'}" v-on:change="toggleCheckAll" v-model="checkAll">
           </b-form-checkbox>
          </span>
       </template>
@@ -93,12 +89,12 @@
 
     <b-row>
       <b-col>
-        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center"/>
+        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center" v-on:input="clearChecked"/>
       </b-col>
     </b-row>
 
     <b-modal hide-footer hide-header size="a5" id="create-receipt-modal">
-      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" v-on:updateReceiptTable="update"></receipt-preview>
+      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" :existingReceipts="receipts" v-on:updateReceiptTable="update"></receipt-preview>
     </b-modal>
 
     <b-modal id="delete-receipt-modal" hide-backdrop hide-footer hide-header content-class="shadow">
@@ -159,9 +155,6 @@
         currentPage: 1,
         perPage: 10,
         totalRows: null,
-        sortBy: 'formatedUpdatedAt',
-        sortDesc: true,
-        sortDirection: 'desc',
         filter: null,
         deletedReceipt: null,
         checkedReceipts: [],
@@ -196,10 +189,10 @@
         return [
           { key: 'select', label: '', thStyle: {outline: 'none'} },
           { key: 'preview', label: '', thStyle: {outline: 'none'} },
-          { key: 'outcome', label: this.phrases.outcome, sortable: true, class: 'text-center' },
-          { key: 'reason', label: this.phrases.reason, sortable: true, class: 'text-center' },
-          { key: 'formatedDate', label: this.phrases.forDate, sortable: true, class: 'text-center' },
-          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center'},
+          { key: 'outcome', label: this.phrases.outcome, class: 'text-center', thStyle: {outline: 'none'} },
+          { key: 'reason', label: this.phrases.reason, class: 'text-center', thStyle: {outline: 'none'} },
+          { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', thStyle: {outline: 'none'} },
+          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, class: 'text-center', thStyle: {outline: 'none'} },
           { key: 'invalid', label: '', thStyle: {outline: 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none'} }
         ]
@@ -211,6 +204,9 @@
         this.$emit('updateBookedYears')
         this.$emit('updateInvalidReceiptsInfo')
         this.yearToFilter = ''
+        this.clearChecked()
+      },
+      clearChecked () {
         this.checkAll = false
         this.checkedReceipts = []
       },
@@ -220,6 +216,7 @@
           if (!res.err) {
             self.receipts = res.data ? res.data : []
             self.items = self.receipts
+            self.totalRows = self.receipts.length
           } else {
             self.openErrorModal(res.err)
           }
@@ -281,44 +278,8 @@
         this.errorText = error
         this.$root.$emit('bv::show::modal', 'receipt-table-error-modal')
       },
-      onFiltered (filteredItems) {
-        // Trigger pagination to update the number of buttons/pages due to filtering
-        this.totalRows = filteredItems.length
-        this.currentPage = 1
-      },
       resetSelectedItem () {
         this.selectedItem = null
-      },
-      sortCompare(aRow, bRow, key, sortDesc, formatter, compareOptions, compareLocale) {
-        var a,b
-        if(key == 'formatedDate' || key == 'formatedUpdatedAt') {
-          a = Date.parse(aRow['date'])
-          b = Date.parse(bRow['updatedAt'])
-        } else {
-          a = aRow[key]
-          b = bRow[key]
-        }
-        if (
-          (typeof a === 'number' && typeof b === 'number') ||
-          (a instanceof Date && b instanceof Date)
-        ) {
-          // If both compared fields are native numbers or both are native dates
-          return a < b ? -1 : a > b ? 1 : 0
-        } else {
-          return this.toString(a).localeCompare(this.toString(b))
-        }
-      },
-      toString(value) {
-        if (value === null || typeof value === 'undefined') {
-          return ''
-        } else if (value instanceof Object) {
-          return Object.keys(value)
-            .sort()
-            .map(key => toString(value[key]))
-            .join(' ')
-        } else {
-          return String(value)
-        }
       }
     },
     filters: {
@@ -352,6 +313,8 @@
             return false;
           })
         }
+        this.totalRows = this.items.length
+        this.currentPage = 1
         this.checkedReceipts = []
       }
     },

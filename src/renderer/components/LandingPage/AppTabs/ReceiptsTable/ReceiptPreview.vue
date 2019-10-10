@@ -11,7 +11,7 @@
       <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.churchMunicipality" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingChurchMunicipality }" id="churchMunicipalityInput" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" id="reasonInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        П р и м и о,
                                                                                                           <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                        Да се исплати на терет расхода<span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker></span>
+      </div><div class="mt-2">                                                                                                        Да се исплати на терет расхода<span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar" v-on:input="checkMaxReceipts"></datepicker></span>
                                                                                                           Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.firstPartition" id="firstPartSelect" :disabled="defaultReceiptPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.firstPosition" id="firstPosSelect" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input v-model="form.firstOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstOutcome && atLeastOnePartPosNotSet }" id="firstOutcomeInput" :disabled="defaultReceiptPreview || missingFirstPart" type="number" min="0" step="1"></b-form-input></span></b-form-group>
                  Исплатио благајник,                                                      Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.secondPartition" id="secondPartSelect" :disabled="defaultReceiptPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.secondPosition" id="secondPosSelect" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input v-model="form.secondOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondOutcome && atLeastOnePartPosNotSet }" id="secondOutcomeInput" :disabled="defaultReceiptPreview || missingSecondPart" type="number" min="0" step="1"></b-form-input></span></b-form-group>
                                                            
@@ -161,6 +161,12 @@
         type: Boolean,
         default: false
       },
+      existingReceipts: {
+        type: Array,
+        default: function () {
+          return []
+        }
+      },   
       parentModal: {
         type: String,
         default: null
@@ -185,7 +191,8 @@
           atLeastOnePartPosOutcome: i18n.getTranslation('Enter at least one partition, position, outcome'),
           enterPartition: i18n.getTranslation('Enter partition'),
           needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of outcomes by partitions and position'),
-          ok: i18n.getTranslation('Ok')
+          ok: i18n.getTranslation('Ok'),
+          maxNumberOfReceiptsReached: i18n.getTranslation('Maximum number of receipts reached for this month and year (27). Choose another date.')
         },
         calendarLanguages: {
           sr: sr,
@@ -571,6 +578,30 @@
       }
     },
     methods: {
+      checkMaxReceipts () {
+        if (!this.form.date || !this.existingReceipts) {
+          return
+        }
+        // set date to null because of long processing
+        const formDate = this.form.date
+        this.$refs.dateInput.clearDate()
+        this.form.date = null
+
+        var countOfSameMonthAndYear = 0
+        for (let i=0; i<this.existingReceipts.length; i++) {
+          const receiptDate = new Date(this.existingReceipts[i].date)
+          if (receiptDate.getMonth() == formDate.getMonth() && receiptDate.getFullYear() == formDate.getFullYear()) {
+            if (this.existingReceipts[i]._id != this.form._id) {
+              countOfSameMonthAndYear++
+            }
+            if (countOfSameMonthAndYear >= 27) {
+              this.openErrorModal(this.phrases.maxNumberOfReceiptsReached)
+              return
+            }
+          }
+        }
+        this.form.date = formDate
+      },
       tabPressedHandler (evt) {
         if (this.preDatepickerJustBlurred) {
           /* Manually put focus on the datepicker object */

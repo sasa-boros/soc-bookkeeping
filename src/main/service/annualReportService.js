@@ -24,20 +24,21 @@ async function getAnnualReport (year) {
     const paymentSlips = await getEntitiesByDate(PaymentSlip, new Date(year, i, 1), new Date(year, i + 1, 1), true)
     const receipts = await getEntitiesByDate(Receipt, new Date(year, i, 1), new Date(year, i + 1, 1), true)
     
+    var paymentSlipsValid = checkIfEntitiesAreValid(paymentSlips)
+    var receiptsValid = checkIfEntitiesAreValid(receipts)
+
+    if (!paymentSlipsValid && !receiptsValid) {
+      throw new Error('Invalid payment slips and receipts found')
+    } else if (!paymentSlipsValid) {
+      throw new Error('Invalid payment slips found')
+    } else if(!receiptsValid) {
+      throw new Error('Invalid receipts found')
+    }
+
     if (paymentSlips) {
-      for (let j=0; j < paymentSlips.length; j++) {
-        if (!paymentSlips[j].isValid) {
-          throw new Error('Invalid payment slips found')
-        }
-      }
       calculateIncome(paymentSlips, annualReportPage, annualReport)
     }
     if (receipts) {
-      for (let j=0; j < receipts.length; j++) {
-        if (!receipts[j].isValid) {
-          throw new Error('Invalid receipts found')
-        }
-      }
       calculateOutcome(receipts, annualReportPage, annualReport)
     }
     if (i !== 0) {
@@ -86,6 +87,18 @@ async function getEntitiesByDate (entity, startDate, endDate, isSorted) {
   } else {
     return entity.find({ 'date': { '$gte': startDate, '$lt': endDate } }).exec()
   }
+}
+
+function checkIfEntitiesAreValid(entities) {
+  if(!entities) {
+    return true
+  }
+  for (let j=0; j < entities.length; j++) {
+    if (!entities[j].isValid) {
+      return false
+    }
+  }
+  return true
 }
 
 function calculateIncome (paymentSlips, annualReportPage, annualReport) {

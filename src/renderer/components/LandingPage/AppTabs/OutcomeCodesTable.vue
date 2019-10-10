@@ -10,6 +10,7 @@
               class="mt-3"
               :items="outcomeCodes"
               responsive
+              head-variant="light"
               hover
               small
               :fields="fields"
@@ -78,7 +79,8 @@
           delete: i18n.getTranslation('Delete'),
           areYouSureToDeleteOutcomeCode: i18n.getTranslation('Are you sure you want to delete outcome code?'),
           outcomeCodeDeleteConsequences: i18n.getTranslation('By deleting outcome code you will possibly make some of receipts invalid.'),
-          ok: i18n.getTranslation('Ok')
+          ok: i18n.getTranslation('Ok'),
+          maxNumberOfOutcomeCodesReached: i18n.getTranslation('Maximum number of outcome codes reached (15).')
         },
         fields: [
           {
@@ -132,6 +134,10 @@
           this.selectedOutcomeCode = outcomeCode
           this.isUpdate = true
         } else {
+          if(this.outcomeCodes.length >= 15) {
+            this.openErrorModal(this.phrases.maxNumberOfOutcomeCodesReached)
+            return
+          }
           this.selectedOutcomeCode = null
           this.isUpdate = false    
         }

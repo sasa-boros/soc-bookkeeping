@@ -11,7 +11,7 @@
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
                                                                                                             <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.payed" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar"></datepicker></span> г.
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar" v-on:input="checkMaxPaymentSlips"></datepicker></span> г.
                                                                                                             Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.firstPartition" id="firstPartSelect" :disabled="defaultPaymentSlipPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.firstPosition" id="firstPosSelect" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup" id="firstIncomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input v-model="form.firstIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstIncome && atLeastOnePartPosNotSet }" id="firstIncomeInput" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="number" min="0" step="1"></b-form-input></span></b-form-group>
                   Примио благајник,                                                          Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.secondPartition" id="secondPartSelect" :disabled="defaultPaymentSlipPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.secondPosition" id="secondPosSelect" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondIncomeInputFormGroup" id="secondIncomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input v-model="form.secondIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondIncome && atLeastOnePartPosNotSet }" id="secondIncomeInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="number" min="0" step="1"></b-form-input></span></b-form-group>
                                                            
@@ -154,6 +154,12 @@
         type: Boolean,
         default: false
       },
+      existingPaymentSlips: {
+        type: Array,
+        default: function () {
+          return []
+        }
+      },      
       parentModal: {
         type: String,
         default: null
@@ -178,7 +184,8 @@
           atLeastOnePartPosIncome: i18n.getTranslation('Enter at least one partition, position, income'),
           enterPartition: i18n.getTranslation('Enter partition'),
           needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of incomes by partitions and position'),
-          ok: i18n.getTranslation('Ok')
+          ok: i18n.getTranslation('Ok'),
+          maxNumberOfPaymentSlipsReached: i18n.getTranslation('Maximum number of payment slips reached for this month and year (27). Choose another date.')
         },
         calendarLanguages: {
           sr: sr,
@@ -551,6 +558,30 @@
       }
     },
     methods: {
+      checkMaxPaymentSlips () {
+        if (!this.form.date || !this.existingPaymentSlips) {
+          return
+        }
+        // set date to null because of long processing
+        const formDate = this.form.date
+        this.$refs.dateInput.clearDate()
+        this.form.date = null
+
+        var countOfSameMonthAndYear = 0
+        for (let i=0; i<this.existingPaymentSlips.length; i++) {
+          const paymentSlipDate = new Date(this.existingPaymentSlips[i].date)
+          if (paymentSlipDate.getMonth() == formDate.getMonth() && paymentSlipDate.getFullYear() == formDate.getFullYear()) {
+            if (this.existingPaymentSlips[i]._id != this.form._id) {
+              countOfSameMonthAndYear++
+            }
+            if (countOfSameMonthAndYear >= 27) {
+              this.openErrorModal(this.phrases.maxNumberOfPaymentSlipsReached)
+              return
+            }
+          }
+        }
+        this.form.date = formDate
+      },
       tabPressedHandler (evt) {
         if (this.preDatepickerJustBlurred) {
           /* Manually put focus on the datepicker object */

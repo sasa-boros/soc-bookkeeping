@@ -10,6 +10,7 @@
               class="mt-3"
               :items="incomeCodes"
               responsive
+              head-variant="light"
               hover
               small
               :fields="fields"
@@ -52,7 +53,7 @@
 
       <b-modal id="income-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
         <message-confirm-dialog parentModal="income-code-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
-    </b-modal>
+      </b-modal>
   </b-container>
 </template>
 
@@ -78,7 +79,8 @@
           delete: i18n.getTranslation('Delete'),
           areYouSureToDeleteIncomeCode: i18n.getTranslation('Are you sure you want to delete income code?'),
           incomeCodeDeleteConsequences: i18n.getTranslation('By deleting income code you will possibly make some of payment slips invalid.'),
-          ok: i18n.getTranslation('Ok')
+          ok: i18n.getTranslation('Ok'),
+          maxNumberOfIncomeCodesReached: i18n.getTranslation('Maximum number of income codes reached (15).')
         },
         fields: [
           {
@@ -132,6 +134,10 @@
           this.selectedIncomeCode = incomeCode
           this.isUpdate = true
         } else {
+          if(this.incomeCodes.length >= 15) {
+            this.openErrorModal(this.phrases.maxNumberOfIncomeCodesReached)
+            return
+          }
           this.selectedIncomeCode = null
           this.isUpdate = false    
         }

@@ -56,6 +56,7 @@
         phrases: {
           showAnnualReport: i18n.getTranslation('Show annual report'),
           forYear: i18n.getTranslation('for year'),
+          invalidPaymentSlipsAndReceiptsFound: i18n.getTranslation('Invalid payment slips and receipts found'),
           invalidPaymentSlipsFound: i18n.getTranslation('Invalid payment slips found'),
           invalidReceiptsFound: i18n.getTranslation('Invalid receipts found'),
           inputAtleastOne: i18n.getTranslation('To generate annual report input at least one payment slip or receipt'),
@@ -92,7 +93,9 @@
                 }
              })
           } else {
-            if (res.err == "Invalid payment slips found") {
+            if (res.err == 'Invalid payment slips and receipts found') {
+              self.openAnnualReportPreviewFailedModal(self.phrases.invalidPaymentSlipsAndReceiptsFound)
+            } else if (res.err == "Invalid payment slips found") {
               self.openAnnualReportPreviewFailedModal(self.phrases.invalidPaymentSlipsFound)
             } else if (res.err == "Invalid receipts found") {
               self.openAnnualReportPreviewFailedModal(self.phrases.invalidReceiptsFound)

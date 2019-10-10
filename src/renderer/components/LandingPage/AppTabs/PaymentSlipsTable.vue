@@ -34,23 +34,19 @@
              :current-page="currentPage"
              :per-page="perPage"
              :filter="filter"
-             :sort-compare="sortCompare"
-             :sort-by.sync="sortBy"
-             :sort-desc.sync="sortDesc"
-             :sort-direction="sortDirection"
              :no-provider-sorting="true"
              :no-provider-filtering="true"
              :no-provider-paging="true"
-             @filtered="onFiltered"
              @row-dblclicked="rowDblClickHandler" 
              responsive
              no-sort-reset
+             head-variant="light"
              :empty-text="phrases.noRecordsToShow"
              :empty-filtered-text="phrases.noRecordsToShow"
     >
       <template v-slot:head(select)="row">
         <span v-on:mouseleave="$root.$emit('bv::hide::tooltip')">
-          <b-form-checkbox  v-b-tooltip.hover.right="{title: phrases.selectAll, customClass: 'tooltipInnerText'}" @click.native.prevent="toggleCheckAll" v-model="checkAll">
+          <b-form-checkbox  v-b-tooltip.hover.right="{title: phrases.selectAll, customClass: 'tooltipInnerText'}" v-on:change="toggleCheckAll" v-model="checkAll">
           </b-form-checkbox>
          </span>
       </template>
@@ -93,13 +89,13 @@
 
     <b-row>
       <b-col>
-        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center"/>
+        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center" v-on:input="clearChecked"/>
       </b-col>
     </b-row>
 
     <!-- Create slip modal -->
     <b-modal hide-footer hide-header size="a5" id="create-payment-slip-modal">
-      <payment-slip-preview :paymentSlip='selectedItem' :paymentSlipPreview='isPreview' parentModal="create-payment-slip-modal" v-on:updatePaymentSlipTable="update"></payment-slip-preview>
+      <payment-slip-preview :paymentSlip='selectedItem' :paymentSlipPreview='isPreview' :existingPaymentSlips="paymentSlips" parentModal="create-payment-slip-modal" v-on:updatePaymentSlipTable="update"></payment-slip-preview>
     </b-modal>
 
     <b-modal id="delete-payment-slip-modal" hide-backdrop hide-footer hide-header content-class="shadow">
@@ -160,9 +156,6 @@
         currentPage: 1,
         perPage: 10,
         totalRows: null,
-        sortBy: 'formatedUpdatedAt',
-        sortDesc: true,
-        sortDirection: 'desc',
         filter: null,
         deletedPaymentSlip: null,
         checkedPaymentSlips: [],
@@ -197,10 +190,10 @@
         return [
           { key: 'select', label: '', thStyle: {outline: 'none'} },
           { key: 'preview', label: '', thStyle: {outline: 'none'}  },
-          { key: 'income', label: this.phrases.income, sortable: true, class: 'text-center' },
-          { key: 'reason', label: this.phrases.reason, sortable: true, class: 'text-center' },
-          { key: 'formatedDate', label: this.phrases.forDate, sortable: true, class: 'text-center' },
-          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, sortable: true, class: 'text-center' },
+          { key: 'income', label: this.phrases.income, class: 'text-center', thStyle: {outline: 'none'} },
+          { key: 'reason', label: this.phrases.reason, class: 'text-center', thStyle: {outline: 'none'} },
+          { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', thStyle: {outline: 'none'} },
+          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, class: 'text-center', thStyle: {outline: 'none'} },
           { key: 'invalid', label: '', thStyle: {outline: 'none'} } ,
           { key: 'delete', label: '', thStyle: {outline: 'none'} }
         ]
@@ -212,6 +205,9 @@
         this.$emit('updateBookedYears')
         this.$emit('updateInvalidPaymentSlipsInfo')
         this.yearToFilter = ''
+        this.clearChecked()
+      },
+      clearChecked () {
         this.checkAll = false
         this.checkedPaymentSlips = []
       },
@@ -221,6 +217,7 @@
           if (!res.err) {
             self.paymentSlips = res.data ? res.data : []
             self.items = self.paymentSlips
+            self.totalRows = self.paymentSlips.length
           } else {
             self.openErrorModal(res.err)
           }
@@ -282,44 +279,8 @@
         this.errorText = error
         this.$root.$emit('bv::show::modal', 'payment-slip-table-error-modal')
       },
-      onFiltered (filteredItems) {
-        // Trigger pagination to update the number of buttons/pages due to filtering
-        this.totalRows = filteredItems.length
-        this.currentPage = 1
-      },
       resetSelectedItem () {
         this.selectedItem = null
-      },
-      sortCompare(aRow, bRow, key, sortDesc, formatter, compareOptions, compareLocale) {
-        var a,b
-        if(key == 'formatedDate' || key == 'formatedUpdatedAt') {
-          a = Date.parse(aRow['date'])
-          b = Date.parse(bRow['updatedAt'])
-        } else {
-          a = aRow[key]
-          b = bRow[key]
-        }
-        if (
-          (typeof a === 'number' && typeof b === 'number') ||
-          (a instanceof Date && b instanceof Date)
-        ) {
-          // If both compared fields are native numbers or both are native dates
-          return a < b ? -1 : a > b ? 1 : 0
-        } else {
-          return this.toString(a).localeCompare(this.toString(b))
-        }
-      },
-      toString(value) {
-        if (value === null || typeof value === 'undefined') {
-          return ''
-        } else if (value instanceof Object) {
-          return Object.keys(value)
-            .sort()
-            .map(key => toString(value[key]))
-            .join(' ')
-        } else {
-          return String(value)
-        }
       }
     },
     filters: {
@@ -353,6 +314,8 @@
             return false;
           })
         }
+        this.totalRows = this.items.length
+        this.currentPage = 1
         this.checkedPaymentSlips = []
       }
     },
