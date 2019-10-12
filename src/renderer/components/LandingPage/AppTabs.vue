@@ -3,11 +3,11 @@
     <b-tabs card>
       <b-tab active class="appTab">
         <template slot="title">
-          <img src="~@/assets/payment-slip-blue.png" class="appTabsIcon">  
+          <img src="~@/assets/payment-slip.png" class="appTabsIcon">  
           {{phrases.paymentSlips}} 
           <span v-show="!arePaymentSlipsValid">
             &nbsp;
-            <img id="invalidPsImg" src="~@/assets/invalid.png" class="invalidIcon">
+            <img id="invalidPsImg" v-on:mouseleave="hideTooltip('invalidPsImg')" src="~@/assets/invalid.png" class="invalidIcon">
             <b-tooltip target="invalidPsImg">
               <div class="tooltipInnerText">
                 {{phrases.invalidPaymentSlipsExist}}
@@ -19,11 +19,11 @@
       </b-tab>
       <b-tab class="appTab">
         <template slot="title">
-          <img src="~@/assets/receipt-blue.png" class="appTabsIcon">  
+          <img src="~@/assets/receipt.png" class="appTabsIcon">  
           {{phrases.receipts}}
           <span v-show="!areReceiptsValid">
             &nbsp;
-            <img id="invalidRImg" src="~@/assets/invalid.png" class="invalidIcon">
+            <img id="invalidRImg" v-on:mouseleave="hideTooltip('invalidRImg')" src="~@/assets/invalid.png" class="invalidIcon">
             <b-tooltip target="invalidRImg">
               <div class="tooltipInnerText">
                 {{phrases.invalidReceiptsExist}}
@@ -35,14 +35,14 @@
       </b-tab>
       <b-tab class="appTab">
         <template slot="title">
-          <img src="~@/assets/report-blue.png" class="appTabsIcon">  
+          <img src="~@/assets/annual-report.png" class="appTabsIcon">  
           {{phrases.annualReport}}
         </template>
         <annual-report-pane></annual-report-pane>
       </b-tab>
       <b-tab class="appTab">
         <template slot="title">
-          <img src="~@/assets/settings-blue.png" class="appTabsIcon">  
+          <img src="~@/assets/settings.png" class="appTabsIcon">  
           {{phrases.settings}}
         </template>
         <settings-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></settings-pane>
@@ -60,7 +60,7 @@
   import PaymentSlipsTable from './AppTabs/PaymentSlipsTable'
   import AnnualReportPane from './AppTabs/AnnualReportPane'
   import SettingsPane from './AppTabs/SettingsPane'
-  import MessageConfirmDialog from './AppTabs/MessageConfirmDialog'
+  import MessageConfirmDialog from '../MessageConfirmDialog'
 
 
   const i18n = require('../../translations/i18n')
@@ -147,6 +147,13 @@
             self.openErrorModal(res.err)
           }
         })
+      },
+      hideTooltip (elementId) {
+        if (elementId) {
+          this.$root.$emit('bv::hide::tooltip', elementId)
+        } else {
+          this.$root.$emit('bv::hide::tooltip')
+        }
       },
       openErrorModal(error) {
         this.errorText = error

@@ -2,132 +2,141 @@
   <b-container fluid id="receipt-preview-container" @keyup.tab.exact="tabPressedHandler" @keyup.shift.tab.exact="shiftTabPressedHandler">
     <b-form @submit="onSubmit" no-validation>
       <b-button @click.stop="closeModal()" variant="link" class="ignoreInPrint btn-xs" id="modalCancelBtn">
-        <img src="~@/assets/delete.png" class="ignoreInPrint">
+        <img src="~@/assets/close.png" class="ignoreInPrint">
       </b-button>
       <div class="receipt-preview-text">
         <h1> ПРИЗНАНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" ref="outcomeInput" v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" id="outcomeInput" :disabled="defaultReceiptPreview" type="number" min="0" step="1"></b-form-input></b-form-group> и словима  <div class="outcomeAsTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" contenteditable="false" id="outcomeAsTextDivWrapper1">{{generatedOutcomeTextLine1}}</div>
+      <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input id="outcomeInput" ref="outcomeInput" v-on:mouseleave="hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" :disabled="defaultReceiptPreview" type="number" min="0" step="0.01"></b-form-input></b-form-group> и словима  <div class="outcomeAsTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" contenteditable="false" id="outcomeAsTextDivWrapper1">{{generatedOutcomeTextLine1}}</div>
       <br/><div class="outcomeAsTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultReceiptPreview}" id="outcomeAsTextDivWrapper2">{{generatedOutcomeTextLine2}}</div>
-      <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.churchMunicipality" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingChurchMunicipality }" id="churchMunicipalityInput" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" id="reasonInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
+      <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input id="churchMunicipalityInput" v-on:mouseleave="hideTooltip('churchMunicipalityInput')" v-model="form.churchMunicipality" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingChurchMunicipality }" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" v-on:mouseleave="hideTooltip('townInput')" v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        П р и м и о,
                                                                                                           <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                        Да се исплати на терет расхода<span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar" v-on:input="checkMaxReceipts"></datepicker></span>
-                                                                                                          Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.firstPartition" id="firstPartSelect" :disabled="defaultReceiptPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.firstPosition" id="firstPosSelect" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input v-model="form.firstOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstOutcome && atLeastOnePartPosNotSet }" id="firstOutcomeInput" :disabled="defaultReceiptPreview || missingFirstPart" type="number" min="0" step="1"></b-form-input></span></b-form-group>
-                 Исплатио благајник,                                                      Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.secondPartition" id="secondPartSelect" :disabled="defaultReceiptPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.secondPosition" id="secondPosSelect" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input v-model="form.secondOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondOutcome && atLeastOnePartPosNotSet }" id="secondOutcomeInput" :disabled="defaultReceiptPreview || missingSecondPart" type="number" min="0" step="1"></b-form-input></span></b-form-group>
+      </div><div class="mt-2">                                                                                                        Да се исплати на терет расхода<span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar" v-on:input="checkMaxReceipts"></datepicker></span>
+                                                                                                          Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultReceiptPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstOutcome && atLeastOnePartPosNotSet }" :disabled="defaultReceiptPreview || missingFirstPart" type="number" min="0" step="0.01"></b-form-input></span></b-form-group>
+                 Исплатио благајник,                                                      Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartSelect')"><b-form-select id="secondPartSelect" v-model="form.secondPartition" :disabled="defaultReceiptPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="hideTooltip('secondPosSelectForm')"><b-form-select id="secondPosSelect" v-model="form.secondPosition" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="hideTooltip('secondOutcomeInputForm')"><b-form-input id="secondOutcomeInput" v-model="form.secondOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondOutcome && atLeastOnePartPosNotSet }" :disabled="defaultReceiptPreview || missingSecondPart" type="number" min="0" step="0.01"></b-form-input></span></b-form-group>
                                                            
-      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerDefaultOnBlur"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input disabled v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalOutcome || totalOutcomeNotValid ) }" id="totalOutcomeInput" type="number" min="0" step=".01"></b-form-input></span></b-form-group>
+      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerDefaultOnBlur"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="hideTooltip('totalOutcomeInputForm')"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalOutcome || totalOutcomeNotValid ) }" type="number" min="0" step="0.01"></b-form-input></span></b-form-group>
       <div class="my-0 line-spacing-small">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
       </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group ref="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                               <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
       </div></div>
       </div>
-      <div id="printBtnDiv">
-        <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" ref="receiptPrintBtn" id="receiptPrintBtn" @click.stop="printReceipt()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }">
+      <div id="downloadPrintBtnsDiv">
+        <b-button v-on:mouseleave="hideTooltip('receiptDownloadBtn')" ref="receiptDownloadBtn" id="receiptDownloadBtn" @click.stop="downloadReceipt()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }">
+          <img src="~@/assets/download.png" class="ignoreInPrint">
+        </b-button>
+        &nbsp;
+        <b-button v-on:mouseleave="hideTooltip('receiptPrintBtn')" ref="receiptPrintBtn" id="receiptPrintBtn" @click.stop="printReceipt()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }">
           <img src="~@/assets/print.png" class="ignoreInPrint">
         </b-button>
       </div>
       <div id="clearSaveBtnsDiv">
-        <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" ref="receiptSaveBtn" id="receiptSaveBtn" type="submit" variant="link" class="ignoreInPrint btn-lg">
-          <img src="~@/assets/save1.png" class="ignoreInPrint">
+        <b-button v-on:mouseleave="hideTooltip('receiptSaveBtn')" ref="receiptSaveBtn" id="receiptSaveBtn" type="submit" variant="link" class="ignoreInPrint btn-lg">
+          <img src="~@/assets/save.png" class="ignoreInPrint">
         </b-button>
-        <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" ref="receiptClearBtn" id="receiptClearBtn" @click.stop="clearForm()" variant="link" class="ignoreInPrint btn-lg">
+        <b-button v-on:mouseleave="hideTooltip('receiptClearBtn')" ref="receiptClearBtn" id="receiptClearBtn" @click.stop="clearForm()" variant="link" class="ignoreInPrint btn-lg">
           <img src="~@/assets/clear.png" class="ignoreInPrint">
         </b-button>
       </div>
-              
-      <b-tooltip target="outcomeInput" triggers="hover" placement="top" ref="outcomeInputTooltip" :disabled.sync="disableOutcomeTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.enterValue}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="townInput" triggers="hover" placement="top" ref="townInputTooltip" :disabled.sync="disableTownTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.enterValue}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="churchMunicipalityInput" triggers="hover" placement="top" ref="churchMunicipalityInputTooltip" :disabled.sync="disableChurchMunicipalityTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.enterValue}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.enterValue}}
-        </div>
-      </b-tooltip>
-
-
-      <b-tooltip target="firstPartSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosOutcome}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="firstPosSelectForm" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
-        <div class="tooltipInnerText">
-          {{firstPosTooltipText}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="firstOutcomeInputForm" triggers="hover" placement="top" ref="firstOutcomeInputTooltip" :disabled.sync="disableFirstOutcomeTooltip">
-        <div class="tooltipInnerText">
-          {{firstOutcomeTooltipText}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="secondPartSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosOutcome}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="secondPosSelectForm" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip">
-        <div class="tooltipInnerText">
-          {{secondPosTooltipText}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="secondOutcomeInputForm" triggers="hover" placement="top" ref="secondOutcomeInputTooltip" :disabled.sync="disableSecondOutcomeTooltip">
-        <div class="tooltipInnerText">
-          {{secondOutcomeTooltipText}}
-        </div>
-      </b-tooltip>
-
-
-      <b-tooltip target="totalOutcomeInputForm" triggers="hover" placement="top" ref="totalOutcomeInputTooltip" :disabled.sync="disableTotalOutcomeTooltip">
-        <div class="tooltipInnerText">
-          {{totalOutcomeTooltipText}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.pickDate}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="receiptPrintBtn" triggers="hover" placement="top" ref="receiptPrintBtnTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.print}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="receiptSaveBtn" triggers="hover" placement="top" ref="receiptSaveBtnTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.save}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="receiptClearBtn" triggers="hover" placement="top" ref="receiptClearBtnTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.clear}}
-        </div>
-      </b-tooltip>
     </b-form>
+
+    <b-tooltip target="outcomeInput" triggers="hover" placement="top" ref="outcomeInputTooltip" :disabled.sync="disableOutcomeTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.enterValue}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="townInput" triggers="hover" placement="top" ref="townInputTooltip" :disabled.sync="disableTownTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.enterValue}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="churchMunicipalityInput" triggers="hover" placement="top" ref="churchMunicipalityInputTooltip" :disabled.sync="disableChurchMunicipalityTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.enterValue}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.enterValue}}
+      </div>
+    </b-tooltip>
+
+
+    <b-tooltip target="firstPartSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.atLeastOnePartPosOutcome}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="firstPosSelectForm" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
+      <div class="tooltipInnerText">
+        {{firstPosTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="firstOutcomeInputForm" triggers="hover" placement="top" ref="firstOutcomeInputTooltip" :disabled.sync="disableFirstOutcomeTooltip">
+      <div class="tooltipInnerText">
+        {{firstOutcomeTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="secondPartSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.atLeastOnePartPosOutcome}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="secondPosSelectForm" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip">
+      <div class="tooltipInnerText">
+        {{secondPosTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="secondOutcomeInputForm" triggers="hover" placement="top" ref="secondOutcomeInputTooltip" :disabled.sync="disableSecondOutcomeTooltip">
+      <div class="tooltipInnerText">
+        {{secondOutcomeTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="totalOutcomeInputForm" triggers="hover" placement="top" ref="totalOutcomeInputTooltip" :disabled.sync="disableTotalOutcomeTooltip">
+      <div class="tooltipInnerText">
+        {{totalOutcomeTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.pickDate}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="receiptDownloadBtn" triggers="hover" placement="top" ref="receiptDownloadBtnTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.download}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="receiptPrintBtn" triggers="hover" placement="top" ref="receiptPrintBtnTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.print}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="receiptSaveBtn" triggers="hover" placement="top" ref="receiptSaveBtnTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.save}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="receiptClearBtn" triggers="hover" placement="top" ref="receiptClearBtnTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.clear}}
+      </div>
+    </b-tooltip>
     <b-modal id="receipt-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
         <message-confirm-dialog parentModal="receipt-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
@@ -139,11 +148,11 @@
   import { mapState } from 'vuex'
   import Datepicker from 'vuejs-datepicker'
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
-  import MessageConfirmDialog from './../MessageConfirmDialog'
+  import MessageConfirmDialog from '../../../MessageConfirmDialog'
   const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
   const receiptController = require('../../../../controllers/receiptController')
   const defaultReceiptController = require('../../../../controllers/defaultReceiptController')
-  const { numberToSerbianDinars, getCodeCombinations, mapReceiptToReceiptForm, mapReceiptFormToReceipt } = require('../../../../utils/utils')
+  const { numberToSerbianDinars, getCodeCombinations, mapReceiptToReceiptForm, mapReceiptFormToReceipt, saveAs } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
 
   export default {
@@ -192,7 +201,10 @@
           enterPartition: i18n.getTranslation('Enter partition'),
           needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of outcomes by partitions and position'),
           ok: i18n.getTranslation('Ok'),
-          maxNumberOfReceiptsReached: i18n.getTranslation('Maximum number of receipts reached for this month and year (27). Choose another date.')
+          download: i18n.getTranslation('Download'),
+          permissionDenied: i18n.getTranslation('Permission denied.'),
+          maxNumberOfReceiptsReached: i18n.getTranslation('Maximum number of receipts reached for this month and year (27). Choose another date.'),
+          receiptPdf: i18n.getTranslation('receipt.pdf')
         },
         calendarLanguages: {
           sr: sr,
@@ -602,6 +614,13 @@
         }
         this.form.date = formDate
       },
+      hideTooltip (elementId) {
+        if (elementId) {
+          this.$root.$emit('bv::hide::tooltip', elementId)
+        } else {
+          this.$root.$emit('bv::hide::tooltip')
+        }
+      },
       tabPressedHandler (evt) {
         if (this.preDatepickerJustBlurred) {
           /* Manually put focus on the datepicker object */
@@ -702,7 +721,40 @@
         this.$root.$emit('bv::show::modal', 'receipt-preview-error-modal')
       },
       printReceipt () {
-        // ensuring clean screen
+        const section = this.preparePrintSection()
+        document.body.appendChild(section)
+        try {
+          window.print()
+        } finally {
+          document.body.removeChild(section)
+        }
+      },
+      async downloadReceipt () {
+        const section = this.preparePrintSection()
+        document.body.appendChild(section)
+        try {
+          const res = await receiptController.createReceiptPdf()
+          if (!res.err) {
+            const self = this
+            saveAs('./receipt.pdf', this.phrases.receiptPdf, err => {
+              if (err) {
+                if (err.message.toLowerCase().indexOf('permission denied') != -1) {
+                  self.openErrorModal(self.phrases.permissionDenied)
+                } else {
+                  self.openErrorModal(err.message)
+                }
+              }
+            })
+          } else {
+            this.openErrorModal(res.err)       
+          }
+        }
+        finally {
+          document.body.removeChild(section)
+        }
+      },
+      preparePrintSection () {
+         // ensuring clean screen
         var paymentSlipSection = document.getElementById('print-payment-slip')
         if (paymentSlipSection) {
           document.body.removeChild(paymentSlipSection)
@@ -711,20 +763,14 @@
         if (annualReportSection) {
           document.body.removeChild(annualReportSection)
         }
-
         const modal = document.getElementById('receipt-preview-container')
         const cloned = modal.cloneNode(true)
-
         var section = document.createElement('div')
         section.id = 'print-receipt'
-        document.body.appendChild(section)
-        try {
-          section.innerHTML = ''
-          section.appendChild(cloned)
-          window.print()
-        } finally {
-          document.body.removeChild(section)
-        }
+        section.innerHTML = ''
+        section.appendChild(cloned)
+
+        return section
       },
       closeModal () {
           this.$root.$emit('bv::hide::modal', this.parentModal)
@@ -909,7 +955,7 @@
     bottom: 15px;
     right: 50px;
   }
-  #printBtnDiv {
+  #downloadPrintBtnsDiv {
     position: absolute;
     bottom: 15px;
     left: 50px;

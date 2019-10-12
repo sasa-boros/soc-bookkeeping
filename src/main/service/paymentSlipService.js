@@ -1,4 +1,5 @@
 const { PaymentSlip } = require('../model/paymentSlip')
+const fs = require('fs')
 
 async function arePaymentSlipsValid () {
   console.log('Checking if all payment slips are valid')
@@ -67,11 +68,38 @@ async function assignAnnualReportValues () {
   }
 }
 
+async function createPaymentSlipPdf (webContents) {
+  webContents.printToPDF(pdfSettings(), function(err, data) {
+    if (err) {
+      console.error(err)
+      throw new Error('Failed creating payment slip pdf')
+    }
+    try {
+      fs.writeFileSync('./payment-slip.pdf', data);
+    } catch(err) {
+      console.error(err)
+      throw new Error('Failed creating payment slip pdf')
+    }
+  })
+}
+
+function pdfSettings () {
+  var settings = {
+      landscape: false,
+      marginsType: 0,
+      printBackground: false,
+      printSelectionOnly: false,
+      pageSize: "A4",
+  };
+  return settings;
+}
+
 module.exports = {
   arePaymentSlipsValid: arePaymentSlipsValid,
   getPaymentSlips: getPaymentSlips,
   createPaymentSlip: createPaymentSlip,
   deletePaymentSlip: deletePaymentSlip,
   deletePaymentSlips: deletePaymentSlips,
-  updatePaymentSlip: updatePaymentSlip
+  updatePaymentSlip: updatePaymentSlip,
+  createPaymentSlipPdf: createPaymentSlipPdf
 }

@@ -7,7 +7,7 @@
       </b-col>
       <b-col>
         <b-button @click.stop="closeDialog()" variant="link" class="btn-xs float-right">
-          <img src="~@/assets/delete.png">
+          <img src="~@/assets/close.png">
         </b-button>
       </b-col>
     </b-row>

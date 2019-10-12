@@ -5,7 +5,7 @@
         <b-col>
           <b-button-group class="float-right">
             <b-button v-on:click="closeModal()" variant="link" class="btn-xs">
-              <img src="~@/assets/delete.png">
+              <img src="~@/assets/close.png">
             </b-button>
           </b-button-group>
         </b-col>
@@ -16,7 +16,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="partitionInput" type="number" min="0" step="1" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }"/>
+            <b-form-input id="partitionInput" v-on:mouseleave="hideTooltip('partitionInput')" type="number" min="0" step="1" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -26,7 +26,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="positionInput" type="number" min="0" step="1" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
+            <b-form-input id="positionInput" v-on:mouseleave="hideTooltip('positionInput')" type="number" min="0" step="1" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -36,17 +36,17 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-bind:class="{ 'is-invalid': shouldValidate && missingDescription }"/>
+            <b-form-input id="descriptionInput" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" class="descriptionInput" v-bind:class="{ 'is-invalid': shouldValidate && missingDescription }"/>
           </b-form-group>
         </b-col>
       </b-row>
-      <b-row >
+      <b-row>
         <b-col>
           <b-button-group class="float-right">
-            <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="saveOutcomeCodeBtn" type="submit" variant="link" class="btn-lg">
-              <img src="~@/assets/save1.png">
+            <b-button id="saveIncomeCodeBtn" v-on:mouseleave="hideTooltip('saveIncomeCodeBtn')" type="submit" variant="link" class="btn-lg">
+              <img src="~@/assets/save.png">
             </b-button>
-            <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="clearFormBtn" @click.stop="clearForm()" variant="link" class="btn-lg">
+            <b-button id="clearFormBtn" v-on:mouseleave="hideTooltip('clearFormBtn')" @click.stop="clearForm()" variant="link" class="btn-lg">
               <img src="~@/assets/clear.png">
             </b-button>
           </b-button-group>
@@ -54,7 +54,7 @@
       </b-row>
     </b-form>
 
-    <b-tooltip target="saveOutcomeCodeBtn" triggers="hover" placement="top" ref="saveOutcomeCodeBtnTooltip">
+    <b-tooltip target="saveIncomeCodeBtn" triggers="hover" placement="top" ref="saveIncomeCodeBtnTooltip">
         <div class="tooltipInnerText">
           {{phrases.save}}
         </div>
@@ -84,25 +84,25 @@
         </div>
       </b-tooltip>
 
-      <b-modal id="outcome-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="outcome-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      <b-modal id="income-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="income-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>
 </template>
 
 <script>
-import MessageConfirmDialog from './MessageConfirmDialog'
+import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
-const outcomeCodeController = require('../../../controllers/outcomeCodeController')
-const i18n = require('../../../translations/i18n');
+const incomeCodeController = require('../../../../controllers/incomeCodeController')
+const i18n = require('../../../../translations/i18n');
 
 export default {
   props: {
-    existingOutcomeCodes: {
+    existingIncomeCodes: {
       type: Array,
       default: []
     },
-    outcomeCode: Object,
+    incomeCode: Object,
     isUpdate: {
       type: Boolean,
       default: false
@@ -116,7 +116,7 @@ export default {
         clear: i18n.getTranslation('Clear'),
         enterPartition: i18n.getTranslation('Enter partition'),
         enterPosition: i18n.getTranslation('Enter position'),
-        notUnique: i18n.getTranslation('Outcome code partition and position not unique'),
+        notUnique: i18n.getTranslation('Income code partition and position not unique'),
         enterDescription: i18n.getTranslation('Enter description'),
         ok: i18n.getTranslation('Ok')
       },
@@ -126,15 +126,15 @@ export default {
         description: null
       },
       shouldValidate: false,
-      outcomeCodes: [],
+      incomeCodes: [],
       errorText: ""
     }
   },
   created () {
     if (this.isUpdate) {
-      this.form = JSON.parse(JSON.stringify(this.outcomeCode))
+      this.form = JSON.parse(JSON.stringify(this.incomeCode))
     }
-    this.outcomeCodes = JSON.parse(JSON.stringify(this.existingOutcomeCodes))
+    this.incomeCodes = JSON.parse(JSON.stringify(this.existingIncomeCodes))
   },
   computed: {
     disablePartitionTooltip: {
@@ -197,8 +197,8 @@ export default {
     },
     notUnique: function () {
       const self = this
-      var euqivalentInstance = this.outcomeCodes.filter(outcomeCode => {
-        return outcomeCode.partition == self.form.partition && outcomeCode.position == self.form.position && outcomeCode._id != self.form._id
+      var euqivalentInstance = this.incomeCodes.filter(incomeCode => {
+        return incomeCode.partition == self.form.partition && incomeCode.position == self.form.position && incomeCode._id != self.form._id
       })
 
       if (euqivalentInstance && euqivalentInstance.length > 0) {
@@ -214,18 +214,18 @@ export default {
       const self = this;
       if (this.isFormValid()) {
         if (this.isUpdate) {
-          outcomeCodeController.updateOutcomeCode(this.form).then((res) => {
+          incomeCodeController.updateIncomeCode(this.form).then((res) => {
               if (!res.err) {
-                self.$emit('updateOutcomeCodes')
+                self.$emit('updateIncomeCodes')
                 self.closeModal();
               } else {
                 self.openErrorModal(res.err)
               }
           })
         } else {
-          outcomeCodeController.createOutcomeCode(this.form).then((res) => {
+          incomeCodeController.createIncomeCode(this.form).then((res) => {
               if (!res.err) {
-                self.$emit('updateOutcomeCodes')
+                self.$emit('updateIncomeCodes')
                 self.closeModal();
               } else {
                 self.openErrorModal(res.err)
@@ -245,9 +245,16 @@ export default {
       this.form.position = null;
       this.form.description = null;
     },
+    hideTooltip (elementId) {
+      if (elementId) {
+        this.$root.$emit('bv::hide::tooltip', elementId)
+      } else {
+        this.$root.$emit('bv::hide::tooltip')
+      }
+    },
     openErrorModal(error) {
       this.errorText = error
-      this.$root.$emit('bv::show::modal', 'outcome-code-preview-error-modal')
+      this.$root.$emit('bv::show::modal', 'income-code-preview-error-modal')
     },
     closeModal () {
         this.$root.$emit('bv::hide::modal', this.parentModal)

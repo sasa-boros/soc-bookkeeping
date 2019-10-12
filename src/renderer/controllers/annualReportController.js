@@ -18,7 +18,17 @@ function getAnnualReportPages (annualReport) {
   })
 }
 
+function createAnnualReportPdf () {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('create-annual-report-pdf')
+    ipcRenderer.once('create-annual-report-pdf-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
 module.exports = {
   getAnnualReport: getAnnualReport,
-  getAnnualReportPages: getAnnualReportPages
+  getAnnualReportPages: getAnnualReportPages,
+  createAnnualReportPdf: createAnnualReportPdf
 }

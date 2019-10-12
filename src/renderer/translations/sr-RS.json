@@ -9,7 +9,9 @@
     "Select": "Означи",
     "Select all": "Означи све",
     "Save": "Сачувај",
+    "Permission denied." : "Немате адекватна права писања за преузимање на изабрану локацију.",
     "Print": "Штампај",
+    "Download": "Преузми",
     "Clear": "Обриши",
     "Delete": "Обриши",
     "Cancel": "Одустани",
@@ -104,5 +106,8 @@
     "Updated at": "Ажурирано",
     "Default value can not be set": "Подразумевана вредност се не може задати",
 
-    "for year" : "за годину"
+    "for year" : "за годину",
+    "annual-report.pdf": "дневник-благајне.pdf",
+    "payment-slip.pdf": "уплатница.pdf",
+    "receipt.pdf": "признаница.pdf"
 }

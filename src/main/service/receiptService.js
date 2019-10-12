@@ -1,4 +1,5 @@
 const { Receipt } = require('../model/receipt')
+const fs = require('fs')
 
 async function areReceiptsValid () {
   console.log('Checking if all receipts are valid')
@@ -67,11 +68,38 @@ async function assignAnnualReportValues () {
   }
 }
 
+async function createReceiptPdf (webContents) {
+  webContents.printToPDF(pdfSettings(), function(err, data) {
+    if (err) {
+      console.error(err)
+      throw new Error('Failed creating receipt pdf')
+    }
+    try {
+      fs.writeFileSync('./receipt.pdf', data);
+    } catch (err){
+      console.error(err)
+      throw new Error('Failed creating receipt pdf')
+    }
+  })
+}
+
+function pdfSettings () {
+  var settings = {
+      landscape: false,
+      marginsType: 0,
+      printBackground: false,
+      printSelectionOnly: false,
+      pageSize: "A4",
+  };
+  return settings;
+}
+
 module.exports = {
   areReceiptsValid: areReceiptsValid,
   getReceipts: getReceipts,
   createReceipt: createReceipt,
   deleteReceipt: deleteReceipt,
   deleteReceipts: deleteReceipts,
-  updateReceipt: updateReceipt
+  updateReceipt: updateReceipt,
+  createReceiptPdf: createReceiptPdf
 }

@@ -4,8 +4,8 @@
     <b-row>
       <b-col>
         {{ phrases.setDefaultPaymentSlip }}:&nbsp;&nbsp;&nbsp;&nbsp;
-        <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="defaultPaymentSlipBtn" @click.stop="openDefaultPaymentSlipModal()" variant="link" class="btn-lg">
-          <img src="~@/assets/payment-slip-blue.png">
+        <b-btn id="defaultPaymentSlipBtn" v-on:mouseleave="hideTooltip('defaultPaymentSlipBtn')" @click.stop="openDefaultPaymentSlipModal()" variant="light" class="btn-lg">
+          <img src="~@/assets/payment-slip.png">
         </b-btn>
       </b-col>
     </b-row>
@@ -13,8 +13,8 @@
     <b-row>
       <b-col>
         {{ phrases.setDefaultsReceipts }}:&nbsp;
-        <b-btn v-on:mouseleave="$root.$emit('bv::hide::tooltip')" id="defaultReceiptBtn" @click.stop="openDefaultReceiptModal()" variant="link" class="btn-lg">
-          <img src="~@/assets/receipt-blue.png">
+        <b-btn id="defaultReceiptBtn" v-on:mouseleave="hideTooltip('defaultReceiptBtn')" @click.stop="openDefaultReceiptModal()" variant="light" class="btn-lg">
+          <img src="~@/assets/receipt.png">
         </b-btn>
       </b-col>
     </b-row>
@@ -90,6 +90,13 @@
       },
       openDefaultReceiptModal () {
         this.$root.$emit('bv::show::modal', 'default-receipt-modal')
+      },
+      hideTooltip (elementId) {
+        if (elementId) {
+          this.$root.$emit('bv::hide::tooltip', elementId)
+        } else {
+          this.$root.$emit('bv::hide::tooltip')
+        }
       }
     },
     components: { PaymentSlipPreview, ReceiptPreview, IncomeCodesTable, OutcomeCodesTable }

@@ -2,20 +2,20 @@
   <b-container fluid id="payment-slip-preview-container" @keyup.tab.exact="tabPressedHandler" @keyup.shift.tab.exact="shiftTabPressedHandler">
     <b-form @submit="onSubmit" no-validation>
       <b-button @click.stop="closeModal()" variant="link" class="ignoreInPrint btn-xs" id="modalCancelBtn">
-        <img src="~@/assets/delete.png" class="ignoreInPrint">
+        <img src="~@/assets/close.png" class="ignoreInPrint">
       </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" ref="incomeInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" ref="incomeInput" v-model="form.income" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" id="incomeInput" :disabled="defaultPaymentSlipPreview" type="number" min="0" step="1"></b-form-input></b-form-group> и словима  <div class="incomeAsTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" contenteditable="false" id="incomeAsTextDivWrapper1">{{generatedIncomeTextLine1}}</div>
+      <br/>На дин. <b-form-group class="input-form-group" ref="incomeInputFormGroup"><b-form-input id="incomeInput" ref="incomeInput" v-on:mouseleave="hideTooltip('incomeInput')" v-model="form.income" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" :disabled="defaultPaymentSlipPreview" type="number" min="0" step="0.01"></b-form-input></b-form-group> и словима  <div class="incomeAsTextDivWrapper" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" contenteditable="false" id="incomeAsTextDivWrapper1">{{generatedIncomeTextLine1}}</div>
       <br/><div class="incomeAsTextDivWrapper" contenteditable="false" v-bind:class="{'disabledTextDiv': defaultPaymentSlipPreview}" id="incomeAsTextDivWrapper2">{{generatedIncomeTextLine2}}</div>
-      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" id="townInput" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" id="reasonInput" type="text"></b-form-input></b-form-group>
+      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" ref="townInput" v-on:mouseleave="hideTooltip('townInput')" v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" ref="reasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text"></b-form-input></b-form-group>
       <div class="mt-2">                                                                                                                                        У п л а т и о,
-                                                                                                            <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-model="form.payed" class="input-small" id="payedInput" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar" v-on:input="checkMaxPaymentSlips"></datepicker></span> г.
-                                                                                                            Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.firstPartition" id="firstPartSelect" :disabled="defaultPaymentSlipPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.firstPosition" id="firstPosSelect" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup" id="firstIncomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input v-model="form.firstIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstIncome && atLeastOnePartPosNotSet }" id="firstIncomeInput" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="number" min="0" step="1"></b-form-input></span></b-form-group>
-                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.secondPartition" id="secondPartSelect" :disabled="defaultPaymentSlipPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-select v-model="form.secondPosition" id="secondPosSelect" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondIncomeInputFormGroup" id="secondIncomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input v-model="form.secondIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondIncome && atLeastOnePartPosNotSet }" id="secondIncomeInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="number" min="0" step="1"></b-form-input></span></b-form-group>
+                                                                                                            <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input id="payedInput" ref="payedInput" v-on:mouseleave="hideTooltip('payedInput')" v-model="form.payed" class="input-small" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
+      </div><div class="mt-2">                                                                                                          Књижити у корист буџета за <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="datepickerInput" wrapper-class="datepickerWrapper" calendar-class="datepickerCalendar" v-on:input="checkMaxPaymentSlips"></datepicker></span> г.
+                                                                                                            Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultPaymentSlipPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup" id="firstIncomeInputForm"><span v-on:mouseleave="hideTooltip('firstIncomeInputForm')"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstIncome && atLeastOnePartPosNotSet }" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="number" min="0" step="0.01"></b-form-input></span></b-form-group>
+                  Примио благајник,                                                          Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartSelect')"><b-form-select id="secondPartSelect" v-model="form.secondPartition" :disabled="defaultPaymentSlipPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="hideTooltip('secondPosSelectForm')"><b-form-select id="secondPosSelect" v-model="form.secondPosition" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondIncomeInputFormGroup" id="secondIncomeInputForm"><span v-on:mouseleave="hideTooltip('secondIncomeInputForm')"><b-form-input v-model="form.secondIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondIncome && atLeastOnePartPosNotSet }" id="secondIncomeInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="number" min="0" step="0.01"></b-form-input></span></b-form-group>
                                                            
-      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalIncomeInputFormGroup" id="totalIncomeInputForm"><span v-on:mouseleave="$root.$emit('bv::hide::tooltip')"><b-form-input disabled v-model="form.income" class="input-small" id="totalIncomeInput" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalIncome || totalIncomeNotValid ) }" type="number" min="0" step=".01"></b-form-input></span></b-form-group>
+      <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalIncomeInputFormGroup" id="totalIncomeInputForm"><span v-on:mouseleave="hideTooltip('totalIncomeInputForm')"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalIncome || totalIncomeNotValid ) }" type="number" min="0" step="0.01"></b-form-input></span></b-form-group>
       <div class="my-0 line-spacing-small">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
@@ -23,104 +23,114 @@
       </div></div>
 
       </div>
-      <div id="printBtnDiv">
-        <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" ref="paymentSlipPrintBtn" id="paymentSlipPrintBtn" @click.stop="printPaymentSlip()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultPaymentSlipPreview }">
+      <div id="downloadPrintBtnsDiv">
+        <b-button v-on:mouseleave="hideTooltip('paymentSlipDownloadBtn')" ref="paymentSlipDownloadBtn" id="paymentSlipDownloadBtn" @click.stop="downloadPaymentSlip()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultPaymentSlipPreview }">
+          <img src="~@/assets/download.png" class="ignoreInPrint">
+        </b-button>
+        &nbsp;
+        <b-button v-on:mouseleave="hideTooltip('paymentSlipPrintBtn')" ref="paymentSlipPrintBtn" id="paymentSlipPrintBtn" @click.stop="printPaymentSlip()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultPaymentSlipPreview }">
           <img src="~@/assets/print.png" class="ignoreInPrint">
         </b-button>
       </div>
       <div id="clearSaveBtnsDiv">
-        <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" ref="paymentSlipSaveBtn" id="paymentSlipSaveBtn" type="submit" variant="link" class="ignoreInPrint btn-lg" @blur="postDatepickerDefaultOnBlur">
-          <img src="~@/assets/save1.png" class="ignoreInPrint">
+        <b-button v-on:mouseleave="hideTooltip('paymentSlipSaveBtn')" ref="paymentSlipSaveBtn" id="paymentSlipSaveBtn" type="submit" variant="link" class="ignoreInPrint btn-lg" @blur="postDatepickerDefaultOnBlur">
+          <img src="~@/assets/save.png" class="ignoreInPrint">
         </b-button>
-        <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" ref="paymentSlipClearBtn" id="paymentSlipClearBtn" @click.stop="clearForm()" variant="link" class="ignoreInPrint btn-lg">
+        <b-button v-on:mouseleave="hideTooltip('paymentSlipClearBtn')" ref="paymentSlipClearBtn" id="paymentSlipClearBtn" @click.stop="clearForm()" variant="link" class="ignoreInPrint btn-lg">
           <img src="~@/assets/clear.png" class="ignoreInPrint">
         </b-button>
       </div>
-              
-      <b-tooltip target="incomeInput" triggers="hover" placement="top" ref="incomeInputTooltip" :disabled.sync="disableIncomeTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.enterValue}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="townInput" triggers="hover" placement="top" ref="townInputTooltip" :disabled.sync="disableTownTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.enterValue}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.enterValue}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="firstPartSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosIncome}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="firstPosSelectForm" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
-        <div class="tooltipInnerText">
-          {{firstPosTooltipText}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="firstIncomeInputForm" triggers="hover" placement="top" ref="firstIncomeInputTooltip" :disabled.sync="disableFirstIncomeTooltip">
-        <div class="tooltipInnerText">
-          {{firstIncomeTooltipText}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="secondPartSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.atLeastOnePartPosIncome}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="secondPosSelectForm" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip">
-        <div class="tooltipInnerText">
-          {{secondPosTooltipText}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="secondIncomeInputForm" triggers="hover" placement="top" ref="secondIncomeInputTooltip" :disabled.sync="disableSecondIncomeTooltip">
-        <div class="tooltipInnerText">
-          {{secondIncomeTooltipText}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="totalIncomeInputForm" triggers="hover" placement="top" ref="totalIncomeInputTooltip" :disabled.sync="disableTotalIncomeTooltip">
-        <div class="tooltipInnerText">
-          {{totalIncomeTooltipText}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.pickDate}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="paymentSlipPrintBtn" triggers="hover" placement="top" ref="paymentSlipPrintBtnTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.print}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="paymentSlipSaveBtn" triggers="hover" placement="top"  ref="paymentSlipSaveBtnTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.save}}
-        </div>
-      </b-tooltip>
-
-      <b-tooltip target="paymentSlipClearBtn" triggers="hover" placement="top" ref="paymentSlipClearBtnTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.clear}}
-        </div>
-      </b-tooltip>
     </b-form>
+
+    <b-tooltip target="incomeInput" triggers="hover" placement="top" ref="incomeInputTooltip" :disabled.sync="disableIncomeTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.enterValue}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="townInput" triggers="hover" placement="top" ref="townInputTooltip" :disabled.sync="disableTownTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.enterValue}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.enterValue}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="firstPartSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.atLeastOnePartPosIncome}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="firstPosSelectForm" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
+      <div class="tooltipInnerText">
+        {{firstPosTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="firstIncomeInputForm" triggers="hover" placement="top" ref="firstIncomeInputTooltip" :disabled.sync="disableFirstIncomeTooltip">
+      <div class="tooltipInnerText">
+        {{firstIncomeTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="secondPartSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.atLeastOnePartPosIncome}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="secondPosSelectForm" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip">
+      <div class="tooltipInnerText">
+        {{secondPosTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="secondIncomeInputForm" triggers="hover" placement="top" ref="secondIncomeInputTooltip" :disabled.sync="disableSecondIncomeTooltip">
+      <div class="tooltipInnerText">
+        {{secondIncomeTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="totalIncomeInputForm" triggers="hover" placement="top" ref="totalIncomeInputTooltip" :disabled.sync="disableTotalIncomeTooltip">
+      <div class="tooltipInnerText">
+        {{totalIncomeTooltipText}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.pickDate}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="paymentSlipDownloadBtn" triggers="hover" placement="top" ref="paymentSlipDownloadBtnTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.download}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="paymentSlipPrintBtn" triggers="hover" placement="top" ref="paymentSlipPrintBtnTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.print}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="paymentSlipSaveBtn" triggers="hover" placement="top"  ref="paymentSlipSaveBtnTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.save}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="paymentSlipClearBtn" triggers="hover" placement="top" ref="paymentSlipClearBtnTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.clear}}
+      </div>
+    </b-tooltip>
     <b-modal id="payment-slip-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
         <message-confirm-dialog parentModal="payment-slip-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
@@ -132,11 +142,11 @@
   import { mapState } from 'vuex'
   import Datepicker from 'vuejs-datepicker'
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
-  import MessageConfirmDialog from './../MessageConfirmDialog'
+  import MessageConfirmDialog from '../../../MessageConfirmDialog'
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const paymentSlipController = require('../../../../controllers/paymentSlipController')
   const defaultPaymentSlipController = require('../../../../controllers/defaultPaymentSlipController')
-  const { numberToSerbianDinars, getCodeCombinations, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip } = require('../../../../utils/utils')
+  const { numberToSerbianDinars, getCodeCombinations, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip, saveAs } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
 
   export default {
@@ -185,7 +195,10 @@
           enterPartition: i18n.getTranslation('Enter partition'),
           needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of incomes by partitions and position'),
           ok: i18n.getTranslation('Ok'),
-          maxNumberOfPaymentSlipsReached: i18n.getTranslation('Maximum number of payment slips reached for this month and year (27). Choose another date.')
+          maxNumberOfPaymentSlipsReached: i18n.getTranslation('Maximum number of payment slips reached for this month and year (27). Choose another date.'),
+          download: i18n.getTranslation('Download'),
+          permissionDenied: i18n.getTranslation('Permission denied.'),
+          paymentSlipPdf: i18n.getTranslation('payment-slip.pdf')
         },
         calendarLanguages: {
           sr: sr,
@@ -582,6 +595,13 @@
         }
         this.form.date = formDate
       },
+      hideTooltip (elementId) {
+        if (elementId) {
+          this.$root.$emit('bv::hide::tooltip', elementId)
+        } else {
+          this.$root.$emit('bv::hide::tooltip')
+        }
+      },
       tabPressedHandler (evt) {
         if (this.preDatepickerJustBlurred) {
           /* Manually put focus on the datepicker object */
@@ -681,6 +701,38 @@
         this.$root.$emit('bv::show::modal', 'payment-slip-preview-error-modal')
       },
       printPaymentSlip () {
+        const section = this.preparePrintSection()
+        document.body.appendChild(section)
+        try {
+          window.print()
+        } finally {
+          document.body.removeChild(section)
+        }
+      },
+      async downloadPaymentSlip () {
+        const section = this.preparePrintSection()
+        document.body.appendChild(section)
+        try {
+          const res = await paymentSlipController.createPaymentSlipPdf()
+          if (!res.err) {
+            const self = this
+            saveAs('./payment-slip.pdf', this.phrases.paymentSlipPdf, err => {
+              if (err) {
+                if (err.message.toLowerCase().indexOf('permission denied') != -1) {
+                  self.openErrorModal(self.phrases.permissionDenied)
+                } else {
+                  self.openErrorModal(err.message)
+                }
+              }
+            })
+          } else {
+            this.openErrorModal(res.err)       
+          }
+        } finally {
+          document.body.removeChild(section)
+        }
+      },
+      preparePrintSection () {
         // ensuring clean screen
         var receiptSection = document.getElementById('print-receipt')
         if (receiptSection) {
@@ -693,17 +745,12 @@
 
         const modal = document.getElementById('payment-slip-preview-container')
         const cloned = modal.cloneNode(true)
-
         var section = document.createElement('div')
         section.id = 'print-payment-slip'
-        document.body.appendChild(section)
-        try {
-          section.innerHTML = ''
-          section.appendChild(cloned)
-          window.print()
-        } finally {
-          document.body.removeChild(section)
-        }
+        section.innerHTML = ''
+        section.appendChild(cloned)
+
+        return section
       },
       closeModal () {
         this.$root.$emit('bv::hide::modal', this.parentModal)
@@ -885,7 +932,7 @@
     bottom: 15px;
     right: 50px;
   }
-  #printBtnDiv {
+  #downloadPrintBtnsDiv {
     position: absolute;
     bottom: 15px;
     left: 50px;

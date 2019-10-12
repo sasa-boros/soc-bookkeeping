@@ -5,6 +5,8 @@ const { app, BrowserWindow } = require('electron')
 const mongoose = require('mongoose')
 const path = require('path')
 const config = require('../config/config')
+const { ipcMain } = require('electron')
+const fs = require('fs')
 
 // loading ipc main router
 require('./ipcRouter')
@@ -26,9 +28,6 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 function createWindow () {
-  /**
-   * Initial window options
-   */
   mainWindow = new BrowserWindow({
     useContentSize: true,
     backgroundColor: 'white'

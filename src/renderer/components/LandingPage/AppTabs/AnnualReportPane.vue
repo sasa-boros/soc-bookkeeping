@@ -5,8 +5,8 @@
       <b-row class="text-center">
         <b-col>
           {{phrases.showAnnualReport}}:
-          <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" type="submit" v-on:click="createAnnualReport" id="annualReportBtn" ref="annualReportBtn" variant="link" class="btn-xs">
-            <img src="~@/assets/report-blue.png">
+          <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" variant="light" class="btn-xs">
+            <img src="~@/assets/annual-report.png">
           </b-button>
           {{phrases.forYear}}:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
@@ -42,8 +42,8 @@
 <script>
   import store from '@/store'
   import { mapState } from 'vuex'
-  import AnnualReportPreview from './AnnualReportPreview'
-  import MessageConfirmDialog from './MessageConfirmDialog'
+  import AnnualReportPreview from './AnnualReportPane/AnnualReportPreview'
+  import MessageConfirmDialog from '../../MessageConfirmDialog'
   
   const annualReportController = require('../../../controllers/annualReportController')
   const i18n = require('../../../translations/i18n')
@@ -104,6 +104,13 @@
             }
           }
         })
+      },
+      hideTooltip (elementId) {
+        if (elementId) {
+          this.$root.$emit('bv::hide::tooltip', elementId)
+        } else {
+          this.$root.$emit('bv::hide::tooltip')
+        }
       },
       openAnnualReportPreviewFailedModal(error) {
         this.errorText = error

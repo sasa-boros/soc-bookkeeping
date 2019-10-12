@@ -392,7 +392,34 @@ async function populateSharesPage(annualReport, annualReportPages) {
   annualReportPages.push(await readFile("./static/annual-report/shares-page.html", { encoding: 'utf8'}));
 }
 
+async function createAnnualReportPdf (webContents) {
+  webContents.printToPDF(pdfSettings(), function(err, data) {
+    if (err) {
+      console.error(err)
+      throw new Error('Failed creating annual report pdf')
+    }
+    try {
+      fs.writeFileSync('./annual-report.pdf', data);
+    } catch(err) {
+      console.error(err)
+      throw new Error('Failed creating annual report pdf')
+    }
+  })
+}
+
+function pdfSettings () {
+  var settings = {
+      landscape: false,
+      marginsType: 0,
+      printBackground: false,
+      printSelectionOnly: false,
+      pageSize: "A4",
+  };
+  return settings;
+}
+
 module.exports = {
   getAnnualReport: getAnnualReport,
-  getAnnualReportPages: getAnnualReportPages
+  getAnnualReportPages: getAnnualReportPages,
+  createAnnualReportPdf: createAnnualReportPdf
 }

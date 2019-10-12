@@ -3,7 +3,11 @@
     <br>
       <b-row>
         <b-col cols="3">
-          <b-button ref="annualReportPrintBtn" @click.stop="printAnnualReport()" variant="link" class="btn-lg float-left">
+          <b-button id="annualReportDownloadBtn" ref="annualReportDownloadBtn" v-on:mouseleave="hideTooltip('annualReportDownloadBtn')" @click.stop="downloadAnnualReport()" variant="link" class="btn-lg float-left">
+            <img src="~@/assets/download.png">
+          </b-button>
+          &nbsp;
+          <b-button id="annualReportPrintBtn" ref="annualReportPrintBtn" v-on:mouseleave="hideTooltip('annualReportPrintBtn')" @click.stop="printAnnualReport()" variant="link" class="btn-lg float-left">
             <img src="~@/assets/print.png">
           </b-button>
         </b-col>
@@ -13,16 +17,16 @@
           </div>
         </b-col>
         <b-col cols="2" class="text-center">
-          <b-button ref="decrementPageBtn" variant="link" v-on:click='decrementPage'>
+          <b-button id="decrementPageBtn" ref="decrementPageBtn" v-on:mouseleave="hideTooltip('decrementPageBtn')" variant="link" v-on:click='decrementPage'>
             <i class="arrow left"></i>
           </b-button>
-          <b-button ref="incrementPageBtn" variant="link" v-on:click='incrementPage'>
+          <b-button id="incrementPageBtn" ref="incrementPageBtn" v-on:mouseleave="hideTooltip('incrementPageBtn')" variant="link" v-on:click='incrementPage'>
             <i class="arrow right"></i>
           </b-button>
         </b-col>
         <b-col cols="5">
           <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" class="btn-xs float-right">
-            <img src="~@/assets/delete.png">
+            <img src="~@/assets/close.png">
           </b-button>
         </b-col>
       </b-row>
@@ -30,27 +34,38 @@
         <div v-html="annualReportPages[currentPage-1]" id="page-display" v-bind:class="{ headline: isHeadline, incomePage: isIncomePage, outcomePage: isOutcomePage, sharesPage: isSharesPage, totalIncomePage: isTotalIncomePage, totalOutcomePage: isTotalOutcomePage, totalPage: isTotalPage }">
         </div>
       </b-row>
-      <b-tooltip ref="annualReportPrintBtnTooltip" :target="() => $refs.annualReportPrintBtn">
+      <b-tooltip ref="annualReportPrintBtnTooltip" target="annualReportPrintBtn">
           <div class="tooltipInnerText">
             {{phrases.print}}
           </div>
       </b-tooltip>
-      <b-tooltip ref="decrementPageBtnTooltip" :target="() => $refs.decrementPageBtn">
+      <b-tooltip ref="annualReportDownloadBtnTooltip" target="annualReportDownloadBtn">
+          <div class="tooltipInnerText">
+            {{phrases.download}}
+          </div>
+      </b-tooltip>
+      <b-tooltip ref="decrementPageBtnTooltip" target="decrementPageBtn">
           <div class="tooltipInnerText">
             {{phrases.previousPage}}
           </div>
       </b-tooltip>
-      <b-tooltip ref="incrementPageBtnTooltip" :target="() => $refs.incrementPageBtn">
+      <b-tooltip ref="incrementPageBtnTooltip" target="incrementPageBtn">
           <div class="tooltipInnerText">
             {{phrases.nextPage}}
           </div>
       </b-tooltip>
+      <b-modal id="annual-report-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="annual-report-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      </b-modal>
   </b-container>
 </template>
 
 <script>
+import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
-const i18n = require('../../../translations/i18n');
+const i18n = require('../../../../translations/i18n');
+const annualReportController = require('../../../../controllers/annualReportController')
+const { saveAs } = require('../../../../utils/utils')
 
 export default {
   props: {
@@ -65,9 +80,14 @@ export default {
       phrases: {
         print: i18n.getTranslation('Print'),
         previousPage: i18n.getTranslation('Previous page'),
-        nextPage: i18n.getTranslation('Next page')
+        nextPage: i18n.getTranslation('Next page'),
+        ok: i18n.getTranslation('Ok'),
+        download: i18n.getTranslation('Download'),
+        permissionDenied: i18n.getTranslation('Permission denied.'),
+        annualReportPdf: i18n.getTranslation('annual-report.pdf')
       },
-      currentPage: 1
+      currentPage: 1,
+      errorText: ""
     }
   },
   computed: {
@@ -148,6 +168,38 @@ export default {
       }
     },
     printAnnualReport () {
+      const section = this.preparePrintSection()
+      document.body.appendChild(section)
+      try {
+        window.print()
+      } finally {
+        document.body.removeChild(section)
+      }
+    },
+    async downloadAnnualReport () {
+      const section = this.preparePrintSection()
+      document.body.appendChild(section)
+      try {
+        const res = await annualReportController.createAnnualReportPdf()
+        if (!res.err) {
+            const self = this
+            saveAs('./annual-report.pdf', this.phrases.annualReportPdf, err => {
+              if (err) {
+                if (err.message.toLowerCase().indexOf('permission denied') != -1) {
+                  self.openErrorModal(self.phrases.permissionDenied)
+                } else {
+                  self.openErrorModal(err.message)
+                }
+              }
+            })
+          } else {
+            this.openErrorModal(res.err)       
+          }
+      } finally {
+        document.body.removeChild(section)
+      }
+    },
+    preparePrintSection () {
       // ensuring clean screen
       var paymentSlipSection = document.getElementById('print-payment-slip')
       if (paymentSlipSection) {
@@ -157,29 +209,35 @@ export default {
       if (receiptSection) {
         document.body.removeChild(receiptSection)
       }
-
       var section = document.createElement('div')
       section.id = 'print-annual-report'
-      document.body.appendChild(section)
-      try {
-        section.innerHTML = ''
-        this.annualReportPages.forEach((annualReportPage, index) => {
-          var page = document.createElement('div')
-          if(index == 28) {
-            page.className = 'last-page'
-          }
-          page.innerHTML = annualReportPage
-          section.appendChild(page)
-        })
-        window.print()
-      } finally {
-        document.body.removeChild(section)
+      section.innerHTML = ''
+      this.annualReportPages.forEach((annualReportPage, index) => {
+        var page = document.createElement('div')
+        if(index == 28) {
+          page.className = 'last-page'
+        }
+        page.innerHTML = annualReportPage
+        section.appendChild(page)
+      })
+      return section
+    },
+    openErrorModal(error) {
+      this.errorText = error
+      this.$root.$emit('bv::show::modal', 'annual-report-error-modal')
+    },
+    hideTooltip (elementId) {
+      if (elementId) {
+        this.$root.$emit('bv::hide::tooltip', elementId)
+      } else {
+        this.$root.$emit('bv::hide::tooltip')
       }
     },
     closeModal () {
         this.$root.$emit('bv::hide::modal', this.parentModal)
     }
-  }
+  },
+  components: { MessageConfirmDialog }
 }
 </script>
 

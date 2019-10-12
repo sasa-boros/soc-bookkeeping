@@ -53,11 +53,21 @@ function deletePaymentSlips (paymentSlipsIds) {
   })
 }
 
+function createPaymentSlipPdf () {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('create-payment-slip-pdf')
+    ipcRenderer.once('create-payment-slip-pdf-reply', (event, res) => {
+      resolve(JSON.parse(res))
+    })
+  })
+}
+
 module.exports = {
   arePaymentSlipsValid: arePaymentSlipsValid,
   getPaymentSlips: getPaymentSlips,
   createPaymentSlip: createPaymentSlip,
   deletePaymentSlip: deletePaymentSlip,
   deletePaymentSlips: deletePaymentSlips,
-  updatePaymentSlip: updatePaymentSlip
+  updatePaymentSlip: updatePaymentSlip,
+  createPaymentSlipPdf: createPaymentSlipPdf
 }

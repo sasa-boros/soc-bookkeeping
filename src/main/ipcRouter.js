@@ -120,6 +120,14 @@ ipcMain.on('update-payment-slip', async (event, paymentSlip) => {
   }
 })
 
+ipcMain.on('create-payment-slip-pdf', async (event) => {
+  try {
+    reply(event, 'create-payment-slip-pdf-reply', await paymentSlipService.createPaymentSlipPdf(event.sender.webContents))
+  } catch (err) {
+    replyError(event, 'create-payment-slip-pdf-reply', err.message ? err.message : err)
+  }
+})
+
 ipcMain.on('are-receipts-valid', async (event) => {
   try {
     reply(event, 'are-receipts-valid-reply', await receiptService.areReceiptsValid())
@@ -165,6 +173,14 @@ ipcMain.on('update-receipt', async (event, receipt) => {
     reply(event, 'update-receipt-reply', await receiptService.updateReceipt(receipt))
   } catch (err) {
     replyError(event, 'update-receipt-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('create-receipt-pdf', async (event) => {
+  try {
+    reply(event, 'create-receipt-pdf-reply', await receiptService.createReceiptPdf(event.sender.webContents))
+  } catch (err) {
+    replyError(event, 'create-receipt-pdf-reply', err.message ? err.message : err)
   }
 })
 
@@ -229,6 +245,14 @@ ipcMain.on('get-annual-report-pages', async (event, annualReport) => {
     reply(event, 'get-annual-report-pages-reply', await annualReportService.getAnnualReportPages(annualReport))
   } catch (err) {
     replyError(event, 'get-annual-report-pages-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('create-annual-report-pdf', async (event) => {
+  try {
+    reply(event, 'create-annual-report-pdf-reply', await annualReportService.createAnnualReportPdf(event.sender.webContents))
+  } catch (err) {
+    replyError(event, 'create-annual-report-pdf-reply', err.message ? err.message : err)
   }
 })
 

@@ -1,8 +1,8 @@
 <template>
   <b-container fluid>
      <b-button-group class="float-left">
-      <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.createIncomeCode, customClass: 'tooltipInnerText'}" v-on:click="openCreateIncomeCodeModal()" variant="link" class="btn-xs">
-        <img src="~@/assets/add1.png">
+      <b-button v-on:mouseleave="hideTooltip('addIncomeCodeBtn')" id="addIncomeCodeBtn" v-b-tooltip.hover.top="{title: phrases.createIncomeCode, customClass: 'tooltipInnerText'}" v-on:click="openCreateIncomeCodeModal()" variant="link" class="btn-xs">
+        <img src="~@/assets/add.png">
       </b-button>
      </b-button-group>
     <b-table show-empty
@@ -20,8 +20,8 @@
               >
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.seeDetails, customClass: 'tooltipInnerText'}" v-on:click="openCreateIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
-              <img src="~@/assets/see-more1.png">                                           
+            <b-button id="updateIncomeCodeBtn" v-on:mouseleave="hideTooltip('updateIncomeCodeBtn')" v-b-tooltip.hover.top="{title: phrases.seeDetails, customClass: 'tooltipInnerText'}" v-on:click="openCreateIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+              <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>
         </template>
@@ -36,7 +36,7 @@
         </template>
         <template v-slot:cell(remove)="row">
            <b-button-group>
-              <b-button v-on:mouseleave="$root.$emit('bv::hide::tooltip')" v-b-tooltip.hover.top="{title: phrases.deleteIncomeCode, customClass: 'tooltipInnerText'}" v-on:click="openDeleteIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+              <b-button id="deleteIncomeCodeBtn" v-on:mouseleave="hideTooltip('deleteIncomeCodeBtn')" v-b-tooltip.hover.top="{title: phrases.deleteIncomeCode, customClass: 'tooltipInnerText'}" v-on:click="openDeleteIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
                   <img src="~@/assets/delete.png">
               </b-button>
            </b-button-group>
@@ -58,8 +58,8 @@
 </template>
 
 <script>
-  import IncomeCodePreview from './IncomeCodePreview';
-  import MessageConfirmDialog from './MessageConfirmDialog';
+  import IncomeCodePreview from './IncomeCodesTable/IncomeCodePreview';
+  import MessageConfirmDialog from '../../MessageConfirmDialog';
   import { EventBus } from '../../../eventbus/event-bus.js';
 
   const { dialog } = require('electron').remote
@@ -160,6 +160,13 @@
             self.openErrorModal(res.err)
           }
         })
+      },
+      hideTooltip (elementId) {
+        if (elementId) {
+          this.$root.$emit('bv::hide::tooltip', elementId)
+        } else {
+          this.$root.$emit('bv::hide::tooltip')
+        }
       },
       openErrorModal(error) {
         this.errorText = error

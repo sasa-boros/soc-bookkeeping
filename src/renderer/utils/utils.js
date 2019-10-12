@@ -1,3 +1,9 @@
+const fs = require('fs');
+const os = require('os')
+const path = require('path');
+const elerem = require('electron').remote
+const dialog = elerem.dialog
+
 function numberToSerbianDinars (n) {
   if (!n || isNaN(n) || n.toString().trim() === '') {
     return null
@@ -302,6 +308,39 @@ function compareCodes( codeA, codeB ) {
   return codeA.partition - codeB.partition || codeA.position - codeB.position;
 }
 
+function saveAs (pathToFile, fileName, callback) {
+  var localPath = path.join(os.homedir(), 'Desktop', '/' + fileName)
+  var userChosenPath = dialog.showSaveDialog({ defaultPath: localPath })
+  
+  if (userChosenPath) {
+    fs.rename(pathToFile, userChosenPath, err => {
+      if (err) {
+        if (err.code === 'EXDEV') {
+            copy(pathToFile, userChosenPath, callback);
+        } else {
+            callback(err);
+        }
+        return;
+      }
+      callback();
+    })
+  }
+}
+
+function copy(pathToFile, userChosenPath, callback) {
+  var readStream = fs.createReadStream(pathToFile);
+  var writeStream = fs.createWriteStream(userChosenPath);
+
+  readStream.on('error', callback);
+  writeStream.on('error', callback);
+
+  readStream.on('close', function () {
+      fs.unlink(pathToFile, callback);
+  });
+
+  readStream.pipe(writeStream);
+}
+
 module.exports = {
   numberToSerbianDinars: numberToSerbianDinars,
   getCodeCombinations: getCodeCombinations,
@@ -309,5 +348,6 @@ module.exports = {
   mapPaymentSlipFormToPaymentSlip: mapPaymentSlipFormToPaymentSlip,
   mapReceiptToReceiptForm, mapReceiptToReceiptForm,
   mapReceiptFormToReceipt: mapReceiptFormToReceipt,
-  compareCodes: compareCodes
+  compareCodes: compareCodes,
+  saveAs: saveAs
 }
