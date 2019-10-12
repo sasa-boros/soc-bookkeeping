@@ -16,7 +16,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="partitionInput" v-on:mouseleave="hideTooltip('partitionInput')" type="number" min="0" step="1" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }"/>
+            <b-form-input id="partitionInput" v-on:mouseleave="hideTooltip('partitionInput')" type="number" step="1" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -26,7 +26,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="positionInput" v-on:mouseleave="hideTooltip('positionInput')" type="number" min="0" step="1" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
+            <b-form-input id="positionInput" v-on:mouseleave="hideTooltip('positionInput')" type="number" step="1" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -265,6 +265,14 @@ export default {
 </script>
 
 <style scoped>
+input {
+  text-align: center;
+  font-family: "Times New Roman";
+  font-size: 90%;
+  letter-spacing: 95%;
+  height:20px;
+  font-weight: bold;
+}
 .partPosInput {
   width: 100px;
   max-width: 100px;
@@ -274,8 +282,8 @@ export default {
   max-width: 300px;
 }
 .is-invalid {
-    border: dotted 1px red;
-    padding-right: 0 !important;
-    background-image: url('~@/assets/invalid-red.png') !important;
-  }
+  border: dotted 1px red;
+  padding-right: 0 !important;
+  background-image: url('~@/assets/invalid-red.png') !important;
+}
 </style>

@@ -171,6 +171,7 @@ function numberToSerbianDinars (n) {
 }
 
 function getCodeCombinations (codes) {
+  codes.sort(compareCodes)
   var parts = {}
   if (codes) {
     codes.forEach(function (code) {
