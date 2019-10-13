@@ -49,6 +49,7 @@
     }
   },
   "dependencies": {
+    "autonumeric": "^4.5.10",
     "axios": "^0.18.0",
     "big.js": "^5.2.2",
     "bootstrap-vue": "^2.0.0-rc.11",

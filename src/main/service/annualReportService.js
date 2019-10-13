@@ -12,6 +12,8 @@ const util = require('util');
 const readFile = util.promisify(fs.readFile);
 const Mustache = require('mustache');
 
+const AutoNumeric = require('autonumeric')
+
 async function getAnnualReport (year) {
   console.log(`Getting annual report for year ${year}`)
 
@@ -266,10 +268,10 @@ async function populateIncomeOutcomePage (annualReport, annualReportPage, income
     // payment slip income per code
     paymentSlip.incomePerCode.forEach(incomePerCode => {
       let incomeCodeText = incomePerCode.incomeCode.partition + '/' + incomePerCode.incomeCode.position;
-      incomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = incomePerCode.income;
+      incomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = formatAmount(incomePerCode.income);
     });
     // payment slip total income
-    incomePageContext['S'+row] = paymentSlip.income
+    incomePageContext['S'+row] = formatAmount(paymentSlip.income)
     row++;
   });
   var row = 14;
@@ -282,29 +284,29 @@ async function populateIncomeOutcomePage (annualReport, annualReportPage, income
     // receipt outcome per code
     receipt.outcomePerCode.forEach(outcomePerCode => {
       let outcomeCodeText = outcomePerCode.outcomeCode.partition + '/' + outcomePerCode.outcomeCode.position;
-      outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = outcomePerCode.outcome;
+      outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(outcomePerCode.outcome);
     });
     // receipt total outcome
-    outcomePageContext['S'+row] = receipt.outcome
+    outcomePageContext['S'+row] = formatAmount(receipt.outcome)
     row++;
   });
   // total per income code
   annualReportPage.totalIncomePerCode.forEach(totalIncomePerCode => {
     let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-    incomePageContext[colsPerIncomeCodes[incomeCodeText] + 41] = totalIncomePerCode.income;
+    incomePageContext[colsPerIncomeCodes[incomeCodeText] + 41] = formatAmount(totalIncomePerCode.income);
   });
   // total per outcome code
   annualReportPage.totalOutcomePerCode.forEach(totalOutcomePerCode => {
     let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-    outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + 41] = totalOutcomePerCode.outcome;
+    outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + 41] = formatAmount(totalOutcomePerCode.outcome);
   });
   // total incomes and outcomes per page
-  incomePageContext['S41'] = annualReportPage.totalIncome;
-  incomePageContext['S42'] = annualReportPage.transferFromPreviousMonth;
-  incomePageContext['S43'] = annualReportPage.total;
-  outcomePageContext['S41'] = annualReportPage.totalOutcome;
-  outcomePageContext['S42'] = annualReportPage.transferToNextMonth;
-  outcomePageContext['S43'] = annualReportPage.total;
+  incomePageContext['S41'] = formatAmount(annualReportPage.totalIncome);
+  incomePageContext['S42'] = formatAmount(annualReportPage.transferFromPreviousMonth);
+  incomePageContext['S43'] = formatAmount(annualReportPage.total);
+  outcomePageContext['S41'] = formatAmount(annualReportPage.totalOutcome);
+  outcomePageContext['S42'] = formatAmount(annualReportPage.transferToNextMonth);
+  outcomePageContext['S43'] = formatAmount(annualReportPage.total);
 
   Mustache.parse(incomePageTemplate);
   Mustache.parse(outcomePageTemplate);
@@ -344,30 +346,30 @@ async function populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcome
   annualReport.pages.forEach((page) => {
     page.totalIncomePerCode.forEach(totalIncomePerCode => {
       let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-      totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = totalIncomePerCode.income;
+      totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = formatAmount(totalIncomePerCode.income);
     })
     page.totalOutcomePerCode.forEach(totalOutcomePerCode => {
       let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-      totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = totalOutcomePerCode.outcome;
+      totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(totalOutcomePerCode.outcome);
     });
-    totalIncomePageContext['R'+row] = page.totalIncome;
-    totalOutcomePageContext['R'+row] = page.totalOutcome;
+    totalIncomePageContext['Q'+row] = formatAmount(page.totalIncome);
+    totalOutcomePageContext['Q'+row] = formatAmount(page.totalOutcome);
     row++;
   });
   annualReport.totalIncomePerCode.forEach(totalIncomePerCode => {
     let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-    totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + '20'] = totalIncomePerCode.income;
+    totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + '20'] = formatAmount(totalIncomePerCode.income);
   });
   annualReport.totalOutcomePerCode.forEach(totalOutcomePerCode => {
     let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-    totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + '20'] = totalOutcomePerCode.outcome;
+    totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + '20'] = formatAmount(totalOutcomePerCode.outcome);
   });
   // totals
-  totalIncomePageContext['R20'] = annualReport.totalIncome;
-  totalOutcomePageContext['R20'] = annualReport.totalOutcome;
-  totalOutcomePageContext['Q24'] = annualReport.totalIncome;
-  totalOutcomePageContext['Q25'] = annualReport.totalOutcome;
-  totalOutcomePageContext['Q26'] = annualReport.total;
+  totalIncomePageContext['Q20'] = formatAmount(annualReport.totalIncome);
+  totalOutcomePageContext['Q20'] = formatAmount(annualReport.totalOutcome);
+  totalOutcomePageContext['Q24'] = formatAmount(annualReport.totalIncome);
+  totalOutcomePageContext['Q25'] = formatAmount(annualReport.totalOutcome);
+  totalOutcomePageContext['Q26'] = formatAmount(annualReport.total);
 
   const totalIncomePageTemplate = await readFile("./static/annual-report/total-income-page.html", { encoding: 'utf8'})
   const totalOutcomePageTemplate = await readFile("./static/annual-report/total-outcome-page.html", { encoding: 'utf8'});
@@ -381,7 +383,7 @@ async function populateTotalPage(annualReport, annualReportPages) {
   const totalPageContext = {};
 
   totalPageContext.year = annualReport.year;
-  totalPageContext['E5'] = annualReport.total;
+  totalPageContext['E5'] = formatAmount(annualReport.total);
 
   const totalPageTemplate = await readFile("./static/annual-report/total-page.html", { encoding: 'utf8'});
   Mustache.parse(totalPageTemplate);   // optional, speeds up future uses
@@ -390,6 +392,18 @@ async function populateTotalPage(annualReport, annualReportPages) {
 
 async function populateSharesPage(annualReport, annualReportPages) {
   annualReportPages.push(await readFile("./static/annual-report/shares-page.html", { encoding: 'utf8'}));
+}
+
+const amountNumberOptions = {
+  decimalCharacter : ',',
+  digitGroupSeparator : '.'
+}
+
+function formatAmount (n) {
+  if(!n) {
+    return null
+  }
+  return AutoNumeric.format(n.toString(), amountNumberOptions)
 }
 
 async function createAnnualReportPdf (webContents) {

@@ -259,13 +259,13 @@ export default {
 	transform: scale(0.5);
 	position:relative;
 	bottom: 240px;
-	right: 360px;
+	right: 407px;
 }
 .outcomePage >>> #outcome-page {
 	transform: scale(0.5);
 	position:relative;
 	bottom: 245px;
-	right: 360px;
+	right: 407px;
 }
 
 .totalIncomePage >>> #total-income-page {
@@ -286,7 +286,7 @@ export default {
   transform: scale(0.5);
   position:relative;
   bottom: 230px;
-  right: 430px;
+  right: 390px;
 }
 
 .totalPage >>> #total-page {
@@ -338,7 +338,7 @@ i {
     #income-page {
       page-break-before: always;
       position: relative;
-      bottom:930px;
+      bottom:905px;
       left: 100px;
       transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -346,7 +346,7 @@ i {
     #outcome-page {
       page-break-before: always;
       position: relative;
-      bottom:930px;
+      bottom:905px;
       left: 100px;
       transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -354,7 +354,7 @@ i {
     #total-income-page {
       page-break-before: always;
       position: relative;
-      bottom: 895px;
+      bottom: 910px;
       left: 50px;
       transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -362,7 +362,7 @@ i {
     #total-outcome-page {
       page-break-before: always;
       position: relative;
-      bottom: 895px;
+      bottom: 910px;
       left: 50px;
       transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -370,14 +370,14 @@ i {
     #shares-page {
       page-break-before: always;
       position: relative;
-      bottom: 865px;
+      bottom: 905px;
       left: 70px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     .last-page {
       position:relative; 
-      top:440px;
+      top:430px;
     }
     #total-page {
       page-break-before: always;

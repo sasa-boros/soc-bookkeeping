@@ -3,6 +3,45 @@ const os = require('os')
 const path = require('path');
 const elerem = require('electron').remote
 const dialog = elerem.dialog
+const AutoNumeric = require('autonumeric')
+
+const amountNumberOptions = {
+  decimalCharacter : ',',
+  digitGroupSeparator : '.',
+  maximumValue: 99999999999,
+  minimumValue: 0,
+  decimalPlacesShownOnFocus: 2,
+  modifyValueOnWheel: false
+}
+
+const partitionPositionNumberOptions = {
+  vMin: 0, 
+  vMax: 99,
+  decimalPlaces: 0,
+  digitGroupSeparator: '',
+  modifyValueOnWheel: false
+}
+
+function asFloat (formattedNumberAsString, numberOptions) {
+  if (!formattedNumberAsString || formattedNumberAsString.trim() == '') {
+    return null
+  }
+  return parseFloat(AutoNumeric.unformat(formattedNumberAsString, numberOptions))
+}
+
+function asInt (formattedNumberAsString, numberOptions) {
+  if (!formattedNumberAsString || formattedNumberAsString.trim() == '') {
+    return null
+  }
+  return parseInt(AutoNumeric.unformat(formattedNumberAsString, numberOptions))
+}
+
+function asFormatedString (n, numberOptions) {
+  if(!n) {
+    return null
+  }
+  return AutoNumeric.format(n.toString(), numberOptions)
+}
 
 function numberToSerbianDinars (n) {
   if (!n || isNaN(n) || n.toString().trim() === '') {
@@ -186,6 +225,24 @@ function getCodeCombinations (codes) {
   return parts
 }
 
+function mapCodeToCodeForm (code) {
+  const codeForm = {};
+  codeForm._id = code._id;
+  codeForm.partition = asFormatedString(code.partition, partitionPositionNumberOptions)
+  codeForm.position = asFormatedString(code.position, partitionPositionNumberOptions)
+  codeForm.description = code.description
+  return codeForm;
+}
+
+function mapCodeFormToCode (codeForm) {
+  const code = {};
+  code._id = codeForm._id;
+  code.partition = asInt(codeForm.partition, partitionPositionNumberOptions)
+  code.position = asInt(codeForm.position, partitionPositionNumberOptions)
+  code.description = codeForm.description
+  return code;
+}
+
 function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   const paymentSlipForm = {};
   paymentSlipForm._id = paymentSlip._id;
@@ -203,14 +260,14 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   if (paymentSlip.incomePerCode && paymentSlip.incomePerCode.length > 0) {
     paymentSlipForm.firstPartition = paymentSlip.incomePerCode[0].incomeCode.partition;
     paymentSlipForm.firstPosition = paymentSlip.incomePerCode[0].incomeCode.position;
-    paymentSlipForm.firstIncome = paymentSlip.incomePerCode[0].income;
+    paymentSlipForm.firstIncome = asFormatedString(paymentSlip.incomePerCode[0].income, amountNumberOptions);
     if(paymentSlip.incomePerCode.length > 1) {
       paymentSlipForm.secondPartition = paymentSlip.incomePerCode[1].incomeCode.partition;
       paymentSlipForm.secondPosition = paymentSlip.incomePerCode[1].incomeCode.position;
-      paymentSlipForm.secondIncome = paymentSlip.incomePerCode[1].income;
+      paymentSlipForm.secondIncome = asFormatedString(paymentSlip.incomePerCode[1].income, amountNumberOptions);
     }
   }
-  paymentSlipForm.income = paymentSlip.income;
+  paymentSlipForm.income = asFormatedString(paymentSlip.income, amountNumberOptions);
   paymentSlipForm.incomeAsText = numberToSerbianDinars(paymentSlip.income);
   paymentSlipForm.town = paymentSlip.town;
   paymentSlipForm.reason = paymentSlip.reason;
@@ -224,7 +281,7 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
   paymentSlip._id = paymentSlipForm._id;
   paymentSlip.isValid = paymentSlipForm.isValid;
   paymentSlip.date = paymentSlipForm.date;
-  paymentSlip.income = paymentSlipForm.income;
+  paymentSlip.income = asFloat(paymentSlipForm.income, amountNumberOptions);
   paymentSlip.town = paymentSlipForm.town;
   paymentSlip.reason = paymentSlipForm.reason;
   paymentSlip.payed = paymentSlipForm.payed;
@@ -236,10 +293,10 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
     return incomeCode.partition == paymentSlipForm.secondPartition && incomeCode.position == paymentSlipForm.secondPosition;
   })
   if (firstIncomeCode) {
-    paymentSlip.incomePerCode.push({incomeCode: firstIncomeCode, income: paymentSlipForm.firstIncome ? paymentSlipForm.firstIncome : 0});
+    paymentSlip.incomePerCode.push({incomeCode: firstIncomeCode, income: paymentSlipForm.firstIncome ? asFloat(paymentSlipForm.firstIncome, amountNumberOptions) : 0});
   }
   if (secondIncomeCode) {
-    paymentSlip.incomePerCode.push({incomeCode: secondIncomeCode, income: paymentSlipForm.secondIncome ? paymentSlipForm.secondIncome : 0});
+    paymentSlip.incomePerCode.push({incomeCode: secondIncomeCode, income: paymentSlipForm.secondIncome ? asFloat(paymentSlipForm.secondIncome, amountNumberOptions) : 0});
   }
   return paymentSlip;
 }
@@ -262,14 +319,14 @@ function mapReceiptToReceiptForm (receipt) {
     if (receipt.outcomePerCode && receipt.outcomePerCode.length > 0) {
       receiptForm.firstPartition = receipt.outcomePerCode[0].outcomeCode.partition;
       receiptForm.firstPosition = receipt.outcomePerCode[0].outcomeCode.position;
-      receiptForm.firstOutcome = receipt.outcomePerCode[0].outcome;
+      receiptForm.firstOutcome = asFormatedString(receipt.outcomePerCode[0].outcome, amountNumberOptions);
       if(receipt.outcomePerCode.length > 1) {
         receiptForm.secondPartition = receipt.outcomePerCode[1].outcomeCode.partition;
         receiptForm.secondPosition = receipt.outcomePerCode[1].outcomeCode.position;
-        receiptForm.secondOutcome = receipt.outcomePerCode[1].outcome;
+        receiptForm.secondOutcome = asFormatedString(receipt.outcomePerCode[1].outcome, amountNumberOptions);
       } 
     }
-    receiptForm.outcome = receipt.outcome;
+    receiptForm.outcome = asFormatedString(receipt.outcome, amountNumberOptions);
     receiptForm.outcomeAsText = numberToSerbianDinars(receipt.outcome);
     receiptForm.churchMunicipality = receipt.churchMunicipality;
     receiptForm.town = receipt.town;
@@ -284,7 +341,7 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes) {
     receipt._id = receiptForm._id;
     receipt.isValid = receiptForm.isValid;
     receipt.date = receiptForm.date;
-    receipt.outcome = receiptForm.outcome;
+    receipt.outcome = asFloat(receiptForm.outcome, amountNumberOptions);
     receipt.churchMunicipality = receiptForm.churchMunicipality;
     receipt.town = receiptForm.town;
     receipt.reason = receiptForm.reason;
@@ -297,10 +354,10 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes) {
       return outcomeCode.partition == receiptForm.secondPartition && outcomeCode.position == receiptForm.secondPosition;
     })
     if (firstOutcomeCode) {
-      receipt.outcomePerCode.push({outcomeCode: firstOutcomeCode, outcome: receiptForm.firstOutcome ? receiptForm.firstOutcome : 0});
+      receipt.outcomePerCode.push({outcomeCode: firstOutcomeCode, outcome: receiptForm.firstOutcome ? asFloat(receiptForm.firstOutcome, amountNumberOptions) : 0});
     }
     if (secondOutcomeCode) {
-      receipt.outcomePerCode.push({outcomeCode: secondOutcomeCode, outcome: receiptForm.secondOutcome ? receiptForm.secondOutcome : 0});
+      receipt.outcomePerCode.push({outcomeCode: secondOutcomeCode, outcome: receiptForm.secondOutcome ? asFloat(receiptForm.secondOutcome, amountNumberOptions) : 0});
     }
     return receipt;
 }
@@ -343,8 +400,15 @@ function copy(pathToFile, userChosenPath, callback) {
 }
 
 module.exports = {
+  amountNumberOptions: amountNumberOptions,
+  partitionPositionNumberOptions: partitionPositionNumberOptions,
+  asFloat: asFloat,
+  asInt: asInt,
+  asFormatedString: asFormatedString,
   numberToSerbianDinars: numberToSerbianDinars,
   getCodeCombinations: getCodeCombinations,
+  mapCodeToCodeForm: mapCodeToCodeForm,
+  mapCodeFormToCode: mapCodeFormToCode,
   mapPaymentSlipToPaymentSlipForm: mapPaymentSlipToPaymentSlipForm,
   mapPaymentSlipFormToPaymentSlip: mapPaymentSlipFormToPaymentSlip,
   mapReceiptToReceiptForm, mapReceiptToReceiptForm,

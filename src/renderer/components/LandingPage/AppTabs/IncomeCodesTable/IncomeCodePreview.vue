@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <b-form v-on:submit="onSubmit" no-validation>
+    <b-form v-on:submit="onSubmit" novalidate no-validation>
       <b-row>
         <b-col>
           <b-button-group class="float-right">
@@ -11,32 +11,32 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label :for="`partitionInput`">Партиција:</label>
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="partitionInput" v-on:mouseleave="hideTooltip('partitionInput')" type="number" step="1" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }"/>
+            <b-form-input id="partitionInput" v-on:mouseleave="hideTooltip('partitionInput')" type="text" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label :for="`positionInput`">Позиција:</label>
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="positionInput" v-on:mouseleave="hideTooltip('positionInput')" type="number" step="1" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
+            <b-form-input id="positionInput" v-on:mouseleave="hideTooltip('positionInput')" type="text" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label :for="`descriptionInput`">Опис:</label>
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="descriptionInput" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" class="descriptionInput" v-bind:class="{ 'is-invalid': shouldValidate && missingDescription }"/>
+            <b-form-input id="descriptionInput" :maxlength="35" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" class="descriptionInput" v-bind:class="{ 'is-invalid': shouldValidate && missingDescription }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -94,7 +94,9 @@
 import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
 const incomeCodeController = require('../../../../controllers/incomeCodeController')
-const i18n = require('../../../../translations/i18n');
+const i18n = require('../../../../translations/i18n')
+const { partitionPositionNumberOptions, mapCodeToCodeForm, mapCodeFormToCode } = require('../../../../utils/utils')
+const AutoNumeric = require('autonumeric')
 
 export default {
   props: {
@@ -126,15 +128,19 @@ export default {
         description: null
       },
       shouldValidate: false,
-      incomeCodes: [],
-      errorText: ""
+      errorText: "",
+      partitionInputAutonumeric: null,
+      positionInputAutonumeric: null
     }
   },
   created () {
     if (this.isUpdate) {
-      this.form = JSON.parse(JSON.stringify(this.incomeCode))
+      this.form = mapCodeToCodeForm(JSON.parse(JSON.stringify(this.incomeCode)))
     }
-    this.incomeCodes = JSON.parse(JSON.stringify(this.existingIncomeCodes))
+  },
+  mounted () {
+    this.partitionInputAutonumeric = new AutoNumeric('#partitionInput', partitionPositionNumberOptions)
+    this.positionInputAutonumeric = new AutoNumeric('#positionInput', partitionPositionNumberOptions)
   },
   computed: {
     disablePartitionTooltip: {
@@ -187,17 +193,17 @@ export default {
         }
     },
     missingPartition: function () {
-      return !this.form.partition || this.form.partition.toString().trim() === ''
+      return !this.form.partition || this.form.partition.trim() === ''
     },
     missingPosition: function () {
-      return !this.form.position || this.form.position.toString().trim() === ''
+      return !this.form.position || this.form.position.trim() === ''
     },
     missingDescription: function () {
       return !this.form.description || this.form.description.toString().trim() === ''
     },
     notUnique: function () {
       const self = this
-      var euqivalentInstance = this.incomeCodes.filter(incomeCode => {
+      var euqivalentInstance = this.existingIncomeCodes.filter(incomeCode => {
         return incomeCode.partition == self.form.partition && incomeCode.position == self.form.position && incomeCode._id != self.form._id
       })
 
@@ -214,7 +220,7 @@ export default {
       const self = this;
       if (this.isFormValid()) {
         if (this.isUpdate) {
-          incomeCodeController.updateIncomeCode(this.form).then((res) => {
+          incomeCodeController.updateIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
                 self.$emit('updateIncomeCodes')
                 self.closeModal();
@@ -223,7 +229,7 @@ export default {
               }
           })
         } else {
-          incomeCodeController.createIncomeCode(this.form).then((res) => {
+          incomeCodeController.createIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
                 self.$emit('updateIncomeCodes')
                 self.closeModal();
@@ -242,7 +248,9 @@ export default {
     },
     clearForm () {
       this.form.partition = null;
+      this.partitionInputAutonumeric.clear()
       this.form.position = null;
+      this.positionInputAutonumeric.clear()
       this.form.description = null;
     },
     hideTooltip (elementId) {
@@ -274,12 +282,12 @@ input {
   font-weight: bold;
 }
 .partPosInput {
-  width: 100px;
-  max-width: 100px;
+  width: 50px;
+  max-width: 50px;
 }
 .descriptionInput {
-  width: 300px;
-  max-width: 300px;
+  width: 355px;
+  max-width: 355px;
 }
 .is-invalid {
   border: dotted 1px red;
