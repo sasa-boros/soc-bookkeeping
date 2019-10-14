@@ -1,19 +1,23 @@
-const { PaymentSlip } = require('../model/paymentSlip')
-const { Receipt } = require('../model/receipt')
+const paymentSlipDao = require('../dao/paymentSlipDao')
+const receiptDao = require('../dao/receiptDao')
 
 async function getBookedYears () {
     console.log('Getting all booked years')
 
-    var paymentSlips = await PaymentSlip.find({}, 'date -_id').exec()
-    var receipts = await Receipt.find({}, 'date').exec()
+    var paymentSlips = await paymentSlipDao.findAll()
+    var receipts = await receiptDao.findAll()
 
     var yearsSet = new Set()
-    paymentSlips.forEach(paymentSlip => {
-        yearsSet.add(paymentSlip.date.getFullYear())
-    })
-    receipts.forEach(receipt => {
-        yearsSet.add(receipt.date.getFullYear())
-    })
+    if (paymentSlips) {
+        paymentSlips.forEach(paymentSlip => {
+            yearsSet.add(paymentSlip.date.getFullYear())
+        })
+    }
+    if (receipts) {
+        receipts.forEach(receipt => {
+            yearsSet.add(receipt.date.getFullYear())
+        })
+    }
 
     var years = Array.from(yearsSet).sort((a, b) => b - a)
 

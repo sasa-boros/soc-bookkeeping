@@ -222,6 +222,7 @@ export default {
         if (this.isUpdate) {
           incomeCodeController.updateIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
+                this.shouldValidate = false;
                 self.$emit('updateIncomeCodes')
                 self.closeModal();
               } else {
@@ -231,6 +232,7 @@ export default {
         } else {
           incomeCodeController.createIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
+                this.shouldValidate = false;
                 self.$emit('updateIncomeCodes')
                 self.closeModal();
               } else {
@@ -282,8 +284,8 @@ input {
   font-weight: bold;
 }
 .partPosInput {
-  width: 50px;
-  max-width: 50px;
+  width: 70px;
+  max-width: 70px;
 }
 .descriptionInput {
   width: 355px;

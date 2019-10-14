@@ -1,9 +1,9 @@
-const { IncomeCode } = require('../model/paymentCode')
-const { PaymentSlip } = require('../model/paymentSlip')
+const incomeCodeDao = require('../dao/incomeCodeDao')
+const paymentSlipDao = require('../dao/paymentSlipDao')
 
 async function getIncomeCodes () {
   console.log('Getting all income codes')
-  var incomeCodes = await IncomeCode.find({}).exec()
+  var incomeCodes = await incomeCodeDao.findAll()
   console.log(`Returning income codes: \n${JSON.stringify(incomeCodes, null, 2)}`)
   return incomeCodes
 }
@@ -11,26 +11,27 @@ async function getIncomeCodes () {
 async function createIncomeCode (incomeCode) {
   delete incomeCode._id
   console.log(`Creating income code: \n${JSON.stringify(incomeCode, null, 2)}`)
-  await IncomeCode(incomeCode).save()
+  await incomeCodeDao.insert(incomeCode)
   console.log('Successfully created income code')
 }
 
 async function deleteIncomeCode (incomeCodeId) {
-  console.log(`Deleting income code with id ${incomeCodeId}`)
-  var deletedIncomeCode = await IncomeCode.findByIdAndRemove(incomeCodeId).exec()
+  console.log(`Deleting income code with id ${JSON.stringify(incomeCodeId)}`)
+  const deletedIncomeCode = await incomeCodeDao.findById(incomeCodeId)
+  await incomeCodeDao.removeById(incomeCodeId)
   await makePaymentSlipsInvalid(deletedIncomeCode)
   console.log('Successfully deleted income code')
 }
 
 async function updateIncomeCode (incomeCode) {
   console.log(`Updating income code: \n${JSON.stringify(incomeCode, null, 2)}`)
-  await IncomeCode.findByIdAndUpdate(incomeCode._id, incomeCode).exec()
+  await incomeCodeDao.updateById(incomeCode._id, incomeCode)
   console.log('Successfully updated income code')
 }
 
 async function makePaymentSlipsInvalid (deletedIncomeCode) {
   console.log('Making associated payment slips invalid')
-  let paymentSlips = await PaymentSlip.find({}).exec()
+  let paymentSlips = await paymentSlipDao.findAll()
   paymentSlips.forEach(async paymentSlip => {
     if (!paymentSlip.incomePerCode) {
       return
@@ -45,7 +46,7 @@ async function makePaymentSlipsInvalid (deletedIncomeCode) {
       paymentSlip.isValid = false
       paymentSlip.incomePerCode = []
       console.log(`Payment slip with id ${paymentSlip._id} is no longer valid`)
-      await PaymentSlip.findByIdAndUpdate(paymentSlip._id, paymentSlip).exec()
+      await paymentSlipDao.updateById(paymentSlip._id, paymentSlip)
     }
   })
 }

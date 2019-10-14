@@ -1,9 +1,10 @@
-const { PaymentSlip } = require('../model/paymentSlip')
+const paymentSlipDao = require('../dao/paymentSlipDao')
+
 const fs = require('fs')
 
 async function arePaymentSlipsValid () {
   console.log('Checking if all payment slips are valid')
-  const paymentSlips = await PaymentSlip.find({}).exec()
+  const paymentSlips = await paymentSlipDao.findAll()
   var result = true
   for (let i=0; i < paymentSlips.length; i++) {
     if (!paymentSlips[i].isValid) {
@@ -19,9 +20,9 @@ async function getPaymentSlips (year) {
   console.log(`Getting payment slips for year ${year}`)
   var paymentSlips
   if (year) {
-    paymentSlips = await PaymentSlip.find({ 'date': { '$gte': new Date(year, 0, 1), '$lt': new Date(year + 1, 0, 1) } }).exec()
+    paymentSlips = await paymentSlipDao.findBetweenDates(new Date(year, 0, 1), new Date(year + 1, 0, 1))
   } else {
-    paymentSlips = await PaymentSlip.find({}).exec()
+    paymentSlips = await paymentSlipDao.findAll()
   }
   console.log(`Returning payment slips: \n${JSON.stringify(paymentSlips, null, 2)}`)
   return paymentSlips
@@ -29,23 +30,24 @@ async function getPaymentSlips (year) {
 
 async function createPaymentSlip (paymentSlip) {
   delete paymentSlip._id
+  paymentSlip.date = new Date(paymentSlip.date)
   console.log(`Creating payment slip: \n${JSON.stringify(paymentSlip, null, 2)}`)
   paymentSlip.isValid = true
-  await PaymentSlip(paymentSlip).save()
+  await paymentSlipDao.insert(paymentSlip)
   await assignAnnualReportValues()
   console.log('Successfully created payment slip')
 }
 
 async function deletePaymentSlip (paymentSlipId) {
   console.log(`Deleting payment slip with id ${paymentSlipId}`)
-  await PaymentSlip.findByIdAndRemove(paymentSlipId).exec()
+  await paymentSlipDao.removeById(paymentSlipId)
   await assignAnnualReportValues()
   console.log('Successfully deleted payment slip')
 }
 
 async function deletePaymentSlips (paymentSlipsIds) {
   console.log(`Deleting payment slips with ids ${paymentSlipsIds}`)
-  await PaymentSlip.deleteMany({ _id: { $in : paymentSlipsIds }}).exec()
+  await paymentSlipDao.removeManyByIds(paymentSlipsIds)
   await assignAnnualReportValues()
   console.log('Successfully deleted payment slips')
 }
@@ -53,18 +55,20 @@ async function deletePaymentSlips (paymentSlipsIds) {
 async function updatePaymentSlip (paymentSlip) {
   console.log(`Updating payment slip: \n${JSON.stringify(paymentSlip, null, 2)}`)
   paymentSlip.isValid = true
-  await PaymentSlip.findByIdAndUpdate(paymentSlip._id, paymentSlip).exec()
+  paymentSlip.date = new Date(paymentSlip.date)
+  await paymentSlipDao.updateById(paymentSlip._id, paymentSlip)
   await assignAnnualReportValues()
   console.log('Successfully updated payment slip')
 }
 
 async function assignAnnualReportValues () {
-  let paymentSlips = await PaymentSlip.find({}).sort({ 'date': 1 }).exec()
+  let paymentSlips = await paymentSlipDao.findAllSortByDateAsc()
+  console.log(paymentSlips)
   for (let i = 0; i < paymentSlips.length; i++) {
     const paymentSlip = paymentSlips[i]
     paymentSlip.ordinal = i + 1
     paymentSlip.annualReportPage = paymentSlip.date.getMonth() + 1
-    await PaymentSlip.findByIdAndUpdate(paymentSlip._id, paymentSlip).exec()
+    await paymentSlipDao.updateById(paymentSlip._id, paymentSlip)
   }
 }
 

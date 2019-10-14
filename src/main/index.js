@@ -2,17 +2,23 @@
 
 import '../renderer/store'
 const { app, BrowserWindow } = require('electron')
-const mongoose = require('mongoose')
+const Datastore = require('nedb')
 const path = require('path')
-const config = require('../config/config')
+const config = require('../../config/config')
 const { ipcMain } = require('electron')
-const fs = require('fs')
 
 // loading ipc main router
 require('./ipcRouter')
 
-// connecting to database
-mongoose.connect(config.dbUrl, { useNewUrlParser: true })
+var db = {}
+db.paymentSlips = new Datastore({ filename: path.resolve(config.db.path, 'paymentSlips.json'), autoload: true, timestampData: true });
+db.receipts = new Datastore({ filename: path.resolve(config.db.path, 'receipts.json'), autoload: true, timestampData: true });
+db.defaultPaymentSlips = new Datastore({ filename: path.resolve(config.db.path, 'defaultPaymentSlips.json'), autoload: true, timestampData: true });
+db.defaultReceipts = new Datastore({ filename: path.resolve(config.db.path, 'defaultReceipts.json'), autoload: true, timestampData: true });
+db.incomeCodes = new Datastore({ filename: path.resolve(config.db.path, 'incomeCodes.json'), autoload: true, timestampData: true });
+db.outcomeCodes = new Datastore({ filename: path.resolve(config.db.path, 'outcomeCodes.json'), autoload: true, timestampData: true });
+
+global.db = db
 
 /**
  * Set `__static` path to static files in production

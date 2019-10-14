@@ -80,7 +80,7 @@
           areYouSureToDeleteOutcomeCode: i18n.getTranslation('Are you sure you want to delete outcome code?'),
           outcomeCodeDeleteConsequences: i18n.getTranslation('By deleting outcome code you will possibly make some of receipts invalid.'),
           ok: i18n.getTranslation('Ok'),
-          maxNumberOfOutcomeCodesReached: i18n.getTranslation('Maximum number of outcome codes reached (15).')
+          maxNumberOfOutcomeCodesReached: i18n.getTranslation('Maximum number of outcome codes reached (16).')
         },
         fields: [
           {
@@ -134,7 +134,7 @@
           this.selectedOutcomeCode = outcomeCode
           this.isUpdate = true
         } else {
-          if(this.outcomeCodes.length >= 15) {
+          if(this.outcomeCodes.length >= 16) {
             this.openErrorModal(this.phrases.maxNumberOfOutcomeCodesReached)
             return
           }
@@ -152,7 +152,7 @@
       },
       deleteOutcomeCode () {
         const self = this
-        outcomeCodeController.deleteOutcomeCode(this.deletedOutcomeCode).then((res) => {
+        outcomeCodeController.deleteOutcomeCode(this.deletedOutcomeCode._id).then((res) => {
           if (!res.err) {
             self.update()
             EventBus.$emit('updateReceiptTable');

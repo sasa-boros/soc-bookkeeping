@@ -35,3 +35,7 @@ h1 {
   font-family: "Times New Roman";
   letter-spacing: 95%;
 }
+
+.btn-link:disabled {
+    background-color: gray;
+}

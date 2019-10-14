@@ -152,7 +152,7 @@
       },
       deleteIncomeCode () {
         const self = this
-        incomeCodeController.deleteIncomeCode(this.deletedIncomeCode).then((res) => {
+        incomeCodeController.deleteIncomeCode(this.deletedIncomeCode._id).then((res) => {
           if (!res.err) {
             self.update()
             EventBus.$emit('updatePaymentSlipTable');

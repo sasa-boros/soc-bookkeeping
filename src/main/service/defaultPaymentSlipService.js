@@ -1,28 +1,23 @@
-const { DefaultPaymentSlip } = require('../model/paymentSlip')
+const defaultPaymentSlipDao = require('../dao/defaultPaymentSlipDao')
 
 async function getDefaultPaymentSlip () {
   console.log('Getting default payment slip')
-  let defaultPaymentSlips = await DefaultPaymentSlip.find({}).exec()
-  if (defaultPaymentSlips && defaultPaymentSlips.length > 0) {
-    console.log(`Returning default payment slip: \n${JSON.stringify(defaultPaymentSlips[0], null, 2)}`)
-    return defaultPaymentSlips[0]
-  } else {
-    console.log('Returning default payment slip: null')
-    return null
-  }
+  const defaultPaymentSlip = await defaultPaymentSlipDao.findOne()
+  console.log(`Returning default payment slip: \n${JSON.stringify(defaultPaymentSlip, null, 2)}`)
+  return defaultPaymentSlip
 }
 
 async function createDefaultPaymentSlip (defaultPaymentSlip) {
   delete defaultPaymentSlip._id
   console.log(`Creating default payment slip: \n${JSON.stringify(defaultPaymentSlip, null, 2)}`)
-  await DefaultPaymentSlip.deleteOne({}).exec()
-  await DefaultPaymentSlip(defaultPaymentSlip).save()
+  await defaultPaymentSlipDao.removeAll()
+  await defaultPaymentSlipDao.insert(defaultPaymentSlip)
   console.log('Successfully created default payment slip')
 }
 
 async function deleteDefaultPaymentSlip () {
   console.log('Deleting default payment slip')
-  await DefaultPaymentSlip.deleteOne({}).exec()
+  await defaultPaymentSlipDao.removeAll()
   console.log('Successfully deleted default payment slip')
 }
 

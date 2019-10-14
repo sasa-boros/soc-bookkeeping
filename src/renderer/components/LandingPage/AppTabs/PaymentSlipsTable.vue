@@ -10,7 +10,7 @@
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="openDeleteCheckedPaymentSlipsModal()" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" variant="link" class="btn-xs">
+          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="openDeleteCheckedPaymentSlipsModal()" :disabled="noRowChecked" variant="link" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
@@ -340,9 +340,6 @@
 </style>
 
 <style scoped>
-  .disabledBtn {
-    background-color: gray;
-  }
   .tableDiv{
     display: block;
     overflow: auto;

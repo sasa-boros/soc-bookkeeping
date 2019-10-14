@@ -8,11 +8,11 @@
         <h1> УПЛАТНИЦА </h1>
       <br/>На дин. <b-form-group class="input-form-group" ref="incomeInputFormGroup"><b-form-input id="incomeInput" ref="incomeInput" v-on:mouseleave="hideTooltip('incomeInput')" v-model="form.income" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" :disabled="defaultPaymentSlipPreview" type="text"></b-form-input></b-form-group> и словима  <b-form-input type="text" disabled class="input-small" id="incomeAsTextDivWrapper1" v-model="generatedIncomeTextLine1"></b-form-input>
       <br/><b-form-input disabled class="input-small" id="incomeAsTextDivWrapper2" v-model="generatedIncomeTextLine2"></b-form-input>
-      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" :maxlength="30" ref="townInput" v-on:mouseleave="hideTooltip('townInput')" v-model="form.town" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingTown }" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" :maxlength="40" ref="reasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text"></b-form-input></b-form-group>
-      <div class="mt-2">                                                                                                                                    У п л а т и о,
-                                                                                                        <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input id="payedInput" :maxlength="50" ref="payedInput" v-on:mouseleave="hideTooltip('payedInput')" v-model="form.payed" class="input-small" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                      Књижити у корист буџета за <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="paymentSlipDatePickerInput" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar" v-on:input="checkMaxPaymentSlips"></datepicker></span> г.
-                                                                                                        Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select plain  id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultPaymentSlipPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }" @blur.native="postDatepickerOnBlur"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select plain id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup" id="firstIncomeInputForm"><span v-on:mouseleave="hideTooltip('firstIncomeInputForm')"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstIncome && atLeastOnePartPosNotSet }" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
+      <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" :maxlength="30" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" :maxlength="40" ref="reasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text"  @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
+      <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="paymentSlipDatepickerInput" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar" v-on:input="checkMaxPaymentSlips"></datepicker></span> г.                                                                                          У п л а т и о,
+                                                                                                        <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input id="payedInput" :maxlength="50" ref="payedInput" v-on:mouseleave="hideTooltip('payedInput')" v-model="form.payed" class="input-small" type="text" @blur.native="postDatepickerOnBlur"></b-form-input></b-form-group>  
+      </div><div class="mt-2">                                                                                                      Књижити у корист буџета за                  <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> г.
+                                                                                                        Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select plain  id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultPaymentSlipPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select plain id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup" id="firstIncomeInputForm"><span v-on:mouseleave="hideTooltip('firstIncomeInputForm')"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstIncome && atLeastOnePartPosNotSet }" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
                   Примио благајник,                                                      Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartSelect')"><b-form-select plain id="secondPartSelect" v-model="form.secondPartition" :disabled="defaultPaymentSlipPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="hideTooltip('secondPosSelectForm')"><b-form-select plain id="secondPosSelect" v-model="form.secondPosition" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondIncomeInputFormGroup" id="secondIncomeInputForm"><span v-on:mouseleave="hideTooltip('secondIncomeInputForm')"><b-form-input v-model="form.secondIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondIncome && atLeastOnePartPosNotSet }" id="secondIncomeInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="text"></b-form-input></span></b-form-group>
                                                            
       <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalIncomeInputFormGroup" id="totalIncomeInputForm"><span v-on:mouseleave="hideTooltip('totalIncomeInputForm')"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalIncome || totalIncomeNotValid ) }"></b-form-input></span></b-form-group>
@@ -24,11 +24,11 @@
 
       </div>
       <div id="downloadPrintBtnsDiv">
-        <b-button v-on:mouseleave="hideTooltip('paymentSlipDownloadBtn')" ref="paymentSlipDownloadBtn" id="paymentSlipDownloadBtn" @click.stop="downloadPaymentSlip()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultPaymentSlipPreview }">
+        <b-button v-on:mouseleave="hideTooltip('paymentSlipDownloadBtn')" ref="paymentSlipDownloadBtn" id="paymentSlipDownloadBtn" @click.stop="downloadPaymentSlip()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultPaymentSlipPreview }" :disabled="disablePrintDownloadBtns">
           <img src="~@/assets/download.png" class="ignoreInPrint">
         </b-button>
         &nbsp;
-        <b-button v-on:mouseleave="hideTooltip('paymentSlipPrintBtn')" ref="paymentSlipPrintBtn" id="paymentSlipPrintBtn" @click.stop="printPaymentSlip()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultPaymentSlipPreview }">
+        <b-button v-on:mouseleave="hideTooltip('paymentSlipPrintBtn')" ref="paymentSlipPrintBtn" id="paymentSlipPrintBtn" @click.stop="printPaymentSlip()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultPaymentSlipPreview }" :disabled="disablePrintDownloadBtns">
           <img src="~@/assets/print.png" class="ignoreInPrint">
         </b-button>
       </div>
@@ -43,12 +43,6 @@
     </b-form>
 
     <b-tooltip target="incomeInput" triggers="hover" placement="top" ref="incomeInputTooltip" :disabled.sync="disableIncomeTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.enterValue}}
-      </div>
-    </b-tooltip>
-
-    <b-tooltip target="townInput" triggers="hover" placement="top" ref="townInputTooltip" :disabled.sync="disableTownTooltip">
       <div class="tooltipInnerText">
         {{phrases.enterValue}}
       </div>
@@ -149,6 +143,7 @@
   const { numberToSerbianDinars, getCodeCombinations, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
   const i18n = require('../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
+  const _ = require('lodash')
 
   export default {
     store: store,
@@ -245,7 +240,9 @@
         if (!newValue || newValue.toString().trim() === '') {
           this.form.firstPosition = null
           this.form.firstIncome = null
-          this.firstIncomeInputAutonumeric.clear()
+          if (this.firstIncomeInputAutonumeric) {
+            this.firstIncomeInputAutonumeric.clear()
+          }
           return;
         }
         if (!this.incomeCodeCombinations) {
@@ -262,7 +259,9 @@
         if (!newValue || newValue.toString().trim() === '') {
           this.form.secondPosition = null
           this.form.secondIncome = null
-          this.secondIncomeInputAutonumeric.clear()
+          if (this.secondIncomeInputAutonumeric) {
+            this.secondIncomeInputAutonumeric.clear()
+          }
           return;
         }
         if (!this.incomeCodeCombinations) {
@@ -331,6 +330,22 @@
         set: function (newValue) {
         }
       },
+      year: {
+        get: function () {
+          if (this.form.date) {
+            return new Date(this.form.date).getUTCFullYear()
+          } 
+          return null
+        },
+        set: function (newValue) {
+        }
+      },
+      disablePrintDownloadBtns: function () {
+        if (this.paymentSlipPreview) {
+           return !(_.isEqual(mapPaymentSlipToPaymentSlipForm(this.paymentSlip), this.form) && this.form.isValid)
+        }
+        return true
+      },
       firstPosTooltipText: function () {
         if (this.missingFirstPart) {
           return this.phrases.enterPartition
@@ -374,17 +389,6 @@
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
             this.$refs.incomeInputTooltip.$emit('close')
-          }
-        }
-      },
-      disableTownTooltip: {
-        get: function () {
-          return !this.missingTown || !this.shouldValidate
-        },
-        set: function (newValue) {
-          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-          if (newValue) {
-            this.$refs.townInputTooltip.$emit('close')
           }
         }
       },
@@ -538,9 +542,6 @@
       },
       missingReason: function () {
         return !this.form.reason || this.form.reason.toString().trim() === ''
-      },
-      missingTown: function () {
-        return !this.form.town || this.form.town.toString().trim() === ''
       },
       missingIncome: function () {
         return !this.form.income || this.form.income.trim() === ''
@@ -718,7 +719,6 @@
       checkForm () {
         if (this.missingIncome ||
             this.missingReason ||
-            this.missingTown ||
             this.missingDate ||
             this.atLeastOnePartPosNotSet ||
             this.totalIncomeNotValid) {
@@ -764,9 +764,9 @@
       },
       preparePrintSection () {
         // ensuring clean screen
-        var receiptSection = document.getElementById('print-receipt')
-        if (receiptSection) {
-          document.body.removeChild(receiptSection)
+        var paymentSlipSection = document.getElementById('print-paymentSlip')
+        if (paymentSlipSection) {
+          document.body.removeChild(paymentSlipSection)
         }
         var annualReportSection = document.getElementById('print-annual-report')
         if (annualReportSection) {
@@ -878,7 +878,7 @@
     background-image: url('~@/assets/invalid-red.png') !important;
   }
   .select-small.is-invalid {
-    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px,url('~@/assets/invalid-red.png') no-repeat center right 1.75rem/1.125rem 1.125rem;
+    background-image: url('~@/assets/invalid-red.png') !important;
   }
   .custom-select:disabled {
     color: #6c757d;
@@ -904,6 +904,9 @@
   }
   #receivedInput {
     width: 230px;
+  }
+  #yearInput {
+    width: 50px;
   }
   #firstPartSelect {
     width: 50px;
@@ -982,29 +985,24 @@
     white-space: nowrap;
     overflow: hidden;
   }
-  .disabledTextDiv {
-    background-color: #ededed;
-    max-height: 15px;
-  }
 </style>
 
 <style>
-  .paymentSlipDatePickerInput {
+  .paymentSlipDatepickerInput {
     display: inline;
     border-style: none;
     border-bottom: 1px solid black;
+    text-align: center;
 
     white-space: nowrap;
-    width: 103px;
+    width: 94px;
     max-height: 15px;
     padding: 0px;
     margin: 0px;
-    color: red;
     font-weight: bold;
-    padding: 0px;
     color: black;
   }
-  .is-invalid .paymentSlipDatePickerInput {    
+  .is-invalid .paymentSlipDatepickerInput {    
     background-image: url('~@/assets/invalid-red.png');
     background-repeat: no-repeat;
     background-position: center right calc(2.25rem / 4);
@@ -1016,11 +1014,11 @@
     height: 15px;
     margin: 0px;
     padding: 0px;
-    width: 93px;
+    width: 95px;
   }
   .paymentSlipDatepickerWrapper > div:first-child {
     display: inline;
-    width: 93px;
+    width: 95px;
     margin: 0px;
     padding: 0px;
   }
@@ -1028,7 +1026,7 @@
     font-size: 120%;
     white-space: normal;
     z-index: 100;
-    -webkit-transform: scale(0.7, 0.7) translate(650px, -65px); /* Safari and Chrome */
+    -webkit-transform: scale(0.7, 0.7) translate(-70px, -70px); /* Safari and Chrome */
   }
 
   @media screen {

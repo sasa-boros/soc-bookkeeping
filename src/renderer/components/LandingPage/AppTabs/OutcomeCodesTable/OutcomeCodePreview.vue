@@ -36,7 +36,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="descriptionInput" :maxlength="35" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" class="descriptionInput" v-bind:class="{ 'is-invalid': shouldValidate && missingDescription }"/>
+            <b-form-input id="descriptionInput" :maxlength="35" type="text" v-model="form.description" class="descriptionInput" v-bind:class="{ 'is-invalid': shouldValidate && missingDescription }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -222,6 +222,7 @@ export default {
         if (this.isUpdate) {
           outcomeCodeController.updateOutcomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
+                this.shouldValidate = false;
                 self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
@@ -231,6 +232,7 @@ export default {
         } else {
           outcomeCodeController.createOutcomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
+                this.shouldValidate = false;
                 self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
@@ -282,8 +284,8 @@ input {
   font-weight: bold;
 }
 .partPosInput {
-  width: 50px;
-  max-width: 50px;
+  width: 70px;
+  max-width: 70px;
 }
 .descriptionInput {
   width: 355px;

@@ -258,14 +258,14 @@ export default {
 .incomePage >>> #income-page {
 	transform: scale(0.5);
 	position:relative;
-	bottom: 240px;
+	bottom: 250px;
 	right: 407px;
 }
 .outcomePage >>> #outcome-page {
 	transform: scale(0.5);
 	position:relative;
-	bottom: 245px;
-	right: 407px;
+	bottom: 255px;
+	right: 449px;
 }
 
 .totalIncomePage >>> #total-income-page {
@@ -278,7 +278,7 @@ export default {
 .totalOutcomePage >>> #total-outcome-page {
   transform: scale(0.5);
 	position:relative;
-	bottom: 255px;
+	bottom: 276px;
 	right: 400px;
 }
 
@@ -338,46 +338,46 @@ i {
     #income-page {
       page-break-before: always;
       position: relative;
-      bottom:905px;
-      left: 100px;
-      transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
+      bottom:885px;
+      left: 90px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #outcome-page {
       page-break-before: always;
       position: relative;
-      bottom:905px;
-      left: 100px;
-      transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
+      bottom:850px;
+      left: 90px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-income-page {
       page-break-before: always;
       position: relative;
-      bottom: 910px;
+      bottom: 885px;
       left: 50px;
-      transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-outcome-page {
       page-break-before: always;
       position: relative;
-      bottom: 910px;
+      bottom: 885px;
       left: 50px;
-      transform: scale(0.85) rotate(270deg) translate(-276mm, 0);
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #shares-page {
       page-break-before: always;
       position: relative;
-      bottom: 905px;
+      bottom: 895px;
       left: 70px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     .last-page {
       position:relative; 
-      top:430px;
+      top:435px;
     }
     #total-page {
       page-break-before: always;

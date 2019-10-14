@@ -1,8 +1,9 @@
 const { AnnualReportPage } = require('../model/annualReportPage')
 const { AnnualReport } = require('../model/annualReport')
-const { PaymentSlip } = require('../model/paymentSlip')
-const { Receipt } = require('../model/receipt')
-const { IncomeCode, OutcomeCode } = require('../model/paymentCode')
+const paymentSlipDao = require('../dao/paymentSlipDao')
+const receiptDao = require('../dao/receiptDao')
+const incomeCodeDao = require('../dao/incomeCodeDao')
+const outcomeCodeDao = require('../dao/outcomeCodeDao')
 
 const i18n = require('../../renderer/translations/i18n')
 
@@ -15,16 +16,17 @@ const Mustache = require('mustache');
 const AutoNumeric = require('autonumeric')
 
 async function getAnnualReport (year) {
+
   console.log(`Getting annual report for year ${year}`)
 
-  const annualReport = initAnnualReport()
+  const annualReport = new AnnualReport()
   annualReport.year = year
   for (let i = 0; i < 12; i++) {
-    const annualReportPage = initAnnualReportPage()
+    const annualReportPage = new AnnualReportPage()
     annualReportPage.ordinal = i + 1
 
-    const paymentSlips = await getEntitiesByDate(PaymentSlip, new Date(year, i, 1), new Date(year, i + 1, 1), true)
-    const receipts = await getEntitiesByDate(Receipt, new Date(year, i, 1), new Date(year, i + 1, 1), true)
+    const paymentSlips = await getEntitiesByDate(paymentSlipDao, new Date(year, i, 1), new Date(year, i + 1, 1), true)
+    const receipts = await getEntitiesByDate(receiptDao, new Date(year, i, 1), new Date(year, i + 1, 1), true)
     
     var paymentSlipsValid = checkIfEntitiesAreValid(paymentSlips)
     var receiptsValid = checkIfEntitiesAreValid(receipts)
@@ -58,36 +60,11 @@ async function getAnnualReport (year) {
   return annualReport
 }
 
-function initAnnualReport () {
-  var annualReport = AnnualReport()
-  annualReport.pages = []
-  annualReport.totalIncomePerCode = []
-  annualReport.totalOutcomePerCode = []
-  annualReport.totalIncome = Big(0.0)
-  annualReport.totalOutcome = Big(0.0)
-  annualReport.total = Big(0.0)
-  return annualReport
-}
-
-function initAnnualReportPage () {
-  var annualReportPage = AnnualReportPage()
-  annualReportPage.paymentSlips = []
-  annualReportPage.receipts = []
-  annualReportPage.totalIncomePerCode = []
-  annualReportPage.totalOutcomePerCode = []
-  annualReportPage.totalIncome = Big(0.0)
-  annualReportPage.totalOutcome = Big(0.0)
-  annualReportPage.transferFromPreviousMonth = Big(0.0)
-  annualReportPage.transferToNextMonth = Big(0.0)
-  annualReportPage.total = Big(0.0)
-  return annualReportPage
-}
-
-async function getEntitiesByDate (entity, startDate, endDate, isSorted) {
+async function getEntitiesByDate (dao, startDate, endDate, isSorted) {
   if (isSorted) {
-    return entity.find({ 'date': { '$gte': startDate, '$lt': endDate } }).sort({ 'date': 1 }).exec()
+    return dao.findBetweenDatesSortAsc(startDate, endDate)
   } else {
-    return entity.find({ 'date': { '$gte': startDate, '$lt': endDate } }).exec()
+    return dao.findBetweenDates(startDate, endDate)
   }
 }
 
@@ -191,9 +168,9 @@ async function getAnnualReportPages (annualReport) {
   const annualReportPages = []
   populateHeadline(annualReport, annualReportPages)
 
-  var incomeCodes = await IncomeCode.find({}).exec()
+  var incomeCodes = await incomeCodeDao.findAll()
   incomeCodes.sort(compareCodes)
-  var outcomeCodes = await OutcomeCode.find({}).exec()
+  var outcomeCodes = await outcomeCodeDao.findAll()
   outcomeCodes.sort(compareCodes)
 
   const incomePageTemplate = await readFile("./static/annual-report/income-page.html", { encoding: 'utf8'})
@@ -287,7 +264,7 @@ async function populateIncomeOutcomePage (annualReport, annualReportPage, income
       outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(outcomePerCode.outcome);
     });
     // receipt total outcome
-    outcomePageContext['S'+row] = formatAmount(receipt.outcome)
+    outcomePageContext['T'+row] = formatAmount(receipt.outcome)
     row++;
   });
   // total per income code
@@ -304,9 +281,9 @@ async function populateIncomeOutcomePage (annualReport, annualReportPage, income
   incomePageContext['S41'] = formatAmount(annualReportPage.totalIncome);
   incomePageContext['S42'] = formatAmount(annualReportPage.transferFromPreviousMonth);
   incomePageContext['S43'] = formatAmount(annualReportPage.total);
-  outcomePageContext['S41'] = formatAmount(annualReportPage.totalOutcome);
-  outcomePageContext['S42'] = formatAmount(annualReportPage.transferToNextMonth);
-  outcomePageContext['S43'] = formatAmount(annualReportPage.total);
+  outcomePageContext['T41'] = formatAmount(annualReportPage.totalOutcome);
+  outcomePageContext['T42'] = formatAmount(annualReportPage.transferToNextMonth);
+  outcomePageContext['T43'] = formatAmount(annualReportPage.total);
 
   Mustache.parse(incomePageTemplate);
   Mustache.parse(outcomePageTemplate);

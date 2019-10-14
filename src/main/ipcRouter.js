@@ -265,10 +265,10 @@ ipcMain.on('get-booked-years', async (event) => {
 })
 
 function reply (event, target, data) {
-  event.sender.send(target, JSON.stringify({ data: data }))
+  event.sender.send(target, { data: data })
 }
 
 function replyError (event, target, err) {
   console.error(err)
-  event.sender.send(target, JSON.stringify({ err: err }))
+  event.sender.send(target, { err: err })
 }

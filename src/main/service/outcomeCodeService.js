@@ -1,9 +1,9 @@
-const { OutcomeCode } = require('../model/paymentCode')
-const { Receipt } = require('../model/receipt')
+const outcomeCodeDao = require('../dao/outcomeCodeDao')
+const receiptDao = require('../dao/receiptDao')
 
 async function getOutcomeCodes () {
   console.log('Getting all outcome codes')
-  var outcomeCodes = await OutcomeCode.find({}).exec()
+  var outcomeCodes = await outcomeCodeDao.findAll()
   console.log(`Returning outcome codes: \n${JSON.stringify(outcomeCodes, null, 2)}`)
   return outcomeCodes
 }
@@ -11,26 +11,27 @@ async function getOutcomeCodes () {
 async function createOutcomeCode (outcomeCode) {
   delete outcomeCode._id
   console.log(`Creating outcome code: \n${JSON.stringify(outcomeCode, null, 2)}`)
-  await OutcomeCode(outcomeCode).save()
+  await outcomeCodeDao.insert(outcomeCode)
   console.log('Successfully created outcome code')
 }
 
 async function deleteOutcomeCode (outcomeCodeId) {
-  console.log(`Deleting outcome code with id ${outcomeCodeId}`)
-  var deletedOutcomeCode = await OutcomeCode.findByIdAndRemove(outcomeCodeId).exec()
+  console.log(`Deleting outcome code with id ${JSON.stringify(outcomeCodeId)}`)
+  const deletedOutcomeCode = await outcomeCodeDao.findById(outcomeCodeId)
+  await outcomeCodeDao.removeById(outcomeCodeId)
   await makeReceiptsInvalid(deletedOutcomeCode)
   console.log('Successfully deleted outcome code')
 }
 
 async function updateOutcomeCode (outcomeCode) {
   console.log(`Updating outcome code: \n${JSON.stringify(outcomeCode, null, 2)}`)
-  await OutcomeCode.findByIdAndUpdate(outcomeCode._id, outcomeCode).exec()
+  await outcomeCodeDao.updateById(outcomeCode._id, outcomeCode)
   console.log('Successfully updated outcome code')
 }
 
 async function makeReceiptsInvalid (deletedOutcomeCode) {
   console.log('Making associated receipts invalid')
-  let receipts = await Receipt.find({}).exec()
+  let receipts = await receiptDao.findAll()
   receipts.forEach(async receipt => {
     if (!receipt.outcomePerCode) {
       return
@@ -45,7 +46,7 @@ async function makeReceiptsInvalid (deletedOutcomeCode) {
       receipt.isValid = false
       receipt.outcomePerCode = []
       console.log(`Receipt with id ${receipt._id} is no longer valid`)
-      await Receipt.findByIdAndUpdate(receipt._id, receipt).exec()
+      await receiptDao.updateById(receipt._id, receipt)
     }
   })
 }

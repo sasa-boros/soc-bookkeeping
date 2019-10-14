@@ -1,9 +1,10 @@
-const { Receipt } = require('../model/receipt')
+const receiptDao = require('../dao/receiptDao')
+
 const fs = require('fs')
 
 async function areReceiptsValid () {
   console.log('Checking if all receipts are valid')
-  const receipts = await Receipt.find({}).exec()
+  const receipts = await receiptDao.findAll()
   var result = true
   for (let i=0; i < receipts.length; i++) {
     if (!receipts[i].isValid) {
@@ -19,9 +20,9 @@ async function getReceipts (year) {
   console.log(`Getting receipts for year ${year}`)
   var receipts
   if (year) {
-    receipts = await Receipt.find({ 'date': { '$gte': new Date(year, 0, 1), '$lt': new Date(year + 1, 0, 1) } }).exec()
+    receipts = await receiptDao.findBetweenDates(new Date(year, 0, 1), new Date(year + 1, 0, 1))
   } else {
-    receipts = await Receipt.find({}).exec()
+    receipts = await receiptDao.findAll()
   }
   console.log(`Returning receipts: \n${JSON.stringify(receipts, null, 2)}`)
   return receipts
@@ -29,23 +30,24 @@ async function getReceipts (year) {
 
 async function createReceipt (receipt) {
   delete receipt._id
+  receipt.date = new Date(receipt.date)
   console.log(`Creating receipt: \n${JSON.stringify(receipt, null, 2)}`)
   receipt.isValid = true
-  await Receipt(receipt).save()
+  await receiptDao.insert(receipt)
   await assignAnnualReportValues()
   console.log('Successfully created receipt')
 }
 
 async function deleteReceipt (receiptId) {
   console.log(`Deleting receipt with id ${receiptId}`)
-  await Receipt.findByIdAndRemove(receiptId).exec()
+  await receiptDao.removeById(receiptId)
   await assignAnnualReportValues()
   console.log('Successfully deleted receipt')
 }
 
 async function deleteReceipts (receiptsIds) {
   console.log(`Deleting receipts with ids ${receiptsIds}`)
-  await Receipt.deleteMany({ _id: { $in : receiptsIds }}).exec()
+  await receiptDao.removeManyByIds(receiptsIds)
   await assignAnnualReportValues()
   console.log('Successfully deleted receipts')
 }
@@ -53,18 +55,19 @@ async function deleteReceipts (receiptsIds) {
 async function updateReceipt (receipt) {
   console.log(`Updating receipt: \n${JSON.stringify(receipt, null, 2)}`)
   receipt.isValid = true
-  await Receipt.findByIdAndUpdate(receipt._id, receipt).exec()
+  receipt.date = new Date(receipt.date)
+  await receiptDao.updateById(receipt._id, receipt)
   await assignAnnualReportValues()
   console.log('Successfully updated receipt')
 }
 
 async function assignAnnualReportValues () {
-  let receipts = await Receipt.find({}).sort({ 'date': 1 }).exec()
+  let receipts = await receiptDao.findAllSortByDateAsc()
   for (let i = 0; i < receipts.length; i++) {
     const receipt = receipts[i]
     receipt.ordinal = i + 1
     receipt.annualReportPage = receipt.date.getMonth() + 1
-    await Receipt.findByIdAndUpdate(receipt._id, receipt).exec()
+    await receiptDao.updateById(receipt._id, receipt)
   }
 }
 
