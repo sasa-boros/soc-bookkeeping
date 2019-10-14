@@ -187,13 +187,7 @@ async function getAnnualReportPages (annualReport) {
 }
 
 function compareCodes( codeA, codeB ) {
-  if ((codeA.partition.toString() + codeA.position.toString()) < (codeB.partition.toString() + codeB.position.toString())) {
-    return -1;
-  }
-  if ((codeA.partition.toString() + codeA.position.toString()) > (codeB.partition.toString() + codeB.position.toString())) {
-    return 1;
-  }
-  return 0;
+  return codeA.partition - codeB.partition || codeA.position - codeB.position;
 }
 
 async function populateHeadline(annualReport, annualReportPages) {

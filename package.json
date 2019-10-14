@@ -12,8 +12,8 @@
     "download-webviewer": "npx @pdftron/webviewer-downloader"
   },
   "build": {
-    "productName": "soc-bookkeeping",
-    "appId": "soc.bookeping",
+    "productName": "bookkeeping",
+    "appId": "soc",
     "extraResources": [
       "./public/**"
     ],
