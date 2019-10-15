@@ -1,6 +1,7 @@
 const receiptDao = require('../dao/receiptDao')
-
+const { app } = require('electron')
 const fs = require('fs')
+const path = require('path')
 
 async function areReceiptsValid () {
   console.log('Checking if all receipts are valid')
@@ -78,7 +79,7 @@ async function createReceiptPdf (webContents) {
       throw new Error('Failed creating receipt pdf')
     }
     try {
-      fs.writeFileSync('./receipt.pdf', data);
+      fs.writeFileSync(path.join(app.getPath('userData'), '/receipt.pdf'), data);
     } catch (err){
       console.error(err)
       throw new Error('Failed creating receipt pdf')

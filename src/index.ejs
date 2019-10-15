@@ -16,9 +16,7 @@
     <% if (!process.browser) { %>
       <script>
         if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
-        </script>
-        <script src="/public/lib/webviewer.min.js"></script>
-
+      </script>
     <% } %>
 
     <!-- webpack builds are automatically injected -->

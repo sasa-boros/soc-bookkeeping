@@ -46,7 +46,7 @@
   import MessageConfirmDialog from '../../MessageConfirmDialog'
   
   const annualReportController = require('../../../controllers/annualReportController')
-  const i18n = require('../../../translations/i18n')
+  const i18n = require('../../../../translations/i18n')
   const { ipcRenderer } = require('electron')
 
   export default {

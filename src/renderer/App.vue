@@ -1,12 +1,17 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <landing-page></landing-page>
   </div>
 </template>
 
 <script>
+  import LandingPage from '@/components/LandingPage'
+
   export default {
-    name: 'soc-bookkeeping'
+    name: 'soc-bookkeeping',
+    components: {
+      LandingPage
+    }
   }
 </script>
 

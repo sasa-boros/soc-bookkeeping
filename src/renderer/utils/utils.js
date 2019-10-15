@@ -2,6 +2,7 @@ const fs = require('fs');
 const os = require('os')
 const path = require('path');
 const elerem = require('electron').remote
+const app = elerem.app
 const dialog = elerem.dialog
 const AutoNumeric = require('autonumeric')
 
@@ -367,14 +368,14 @@ function compareCodes( codeA, codeB ) {
 }
 
 function saveAs (pathToFile, fileName, callback) {
-  var localPath = path.join(os.homedir(), 'Desktop', '/' + fileName)
-  var userChosenPath = dialog.showSaveDialog({ defaultPath: localPath })
-  
+  const localPath = path.join(os.homedir(), 'Desktop', fileName)
+  const userChosenPath = dialog.showSaveDialog({ defaultPath: localPath })
+  const fullPathToFile = path.join(app.getPath('userData'), pathToFile)
   if (userChosenPath) {
-    fs.rename(pathToFile, userChosenPath, err => {
+    fs.rename(fullPathToFile, userChosenPath, err => {
       if (err) {
         if (err.code === 'EXDEV') {
-            copy(pathToFile, userChosenPath, callback);
+            copy(fullPathToFile, userChosenPath, callback);
         } else {
             callback(err);
         }

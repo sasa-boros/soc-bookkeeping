@@ -121,7 +121,7 @@
   
   const paymentSlipController = require('../../../controllers/paymentSlipController')
   const commonController = require('../../../controllers/commonController')
-  const i18n = require('../../../translations/i18n')
+  const i18n = require('../../../../translations/i18n')
 
   export default {
     data () {

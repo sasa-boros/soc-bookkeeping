@@ -94,7 +94,7 @@
 import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
 const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
-const i18n = require('../../../../translations/i18n')
+const i18n = require('../../../../../translations/i18n')
 const { partitionPositionNumberOptions, mapCodeToCodeForm, mapCodeFormToCode } = require('../../../../utils/utils')
 const AutoNumeric = require('autonumeric')
 
@@ -290,10 +290,5 @@ input {
 .descriptionInput {
   width: 355px;
   max-width: 355px;
-}
-.is-invalid {
-  border: dotted 1px red;
-  padding-right: 0 !important;
-  background-image: url('~@/assets/invalid-red.png') !important;
 }
 </style>

@@ -1,6 +1,7 @@
 const paymentSlipDao = require('../dao/paymentSlipDao')
-
+const { app } = require('electron')
 const fs = require('fs')
+const path = require('path')
 
 async function arePaymentSlipsValid () {
   console.log('Checking if all payment slips are valid')
@@ -79,7 +80,7 @@ async function createPaymentSlipPdf (webContents) {
       throw new Error('Failed creating payment slip pdf')
     }
     try {
-      fs.writeFileSync('./payment-slip.pdf', data);
+      fs.writeFileSync(path.join(app.getPath('userData'), '/payment-slip.pdf'), data);
     } catch(err) {
       console.error(err)
       throw new Error('Failed creating payment slip pdf')

@@ -47,6 +47,14 @@
         </template>
         <settings-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></settings-pane>
       </b-tab>
+      <b-tab class="appTab">
+        <template slot="title">
+          <img src="~@/assets/info.png" class="appTabsIcon">  
+        </template>
+        <p>Овај производ је лиценциран од стране агенције <b>DAXON TECH</b> и на њега полаже ауторска права. &copy;</p>
+        <br>
+        <p>Техничка подршка: <b>daxon.tech@outlook.com</b></p>
+      </b-tab>
     </b-tabs>
     <b-modal id="app-tabs-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
         <message-confirm-dialog parentModal="app-tabs-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
@@ -63,7 +71,7 @@
   import MessageConfirmDialog from '../MessageConfirmDialog'
 
 
-  const i18n = require('../../translations/i18n')
+  const i18n = require('../../../translations/i18n')
   const paymentSlipController = require('../../controllers/paymentSlipController')
   const receiptController = require('../../controllers/receiptController')
   const defaultPaymentSlipController = require('../../controllers/defaultPaymentSlipController')

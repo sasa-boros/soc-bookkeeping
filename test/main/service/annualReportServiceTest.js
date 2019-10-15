@@ -1,6 +1,6 @@
 const { assert } = require('chai')
 const mock = require('mock-require')
-const jest = require('jest-mock')
+const jest = require('./node_modules/jest-mock')
 
 // data
 const incomeCode1 = { partition: '1', position: '1', description: 'I/1' }

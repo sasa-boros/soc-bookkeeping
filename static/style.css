@@ -39,3 +39,11 @@ h1 {
 .btn-link:disabled {
     background-color: gray;
 }
+
+.is-invalid {
+  border: dotted 1px red !important;
+  /* To keep selects from getting wider when invalid */
+  padding-right: 0 !important;
+  background-color: white;
+  background-image: url('~@/assets/invalid-red.png') !important;
+}

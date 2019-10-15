@@ -64,7 +64,7 @@
 
   const { dialog } = require('electron').remote
   const incomeCodeController = require('../../../controllers/incomeCodeController')
-  const i18n = require('../../../translations/i18n')
+  const i18n = require('../../../../translations/i18n')
   const { compareCodes } = require('../../../utils/utils')
 
   export default {

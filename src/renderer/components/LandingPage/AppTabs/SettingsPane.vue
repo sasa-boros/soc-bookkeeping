@@ -60,7 +60,7 @@
   import IncomeCodesTable from './IncomeCodesTable'
   import OutcomeCodesTable from './OutcomeCodesTable'
 
-  const i18n = require('../../../translations/i18n')
+  const i18n = require('../../../../translations/i18n')
 
   export default {
     data () {

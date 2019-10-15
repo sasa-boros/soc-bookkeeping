@@ -9,7 +9,7 @@
       <br/>На дин. <b-form-group class="input-form-group" ref="incomeInputFormGroup"><b-form-input id="incomeInput" ref="incomeInput" v-on:mouseleave="hideTooltip('incomeInput')" v-model="form.income" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" :disabled="defaultPaymentSlipPreview" type="text"></b-form-input></b-form-group> и словима  <b-form-input type="text" disabled class="input-small" id="incomeAsTextDivWrapper1" v-model="generatedIncomeTextLine1"></b-form-input>
       <br/><b-form-input disabled class="input-small" id="incomeAsTextDivWrapper2" v-model="generatedIncomeTextLine2"></b-form-input>
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" :maxlength="30" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" :maxlength="40" ref="reasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text"  @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
-      <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="paymentSlipDatepickerInput" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar" v-on:input="checkMaxPaymentSlips"></datepicker></span> г.                                                                                          У п л а т и о,
+      <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview }" :language="calendarLanguages.srCYRL" input-class="paymentSlipDatepickerInput" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar" v-on:input="checkMaxPaymentSlips" :disabled="defaultPaymentSlipPreview"></datepicker></span> г.                                                                                          У п л а т и о,
                                                                                                         <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input id="payedInput" :maxlength="50" ref="payedInput" v-on:mouseleave="hideTooltip('payedInput')" v-model="form.payed" class="input-small" type="text" @blur.native="postDatepickerOnBlur"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                      Књижити у корист буџета за                  <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> г.
                                                                                                         Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select plain  id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultPaymentSlipPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select plain id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup" id="firstIncomeInputForm"><span v-on:mouseleave="hideTooltip('firstIncomeInputForm')"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstIncome && atLeastOnePartPosNotSet }" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
@@ -141,7 +141,7 @@
   const paymentSlipController = require('../../../../controllers/paymentSlipController')
   const defaultPaymentSlipController = require('../../../../controllers/defaultPaymentSlipController')
   const { numberToSerbianDinars, getCodeCombinations, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
-  const i18n = require('../../../../translations/i18n')
+  const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const _ = require('lodash')
 
@@ -746,7 +746,7 @@
           const res = await paymentSlipController.createPaymentSlipPdf()
           if (!res.err) {
             const self = this
-            saveAs('./payment-slip.pdf', this.phrases.paymentSlipPdf, err => {
+            saveAs('/payment-slip.pdf', this.phrases.paymentSlipPdf, err => {
               if (err) {
                 if (err.message.toLowerCase().indexOf('permission denied') != -1) {
                   self.openErrorModal(self.phrases.permissionDenied)
@@ -869,17 +869,6 @@
     font-weight: normal;
     color: #16264C;
   }
-  .is-invalid {
-    border: dotted 1px red;
-    /* To keep selects from getting wider when invalid */
-    padding-right: 0 !important;
-  }
-  .input-small.is-invalid {
-    background-image: url('~@/assets/invalid-red.png') !important;
-  }
-  .select-small.is-invalid {
-    background-image: url('~@/assets/invalid-red.png') !important;
-  }
   .custom-select:disabled {
     color: #6c757d;
     background-color: #e9ecef;
@@ -1001,6 +990,9 @@
     margin: 0px;
     font-weight: bold;
     color: black;
+  }
+  .disabledDatepicker .paymentSlipDatepickerInput {
+    background-color: rgb(235, 236, 238);
   }
   .is-invalid .paymentSlipDatepickerInput {    
     background-image: url('~@/assets/invalid-red.png');

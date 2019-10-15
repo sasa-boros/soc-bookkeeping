@@ -9,7 +9,7 @@
       <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input id="outcomeInput" ref="outcomeInput" v-on:mouseleave="hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" :disabled="defaultReceiptPreview" type="text"></b-form-input></b-form-group> и словима  <b-form-input disabled class="input-small" id="outcomeAsTextDivWrapper1" v-model="generatedOutcomeTextLine1"></b-form-input>
       <br/><b-form-input disabled class="input-small" disable id="outcomeAsTextDivWrapper2" v-model="generatedOutcomeTextLine2"></b-form-input>
       <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input id="churchMunicipalityInput" maxlength="40" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" :maxlength="30" v-model="form.town" class="input-small" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" :maxlength="40" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
-      <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="checkMaxReceipts"></datepicker></span> г.                                                                                                      П р и м и о,
+      <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview }" :language="calendarLanguages.srCYRL" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="checkMaxReceipts" :disabled="defaultReceiptPreview"></datepicker></span> г.                                                                                         П р и м и о,
                                                                                                         <b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input :maxlength="40" v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerOnBlur"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                      Да се исплати на терет расхода              <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> г.
                                                                                                         Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select plain id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultReceiptPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select plain id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstOutcome && atLeastOnePartPosNotSet }" :disabled="defaultReceiptPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
@@ -141,7 +141,7 @@
   const receiptController = require('../../../../controllers/receiptController')
   const defaultReceiptController = require('../../../../controllers/defaultReceiptController')
   const { numberToSerbianDinars, getCodeCombinations, mapReceiptToReceiptForm, mapReceiptFormToReceipt, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
-  const i18n = require('../../../../translations/i18n')
+  const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const _ = require('lodash')
 
@@ -744,7 +744,7 @@
           const res = await receiptController.createReceiptPdf()
           if (!res.err) {
             const self = this
-            saveAs('./receipt.pdf', this.phrases.receiptPdf, err => {
+            saveAs('/receipt.pdf', this.phrases.receiptPdf, err => {
               if (err) {
                 if (err.message.toLowerCase().indexOf('permission denied') != -1) {
                   self.openErrorModal(self.phrases.permissionDenied)
@@ -866,11 +866,6 @@
     border-style: none;
     font-weight: normal;
     color: #16264C;
-  }
-  .is-invalid {
-    border: dotted 1px red;
-    /* To keep selects from getting wider when invalid */
-    padding-right: 0 !important;
   }
   .input-small.is-invalid {
     background-image: url('~@/assets/invalid-red.png') !important;
@@ -1002,6 +997,9 @@
     margin: 0px;
     font-weight: bold;
     color: black;
+  }
+  .disabledDatepicker .receiptDatepickerInput {
+    background-color: rgb(235, 236, 238);
   }
   .is-invalid .receiptDatepickerInput {    
     background-image: url('~@/assets/invalid-red.png');

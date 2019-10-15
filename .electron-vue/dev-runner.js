@@ -101,6 +101,7 @@ function startMain () {
         manualRestart = true
         process.kill(electronProcess.pid)
         electronProcess = null
+        startElectron()
 
         setTimeout(() => {
           manualRestart = false

@@ -63,7 +63,7 @@
 <script>
 import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
-const i18n = require('../../../../translations/i18n');
+const i18n = require('../../../../../translations/i18n');
 const annualReportController = require('../../../../controllers/annualReportController')
 const { saveAs } = require('../../../../utils/utils')
 
@@ -183,7 +183,7 @@ export default {
         const res = await annualReportController.createAnnualReportPdf()
         if (!res.err) {
             const self = this
-            saveAs('./annual-report.pdf', this.phrases.annualReportPdf, err => {
+            saveAs('/annual-report.pdf', this.phrases.annualReportPdf, err => {
               if (err) {
                 if (err.message.toLowerCase().indexOf('permission denied') != -1) {
                   self.openErrorModal(self.phrases.permissionDenied)
