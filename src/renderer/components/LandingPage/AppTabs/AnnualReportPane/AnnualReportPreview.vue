@@ -67,6 +67,159 @@ const i18n = require('../../../../../translations/i18n');
 const annualReportController = require('../../../../controllers/annualReportController')
 const { saveAs } = require('../../../../utils/utils')
 
+const printStyle = `
+<style>
+@media screen {
+    #print-annual-report {
+      display: none;
+    }
+  }
+  @media print {
+    * {
+      visibility:hidden;
+    }
+    #print-annual-report, #print-annual-report * {
+      visibility:visible;
+    }
+    #headline {
+      position: relative;
+      bottom: 1265px;
+      left: 260px;
+      transform: rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #income-page {
+      page-break-before: always;
+      position: relative;
+      bottom:895px;
+      left: 100px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #outcome-page {
+      page-break-before: always;
+      position: relative;
+      bottom:860px;
+      left: 100px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #total-income-page {
+      page-break-before: always;
+      position: relative;
+      bottom: 895px;
+      left: 60px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #total-outcome-page {
+      page-break-before: always;
+      position: relative;
+      bottom: 895px;
+      left: 60px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #shares-page {
+      page-break-before: always;
+      position: relative;
+      bottom: 905px;
+      left: 80px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    .last-page {
+      position:relative; 
+      top:450px;
+    }
+    #total-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:0px;
+      left: 80px;
+      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+  }
+  </style>
+`
+const downloadStyle = `
+<style>
+@media screen {
+    #print-annual-report {
+      display: none;
+    }
+  }
+  @media print {
+    * {
+      visibility:hidden;
+    }
+    #print-annual-report, #print-annual-report * {
+      visibility:visible;
+    }
+    #headline {
+      position: relative;
+      bottom: 1275px;
+      left: 260px;
+      transform: rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #income-page {
+      page-break-before: always;
+      position: relative;
+      bottom:915px;
+      left: 100px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #outcome-page {
+      page-break-before: always;
+      position: relative;
+      bottom:880px;
+      left: 100px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #total-income-page {
+      page-break-before: always;
+      position: relative;
+      bottom: 920px;
+      left: 65px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #total-outcome-page {
+      page-break-before: always;
+      position: relative;
+      bottom: 920px;
+      left: 65px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #shares-page {
+      page-break-before: always;
+      position: relative;
+      bottom: 930px;
+      left: 85px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    .last-page {
+      position:relative; 
+      top:470px;
+    }
+    #total-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:0px;
+      left: 80px;
+      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+  }
+  </style>
+`
+
 export default {
   props: {
     annualReportPages: {
@@ -168,7 +321,7 @@ export default {
       }
     },
     printAnnualReport () {
-      const section = this.preparePrintSection()
+      const section = this.preparePrintSection(printStyle)
       document.body.appendChild(section)
       try {
         window.print()
@@ -177,7 +330,7 @@ export default {
       }
     },
     async downloadAnnualReport () {
-      const section = this.preparePrintSection()
+      const section = this.preparePrintSection(downloadStyle)
       document.body.appendChild(section)
       try {
         const res = await annualReportController.createAnnualReportPdf()
@@ -199,7 +352,7 @@ export default {
         document.body.removeChild(section)
       }
     },
-    preparePrintSection () {
+    preparePrintSection (style) {
       // ensuring clean screen
       var paymentSlipSection = document.getElementById('print-payment-slip')
       if (paymentSlipSection) {
@@ -211,15 +364,17 @@ export default {
       }
       var section = document.createElement('div')
       section.id = 'print-annual-report'
-      section.innerHTML = ''
+      section.innerHTML = style
       this.annualReportPages.forEach((annualReportPage, index) => {
         var page = document.createElement('div')
         if(index == 28) {
           page.className = 'last-page'
+        } else {
         }
         page.innerHTML = annualReportPage
         section.appendChild(page)
       })
+  
       return section
     },
     openErrorModal(error) {
@@ -251,48 +406,48 @@ export default {
 .headline >>> #headline {
 	transform: scale(0.6);
 	position:relative;
-  bottom: 120px;
+  bottom: 130px;
   left:35px;
 }
 
 .incomePage >>> #income-page {
 	transform: scale(0.5);
 	position:relative;
-	bottom: 250px;
+	bottom: 280px;
 	right: 407px;
 }
 .outcomePage >>> #outcome-page {
 	transform: scale(0.5);
 	position:relative;
-	bottom: 255px;
+	bottom: 285px;
 	right: 449px;
 }
 
 .totalIncomePage >>> #total-income-page {
   transform: scale(0.5);
 	position:relative;
-	bottom: 215px;
+	bottom: 225px;
 	right: 400px;
 }
 
 .totalOutcomePage >>> #total-outcome-page {
   transform: scale(0.5);
 	position:relative;
-	bottom: 276px;
+	bottom: 286px;
 	right: 400px;
 }
 
 .sharesPage >>> #shares-page {
   transform: scale(0.5);
   position:relative;
-  bottom: 230px;
+  bottom: 240px;
   right: 390px;
 }
 
 .totalPage >>> #total-page {
 	transform: scale(0.5);
 	position:relative;
-	bottom: 220px;
+	bottom: 230px;
 	right: 190px;
 }
 
@@ -312,80 +467,4 @@ i {
   transform: rotate(135deg);
   -webkit-transform: rotate(135deg);
 }
-</style>
-
-<style>
-  @media screen {
-    #print-annual-report {
-      display: none;
-    }
-  }
-  @media print {
-    * {
-      visibility:hidden;
-    }
-    #print-annual-report, #print-annual-report * {
-      visibility:visible;
-    }
-    #headline {
-      position: relative;
-      bottom: 1265px;
-      left: 250px;
-      transform: rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-      page-break-after: always;
-    }
-    #income-page {
-      page-break-before: always;
-      position: relative;
-      bottom:885px;
-      left: 90px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #outcome-page {
-      page-break-before: always;
-      position: relative;
-      bottom:850px;
-      left: 90px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #total-income-page {
-      page-break-before: always;
-      position: relative;
-      bottom: 885px;
-      left: 50px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #total-outcome-page {
-      page-break-before: always;
-      position: relative;
-      bottom: 885px;
-      left: 50px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #shares-page {
-      page-break-before: always;
-      position: relative;
-      bottom: 895px;
-      left: 70px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    .last-page {
-      position:relative; 
-      top:435px;
-    }
-    #total-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:0px;
-      left: 70px;
-      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-  }
 </style>
