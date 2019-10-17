@@ -38,7 +38,7 @@ function asInt (formattedNumberAsString, numberOptions) {
 }
 
 function asFormatedString (n, numberOptions) {
-  if(!n) {
+  if(n == null || n == undefined) {
     return null
   }
   return AutoNumeric.format(n.toString(), numberOptions)
@@ -293,11 +293,11 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
   const secondIncomeCode = incomeCodes.find(incomeCode => {
     return incomeCode.partition == paymentSlipForm.secondPartition && incomeCode.position == paymentSlipForm.secondPosition;
   })
-  if (firstIncomeCode) {
-    paymentSlip.incomePerCode.push({incomeCode: firstIncomeCode, income: paymentSlipForm.firstIncome ? asFloat(paymentSlipForm.firstIncome, amountNumberOptions) : 0});
+  if (firstIncomeCode && paymentSlipForm.firstIncome) {
+    paymentSlip.incomePerCode.push({incomeCode: firstIncomeCode, income: asFloat(paymentSlipForm.firstIncome, amountNumberOptions)});
   }
-  if (secondIncomeCode) {
-    paymentSlip.incomePerCode.push({incomeCode: secondIncomeCode, income: paymentSlipForm.secondIncome ? asFloat(paymentSlipForm.secondIncome, amountNumberOptions) : 0});
+  if (secondIncomeCode && paymentSlipForm.secondIncome) {
+    paymentSlip.incomePerCode.push({incomeCode: secondIncomeCode, income: asFloat(paymentSlipForm.secondIncome, amountNumberOptions)});
   }
   return paymentSlip;
 }
@@ -354,11 +354,11 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes) {
     const secondOutcomeCode = outcomeCodes.find(outcomeCode => {
       return outcomeCode.partition == receiptForm.secondPartition && outcomeCode.position == receiptForm.secondPosition;
     })
-    if (firstOutcomeCode) {
-      receipt.outcomePerCode.push({outcomeCode: firstOutcomeCode, outcome: receiptForm.firstOutcome ? asFloat(receiptForm.firstOutcome, amountNumberOptions) : 0});
+    if (firstOutcomeCode && receiptForm.firstOutcome) {
+      receipt.outcomePerCode.push({outcomeCode: firstOutcomeCode, outcome: asFloat(receiptForm.firstOutcome, amountNumberOptions)});
     }
-    if (secondOutcomeCode) {
-      receipt.outcomePerCode.push({outcomeCode: secondOutcomeCode, outcome: receiptForm.secondOutcome ? asFloat(receiptForm.secondOutcome, amountNumberOptions) : 0});
+    if (secondOutcomeCode && receiptForm.secondOutcome) {
+      receipt.outcomePerCode.push({outcomeCode: secondOutcomeCode, outcome: asFloat(receiptForm.secondOutcome, amountNumberOptions)});
     }
     return receipt;
 }

@@ -12,8 +12,8 @@
       <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview }" :language="calendarLanguages.srCYRL" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="checkMaxReceipts" :disabled="defaultReceiptPreview"></datepicker></span> г.                                                                                         П р и м и о,
                                                                                                         <b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-on:keypress="limitReceivedInput" v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerOnBlur"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                      Да се исплати на терет расхода              <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> г.
-                                                                                                        Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select plain id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultReceiptPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select plain id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstOutcome && atLeastOnePartPosNotSet }" :disabled="defaultReceiptPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
-                 Исплатио благајник,                                                    Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartSelect')"><b-form-select plain id="secondPartSelect" v-model="form.secondPartition" :disabled="defaultReceiptPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="hideTooltip('secondPosSelectForm')"><b-form-select plain id="secondPosSelect" v-model="form.secondPosition" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="hideTooltip('secondOutcomeInputForm')"><b-form-input id="secondOutcomeInput" v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondOutcome && atLeastOnePartPosNotSet }" :disabled="defaultReceiptPreview || missingSecondPart" type="text"></b-form-input></span></b-form-group>
+                                                                                                        Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select plain id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultReceiptPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select plain id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="defaultReceiptPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
+                 Исплатио благајник,                                                    Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartSelect')"><b-form-select plain id="secondPartSelect" v-model="form.secondPartition" :disabled="defaultReceiptPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="hideTooltip('secondPosSelectForm')"><b-form-select plain id="secondPosSelect" v-model="form.secondPosition" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="hideTooltip('secondOutcomeInputForm')"><b-form-input id="secondOutcomeInput" v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" :disabled="defaultReceiptPreview || missingSecondPart" type="text"></b-form-input></span></b-form-group>
                                                            
       <br/><b-form-group  class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="postDatepickerDefaultOnBlur"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="hideTooltip('totalOutcomeInputForm')"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalOutcome || totalOutcomeNotValid ) }" type="text"></b-form-input></span></b-form-group>
       <div class="my-0">
@@ -23,11 +23,11 @@
       </div></div>
       </div>
       <div id="downloadPrintBtnsDiv">
-        <b-button v-on:mouseleave="hideTooltip('receiptDownloadBtn')" ref="receiptDownloadBtn" id="receiptDownloadBtn" @click.stop="downloadReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }">
+        <b-button v-on:mouseleave="hideTooltip('receiptDownloadBtn')" ref="receiptDownloadBtn" id="receiptDownloadBtn" @click.stop="downloadReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="!validForm && shouldValidate">
           <img src="~@/assets/download.png" class="ignoreInPrint">
         </b-button>
         &nbsp;
-        <b-button v-on:mouseleave="hideTooltip('receiptPrintBtn')" ref="receiptPrintBtn" id="receiptPrintBtn" @click.stop="printReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }">
+        <b-button v-on:mouseleave="hideTooltip('receiptPrintBtn')" ref="receiptPrintBtn" id="receiptPrintBtn" @click.stop="printReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="!validForm && shouldValidate">
           <img src="~@/assets/print.png" class="ignoreInPrint">
         </b-button>
       </div>
@@ -62,7 +62,7 @@
 
     <b-tooltip target="firstPosSelectForm" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
       <div class="tooltipInnerText">
-        {{firstPosTooltipText}}
+        {{firstPartTooltipText}}
       </div>
     </b-tooltip>
 
@@ -74,7 +74,7 @@
 
     <b-tooltip target="secondPartSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip">
       <div class="tooltipInnerText">
-        {{phrases.atLeastOnePartPosOutcome}}
+        {{secondPartTooltipText}}
       </div>
     </b-tooltip>
 
@@ -194,7 +194,8 @@
           download: i18n.getTranslation('Download'),
           permissionDenied: i18n.getTranslation('Permission denied.'),
           maxNumberOfReceiptsReached: i18n.getTranslation('Maximum number of receipts reached for this month and year (27). Choose another date.'),
-          receiptPdf: i18n.getTranslation('receipt.pdf')
+          receiptPdf: i18n.getTranslation('receipt.pdf'),
+          chooseDifferentOutcomeCodes: i18n.getTranslation('Choose different outcome codes')
         },
         calendarLanguages: {
           sr: sr,
@@ -356,33 +357,39 @@
         set: function (newValue) {
         }
       },
+      firstPartTooltipText: function () {
+        if (this.partPosNotUnique) {
+          return this.phrases.chooseDifferentOutcomeCodes
+        } else {
+          return this.phrases.atLeastOnePartPosOutcome
+        }
+      },
       firstPosTooltipText: function () {
-        if (this.missingFirstPart) {
-          return this.phrases.enterPartition
+        if (this.partPosNotUnique) {
+          return this.phrases.chooseDifferentOutcomeCodes
         } else {
           return this.phrases.atLeastOnePartPosOutcome
         }
       },
       firstOutcomeTooltipText: function () {
-        if (this.missingFirstPart) {
-          return this.phrases.enterPartition
+        return this.phrases.atLeastOnePartPosOutcome
+      },
+      secondPosTooltipText: function () {
+        if (this.partPosNotUnique) {
+          return this.phrases.chooseDifferentOutcomeCodes
         } else {
           return this.phrases.atLeastOnePartPosOutcome
         }
       },
-      secondPosTooltipText: function () {
-        if (this.missingSecondPart) {
-          return this.phrases.enterPartition
+      secondPartTooltipText: function () {
+        if (this.partPosNotUnique) {
+          return this.phrases.chooseDifferentOutcomeCodes
         } else {
           return this.phrases.atLeastOnePartPosOutcome
         }
       },
       secondOutcomeTooltipText: function () {
-        if (this.missingSecondPart) {
-          return this.phrases.enterPartition
-        } else {
-          return this.phrases.atLeastOnePartPosOutcome
-        }
+        return this.phrases.atLeastOnePartPosOutcome
       },
       totalOutcomeTooltipText: function () {
         if (this.totalOutcomeNotValid) {
@@ -404,7 +411,7 @@
       },
       disableReasonTooltip: {
         get: function () {
-          return !this.missingReason || !this.shouldValidate
+          return (!this.atLeastOnePartPosNotSet && !this.partPosNotUnique) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -415,7 +422,7 @@
       },
       disableFirstPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstPart || !this.shouldValidate
+          return (!this.atLeastOnePartPosNotSet && !this.partPosNotUnique) || !this.shouldValidate 
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -426,7 +433,7 @@
       },
       disableFirstPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstPos || !this.shouldValidate
+          return (!this.atLeastOnePartPosNotSet && !this.partPosNotUnique) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -437,7 +444,7 @@
       },
       disableFirstOutcomeTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstOutcome || !this.shouldValidate
+          return !this.atLeastOnePartPosNotSet || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -448,7 +455,7 @@
       },
       disableSecondPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondPart || !this.shouldValidate
+          return (!this.atLeastOnePartPosNotSet && !this.partPosNotUnique) || !this.shouldValidate 
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -459,7 +466,7 @@
       },
       disableSecondPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondPos || !this.shouldValidate
+          return (!this.atLeastOnePartPosNotSet && !this.partPosNotUnique) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -470,7 +477,7 @@
       },
       disableSecondOutcomeTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondOutcome || !this.shouldValidate
+          return !this.atLeastOnePartPosNotSet || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -506,10 +513,6 @@
           return [];
         }
         var keys = Object.keys(this.outcomeCodeCombinations);
-        var index = keys.indexOf(this.form.secondPartition);
-        if (index != -1) {
-            keys.splice(index, 1);
-        }
         keys.unshift('');
         return keys;
       },
@@ -518,10 +521,6 @@
           return [];
         }
         var keys = Object.keys(this.outcomeCodeCombinations);
-        var index = keys.indexOf(this.form.firstPartition);
-        if (index != -1) {
-            keys.splice(index, 1);
-        }
         keys.unshift('');
         return keys;
       },
@@ -529,25 +528,13 @@
         if (!this.outcomeCodeCombinations) {
           return []
         }
-        const options = this.outcomeCodeCombinations[this.form.firstPartition]
-        if (options && options.length > 0) {
-          this.form.firstPosition = options[0]
-        } else {
-          this.form.firstPosition = null
-        }
-        return options
+        return this.outcomeCodeCombinations[this.form.firstPartition]
       },
       pos2Options: function () {
         if (!this.outcomeCodeCombinations) {
           return []
         }
-        const options = this.outcomeCodeCombinations[this.form.secondPartition]
-        if (options && options.length > 0) {
-          this.form.secondPosition = options[0]
-        } else {
-          this.form.secondPosition = null
-        }
-        return options
+        return this.outcomeCodeCombinations[this.form.secondPartition]
       },
       missingReason: function () {
         return !this.form.reason || this.form.reason.toString().trim() === ''
@@ -591,18 +578,23 @@
         return !this.form.date
       },
       atLeastOnePartPosNotSet: function () {
-        // making this computed property react on changes
-        this.form.firstPartition
-        this.form.firstPosition
-        this.form.firstOutcome
-        this.form.secondPartition
-        this.form.secondPosition
-        this.form.secondOutcome
-        /* True if not a single part-pos combination is set. At least one combination should be set. */
-        const firstCombinationSet = !this.missingFirstPart && !this.missingFirstPos && !this.missingFirstOutcome
-        const secondCombinationSet = !this.missingSecondPart && !this.missingSecondPos && !this.missingSecondOutcome
-
-        return !firstCombinationSet && !secondCombinationSet
+        const firstCombinationNotSet = this.missingFirstPart || this.missingFirstPos || this.missingFirstOutcome
+        const secondCombinationNotSet = this.missingSecondPart || this.missingSecondPos || this.missingSecondOutcome
+        return firstCombinationNotSet && secondCombinationNotSet
+      },
+      partPosNotUnique: function () {
+        return !this.missingFirstPart && !this.missingFirstPos && !this.missingSecondPart && !this.missingSecondPos && this.form.firstPartition == this.form.secondPartition && this.form.firstPosition == this.form.secondPosition
+      },
+      validForm: function () {
+        if (this.missingOutcome ||
+            this.missingReason ||
+            this.missingDate ||
+            this.atLeastOnePartPosNotSet ||
+            this.totalOutcomeNotValid ||
+            this.partPosNotUnique) {
+          return false
+        }
+        return true
       }
     },
     methods: {
@@ -700,7 +692,7 @@
           })
         } else {
           this.shouldValidate = true;
-          if (this.checkForm()) {
+          if (this.validForm) {
             if (this.receiptPreview) {
               receiptController.updateReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then((res) => {
                 if (!res.err) {
@@ -743,16 +735,6 @@
         this.form.reason = null;
         this.form.received = null;
         this.totalOutcomeInputAutonumeric.clear()
-      },
-      checkForm () {
-        if (this.missingOutcome ||
-            this.missingReason ||
-            this.missingDate ||
-            this.atLeastOnePartPosNotSet ||
-            this.totalOutcomeNotValid) {
-          return false
-        }
-        return true
       },
       openErrorModal(error) {
         this.errorText = error
