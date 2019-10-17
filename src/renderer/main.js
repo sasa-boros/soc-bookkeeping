@@ -7,16 +7,16 @@ import BootstrapVue from 'bootstrap-vue'
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../../node_modules/bootstrap-vue/dist/bootstrap-vue.css'
 import '../../static/style.css'
+import '../../node_modules/focus-visible/dist/focus-visible.min.js'
 
 const {webFrame} = require('electron')
 // Zoom output
-webFrame.setZoomFactor(1.6);
+webFrame.setZoomFactor(1.7);
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
-
 /* eslint-disable no-new */
 new Vue({
   components: { App },

@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-button-group class="float-left">
-      <b-button id="createOutcomeCodeBtn" v-on:mouseleave="hideTooltip('createOutcomeCodeBtn')" v-b-tooltip.hover.top="{title: phrases.createOutcomeCode, customClass: 'tooltipInnerText'}" v-on:click="openCreateOutcomeCodeModal()" variant="link" class="btn-xs">
+      <b-button id="createOutcomeCodeBtn" v-on:mouseleave="hideTooltip('createOutcomeCodeBtn')" v-b-tooltip.hover.top="{title: phrases.createOutcomeCode, customClass: 'tooltipInnerText'}" v-on:click="openCreateOutcomeCodeModal()" variant="light" class="btn-xs">
         <img src="~@/assets/add.png">
       </b-button>
     </b-button-group>

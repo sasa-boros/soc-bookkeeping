@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
      <b-button-group class="float-left">
-      <b-button v-on:mouseleave="hideTooltip('addIncomeCodeBtn')" id="addIncomeCodeBtn" v-b-tooltip.hover.top="{title: phrases.createIncomeCode, customClass: 'tooltipInnerText'}" v-on:click="openCreateIncomeCodeModal()" variant="link" class="btn-xs">
+      <b-button v-on:mouseleave="hideTooltip('addIncomeCodeBtn')" id="addIncomeCodeBtn" v-b-tooltip.hover.top="{title: phrases.createIncomeCode, customClass: 'tooltipInnerText'}" v-on:click="openCreateIncomeCodeModal()" variant="light" class="btn-xs">
         <img src="~@/assets/add.png">
       </b-button>
      </b-button-group>
@@ -179,6 +179,13 @@
     components: { IncomeCodePreview, MessageConfirmDialog }
   }
 </script>
+
+<style scoped>
+  .btn-light {
+    background-color:#e6f4ff;
+    border: none;
+  }
+</style>
 
 <style>
   .modal .modal-sm {

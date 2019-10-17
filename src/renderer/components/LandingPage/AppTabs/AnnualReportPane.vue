@@ -1,33 +1,28 @@
 <template>
   <b-container fluid>
      <br>
-    <div v-if="yearOptions.length > 0">
-      <b-row class="text-center">
-        <b-col>
-          {{phrases.showAnnualReport}}:
-          <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" variant="light" class="btn-xs">
-            <img src="~@/assets/annual-report.png">
-          </b-button>
-          {{phrases.forYear}}:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
-         </b-col>
-      </b-row>
+    <b-row class="text-center">
+      <b-col>
+        {{phrases.showAnnualReport}}:
+        <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" variant="light" class="btn-xs">
+          <img src="~@/assets/annual-report.png">
+        </b-button>
+        {{phrases.forYear}}:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
+        </b-col>
+    </b-row>
 
-      <!-- Annual report preview modal -->
-      <div>
-      <b-modal hide-footer hide-header id="annual-report-preview-modal" size="ar">
-        <annual-report-preview :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
-      </b-modal>
+    <!-- Annual report preview modal -->
+    <div>
+    <b-modal hide-footer hide-header id="annual-report-preview-modal" size="ar">
+      <annual-report-preview :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
+    </b-modal>
+    </div>
+    <b-tooltip target="annualReportBtn" triggers="hover" placement="top" ref="annualReportBtnTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.showAnnualReport}}
       </div>
-      <b-tooltip target="annualReportBtn" triggers="hover" placement="top" ref="annualReportBtnTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.showAnnualReport}}
-        </div>
-      </b-tooltip>
-    </div>
-    <div v-else>
-        {{ phrases.inputAtleastOne }}
-    </div>
+    </b-tooltip>
 
     <b-modal id="annual-report-preview-failed-modal" hide-backdrop hide-footer hide-header content-class="shadow">
         <message-confirm-dialog parentModal="annual-report-preview-failed-modal" type="warning" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>

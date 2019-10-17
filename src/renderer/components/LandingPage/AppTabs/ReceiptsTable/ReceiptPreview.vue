@@ -6,16 +6,16 @@
       </b-button>
       <div class="receipt-preview-text">
         <h1> ПРИЗНАНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input id="outcomeInput" ref="outcomeInput" v-on:mouseleave="hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" :disabled="defaultReceiptPreview" type="text"></b-form-input></b-form-group> и словима  <b-form-input disabled class="input-small" id="outcomeAsTextDivWrapper1" v-model="generatedOutcomeTextLine1"></b-form-input>
+      <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input id="outcomeInput" ref="outcomeInput" v-on:mouseleave="hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" :disabled="defaultReceiptPreview" type="text" :autofocus="!receiptPreview"></b-form-input></b-form-group> и словима  <b-form-input disabled class="input-small" id="outcomeAsTextDivWrapper1" v-model="generatedOutcomeTextLine1"></b-form-input>
       <br/><b-form-input disabled class="input-small" disable id="outcomeAsTextDivWrapper2" v-model="generatedOutcomeTextLine2"></b-form-input>
-      <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input id="churchMunicipalityInput" maxlength="40" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" :maxlength="30" v-model="form.town" class="input-small" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" :maxlength="43" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
+      <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input id="churchMunicipalityInput" v-on:keypress="limitChurchMunicipalityInput" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" v-on:keypress="limitTownInput" v-model="form.town" class="input-small" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" v-on:keypress="limitReasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
       <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview }" :language="calendarLanguages.srCYRL" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="checkMaxReceipts" :disabled="defaultReceiptPreview"></datepicker></span> г.                                                                                         П р и м и о,
-                                                                                                        <b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input :maxlength="40" v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerOnBlur"></b-form-input></b-form-group>  
+                                                                                                        <b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-on:keypress="limitReceivedInput" v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerOnBlur"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                      Да се исплати на терет расхода              <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> г.
-                                                                                                        Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select plain id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultReceiptPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select plain id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstOutcome && atLeastOnePartPosNotSet }" :disabled="defaultReceiptPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
-                 Исплатио благајник,                                                    Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartSelect')"><b-form-select plain id="secondPartSelect" v-model="form.secondPartition" :disabled="defaultReceiptPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="hideTooltip('secondPosSelectForm')"><b-form-select plain id="secondPosSelect" v-model="form.secondPosition" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="hideTooltip('secondOutcomeInputForm')"><b-form-input id="secondOutcomeInput" v-model="form.secondOutcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondOutcome && atLeastOnePartPosNotSet }" :disabled="defaultReceiptPreview || missingSecondPart" type="text"></b-form-input></span></b-form-group>
+                                                                                                        Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select plain id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultReceiptPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select plain id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultReceiptPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingFirstOutcome && atLeastOnePartPosNotSet }" :disabled="defaultReceiptPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
+                 Исплатио благајник,                                                    Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartSelect')"><b-form-select plain id="secondPartSelect" v-model="form.secondPartition" :disabled="defaultReceiptPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPart && atLeastOnePartPosNotSet }"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="hideTooltip('secondPosSelectForm')"><b-form-select plain id="secondPosSelect" v-model="form.secondPosition" :disabled="defaultReceiptPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondPos && atLeastOnePartPosNotSet }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="hideTooltip('secondOutcomeInputForm')"><b-form-input id="secondOutcomeInput" v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingSecondOutcome && atLeastOnePartPosNotSet }" :disabled="defaultReceiptPreview || missingSecondPart" type="text"></b-form-input></span></b-form-group>
                                                            
-      <br/><b-form-group  class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="postDatepickerDefaultOnBlur"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="hideTooltip('totalOutcomeInputForm')"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalOutcome || totalOutcomeNotValid ) }" type="text"></b-form-input></span></b-form-group>
+      <br/><b-form-group  class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="postDatepickerDefaultOnBlur"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="hideTooltip('totalOutcomeInputForm')"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalOutcome || totalOutcomeNotValid ) }" type="text"></b-form-input></span></b-form-group>
       <div class="my-0">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
@@ -23,19 +23,19 @@
       </div></div>
       </div>
       <div id="downloadPrintBtnsDiv">
-        <b-button v-on:mouseleave="hideTooltip('receiptDownloadBtn')" ref="receiptDownloadBtn" id="receiptDownloadBtn" @click.stop="downloadReceipt()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="disablePrintDownloadBtns">
+        <b-button v-on:mouseleave="hideTooltip('receiptDownloadBtn')" ref="receiptDownloadBtn" id="receiptDownloadBtn" @click.stop="downloadReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }">
           <img src="~@/assets/download.png" class="ignoreInPrint">
         </b-button>
         &nbsp;
-        <b-button v-on:mouseleave="hideTooltip('receiptPrintBtn')" ref="receiptPrintBtn" id="receiptPrintBtn" @click.stop="printReceipt()" variant="link" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="disablePrintDownloadBtns">
+        <b-button v-on:mouseleave="hideTooltip('receiptPrintBtn')" ref="receiptPrintBtn" id="receiptPrintBtn" @click.stop="printReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }">
           <img src="~@/assets/print.png" class="ignoreInPrint">
         </b-button>
       </div>
       <div id="clearSaveBtnsDiv">
-        <b-button v-on:mouseleave="hideTooltip('receiptSaveBtn')" ref="receiptSaveBtn" id="receiptSaveBtn" type="submit" variant="link" class="ignoreInPrint btn-lg">
+        <b-button v-on:mouseleave="hideTooltip('receiptSaveBtn')" ref="receiptSaveBtn" id="receiptSaveBtn" type="submit" variant="light" class="ignoreInPrint btn-lg">
           <img src="~@/assets/save.png" class="ignoreInPrint">
         </b-button>
-        <b-button v-on:mouseleave="hideTooltip('receiptClearBtn')" ref="receiptClearBtn" id="receiptClearBtn" @click.stop="clearForm()" variant="link" class="ignoreInPrint btn-lg">
+        <b-button v-on:mouseleave="hideTooltip('receiptClearBtn')" ref="receiptClearBtn" id="receiptClearBtn" @click.stop="clearForm()" variant="light" class="ignoreInPrint btn-lg">
           <img src="~@/assets/clear.png" class="ignoreInPrint">
         </b-button>
       </div>
@@ -203,7 +203,11 @@
         outcomeInputAutonumeric: null,
         firstOutcomeInputAutonumeric: null,
         secondOutcomeInputAutonumeric: null,
-        totalOutcomeInputAutonumeric: null
+        totalOutcomeInputAutonumeric: null,
+        churchMunicipalityInputElement: null,
+        townInputElement: null,
+        reasonInputElement: null,
+        receivedInputElement: null
       }
     },
     created () {
@@ -227,12 +231,24 @@
           self.openErrorModal(res.err)
         }
       })
+      document.addEventListener('keyup', function (evt) {
+        if (evt.keyCode === 13) {
+          const saveBtn = document.getElementById('receiptSaveBtn')
+          if (saveBtn) {
+            saveBtn.click()
+          }
+        }
+      })
     },
     mounted () {
       this.outcomeInputAutonumeric = new AutoNumeric('#outcomeInput', amountNumberOptions)
       this.firstOutcomeInputAutonumeric = new AutoNumeric('#firstOutcomeInput', amountNumberOptions)
       this.secondOutcomeInputAutonumeric = new AutoNumeric('#secondOutcomeInput', amountNumberOptions)
       this.totalOutcomeInputAutonumeric = new AutoNumeric('#totalOutcomeInput', amountNumberOptions)
+      this.churchMunicipalityInputElement = document.getElementById('churchMunicipalityInput')
+      this.townInputElement = document.getElementById('townInput')
+      this.reasonInputElement = document.getElementById('reasonInput')
+      this.receivedInputElement = document.getElementById('receivedInput')
     },
     watch: {
       'form.firstPartition' : function (newValue) {
@@ -339,12 +355,6 @@
         },
         set: function (newValue) {
         }
-      },
-      disablePrintDownloadBtns: function () {
-        if (this.receiptPreview) {
-          return !(_.isEqual(mapReceiptToReceiptForm(this.receipt), this.form) && this.form.isValid)
-        }
-        return true
       },
       firstPosTooltipText: function () {
         if (this.missingFirstPart) {
@@ -596,6 +606,26 @@
       }
     },
     methods: {
+      limitChurchMunicipalityInput(evt) {
+      if (this.churchMunicipalityInputElement.scrollWidth > this.churchMunicipalityInputElement.clientWidth) {
+          evt.preventDefault()
+        } 
+      },
+      limitTownInput(evt) {
+      if (this.townInputElement.scrollWidth > this.townInputElement.clientWidth) {
+          evt.preventDefault()
+        } 
+      },
+      limitReasonInput(evt) {
+      if (this.reasonInputElement.scrollWidth > this.reasonInputElement.clientWidth) {
+          evt.preventDefault()
+        } 
+      },
+      limitReceivedInput(evt) {
+      if (this.receivedInputElement.scrollWidth > this.receivedInputElement.clientWidth) {
+          evt.preventDefault()
+        } 
+      },
       checkMaxReceipts () {
         if (!this.form.date || !this.existingReceipts) {
           return
@@ -608,7 +638,7 @@
         var countOfSameMonthAndYear = 0
         for (let i=0; i<this.existingReceipts.length; i++) {
           const receiptDate = new Date(this.existingReceipts[i].date)
-          if (receiptDate.getMonth() == formDate.getMonth() && receiptDate.getFullYear() == formDate.getFullYear()) {
+          if (receiptDate.getUTCMonth() == formDate.getMonth() && receiptDate.getUTCFullYear() == formDate.getFullYear()) {
             if (this.existingReceipts[i]._id != this.form._id) {
               countOfSameMonthAndYear++
             }
@@ -762,15 +792,6 @@
         }
       },
       preparePrintSection () {
-         // ensuring clean screen
-        var paymentSlipSection = document.getElementById('print-payment-slip')
-        if (paymentSlipSection) {
-          document.body.removeChild(paymentSlipSection)
-        }
-        var annualReportSection = document.getElementById('print-annual-report')
-        if (annualReportSection) {
-          document.body.removeChild(annualReportSection)
-        }
         const modal = document.getElementById('receipt-preview-container')
         const cloned = modal.cloneNode(true)
         var section = document.createElement('div')
@@ -811,7 +832,7 @@
   #receipt-preview-container {
     width: 794px;
     height: 559px;
-    position: relative;
+    position:relative;
   }
   .receipt-preview-text {
     white-space: pre;
@@ -822,11 +843,9 @@
     color: #16264C;
     line-height: 2;
     margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    position: relative;
+    left: 50px;
+    top: 20px;
   }
   h1 {
     text-align: center;
@@ -849,7 +868,6 @@
     display: inline;
     height: 15px;
     margin: 0px;
-    padding: 0px;
     color: black;
   }
   .select-small {
@@ -889,14 +907,14 @@
   #outcomeAsTextInputPt2 {
     width: 255px;
   }
-  #townInput {
-    width: 180px;
-  }
   #churchMunicipalityInput {
     width: 235px;
   }
+  #townInput {
+    width: 310px;
+  }
   #reasonInput {
-    width: 430px;
+    width: 290px;
   }
   #receivedInput {
     width: 300px;
@@ -943,19 +961,19 @@
     width: 235px;
   }
   #modalCancelBtn {
-    margin-top: 5px;
     position: absolute;
-    right: 5px;
+    right: 3%;
+    top:4%;
   }
   #clearSaveBtnsDiv {
     position: absolute;
-    bottom: 0px;
-    right: 50px;
+    bottom: 1%;
+    right: 9%;
   }
   #downloadPrintBtnsDiv {
     position: absolute;
-    bottom: 0px;
-    left: 50px;
+    bottom: 1%;
+    left: 10%;
   }
   .displayNone {
     display:none;
@@ -1049,6 +1067,9 @@
     }
     .ignoreInPrint {
       visibility:hidden !important;
+    }
+    input {
+      padding:0px !important;
     }
   }
 </style>

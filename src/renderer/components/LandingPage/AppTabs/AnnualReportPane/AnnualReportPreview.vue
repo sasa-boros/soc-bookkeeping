@@ -3,11 +3,11 @@
     <br>
       <b-row>
         <b-col cols="3">
-          <b-button id="annualReportDownloadBtn" ref="annualReportDownloadBtn" v-on:mouseleave="hideTooltip('annualReportDownloadBtn')" @click.stop="downloadAnnualReport()" variant="link" class="btn-lg float-left">
+          <b-button id="annualReportDownloadBtn" ref="annualReportDownloadBtn" v-on:mouseleave="hideTooltip('annualReportDownloadBtn')" @click.stop="downloadAnnualReport()" variant="light" class="btn-lg float-left">
             <img src="~@/assets/download.png">
           </b-button>
           &nbsp;
-          <b-button id="annualReportPrintBtn" ref="annualReportPrintBtn" v-on:mouseleave="hideTooltip('annualReportPrintBtn')" @click.stop="printAnnualReport()" variant="link" class="btn-lg float-left">
+          <b-button id="annualReportPrintBtn" ref="annualReportPrintBtn" v-on:mouseleave="hideTooltip('annualReportPrintBtn')" @click.stop="printAnnualReport()" variant="light" class="btn-lg float-left">
             <img src="~@/assets/print.png">
           </b-button>
         </b-col>
@@ -17,10 +17,10 @@
           </div>
         </b-col>
         <b-col cols="2" class="text-center">
-          <b-button id="decrementPageBtn" ref="decrementPageBtn" v-on:mouseleave="hideTooltip('decrementPageBtn')" variant="link" v-on:click='decrementPage'>
+          <b-button id="decrementPageBtn" ref="decrementPageBtn" v-on:mouseleave="hideTooltip('decrementPageBtn')" variant="light" v-on:click='decrementPage'>
             <i class="arrow left"></i>
           </b-button>
-          <b-button id="incrementPageBtn" ref="incrementPageBtn" v-on:mouseleave="hideTooltip('incrementPageBtn')" variant="link" v-on:click='incrementPage'>
+          <b-button id="incrementPageBtn" ref="incrementPageBtn" v-on:mouseleave="hideTooltip('incrementPageBtn')" variant="light" v-on:click='incrementPage'>
             <i class="arrow right"></i>
           </b-button>
         </b-col>
@@ -91,8 +91,8 @@ const printStyle = `
     #income-page {
       page-break-before: always;
       position: relative;
-      bottom:895px;
-      left: 100px;
+      bottom:853px;
+      left: 98px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -100,7 +100,7 @@ const printStyle = `
       page-break-before: always;
       position: relative;
       bottom:860px;
-      left: 100px;
+      left: 99px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -116,7 +116,7 @@ const printStyle = `
       page-break-before: always;
       position: relative;
       bottom: 895px;
-      left: 60px;
+      left: 59px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -159,7 +159,7 @@ const downloadStyle = `
     }
     #headline {
       position: relative;
-      bottom: 1275px;
+      bottom: 1290px;
       left: 260px;
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -167,8 +167,8 @@ const downloadStyle = `
     #income-page {
       page-break-before: always;
       position: relative;
-      bottom:915px;
-      left: 100px;
+      bottom:873px;
+      left: 98px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -176,7 +176,7 @@ const downloadStyle = `
       page-break-before: always;
       position: relative;
       bottom:880px;
-      left: 100px;
+      left: 99px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -192,7 +192,7 @@ const downloadStyle = `
       page-break-before: always;
       position: relative;
       bottom: 920px;
-      left: 65px;
+      left: 67px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -240,8 +240,21 @@ export default {
         annualReportPdf: i18n.getTranslation('annual-report.pdf')
       },
       currentPage: 1,
-      errorText: ""
+      errorText: "",
+      printSection: null,
+      downloadSection: null
     }
+  },
+  created () {
+    this.printSection = this.preparePrintSection(printStyle)
+    this.downloadSection = this.preparePrintSection(downloadStyle)
+    window.addEventListener('keyup', (event) => {
+      if (event.keyCode == 37) { 
+        this.decrementPage()
+      } else if (event.keyCode == 39) {
+        this.incrementPage()
+      }
+    });
   },
   computed: {
     isHeadline: function () {
@@ -287,16 +300,6 @@ export default {
       return false
     }
   },
-  created () {
-      var vm = this;
-      window.addEventListener('keyup', (event) => {
-        if (event.keyCode == 37) { 
-          this.decrementPage()
-        } else if (event.keyCode == 39) {
-          this.incrementPage()
-        }
-      });
-  },
   filters: {
     formatPageCount (pageCount) {
       if (pageCount < 10) {
@@ -321,17 +324,15 @@ export default {
       }
     },
     printAnnualReport () {
-      const section = this.preparePrintSection(printStyle)
-      document.body.appendChild(section)
+      document.body.appendChild(this.printSection)
       try {
         window.print()
       } finally {
-        document.body.removeChild(section)
+        document.body.removeChild(this.printSection)
       }
     },
     async downloadAnnualReport () {
-      const section = this.preparePrintSection(downloadStyle)
-      document.body.appendChild(section)
+      document.body.appendChild(this.downloadSection)
       try {
         const res = await annualReportController.createAnnualReportPdf()
         if (!res.err) {
@@ -349,19 +350,10 @@ export default {
             this.openErrorModal(res.err)       
           }
       } finally {
-        document.body.removeChild(section)
+        document.body.removeChild(this.downloadSection)
       }
     },
     preparePrintSection (style) {
-      // ensuring clean screen
-      var paymentSlipSection = document.getElementById('print-payment-slip')
-      if (paymentSlipSection) {
-        document.body.removeChild(paymentSlipSection)
-      }
-      var receiptSection = document.getElementById('print-receipt')
-      if (receiptSection) {
-        document.body.removeChild(receiptSection)
-      }
       var section = document.createElement('div')
       section.id = 'print-annual-report'
       section.innerHTML = style
@@ -413,8 +405,8 @@ export default {
 .incomePage >>> #income-page {
 	transform: scale(0.5);
 	position:relative;
-	bottom: 280px;
-	right: 407px;
+	bottom: 279px;
+	right: 449px;
 }
 .outcomePage >>> #outcome-page {
 	transform: scale(0.5);

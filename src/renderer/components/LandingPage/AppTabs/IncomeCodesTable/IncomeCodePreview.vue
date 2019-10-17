@@ -16,7 +16,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="partitionInput" v-on:mouseleave="hideTooltip('partitionInput')" type="text" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }"/>
+            <b-form-input id="partitionInput" v-on:mouseleave="hideTooltip('partitionInput')" type="text" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }" :autofocus="!isUpdate"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -36,7 +36,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="descriptionInput" :maxlength="35" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" class="descriptionInput" v-bind:class="{ 'is-invalid': shouldValidate && missingDescription }"/>
+            <b-form-input ref="descriptionInput" id="descriptionInput" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" v-on:keypress="limitDescriptionInput" class="descriptionInput"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -78,12 +78,6 @@
         </div>
       </b-tooltip>
 
-      <b-tooltip target="descriptionInput" triggers="hover" placement="top" ref="descriptionInputTooltip" :disabled.sync="disableDescriptionTooltip">
-        <div class="tooltipInnerText">
-          {{descriptionTooltipText}}
-        </div>
-      </b-tooltip>
-
       <b-modal id="income-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
         <message-confirm-dialog parentModal="income-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
@@ -119,7 +113,6 @@ export default {
         enterPartition: i18n.getTranslation('Enter partition'),
         enterPosition: i18n.getTranslation('Enter position'),
         notUnique: i18n.getTranslation('Income code partition and position not unique'),
-        enterDescription: i18n.getTranslation('Enter description'),
         ok: i18n.getTranslation('Ok')
       },
       form: { 
@@ -130,17 +123,27 @@ export default {
       shouldValidate: false,
       errorText: "",
       partitionInputAutonumeric: null,
-      positionInputAutonumeric: null
+      positionInputAutonumeric: null,
+      descriptionElement: null,
     }
   },
   created () {
     if (this.isUpdate) {
       this.form = mapCodeToCodeForm(JSON.parse(JSON.stringify(this.incomeCode)))
     }
+    document.addEventListener('keyup', function (evt) {
+      if (evt.keyCode === 13) {
+        const saveBtn = document.getElementById('saveIncomeCodeBtn')
+        if (saveBtn) {
+          saveBtn.click()
+        }
+      }
+    })
   },
   mounted () {
     this.partitionInputAutonumeric = new AutoNumeric('#partitionInput', partitionPositionNumberOptions)
     this.positionInputAutonumeric = new AutoNumeric('#positionInput', partitionPositionNumberOptions)
+    this.descriptionElement = document.getElementById('descriptionInput')
   },
   computed: {
     disablePartitionTooltip: {
@@ -163,16 +166,6 @@ export default {
         }
       }
     },
-    disableDescriptionTooltip: {
-      get: function () {
-        return !this.missingDescription || !this.shouldValidate
-      },
-      set: function (newValue) {
-        if (newValue) {
-          this.$refs.descriptionInputTooltip.$emit('close')
-        }
-      }
-    },
     partitionTooltipText: function () {
         if (this.missingPartition) {
           return this.phrases.enterPartition
@@ -187,19 +180,11 @@ export default {
           return this.phrases.notUnique
         }
     },
-    descriptionTooltipText: function () {
-        if (this.missingDescription) {
-          return this.phrases.enterDescription
-        }
-    },
     missingPartition: function () {
       return !this.form.partition || this.form.partition.trim() === ''
     },
     missingPosition: function () {
       return !this.form.position || this.form.position.trim() === ''
-    },
-    missingDescription: function () {
-      return !this.form.description || this.form.description.toString().trim() === ''
     },
     notUnique: function () {
       const self = this
@@ -214,6 +199,11 @@ export default {
     }
   },
   methods: {
+    limitDescriptionInput(evt) {
+      if (this.descriptionElement.scrollWidth > this.descriptionElement.clientWidth) {
+        evt.preventDefault()
+      } 
+    },
     onSubmit (evt) {
       evt.preventDefault();
       this.shouldValidate = true;
@@ -243,7 +233,7 @@ export default {
       }
     },
     isFormValid() {
-      if(!this.missingPartition && !this.missingPosition && !this.notUnique && !this.missingDescription) {
+      if(!this.missingPartition && !this.missingPosition && !this.notUnique) {
         return true
       }
       return false

@@ -322,7 +322,7 @@ async function populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcome
       totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(totalOutcomePerCode.outcome);
     });
     totalIncomePageContext['Q'+row] = formatAmount(page.totalIncome);
-    totalOutcomePageContext['Q'+row] = formatAmount(page.totalOutcome);
+    totalOutcomePageContext['R'+row] = formatAmount(page.totalOutcome);
     row++;
   });
   annualReport.totalIncomePerCode.forEach(totalIncomePerCode => {
@@ -335,10 +335,10 @@ async function populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcome
   });
   // totals
   totalIncomePageContext['Q20'] = formatAmount(annualReport.totalIncome);
-  totalOutcomePageContext['Q20'] = formatAmount(annualReport.totalOutcome);
-  totalOutcomePageContext['Q24'] = formatAmount(annualReport.totalIncome);
-  totalOutcomePageContext['Q25'] = formatAmount(annualReport.totalOutcome);
-  totalOutcomePageContext['Q26'] = formatAmount(annualReport.total);
+  totalOutcomePageContext['R20'] = formatAmount(annualReport.totalOutcome);
+  totalOutcomePageContext['R24'] = formatAmount(annualReport.totalIncome);
+  totalOutcomePageContext['R25'] = formatAmount(annualReport.totalOutcome);
+  totalOutcomePageContext['R26'] = formatAmount(annualReport.total);
 
   const totalIncomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-income-page.html"), { encoding: 'utf8'})
   const totalOutcomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-outcome-page.html"), { encoding: 'utf8'});

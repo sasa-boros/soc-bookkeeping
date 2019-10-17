@@ -29,11 +29,11 @@
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
     <br>
-    <div style="background-color:#e6f4ff">
+    <div class="incomeCodesTable">
       <h3 style="text-align:center">{{phrases.incomeCodes}}</h3>
       <income-codes-table></income-codes-table>
     </div>
-
+    <br>
     <div>
       <h3 style="text-align:center">{{phrases.outcomeCodes}}</h3>
       <outcome-codes-table></outcome-codes-table>
@@ -102,3 +102,10 @@
     components: { PaymentSlipPreview, ReceiptPreview, IncomeCodesTable, OutcomeCodesTable }
   }
 </script>
+
+<style scoped>
+  .incomeCodesTable {
+    background-color:#e6f4ff; 
+    overflow:auto;
+  }
+</style>

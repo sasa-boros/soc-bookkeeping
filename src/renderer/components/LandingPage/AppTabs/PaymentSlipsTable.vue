@@ -5,12 +5,12 @@
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addPaymentSlipBtn" v-on:mouseleave="hideTooltip('addPaymentSlipBtn')" v-b-tooltip.hover.top="{title: phrases.addPaymentSlip, customClass: 'tooltipInnerText'}" @click.stop="openCreatePaymentSlipModal($event.target)" variant="link" class="btn-xs">
+          <b-btn id="addPaymentSlipBtn" v-on:mouseleave="hideTooltip('addPaymentSlipBtn')" v-b-tooltip.hover.top="{title: phrases.addPaymentSlip, customClass: 'tooltipInnerText'}" @click.stop="openCreatePaymentSlipModal($event.target)" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="openDeleteCheckedPaymentSlipsModal()" :disabled="noRowChecked" variant="link" class="btn-xs">
+          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="openDeleteCheckedPaymentSlipsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
@@ -34,12 +34,15 @@
              :current-page="currentPage"
              :per-page="perPage"
              :filter="filter"
+             :sort-compare="sortCompare"
+             :sort-by.sync="sortBy"
+             :sort-desc.sync="sortDesc"
+             :sort-direction="sortDirection"
              :no-provider-sorting="true"
              :no-provider-filtering="true"
              :no-provider-paging="true"
              @row-dblclicked="rowDblClickHandler" 
              responsive
-             no-sort-reset
              head-variant="light"
              :empty-text="phrases.noRecordsToShow"
              :empty-filtered-text="phrases.noRecordsToShow"
@@ -63,10 +66,9 @@
           </b-form-checkbox>
         </span>
       </template>
-      <template v-slot:cell(income)="row">{{ row.item.income }}</template>
+      <template v-slot:cell(income)="row">{{ row.item.income | formatIncome }}</template>
       <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
       <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
-      <template v-slot:cell(formatedUpdatedAt)="row">{{ row.item.updatedAt | formatUpdatedAt }}</template>
       <template v-slot:cell(invalid)="row">
         <div v-show="!isValid(row.item)">
           <img v-on:mouseleave="hideTooltip('invalid' + row.item._id)" :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
@@ -122,6 +124,7 @@
   const paymentSlipController = require('../../../controllers/paymentSlipController')
   const commonController = require('../../../controllers/commonController')
   const i18n = require('../../../../translations/i18n')
+  const { asFormatedString, amountNumberOptions } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -163,7 +166,10 @@
         checkAll: false,
         selectedItem: null,
         isPreview: false,
-        errorText: ""
+        errorText: "",
+        sortBy: null,
+        sortDesc: true,
+        sortDirection: 'desc'
       }
     },
     created () {
@@ -190,11 +196,10 @@
         return [
           { key: 'select', label: '', thStyle: {outline: 'none'} },
           { key: 'preview', label: '', thStyle: {outline: 'none'}  },
-          { key: 'income', label: this.phrases.income, class: 'text-center', thStyle: {outline: 'none'} },
+          { key: 'income', label: this.phrases.income, class: 'text-center', sortable:true, thStyle: {outline: 'none'} },
           { key: 'reason', label: this.phrases.reason, class: 'text-center', thStyle: {outline: 'none'} },
-          { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', thStyle: {outline: 'none'} },
-          { key: 'formatedUpdatedAt', label: this.phrases.updatedAt, class: 'text-center', thStyle: {outline: 'none'} },
-          { key: 'invalid', label: '', thStyle: {outline: 'none'} } ,
+          { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', sortable:true, thStyle: {outline: 'none'} },
+          { key: 'invalid', label: '', thStyle: {outline: 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none'} }
         ]
       }
@@ -287,18 +292,47 @@
       },
       resetSelectedItem () {
         this.selectedItem = null
+      },
+      sortCompare(aRow, bRow, key, sortDesc, formatter, compareOptions, compareLocale) {
+        var a,b
+        if(key == 'formatedDate') {
+          a = Date.parse(aRow['date'])
+          b = Date.parse(bRow['date'])
+        } else {
+          a = aRow[key]
+          b = bRow[key]
+        }
+        if (
+          (typeof a === 'number' && typeof b === 'number') ||
+          (a instanceof Date && b instanceof Date)
+        ) {
+          // If both compared fields are native numbers or both are native dates
+          return a < b ? -1 : a > b ? 1 : 0
+        } else {
+          return this.toString(a).localeCompare(this.toString(b))
+        }
+      },
+      toString(value) {
+        if (value === null || typeof value === 'undefined') {
+          return ''
+        } else if (value instanceof Object) {
+          return Object.keys(value)
+            .sort()
+            .map(key => toString(value[key]))
+            .join(' ')
+        } else {
+          return String(value)
+        }
       }
     },
     filters: {
       formatDate (date) {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' }
+        const options = { year: 'numeric', month: 'long', day: 'numeric'}
         const language = i18n.usedLanguage
         return (new Date(date)).toLocaleDateString(language, options)
       },
-      formatUpdatedAt (date) {
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }
-        const language = i18n.usedLanguage
-        return (new Date(date)).toLocaleDateString(language, options)
+      formatIncome (income) {
+        return asFormatedString(income, amountNumberOptions) + " din."
       }
     },
     watch: {
@@ -340,7 +374,7 @@
 </style>
 
 <style scoped>
-  .tableDiv{
+  .tableDiv {
     display: block;
     overflow: auto;
   }

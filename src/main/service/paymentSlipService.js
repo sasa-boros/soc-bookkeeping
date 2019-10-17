@@ -64,7 +64,6 @@ async function updatePaymentSlip (paymentSlip) {
 
 async function assignAnnualReportValues () {
   let paymentSlips = await paymentSlipDao.findAllSortByDateAsc()
-  console.log(paymentSlips)
   for (let i = 0; i < paymentSlips.length; i++) {
     const paymentSlip = paymentSlips[i]
     paymentSlip.ordinal = i + 1
@@ -76,13 +75,11 @@ async function assignAnnualReportValues () {
 async function createPaymentSlipPdf (webContents) {
   webContents.printToPDF(pdfSettings(), function(err, data) {
     if (err) {
-      console.error(err)
       throw new Error('Failed creating payment slip pdf')
     }
     try {
       fs.writeFileSync(path.join(app.getPath('userData'), '/payment-slip.pdf'), data);
     } catch(err) {
-      console.error(err)
       throw new Error('Failed creating payment slip pdf')
     }
   })

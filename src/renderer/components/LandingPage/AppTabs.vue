@@ -53,7 +53,7 @@
         </template>
         <p>Овај производ је лиценциран од стране агенције <b>DAXON TECH</b> и на њега полаже ауторска права. &copy;</p>
         <br>
-        <p>Техничка подршка: <b>daxon.tech@outlook.com</b></p>
+        <p>Техничка подршка: <b>daxon.tech@outlook.com</b>,<b> +381642750071</b></p>
       </b-tab>
     </b-tabs>
     <b-modal id="app-tabs-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
