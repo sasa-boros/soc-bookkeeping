@@ -75,13 +75,11 @@ async function assignAnnualReportValues () {
 async function createReceiptPdf (webContents) {
   webContents.printToPDF(pdfSettings(), function(err, data) {
     if (err) {
-      console.error(err)
       throw new Error('Failed creating receipt pdf')
     }
     try {
       fs.writeFileSync(path.join(app.getPath('userData'), '/receipt.pdf'), data);
     } catch (err){
-      console.error(err)
       throw new Error('Failed creating receipt pdf')
     }
   })

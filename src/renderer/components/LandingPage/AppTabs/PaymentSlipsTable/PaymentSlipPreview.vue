@@ -12,8 +12,8 @@
       <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview }" :language="calendarLanguages.srCYRL" input-class="paymentSlipDatepickerInput" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar" v-on:input="checkMaxPaymentSlips" :disabled="defaultPaymentSlipPreview"></datepicker></span> г.                                                                                          У п л а т и о,
                                                                                                         <b-form-group class="input-form-group" ref="payedInputFormGroup"><b-form-input id="payedInput" v-on:keypress="limitPayedInput" ref="payedInput" v-on:mouseleave="hideTooltip('payedInput')" v-model="form.payed" class="input-small" type="text" @blur.native="postDatepickerOnBlur"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                      Књижити у корист буџета за                  <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> г.
-                                                                                                        Парт. <b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartSelect')"><b-form-select plain  id="firstPartSelect" v-model="form.firstPartition" :disabled="defaultPaymentSlipPreview" :options="part1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosSelectForm"><span v-on:mouseleave="hideTooltip('firstPosSelectForm')"><b-form-select plain id="firstPosSelect" v-model="form.firstPosition" :disabled="defaultPaymentSlipPreview || missingFirstPart" :options="pos1Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup" id="firstIncomeInputForm"><span v-on:mouseleave="hideTooltip('firstIncomeInputForm')"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
-                  Примио благајник,                                                      Парт. <b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartSelect')"><b-form-select plain id="secondPartSelect" v-model="form.secondPartition" :disabled="defaultPaymentSlipPreview" :options="part2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}"/></span></b-form-group> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosSelectForm"><span v-on:mouseleave="hideTooltip('secondPosSelectForm')"><b-form-select plain id="secondPosSelect" v-model="form.secondPosition" :disabled="defaultPaymentSlipPreview || missingSecondPart" :options="pos2Options" size="sm" class="select-small" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }"/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondIncomeInputFormGroup" id="secondIncomeInputForm"><span v-on:mouseleave="hideTooltip('secondIncomeInputForm')"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="text"></b-form-input></span></b-form-group>
+                                                                                          <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" :disabled="defaultPaymentSlipPreview" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-form-select id="firstPartPosSelect" v-model="selectedFirstPartPos" v-on:change="onFirstPartPosChange" :options="firstPartPosOptions" :disabled="defaultPaymentSlipPreview" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosInputForm"><span v-on:mouseleave="hideTooltip('firstPosInputForm')"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstIncomeInputFormGroup" id="firstIncomeInputForm"><span v-on:mouseleave="hideTooltip('firstIncomeInputForm')"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="defaultPaymentSlipPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
+                  Примио благајник,                                        <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartInput')"><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" :disabled="defaultPaymentSlipPreview" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('secondPartPosSelect')"><b-form-select id="secondPartPosSelect" v-model="selectedSecondPartPos" v-on:change="onSecondPartPosChange" :options="secondPartPosOptions" :disabled="defaultPaymentSlipPreview" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosInputForm"><span v-on:mouseleave="hideTooltip('secondPosInputForm')"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondIncomeInputFormGroup" id="secondIncomeInputForm"><span v-on:mouseleave="hideTooltip('secondIncomeInputForm')"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="defaultPaymentSlipPreview || missingSecondPart" type="text"></b-form-input></span></b-form-group>
                                                            
       <br/><b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalIncomeInputFormGroup" id="totalIncomeInputForm"><span v-on:mouseleave="hideTooltip('totalIncomeInputForm')"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalIncome || totalIncomeNotValid ) }"></b-form-input></span></b-form-group>
       <div class="my-0">
@@ -54,13 +54,13 @@
       </div>
     </b-tooltip>
 
-    <b-tooltip target="firstPartSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip">
+    <b-tooltip target="firstPartPosSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip">
       <div class="tooltipInnerText">
         {{firstPartTooltipText}}
       </div>
     </b-tooltip>
 
-    <b-tooltip target="firstPosSelectForm" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
+    <b-tooltip target="firstPosInputForm" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
       <div class="tooltipInnerText">
         {{firstPosTooltipText}}
       </div>
@@ -72,13 +72,13 @@
       </div>
     </b-tooltip>
 
-    <b-tooltip target="secondPartSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip">
+    <b-tooltip target="secondPartPosSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip">
       <div class="tooltipInnerText">
         {{secondPartTooltipText}}
       </div>
     </b-tooltip>
 
-    <b-tooltip target="secondPosSelectForm" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip">
+    <b-tooltip target="secondPosInputForm" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip">
       <div class="tooltipInnerText">
         {{secondPosTooltipText}}
       </div>
@@ -140,7 +140,7 @@
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const paymentSlipController = require('../../../../controllers/paymentSlipController')
   const defaultPaymentSlipController = require('../../../../controllers/defaultPaymentSlipController')
-  const { numberToSerbianDinars, getCodeCombinations, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
+  const { numberToSerbianDinars, compareCodes, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const _ = require('lodash')
@@ -190,12 +190,12 @@
           atLeastOnePartPosIncome: i18n.getTranslation('Enter at least one partition, position, income'),
           enterPartition: i18n.getTranslation('Enter partition'),
           needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of incomes by partitions and position'),
+          enterIncome:i18n.getTranslation('Enter income'),
           ok: i18n.getTranslation('Ok'),
           maxNumberOfPaymentSlipsReached: i18n.getTranslation('Maximum number of payment slips reached for this month and year (27). Choose another date.'),
           download: i18n.getTranslation('Download'),
           permissionDenied: i18n.getTranslation('Permission denied.'),
           paymentSlipPdf: i18n.getTranslation('payment-slip.pdf'),
-          chooseDifferentIncomeCodes: i18n.getTranslation('Choose different income codes')
         },
         calendarLanguages: {
           sr: sr,
@@ -207,7 +207,9 @@
         totalIncomeInputAutonumeric: null,
         townInputElement: null,
         reasonInputElement: null,
-        payedInputElement: null
+        payedInputElement: null,
+        selectedFirstPartPos: null,
+        selectedSecondPartPos: null
       }
     },
     created () {
@@ -217,6 +219,8 @@
         if (!this.form.isValid) {
           this.shouldValidate = true;
         }
+        this.selectedFirstPartPos = this.form.firstPartition + '/' + this.form.firstPosition
+        this.selectedSecondPartPos = this.form.secondPartition + '/' + this.form.secondPosition
       } else {
         var defaultPaymentSlip = JSON.parse(JSON.stringify(this.defaultPaymentSlip));
         defaultPaymentSlip._id = undefined;
@@ -225,8 +229,7 @@
       const self = this;
       incomeCodeController.getIncomeCodes().then(function (res) {
         if (!res.err) {
-          self.incomeCodes = (res.data || [])
-          self.incomeCodeCombinations = getCodeCombinations(self.incomeCodes)
+          self.incomeCodes = (res.data.sort(compareCodes) || [])
         } else {
           self.openErrorModal(res.err)
         }
@@ -248,46 +251,6 @@
       this.townInputElement = document.getElementById('townInput')
       this.reasonInputElement = document.getElementById('reasonInput')
       this.payedInputElement = document.getElementById('payedInput')
-    },
-    watch: {
-      'form.firstPartition' : function (newValue) {
-        /* If new value is null, i.e. the part is reset, reset the income too */
-        if (!newValue || newValue.toString().trim() === '') {
-          this.form.firstPosition = null
-          this.form.firstIncome = null
-          if (this.firstIncomeInputAutonumeric) {
-            this.firstIncomeInputAutonumeric.clear()
-          }
-          return;
-        }
-        if (!this.incomeCodeCombinations) {
-          return;
-        }
-        const allowedPosValues = this.incomeCodeCombinations[newValue]
-        if (!allowedPosValues || allowedPosValues.indexOf(this.form.firstPosition) === -1) {
-          /* Pos value needs to be reset since it is not allowed with the new part */
-          this.form.firstPosition = null
-        }
-      },
-      'form.secondPartition' : function (newValue) {
-        /* If new value is null, i.e. the part is reset, reset the income too */
-        if (!newValue || newValue.toString().trim() === '') {
-          this.form.secondPosition = null
-          this.form.secondIncome = null
-          if (this.secondIncomeInputAutonumeric) {
-            this.secondIncomeInputAutonumeric.clear()
-          }
-          return;
-        }
-        if (!this.incomeCodeCombinations) {
-          return;
-        }
-        const allowedPosValues = this.incomeCodeCombinations[newValue]
-        if (!allowedPosValues || allowedPosValues.indexOf(this.form.secondPosition) === -1) {
-          /* Pos value needs to be reset since it is not allowed with the new part */
-          this.form.secondPosition = null
-        }
-      }
     },
     computed: {
       ...mapState(
@@ -356,37 +319,27 @@
         }
       },
       firstPartTooltipText: function () {
-        if (this.partPosNotUnique) {
-          return this.phrases.chooseDifferentIncomeCodes
-        } else {
-          return this.phrases.atLeastOnePartPosIncome
-        }
+        return this.phrases.atLeastOnePartPosIncome
       },
       firstPosTooltipText: function () {
-        if (this.partPosNotUnique) {
-          return this.phrases.chooseDifferentIncomeCodes
-        } else {
-          return this.phrases.atLeastOnePartPosIncome
-        }
+        return this.phrases.atLeastOnePartPosIncome
       },
       firstIncomeTooltipText: function () {
+        if(!this.missingFirstPart) {
+          return this.phrases.enterIncome
+        }
         return this.phrases.atLeastOnePartPosIncome
       },
       secondPosTooltipText: function () {
-        if (this.partPosNotUnique) {
-          return this.phrases.chooseDifferentIncomeCodes
-        } else {
-          return this.phrases.atLeastOnePartPosIncome
-        }
+        return this.phrases.atLeastOnePartPosIncome
       },
       secondPartTooltipText: function () {
-        if (this.partPosNotUnique) {
-          return this.phrases.chooseDifferentIncomeCodes
-        } else {
-          return this.phrases.atLeastOnePartPosIncome
-        }
+        return this.phrases.atLeastOnePartPosIncome
       },
       secondIncomeTooltipText: function () {
+        if(!this.missingSecondPart) {
+          return this.phrases.enterIncome
+        }
         return this.phrases.atLeastOnePartPosIncome
       },
       totalIncomeTooltipText: function () {
@@ -420,7 +373,7 @@
       },
       disableFirstPartTooltip: {
         get: function () {
-          return (!this.atLeastOnePartPosNotSet && !this.partPosNotUnique) || !this.shouldValidate
+          return !this.atLeastOnePartPosNotSet || !this.missingFirstPart || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -431,7 +384,7 @@
       },
       disableFirstPosTooltip: {
         get: function () {
-          return (!this.atLeastOnePartPosNotSet && !this.partPosNotUnique) || !this.shouldValidate
+          return !this.atLeastOnePartPosNotSet || !this.missingFirstPos || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -453,7 +406,7 @@
       },
       disableSecondPartTooltip: {
         get: function () {
-          return (!this.atLeastOnePartPosNotSet && !this.partPosNotUnique) || !this.shouldValidate 
+          return !this.atLeastOnePartPosNotSet || !this.missingSecondPart || !this.shouldValidate 
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -464,7 +417,7 @@
       },
       disableSecondPosTooltip: {
         get: function () {
-          return (!this.atLeastOnePartPosNotSet && !this.partPosNotUnique) || !this.shouldValidate
+          return !this.atLeastOnePartPosNotSet || !this.missingSecondPos || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -506,33 +459,29 @@
           }
         }
       },
-      part1Options: function () {
-        if (!this.incomeCodeCombinations) {
-          return [];
+      firstPartPosOptions: function() {
+        var options = this.getInitialPartPosOptions()
+        if(this.selectedSecondPartPos) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == this.selectedSecondPartPos) {
+              options.splice(i, 1)
+              break
+            }
+          }
         }
-        var keys = Object.keys(this.incomeCodeCombinations);
-        keys.unshift('');
-        return keys;
+        return options
       },
-      part2Options: function () {
-        if (!this.incomeCodeCombinations) {
-          return [];
+      secondPartPosOptions: function() {
+        var options = this.getInitialPartPosOptions()
+        if(this.selectedFirstPartPos) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == this.selectedFirstPartPos) {
+              options.splice(i, 1)
+              break
+            }
+          }
         }
-        var keys = Object.keys(this.incomeCodeCombinations);
-        keys.unshift('');
-        return keys;
-      },
-      pos1Options: function () {
-        if (!this.incomeCodeCombinations) {
-          return []
-        }
-        return this.incomeCodeCombinations[this.form.firstPartition]
-      },
-      pos2Options: function () {
-        if (!this.incomeCodeCombinations) {
-          return []
-        }
-        return this.incomeCodeCombinations[this.form.secondPartition]
+        return options
       },
       missingReason: function () {
         return !this.form.reason || this.form.reason.toString().trim() === ''
@@ -580,22 +529,64 @@
         const secondCombinationNotSet = this.missingSecondPart || this.missingSecondPos || this.missingSecondIncome
         return firstCombinationNotSet && secondCombinationNotSet
       },
-      partPosNotUnique: function () {
-        return !this.missingFirstPart && !this.missingFirstPos && !this.missingSecondPart && !this.missingSecondPos && this.form.firstPartition == this.form.secondPartition && this.form.firstPosition == this.form.secondPosition
-      },
       validForm: function () {
         if (this.missingIncome ||
             this.missingReason ||
             this.missingDate ||
             this.atLeastOnePartPosNotSet ||
-            this.totalIncomeNotValid ||
-            this.partPosNotUnique) {
+            this.totalIncomeNotValid) {
           return false
         }
         return true
       }
     },
     methods: {
+      getInitialPartPosOptions() {
+        if (!this.incomeCodes) {
+          return []
+        }
+        var options = []
+        this.incomeCodes.forEach(ic => {
+          let padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+          let paddingCount = ic.partition.toString().length + ic.position.toString().length
+          if (paddingCount == 3) {
+            padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+          } else if(paddingCount == 4) {
+            padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+          }
+          options.push({html: ic.partition + '/' + ic.position + (ic.description ? padding + ic.description : ''), value: ic.partition + '/' + ic.position})
+        })
+        return options
+      },
+      onFirstPartPosChange () {
+        if (this.selectedFirstPartPos) {
+          const partPos = this.selectedFirstPartPos.split('/')
+          this.form.firstPartition = partPos[0]
+          this.form.firstPosition = partPos[1]
+        } else {
+          this.form.firstPartition = null
+          this.form.firstPosition = null
+          this.form.firstIncome = null
+          if (this.firstIncomeInputAutonumeric) {
+            this.firstIncomeInputAutonumeric.clear()
+          }
+        }
+      },
+      onSecondPartPosChange () {
+        if (this.selectedSecondPartPos) {
+          const partPos = this.selectedSecondPartPos.split('/')
+          this.form.secondPartition = partPos[0]
+          this.form.secondPosition = partPos[1]
+          document.getElementById('secondPartPosSelect').nodeValue = partPos[0]
+        } else {
+          this.form.secondPartition = null
+          this.form.secondPosition = null
+          this.form.secondIncome = null
+          if (this.secondIncomeInputAutonumeric) {
+            this.secondIncomeInputAutonumeric.clear()
+          }
+        }
+      },
       limitTownInput(evt) {
       if (this.townInputElement.scrollWidth > this.townInputElement.clientWidth) {
           evt.preventDefault()
@@ -728,6 +719,8 @@
         this.form.reason = null;
         this.form.payed = null;
         this.totalIncomeInputAutonumeric.clear()
+        this.selectedFirstPartPos = null
+        this.selectedSecondPartPos = null
       },
       openErrorModal(error) {
         this.errorText = error
@@ -794,9 +787,7 @@
     letter-spacing: 95%;
   }
   select {
-    border-bottom: 1px solid black !important;
-    border-radius: 0 !important;
-    text-align-last:center;
+    text-align-last:left;
     font-family: "Times New Roman";
     font-size: 90%;
     letter-spacing: 95%;
@@ -850,8 +841,8 @@
     display: inline;
     margin: 0px;
     padding: 0px;
-    height: 18px;
-    max-height: 18px;
+    height: 15px;
+    max-height: 15px;
     color: black;
   }
   .input-small::placeholder {
@@ -873,7 +864,7 @@
     width: 255px;
   }
   #townInput {
-    width: 310px;
+    width: 320px;
   }
   #reasonInput {
     width: 290px;
@@ -887,25 +878,35 @@
   #yearInput {
     width: 50px;
   }
-  #firstPartSelect {
+  #firstPartPosSelect {
     width: 50px;
-    padding-left:5px;
-    margin-bottom: 8px;
+    padding: 2px 2px 2px 2px;
   }
-  #firstPosSelect {
+  #secondPartPosSelect {
     width: 50px;
-    padding-left:5px;
-    margin-bottom: 8px;
+    padding: 2px 2px 2px 2px;
   }
-  #secondPartSelect {
-    width: 50px;
-    padding-left:5px;
-    margin-bottom: 8px;
+  .partText {
+    position: relative;
+    left: 50px;
   }
-  #secondPosSelect {
+  #firstPartInput {
     width: 50px;
-    padding-left:5px;
-    margin-bottom: 8px;
+    position:relative;
+    left:50px;
+    pointer-events: none;
+  }
+  #firstPosInput {
+    width: 50px;
+  }
+  #secondPartInput {
+    width: 50px;
+    position:relative;
+    left:50px;
+    pointer-events: none;
+  }
+  #secondPosInput {
+    width: 50px;
   }
   #firstIncomeInput {
     width: 100px;
@@ -954,7 +955,7 @@
     margin: 0;
   }
   #incomeAsTextDivWrapper1 {
-    width: 405px;
+    width: 406px;
     white-space: nowrap;
     overflow: hidden;
     display: inline-block;

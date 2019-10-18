@@ -418,28 +418,28 @@ export default {
 .totalIncomePage >>> #total-income-page {
   transform: scale(0.5);
 	position:relative;
-	bottom: 225px;
+	bottom: 220px;
 	right: 400px;
 }
 
 .totalOutcomePage >>> #total-outcome-page {
   transform: scale(0.5);
 	position:relative;
-	bottom: 286px;
+	bottom: 281px;
 	right: 400px;
 }
 
 .sharesPage >>> #shares-page {
   transform: scale(0.5);
   position:relative;
-  bottom: 240px;
+  bottom: 235px;
   right: 390px;
 }
 
 .totalPage >>> #total-page {
 	transform: scale(0.5);
 	position:relative;
-	bottom: 230px;
+	bottom: 228px;
 	right: 190px;
 }
 
