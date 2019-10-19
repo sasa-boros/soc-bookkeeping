@@ -68,13 +68,17 @@ async function assignAnnualReportValues () {
   for (let i = 0; i < receipts.length; i++) {
     const receipt = receipts[i]
     const year = receipt.date.getYear()
+    const month = receipt.date.getMonth()
     if(perYearOrdinal[year]) {
       perYearOrdinal[year] += 1
     } else {
       perYearOrdinal[year] = 1
     }
+    if (receipt.ordinal == perYearOrdinal[year] && receipt.annualReportPage ==  (month + 1)) {
+      continue
+    }
     receipt.ordinal = perYearOrdinal[year]
-    receipt.annualReportPage = receipt.date.getMonth() + 1
+    receipt.annualReportPage = month + 1
     await receiptDao.updateById(receipt._id, receipt, true)
   }
 }

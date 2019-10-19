@@ -247,6 +247,8 @@ function mapCodeFormToCode (codeForm) {
 function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   const paymentSlipForm = {};
   paymentSlipForm._id = paymentSlip._id;
+  paymentSlipForm.createdAt = paymentSlip.createdAt;
+  paymentSlipForm.updatedAt = paymentSlip.updatedAt;
   paymentSlipForm.isValid = paymentSlip.isValid;
   paymentSlipForm.ordinal =  paymentSlip.ordinal;
   paymentSlipForm.annualReportPage = paymentSlip.annualReportPage;
@@ -280,6 +282,8 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
 function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
   var paymentSlip = {};
   paymentSlip._id = paymentSlipForm._id;
+  paymentSlip.createdAt = paymentSlipForm.createdAt;
+  paymentSlip.updatedAt = paymentSlipForm.updatedAt;
   paymentSlip.isValid = paymentSlipForm.isValid;
   paymentSlip.date = paymentSlipForm.date;
   paymentSlip.income = asFloat(paymentSlipForm.income, amountNumberOptions);
@@ -305,6 +309,8 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
 function mapReceiptToReceiptForm (receipt) {
     const receiptForm = {};
     receiptForm._id = receipt._id;
+    receiptForm.createdAt = receipt.createdAt;
+    receiptForm.updatedAt = receipt.updatedAt;
     receiptForm.isValid = receipt.isValid;
     receiptForm.ordinal =  receipt.ordinal;
     receiptForm.annualReportPage = receipt.annualReportPage;
@@ -340,6 +346,8 @@ function mapReceiptToReceiptForm (receipt) {
 function mapReceiptFormToReceipt (receiptForm, outcomeCodes) {
     var receipt = {};
     receipt._id = receiptForm._id;
+    receipt.createdAt = receiptForm.createdAt;
+    receipt.updatedAt = receiptForm.updatedAt;
     receipt.isValid = receiptForm.isValid;
     receipt.date = receiptForm.date;
     receipt.outcome = asFloat(receiptForm.outcome, amountNumberOptions);
