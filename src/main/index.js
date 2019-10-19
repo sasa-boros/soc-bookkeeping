@@ -1,3 +1,6 @@
+// Using chrome cache to speed up app
+require('v8-compile-cache');
+
 const { app, BrowserWindow } = require('electron')
 const Datastore = require('nedb')
 const path = require('path')
