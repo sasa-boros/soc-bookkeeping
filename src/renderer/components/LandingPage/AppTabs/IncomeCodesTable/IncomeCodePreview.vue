@@ -125,6 +125,7 @@ export default {
       partitionInputAutonumeric: null,
       positionInputAutonumeric: null,
       descriptionElement: null,
+      alreadySubmited: false
     }
   },
   created () {
@@ -206,26 +207,33 @@ export default {
     },
     onSubmit (evt) {
       evt.preventDefault();
+      if (this.alreadySubmited) {
+        return
+      }
       this.shouldValidate = true;
       const self = this;
       if (this.isFormValid()) {
         if (this.isUpdate) {
+          this.alreadySubmited = true
           incomeCodeController.updateIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
                 this.shouldValidate = false;
                 self.$emit('updateIncomeCodes')
                 self.closeModal();
               } else {
+                self.alreadySubmited = false
                 self.openErrorModal(res.err)
               }
           })
         } else {
+          this.alreadySubmited = true
           incomeCodeController.createIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
                 this.shouldValidate = false;
                 self.$emit('updateIncomeCodes')
                 self.closeModal();
               } else {
+                self.alreadySubmited = false
                 self.openErrorModal(res.err)
               }
           })

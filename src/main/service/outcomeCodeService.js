@@ -46,7 +46,7 @@ async function makeReceiptsInvalid (deletedOutcomeCode) {
       receipt.isValid = false
       receipt.outcomePerCode = []
       console.log(`Receipt with id ${receipt._id} is no longer valid`)
-      await receiptDao.updateById(receipt._id, receipt)
+      await receiptDao.updateById(receipt._id, receipt, true)
     }
   })
 }

@@ -1,6 +1,6 @@
 function findAll () {
     return new Promise((resolve, reject) => { 
-        db.paymentSlips.find({}, (err, docs) => {
+        db.paymentSlips.find({}).sort({ 'createdAt': -1 }).exec((err, docs) => {
             if (err) {
                 reject(err)
             }
@@ -22,7 +22,7 @@ function findAllSortByDateAsc () {
 
 function findBetweenDates (startDate, endDate) {
     return new Promise((resolve, reject) => { 
-        db.paymentSlips.find({ 'date': { '$gte': startDate, '$lt': endDate } }, (err, docs) => {
+        db.paymentSlips.find({ 'date': { '$gte': startDate, '$lt': endDate } }).sort({ 'createdAt': -1 }).exec((err, docs) => {
             if (err) {
                 reject(err)
             }
@@ -43,6 +43,8 @@ function findBetweenDatesSortAsc (startDate, endDate) {
 }
 
 function insert (doc) {
+    doc.createdAt = Date.now()
+    doc.updatedAt = Date.now()
     return new Promise((resolve, reject) => { 
         db.paymentSlips.insert(doc, (err, newDoc) => {
             if (err) {
@@ -75,7 +77,10 @@ function removeManyByIds (ids) {
     })
 }
 
-function updateById (id, doc) {
+function updateById (id, doc, notTimestamped) {
+    if (!notTimestamped) {
+        doc.updatedAt = Date.now()
+    }
     return new Promise((resolve, reject) => { 
         db.paymentSlips.update({ _id: id }, doc, (err, numReplaced) => {
             if (err) {

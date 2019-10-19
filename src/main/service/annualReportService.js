@@ -190,7 +190,11 @@ function compareCodes( codeA, codeB ) {
 
 async function populateHeadline(annualReport, annualReportPages) {
   const headlineContext = {};
-  headlineContext.year = annualReport.year;
+  if (!annualReport.year) {
+    headlineContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  } else {
+    headlineContext.year = annualReport.year;
+  }
 
   const headline = await readFile(path.join(__static, "/templates/annual-report/headline.html"), { encoding: 'utf8'});
   Mustache.parse(headline);   // optional, speeds up future uses
@@ -204,7 +208,11 @@ async function populateIncomeOutcomePage (annualReport, annualReportPage, income
   incomePageContext.page = annualReportPage.ordinal;
   incomePageContext.monthLokativ = i18n.getTranslation(monthNames[annualReportPage.ordinal-1] + '.lokativ');
   outcomePageContext.page = annualReportPage.ordinal;
-  outcomePageContext.year = annualReport.year;
+  if (!annualReport.year) {
+    outcomePageContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  } else {
+    outcomePageContext.year = annualReport.year;
+  }
 
   var colsPerIncomeCodes = {}
   var colsPerOutcomeCodes = {}
@@ -286,8 +294,11 @@ async function populateIncomeOutcomePage (annualReport, annualReportPage, income
 async function populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcomeCodes, annualReportPages) {
   var totalIncomePageContext = {};
   var totalOutcomePageContext = {};
-
-  totalOutcomePageContext.year = annualReport.year;
+  if (!annualReport.year) {
+    totalOutcomePageContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  } else {
+    totalOutcomePageContext.year = annualReport.year;
+  }
 
   var colsPerIncomeCodes = {}
   var colsPerOutcomeCodes = {}
@@ -351,7 +362,11 @@ async function populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcome
 async function populateTotalPage(annualReport, annualReportPages) {
   const totalPageContext = {};
 
-  totalPageContext.year = annualReport.year;
+  if (!annualReport.year) {
+    totalPageContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  } else {
+    totalPageContext.year = annualReport.year;
+  }
   totalPageContext['E5'] = formatAmount(annualReport.total);
 
   const totalPageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-page.html"), { encoding: 'utf8'});

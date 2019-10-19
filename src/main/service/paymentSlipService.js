@@ -64,11 +64,18 @@ async function updatePaymentSlip (paymentSlip) {
 
 async function assignAnnualReportValues () {
   let paymentSlips = await paymentSlipDao.findAllSortByDateAsc()
+  var perYearOrdinal = {}
   for (let i = 0; i < paymentSlips.length; i++) {
     const paymentSlip = paymentSlips[i]
-    paymentSlip.ordinal = i + 1
+    const year = paymentSlip.date.getYear()
+    if(perYearOrdinal[year]) {
+      perYearOrdinal[year] += 1
+    } else {
+      perYearOrdinal[year] = 1
+    }
+    paymentSlip.ordinal = perYearOrdinal[year]
     paymentSlip.annualReportPage = paymentSlip.date.getMonth() + 1
-    await paymentSlipDao.updateById(paymentSlip._id, paymentSlip)
+    await paymentSlipDao.updateById(paymentSlip._id, paymentSlip, true)
   }
 }
 

@@ -46,7 +46,7 @@ async function makePaymentSlipsInvalid (deletedIncomeCode) {
       paymentSlip.isValid = false
       paymentSlip.incomePerCode = []
       console.log(`Payment slip with id ${paymentSlip._id} is no longer valid`)
-      await paymentSlipDao.updateById(paymentSlip._id, paymentSlip)
+      await paymentSlipDao.updateById(paymentSlip._id, paymentSlip, true)
     }
   })
 }

@@ -406,13 +406,13 @@ export default {
 	transform: scale(0.5);
 	position:relative;
 	bottom: 279px;
-	right: 449px;
+	right: 454px;
 }
 .outcomePage >>> #outcome-page {
 	transform: scale(0.5);
 	position:relative;
 	bottom: 285px;
-	right: 449px;
+	right: 453px;
 }
 
 .totalIncomePage >>> #total-income-page {

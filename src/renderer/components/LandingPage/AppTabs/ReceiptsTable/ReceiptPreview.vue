@@ -140,7 +140,7 @@
   const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
   const receiptController = require('../../../../controllers/receiptController')
   const defaultReceiptController = require('../../../../controllers/defaultReceiptController')
-  const { numberToSerbianDinars, getCodeCombinations, mapReceiptToReceiptForm, mapReceiptFormToReceipt, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
+  const { numberToSerbianDinars, getCodeCombinations, mapReceiptToReceiptForm, mapReceiptFormToReceipt, saveAs, asFloat, amountNumberOptions, compareCodes } = require('../../../../utils/utils')
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const _ = require('lodash')
@@ -178,7 +178,6 @@
         preDatepickerJustBlurred: false,
         postDatepickerJustBlurred: false,
         outcomeCodes: null,
-        outcomeCodeCombinations: null,
         errorText: "",
         phrases: {
           save: i18n.getTranslation('Save'),
@@ -211,7 +210,8 @@
         reasonInputElement: null,
         receivedInputElement: null,
         selectedFirstPartPos: null,
-        selectedSecondPartPos: null
+        selectedSecondPartPos: null,
+        alreadySubmited: false
       }
     },
     created () {
@@ -231,8 +231,7 @@
       const self = this;
       outcomeCodeController.getOutcomeCodes().then(function (res) {
         if (!res.err) {
-          self.outcomeCodes = (res.data || [])
-          self.outcomeCodeCombinations = getCodeCombinations(self.outcomeCodes)
+          self.outcomeCodes = (res.data.sort(compareCodes) || [])
         } else {
           self.openErrorModal(res.err)
         }
@@ -673,13 +672,18 @@
       },
       onSubmit (evt) {
         evt.preventDefault()
+        if(this.alreadySubmited) {
+          return
+        }
         const self = this;
         if (this.defaultReceiptPreview) {
+          this.alreadySubmited = true
           defaultReceiptController.createDefaultReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then(function (res) {
             if (!res.err) {
               self.$emit('updateDefaultReceipt')
               self.closeModal();
             } else {
+              self.alreadySubmited = false
               self.openErrorModal(res.err)
             }
           })
@@ -687,20 +691,24 @@
           this.shouldValidate = true;
           if (this.validForm) {
             if (this.receiptPreview) {
+              this.alreadySubmited = true
               receiptController.updateReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then((res) => {
                 if (!res.err) {
                   self.$emit('updateReceiptTable')
                   self.closeModal();
                 } else {
+                  self.alreadySubmited = false
                   self.openErrorModal(res.err)
                 }
               })
             } else {
+              this.alreadySubmited = true
               receiptController.createReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then((res) => {
                 if (!res.err) {
                   self.$emit('updateReceiptTable')
                   self.closeModal();
                 } else {
+                  self.alreadySubmited = false
                   self.openErrorModal(res.err)
                 }
               })

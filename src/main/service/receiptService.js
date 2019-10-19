@@ -64,11 +64,18 @@ async function updateReceipt (receipt) {
 
 async function assignAnnualReportValues () {
   let receipts = await receiptDao.findAllSortByDateAsc()
+  var perYearOrdinal = {}
   for (let i = 0; i < receipts.length; i++) {
     const receipt = receipts[i]
-    receipt.ordinal = i + 1
+    const year = receipt.date.getYear()
+    if(perYearOrdinal[year]) {
+      perYearOrdinal[year] += 1
+    } else {
+      perYearOrdinal[year] = 1
+    }
+    receipt.ordinal = perYearOrdinal[year]
     receipt.annualReportPage = receipt.date.getMonth() + 1
-    await receiptDao.updateById(receipt._id, receipt)
+    await receiptDao.updateById(receipt._id, receipt, true)
   }
 }
 

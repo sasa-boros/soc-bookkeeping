@@ -124,7 +124,8 @@ export default {
       errorText: "",
       partitionInputAutonumeric: null,
       positionInputAutonumeric: null,
-      descriptionElement: null
+      descriptionElement: null,
+      alreadySubmited: false
     }
   },
   created () {
@@ -207,26 +208,33 @@ export default {
     },
     onSubmit (evt) {
       evt.preventDefault();
+      if (this.alreadySubmited) {
+        return
+      }
       this.shouldValidate = true;
       const self = this;
       if (this.isFormValid()) {
         if (this.isUpdate) {
+          this.alreadySubmited = true
           outcomeCodeController.updateOutcomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
                 this.shouldValidate = false;
                 self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
+                self.alreadySubmited = false
                 self.openErrorModal(res.err)
               }
           })
         } else {
+          this.alreadySubmited = true
           outcomeCodeController.createOutcomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
                 this.shouldValidate = false;
                 self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
+                self.alreadySubmited = false
                 self.openErrorModal(res.err)
               }
           })

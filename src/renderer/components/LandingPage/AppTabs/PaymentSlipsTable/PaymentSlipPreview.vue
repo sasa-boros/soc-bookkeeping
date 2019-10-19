@@ -209,7 +209,8 @@
         reasonInputElement: null,
         payedInputElement: null,
         selectedFirstPartPos: null,
-        selectedSecondPartPos: null
+        selectedSecondPartPos: null,
+        alreadySubmited: false,
       }
     },
     created () {
@@ -665,13 +666,18 @@
       },
       onSubmit (evt) {
         evt.preventDefault();
+        if (this.alreadySubmited) {
+          return
+        }
         const self = this;
         if (this.defaultPaymentSlipPreview) {
+          this.alreadySubmited = true
           defaultPaymentSlipController.createDefaultPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then(function (res) {
             if (!res.err) {
               self.$emit('updateDefaultPaymentSlip')
               self.closeModal();
             } else {
+              self.alreadySubmited = false
               self.openErrorModal(res.err)
             }
           })
@@ -679,20 +685,24 @@
           this.shouldValidate = true;
           if (this.validForm) {
             if (this.paymentSlipPreview) {
+              this.alreadySubmited = true
               paymentSlipController.updatePaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then((res) => {
                 if (!res.err) {
                   self.$emit('updatePaymentSlipTable')
                   self.closeModal();
                 } else {
+                  self.alreadySubmited = false
                   self.openErrorModal(res.err)
                 }
               })
             } else {
+              this.alreadySubmited = true
               paymentSlipController.createPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then((res) => {
                 if (!res.err) {
                   self.$emit('updatePaymentSlipTable')
                   self.closeModal();
                 } else {
+                  self.alreadySubmited = false
                   self.openErrorModal(res.err)
                 }
               })
