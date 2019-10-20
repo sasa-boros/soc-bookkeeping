@@ -15,7 +15,7 @@
                                                                                           <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" :disabled="defaultReceiptPreview" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-form-select id="firstPartPosSelect" v-model="selectedFirstPartPos" v-on:change="onFirstPartPosChange" :options="firstPartPosOptions" :disabled="defaultReceiptPreview" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosInputForm"><span v-on:mouseleave="hideTooltip('firstPosInputForm')"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="defaultReceiptPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
                   Примио благајник,                                        <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartInput')"><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" :disabled="defaultReceiptPreview" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('secondPartPosSelect')"><b-form-select id="secondPartPosSelect" v-model="selectedSecondPartPos" v-on:change="onSecondPartPosChange" :options="secondPartPosOptions" :disabled="defaultReceiptPreview" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosInputForm"><span v-on:mouseleave="hideTooltip('secondPosInputForm')"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="hideTooltip('secondOutcomeInputForm')"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="defaultReceiptPreview || missingSecondPart" type="text"></b-form-input></span></b-form-group>
                                                            
-      <br/><b-form-group  class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="postDatepickerDefaultOnBlur"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="hideTooltip('totalOutcomeInputForm')"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && ( missingTotalOutcome || totalOutcomeNotValid ) }" type="text"></b-form-input></span></b-form-group>
+      <br/><b-form-group  class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="postDatepickerDefaultOnBlur"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="hideTooltip('totalOutcomeInputForm')"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalOutcomeTooltip }" type="text"></b-form-input></span></b-form-group>
       <div class="my-0">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
@@ -43,20 +43,20 @@
 
     <b-tooltip target="outcomeInput" triggers="hover" placement="top" ref="outcomeInputTooltip" :disabled.sync="disableOutcomeTooltip">
       <div class="tooltipInnerText">
-        {{phrases.enterValue}}
+        {{phrases.enterAmount}}
       </div>
     </b-tooltip>
 
     <b-tooltip target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip">
       <div class="tooltipInnerText">
-        {{phrases.enterValue}}
+        {{phrases.enterReason}}
       </div>
     </b-tooltip>
 
 
     <b-tooltip target="firstPartPosSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip">
       <div class="tooltipInnerText">
-        {{phrases.atLeastOnePartPosOutcome}}
+        {{phrases.atLeastOnePartPosAmount}}
       </div>
     </b-tooltip>
 
@@ -183,13 +183,11 @@
           save: i18n.getTranslation('Save'),
           print: i18n.getTranslation('Print'),
           clear: i18n.getTranslation('Clear'),
-          willBeGenerated: i18n.getTranslation('The value will be generated'),
-          enterValue: i18n.getTranslation('Enter a value'),
+          enterAmount: i18n.getTranslation('Enter amount'),
+          enterReason: i18n.getTranslation('Enter reason'),
           pickDate: i18n.getTranslation('Pick a date'),
-          atLeastOnePartPosOutcome: i18n.getTranslation('Enter at least one partition, position, outcome'),
-          enterPartition: i18n.getTranslation('Enter partition'),
-          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of outcomes by partitions and position'),
-          enterOutcome:i18n.getTranslation('Enter outcome'),
+          atLeastOnePartPosAmount: i18n.getTranslation('Enter at least one partition, position, amount'),
+          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of amount by partitions and position'),
           ok: i18n.getTranslation('Ok'),
           download: i18n.getTranslation('Download'),
           permissionDenied: i18n.getTranslation('Permission denied.'),
@@ -314,28 +312,28 @@
         }
       },
       firstPartTooltipText: function () {
-        return this.phrases.atLeastOnePartPosOutcome
+        return this.phrases.atLeastOnePartPosAmount
       },
       firstPosTooltipText: function () {
-        return this.phrases.atLeastOnePartPosOutcome
+        return this.phrases.atLeastOnePartPosAmount
       },
       firstOutcomeTooltipText: function () {
         if(!this.missingFirstPart) {
-          return this.phrases.enterOutcome
+          return this.phrases.enterAmount
         }
-        return this.phrases.atLeastOnePartPosOutcome
+        return this.phrases.atLeastOnePartPosAmount
       },
       secondPosTooltipText: function () {
-        return this.phrases.atLeastOnePartPosOutcome
+        return this.phrases.atLeastOnePartPosAmount
       },
       secondPartTooltipText: function () {
-        return this.phrases.atLeastOnePartPosOutcome
+        return this.phrases.atLeastOnePartPosAmount
       },
       secondOutcomeTooltipText: function () {
         if(!this.missingSecondPart) {
-          return this.phrases.enterOutcome
+          return this.phrases.enterAmount
         }
-        return this.phrases.atLeastOnePartPosOutcome
+        return this.phrases.atLeastOnePartPosAmount
       },
       totalOutcomeTooltipText: function () {
         if (this.totalOutcomeNotValid) {
@@ -434,7 +432,7 @@
       },
       disableTotalOutcomeTooltip: {
         get: function () {
-          return (!this.missingTotalOutcome && !this.totalOutcomeNotValid) || !this.shouldValidate
+          return !this.totalOutcomeNotValid || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
