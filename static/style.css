@@ -78,6 +78,26 @@ h1 {
   box-shadow: none !important;
 }
 
+.custom-control-input~.custom-control-label::before
+{
+  border-color:  rgb(221, 217, 240) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.custom-select
+{
+  border-color:  rgb(221, 217, 240) !important;
+}
+
+.custom-control-input.focus-visible~.custom-control-label::before
+{
+  border-color:  rgb(221, 217, 240) !important;
+  box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
+  outline: 0 none !important;
+}
+
+
 .focus-visible {
   border-color:  rgb(221, 217, 240) !important;
   box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
