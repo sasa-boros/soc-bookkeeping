@@ -558,9 +558,6 @@
           const partPos = this.selectedFirstPartPos.split('/')
           this.form.firstPartition = partPos[0]
           this.form.firstPosition = partPos[1]
-          if (this.form.totalIncome && this.form.secondIncome) {
-            this.form.firstIncome = this.form.total - this.form.secondIncome
-          }
         } else {
           this.form.firstPartition = null
           this.form.firstPosition = null
