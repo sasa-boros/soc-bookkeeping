@@ -36,14 +36,14 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input ref="descriptionInput" id="descriptionInput" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" v-on:keypress="limitDescriptionInput" class="descriptionInput"/>
+            <b-form-input id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-on:keypress="limitDescriptionInput"/>
           </b-form-group>
         </b-col>
       </b-row>
-      <b-row>
+      <b-row >
         <b-col>
           <b-button-group class="float-right">
-            <b-button id="saveIncomeCodeBtn" v-on:mouseleave="hideTooltip('saveIncomeCodeBtn')" type="submit" variant="link" class="btn-lg">
+            <b-button id="saveOutcomeCodeBtn" v-on:mouseleave="hideTooltip('saveOutcomeCodeBtn')" type="submit" variant="link" class="btn-lg">
               <img src="~@/assets/save.png">
             </b-button>
             <b-button id="clearFormBtn" v-on:mouseleave="hideTooltip('clearFormBtn')" @click.stop="clearForm()" variant="link" class="btn-lg">
@@ -54,7 +54,7 @@
       </b-row>
     </b-form>
 
-    <b-tooltip target="saveIncomeCodeBtn" triggers="hover" placement="top" ref="saveIncomeCodeBtnTooltip">
+    <b-tooltip target="saveOutcomeCodeBtn" triggers="hover" placement="top" ref="saveOutcomeCodeBtnTooltip">
         <div class="tooltipInnerText">
           {{phrases.save}}
         </div>
@@ -78,27 +78,27 @@
         </div>
       </b-tooltip>
 
-      <b-modal id="income-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="income-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      <b-modal id="outcome-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
+        <message-confirm-dialog parentModal="outcome-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>
 </template>
 
 <script>
-import MessageConfirmDialog from '../../../MessageConfirmDialog'
+import MessageConfirmDialog from '../../../../MessageConfirmDialog'
 
-const incomeCodeController = require('../../../../controllers/incomeCodeController')
-const i18n = require('../../../../../translations/i18n')
-const { partitionPositionNumberOptions, mapCodeToCodeForm, mapCodeFormToCode } = require('../../../../utils/utils')
+const outcomeCodeController = require('../../../../../controllers/outcomeCodeController')
+const i18n = require('../../../../../../translations/i18n')
+const { partitionPositionNumberOptions, mapCodeToCodeForm, mapCodeFormToCode } = require('../../../../../utils/utils')
 const AutoNumeric = require('autonumeric')
 
 export default {
   props: {
-    existingIncomeCodes: {
+    existingOutcomeCodes: {
       type: Array,
       default: []
     },
-    incomeCode: Object,
+    outcomeCode: Object,
     isUpdate: {
       type: Boolean,
       default: false
@@ -112,7 +112,7 @@ export default {
         clear: i18n.getTranslation('Clear'),
         enterPartition: i18n.getTranslation('Enter partition'),
         enterPosition: i18n.getTranslation('Enter position'),
-        notUnique: i18n.getTranslation('Income code partition and position not unique'),
+        notUnique: i18n.getTranslation('Outcome code partition and position not unique'),
         ok: i18n.getTranslation('Ok')
       },
       form: { 
@@ -130,16 +130,8 @@ export default {
   },
   created () {
     if (this.isUpdate) {
-      this.form = mapCodeToCodeForm(JSON.parse(JSON.stringify(this.incomeCode)))
+      this.form = mapCodeToCodeForm(JSON.parse(JSON.stringify(this.outcomeCode)))
     }
-    document.addEventListener('keyup', function (evt) {
-      if (evt.keyCode === 13) {
-        const saveBtn = document.getElementById('saveIncomeCodeBtn')
-        if (saveBtn) {
-          saveBtn.click()
-        }
-      }
-    })
   },
   mounted () {
     this.partitionInputAutonumeric = new AutoNumeric('#partitionInput', partitionPositionNumberOptions)
@@ -189,8 +181,8 @@ export default {
     },
     notUnique: function () {
       const self = this
-      var euqivalentInstance = this.existingIncomeCodes.filter(incomeCode => {
-        return incomeCode.partition == self.form.partition && incomeCode.position == self.form.position && incomeCode._id != self.form._id
+      var euqivalentInstance = this.existingOutcomeCodes.filter(outcomeCode => {
+        return outcomeCode.partition == self.form.partition && outcomeCode.position == self.form.position && outcomeCode._id != self.form._id
       })
 
       if (euqivalentInstance && euqivalentInstance.length > 0) {
@@ -215,10 +207,10 @@ export default {
       if (this.isFormValid()) {
         if (this.isUpdate) {
           this.alreadySubmited = true
-          incomeCodeController.updateIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
+          outcomeCodeController.updateOutcomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
                 this.shouldValidate = false;
-                self.$emit('updateIncomeCodes')
+                self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
                 self.alreadySubmited = false
@@ -227,10 +219,10 @@ export default {
           })
         } else {
           this.alreadySubmited = true
-          incomeCodeController.createIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
+          outcomeCodeController.createOutcomeCode(mapCodeFormToCode(this.form)).then((res) => {
               if (!res.err) {
                 this.shouldValidate = false;
-                self.$emit('updateIncomeCodes')
+                self.$emit('updateOutcomeCodes')
                 self.closeModal();
               } else {
                 self.alreadySubmited = false
@@ -262,7 +254,7 @@ export default {
     },
     openErrorModal(error) {
       this.errorText = error
-      this.$root.$emit('bv::show::modal', 'income-code-preview-error-modal')
+      this.$root.$emit('bv::show::modal', 'outcome-code-preview-error-modal')
     },
     closeModal () {
         this.$root.$emit('bv::hide::modal', this.parentModal)

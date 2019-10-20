@@ -59,13 +59,13 @@
 
 <script>
   import OutcomeCodePreview from './OutcomeCodesTable/OutcomeCodePreview';
-  import MessageConfirmDialog from '../../MessageConfirmDialog'
-  import { EventBus } from '../../../eventbus/event-bus.js';
+  import MessageConfirmDialog from '../../../MessageConfirmDialog'
+  import { EventBus } from '../../../../eventbus/event-bus.js';
 
   const { dialog } = require('electron').remote
-  const outcomeCodeController = require('../../../controllers/outcomeCodeController')
-  const i18n = require('../../../../translations/i18n')
-  const { compareCodes } = require('../../../utils/utils')
+  const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
+  const i18n = require('../../../../../translations/i18n')
+  const { compareCodes } = require('../../../../utils/utils')
 
   export default {
     data () {

@@ -236,14 +236,6 @@
           self.openErrorModal(res.err)
         }
       })
-      document.addEventListener('keyup', function (evt) {
-        if (evt.keyCode === 13) {
-          const saveBtn = document.getElementById('receiptSaveBtn')
-          if (saveBtn) {
-            saveBtn.click()
-          }
-        }
-      })
     },
     mounted () {
       this.outcomeInputAutonumeric = new AutoNumeric('#outcomeInput', amountNumberOptions)
@@ -622,7 +614,7 @@
         var countOfSameMonthAndYear = 0
         for (let i=0; i<this.existingReceipts.length; i++) {
           const receiptDate = new Date(this.existingReceipts[i].date)
-          if (receiptDate.getUTCMonth() == formDate.getMonth() && receiptDate.getUTCFullYear() == formDate.getFullYear()) {
+          if (receiptDate.getUTCFullYear() == formDate.getFullYear() && receiptDate.getUTCMonth() == formDate.getMonth()) {
             if (this.existingReceipts[i]._id != this.form._id) {
               countOfSameMonthAndYear++
             }

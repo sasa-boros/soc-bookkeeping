@@ -6,7 +6,7 @@
       </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" ref="incomeInputFormGroup"><b-form-input id="incomeInput" ref="incomeInput"  v-on:mouseleave="hideTooltip('incomeInput')" v-model="form.income" class="input-small number-input" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" :disabled="defaultPaymentSlipPreview" type="text" :autofocus="!paymentSlipPreview"></b-form-input></b-form-group> и словима  <b-form-input type="text" disabled class="input-small" id="incomeAsTextDivWrapper1" v-model="generatedIncomeTextLine1"></b-form-input>
+      <br/>На дин. <b-form-group class="input-form-group" ref="incomeInputFormGroup"><b-form-input id="incomeInput" ref="incomeInput" v-on:mouseleave="hideTooltip('incomeInput')" v-model="form.income" class="input-small number-input" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" :disabled="defaultPaymentSlipPreview" type="text" :autofocus="!paymentSlipPreview"></b-form-input></b-form-group> и словима  <b-form-input type="text" disabled class="input-small" id="incomeAsTextDivWrapper1" v-model="generatedIncomeTextLine1"></b-form-input>
       <br/><b-form-input disabled class="input-small" id="incomeAsTextDivWrapper2" v-model="generatedIncomeTextLine2"></b-form-input>
       <br/>колико сам данас уплатио у благајну Српске православне црквене општине<br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" v-on:keypress="limitTownInput" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" v-on:keypress="limitReasonInput" ref="reasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text"  @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
       <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview }" :language="calendarLanguages.srCYRL" input-class="paymentSlipDatepickerInput" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar" v-on:input="checkMaxPaymentSlips" :disabled="defaultPaymentSlipPreview"></datepicker></span> г.                                                                                          У п л а т и о,
@@ -137,6 +137,7 @@
   import Datepicker from 'vuejs-datepicker'
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
   import MessageConfirmDialog from '../../../MessageConfirmDialog'
+
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const paymentSlipController = require('../../../../controllers/paymentSlipController')
   const defaultPaymentSlipController = require('../../../../controllers/defaultPaymentSlipController')
@@ -210,7 +211,7 @@
         payedInputElement: null,
         selectedFirstPartPos: null,
         selectedSecondPartPos: null,
-        alreadySubmited: false,
+        alreadySubmited: false
       }
     },
     created () {
@@ -235,14 +236,7 @@
           self.openErrorModal(res.err)
         }
       })
-      document.addEventListener('keyup', function (evt) {
-        if (evt.keyCode === 13) {
-          const saveBtn = document.getElementById('paymentSlipSaveBtn')
-          if (saveBtn) {
-            saveBtn.click()
-          }
-        }
-      })
+      window.addEventListener('keyup', this.saveHandler)
     },
     mounted () {
       this.incomeInputAutonumeric = new AutoNumeric('#incomeInput', amountNumberOptions)
@@ -564,6 +558,9 @@
           const partPos = this.selectedFirstPartPos.split('/')
           this.form.firstPartition = partPos[0]
           this.form.firstPosition = partPos[1]
+          if (this.form.totalIncome && this.form.secondIncome) {
+            this.form.firstIncome = this.form.total - this.form.secondIncome
+          }
         } else {
           this.form.firstPartition = null
           this.form.firstPosition = null
@@ -615,7 +612,7 @@
         var countOfSameMonthAndYear = 0
         for (let i=0; i<this.existingPaymentSlips.length; i++) {
           const paymentSlipDate = new Date(this.existingPaymentSlips[i].date)
-          if (paymentSlipDate.getUTCMonth() == formDate.getMonth() && paymentSlipDate.getUTCFullYear() == formDate.getFullYear()) {
+          if (paymentSlipDate.getUTCFullYear() == formDate.getFullYear() && paymentSlipDate.getUTCMonth() == formDate.getMonth()) {
             if (this.existingPaymentSlips[i]._id != this.form._id) {
               countOfSameMonthAndYear++
             }

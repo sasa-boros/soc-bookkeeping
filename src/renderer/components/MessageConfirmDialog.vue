@@ -70,14 +70,6 @@ export default {
       default: ''
     }
   },
-  created () {
-    const self = this
-    document.addEventListener('keyup', function (evt) {
-      if (evt.keyCode === 13) {
-          self.confirm();
-      }
-    });
-  },
   methods: {
     closeDialog () {
       this.$root.$emit('bv::hide::modal', this.parentModal)

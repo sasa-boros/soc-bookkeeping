@@ -16,7 +16,6 @@
     "Delete": "Обриши",
     "Cancel": "Одустани",
     "Error": "Грешка",
-    "The value will be generated": "Вредност ће бити генерисана",
     "Enter a value": "Унеси вредност",
     "Enter income": "Унеси примање",
     "Enter outcome": "Унеси давање",
@@ -66,6 +65,7 @@
     "Description": "Опис",
 
     "Income codes": "Кодови примања",
+    "Added codes are being sorted automatically by partition and position":"Dodati kodovi se automatski sortiraju prema particiji i poziciji",
     "Outcome codes": "Кодови издавања",
     "There are no income codes to show": "Нема кодова за приказ",
     "There are no outcome codes to show": "Нема кодова за приказ",
@@ -106,7 +106,6 @@
     "For date": "На датум",
     "Created at": "Креирано",
     "Updated at": "Ажурирано",
-    "Default value can not be set": "Подразумевана вредност се не може задати",
 
     "for year" : "за годину",
     "annual-report.pdf": "дневник-благајне.pdf",

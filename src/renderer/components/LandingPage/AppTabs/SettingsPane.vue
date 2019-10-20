@@ -30,12 +30,14 @@
     </b-modal>
     <br>
     <div class="incomeCodesTable">
-      <h3 style="text-align:center">{{phrases.incomeCodes}}</h3>
+      <h3 class="codeHeader">{{phrases.incomeCodes}}</h3>
+      <p class="codeSubHeader">{{phrases.addedCodesAutomaticallySortedByPartPos}}</p>
       <income-codes-table></income-codes-table>
     </div>
     <br>
     <div>
-      <h3 style="text-align:center">{{phrases.outcomeCodes}}</h3>
+      <h3 class="codeHeader">{{phrases.outcomeCodes}}</h3>
+      <p class="codeSubHeader">{{phrases.addedCodesAutomaticallySortedByPartPos}}</p>
       <outcome-codes-table></outcome-codes-table>
     </div>
 
@@ -57,8 +59,8 @@
 <script>
   import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
   import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
-  import IncomeCodesTable from './IncomeCodesTable'
-  import OutcomeCodesTable from './OutcomeCodesTable'
+  import IncomeCodesTable from './SettingsPane/IncomeCodesTable'
+  import OutcomeCodesTable from './SettingsPane/OutcomeCodesTable'
 
   const i18n = require('../../../../translations/i18n')
 
@@ -72,6 +74,7 @@
           adaptReceipts: i18n.getTranslation('Adapt receipts'),
           incomeCodes: i18n.getTranslation('Income codes'),
           outcomeCodes: i18n.getTranslation('Outcome codes'),
+          addedCodesAutomaticallySortedByPartPos: i18n.getTranslation('Added codes are being sorted automatically by partition and position')
         }
       }
     },
@@ -107,5 +110,13 @@
   .incomeCodesTable {
     background-color:#e6f4ff; 
     overflow:auto;
+  }
+  .codeHeader {
+    text-align: center;
+  }
+  .codeSubHeader {
+    text-align: center;
+    font-size: 9.0pt;
+    color: #8e8e8e;
   }
 </style>

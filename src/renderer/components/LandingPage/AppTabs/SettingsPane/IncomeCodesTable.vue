@@ -59,13 +59,13 @@
 
 <script>
   import IncomeCodePreview from './IncomeCodesTable/IncomeCodePreview';
-  import MessageConfirmDialog from '../../MessageConfirmDialog';
-  import { EventBus } from '../../../eventbus/event-bus.js';
+  import MessageConfirmDialog from '../../../MessageConfirmDialog';
+  import { EventBus } from '../../../../eventbus/event-bus.js';
 
   const { dialog } = require('electron').remote
-  const incomeCodeController = require('../../../controllers/incomeCodeController')
-  const i18n = require('../../../../translations/i18n')
-  const { compareCodes } = require('../../../utils/utils')
+  const incomeCodeController = require('../../../../controllers/incomeCodeController')
+  const i18n = require('../../../../../translations/i18n')
+  const { compareCodes } = require('../../../../utils/utils')
 
   export default {
     data () {
