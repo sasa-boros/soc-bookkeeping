@@ -145,6 +145,8 @@
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const _ = require('lodash')
+  const Mousetrap = require('mousetrap')
+  const Big = require('big.js')
 
   export default {
     store: store,
@@ -234,7 +236,6 @@
           self.openErrorModal(res.err)
         }
       })
-      window.addEventListener('keyup', this.saveHandler)
     },
     mounted () {
       this.incomeInputAutonumeric = new AutoNumeric('#incomeInput', amountNumberOptions)
@@ -244,6 +245,10 @@
       this.townInputElement = document.getElementById('townInput')
       this.reasonInputElement = document.getElementById('reasonInput')
       this.payedInputElement = document.getElementById('payedInput')
+      this.bindKeys()
+    },
+    beforeDestroy () {
+      this.unbindKeys()
     },
     computed: {
       ...mapState(
@@ -505,10 +510,10 @@
       },
       totalIncomeNotValid: function () {
         if (!this.missingIncome) {
-          const totalIncome = asFloat(this.form.income, amountNumberOptions)
-          const firstIncome = this.missingFirstIncome ? 0 : asFloat(this.form.firstIncome, amountNumberOptions)
-          const secondIncome = this.missingSecondIncome ? 0 : asFloat(this.form.secondIncome, amountNumberOptions)
-          if (firstIncome + secondIncome !== totalIncome) {
+          const totalIncome = Big(asFloat(this.form.income, amountNumberOptions))
+          const firstIncome = this.missingFirstIncome ? Big(0.0) : Big(asFloat(this.form.firstIncome, amountNumberOptions))
+          const secondIncome = this.missingSecondIncome ? Big(0.0) : Big(asFloat(this.form.secondIncome, amountNumberOptions))
+          if (!firstIncome.plus(secondIncome).eq(totalIncome)) {
             return true
           }
         }
@@ -534,6 +539,48 @@
       }
     },
     methods: {
+      bindKeys() {
+        const self = this
+        if (!this.defaultPaymentSlipPreview) {
+          Mousetrap.bind(['command+p', 'ctrl+p'], function(e) {
+           if (self.validForm || !self.shouldValidate) {
+              self.printPaymentSlip()
+            }
+            return false
+          });
+          Mousetrap.bind(['command+d', 'ctrl+d'], function(e) {
+            if (self.validForm || !self.shouldValidate) {
+              self.downloadPaymentSlip()
+            }
+            return false
+          });
+        }
+        Mousetrap.bind(['command+e', 'ctrl+e'], function(e) {
+          self.clearForm()
+          return false
+        });
+        Mousetrap.bind(['command+s', 'ctrl+s'], function(e) {
+          self.$refs.paymentSlipSaveBtn.click()
+          return false
+        });
+        this.$refs.form.onkeypress = function (e) {
+          var key = e.charCode || e.keyCode || 0   
+          if (key == 13) {
+            e.preventDefault()
+          }
+        }
+        Mousetrap.prototype.stopCallback = function () {
+          return false
+        }
+      },
+      unbindKeys() {
+        if (!this.defaultPaymentSlipPreview) {
+          Mousetrap.unbind(['command+p', 'ctrl+p'])
+          Mousetrap.unbind(['command+d', 'ctrl+d'])
+        }
+        Mousetrap.unbind(['command+e', 'ctrl+e'])
+        Mousetrap.unbind(['command+s', 'ctrl+s'])
+      },
       getInitialPartPosOptions() {
         if (!this.incomeCodes) {
           return []
@@ -846,15 +893,6 @@
     height: 15px;
     max-height: 15px;
     color: black;
-  }
-  .input-small::placeholder {
-    border-style: none;
-    font-weight: normal;
-    color: #16264C;
-  }
-  .custom-select:disabled {
-    color: #6c757d;
-    background-color: #e9ecef;
   }
   #incomeInput {
     width: 140px;

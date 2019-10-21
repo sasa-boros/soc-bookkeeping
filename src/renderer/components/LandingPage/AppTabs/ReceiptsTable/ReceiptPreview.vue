@@ -1,6 +1,6 @@
 <template>       
   <b-container fluid id="receipt-preview-container" @keyup.tab.exact="tabPressedHandler" @keyup.shift.tab.exact="shiftTabPressedHandler">
-    <b-form @submit="onSubmit" novalidate no-validation>
+    <b-form ref="form" @submit="onSubmit" novalidate no-validation>
       <b-button @click.stop="closeModal()" variant="link" class="ignoreInPrint btn-xs" id="modalCancelBtn">
         <img src="~@/assets/close.png" class="ignoreInPrint">
       </b-button>
@@ -144,6 +144,8 @@
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const _ = require('lodash')
+  const Mousetrap = require('mousetrap')
+  const Big = require('big.js')
 
   export default {
     store: store,
@@ -244,6 +246,10 @@
       this.townInputElement = document.getElementById('townInput')
       this.reasonInputElement = document.getElementById('reasonInput')
       this.receivedInputElement = document.getElementById('receivedInput')
+      this.bindKeys()
+    },
+    beforeDestroy () {
+      this.unbindKeys()
     },
     computed: {
       ...mapState(
@@ -505,10 +511,10 @@
       },
       totalOutcomeNotValid: function () {
         if (this.form.outcome) {
-          const totalOutcome = asFloat(this.form.outcome, amountNumberOptions)
-          const firstOutcome = this.missingFirstOutcome ? 0 : asFloat(this.form.firstOutcome, amountNumberOptions)
-          const secondOutcome = this.missingSecondOutcome ? 0 : asFloat(this.form.secondOutcome, amountNumberOptions)
-          if (firstOutcome + secondOutcome !== totalOutcome) {
+          const totalOutcome = Big(asFloat(this.form.outcome, amountNumberOptions))
+          const firstOutcome = this.missingFirstOutcome ? Big(0.0) : Big(asFloat(this.form.firstOutcome, amountNumberOptions))
+          const secondOutcome = this.missingSecondOutcome ? Big(0.0) : Big(asFloat(this.form.secondOutcome, amountNumberOptions))
+          if (!firstOutcome.plus(secondOutcome).eq(totalOutcome)) {
             return true
           }
         }
@@ -534,6 +540,48 @@
       }
     },
     methods: {
+      bindKeys() {
+        const self = this
+        if (!this.defaultReceiptPreview) {
+          Mousetrap.bind(['command+p', 'ctrl+p'], function(e) {
+             if (self.validForm || !self.shouldValidate) {
+               self.printReceipt()
+             }
+            return false
+          })
+          Mousetrap.bind(['command+d', 'ctrl+d'], function(e) {
+            if (self.validForm || !self.shouldValidate) {
+              self.downloadReceipt()
+            }
+            return false
+          })
+        }
+        Mousetrap.bind(['command+e', 'ctrl+e'], function(e) {
+          self.clearForm()
+          return false
+        })
+        Mousetrap.bind(['command+s', 'ctrl+s'], function(e) {
+          self.$refs.receiptSaveBtn.click()
+          return false
+        })
+        this.$refs.form.onkeypress = function(e) {
+          var key = e.charCode || e.keyCode || 0    
+          if (key == 13) {
+            e.preventDefault()
+          }
+        }
+        Mousetrap.prototype.stopCallback = function () {
+          return false;
+        }
+      },
+      unbindKeys() {
+        if (!this.defaultReceiptPreview) {
+          Mousetrap.unbind(['command+p', 'ctrl+p'])
+          Mousetrap.unbind(['command+d', 'ctrl+d'])
+        }
+        Mousetrap.unbind(['command+e', 'ctrl+e'])
+        Mousetrap.unbind(['command+s', 'ctrl+s'])
+      },
       getInitialPartPosOptions() {
         if (!this.outcomeCodes) {
           return []
@@ -852,21 +900,6 @@
     height: 15px;
     max-height: 15px;
     color: black;
-  }
-  .input-small::placeholder {
-    border-style: none;
-    font-weight: normal;
-    color: #16264C;
-  }
-  .input-small.is-invalid {
-    background-image: url('~@/assets/invalid-red.png') !important;
-  }
-  .select-small.is-invalid {
-   background-image: url('~@/assets/invalid-red.png') !important;
-  }
-  .custom-select:disabled {
-    color: #6c757d;
-    background-color: #6c757d;
   }
   #yearInput {
     width: 50px;

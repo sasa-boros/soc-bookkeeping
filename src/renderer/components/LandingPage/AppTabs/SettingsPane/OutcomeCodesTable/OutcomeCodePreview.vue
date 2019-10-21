@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <b-form v-on:submit="onSubmit" novalidate no-validation>
+    <b-form ref="form" v-on:submit="onSubmit" novalidate no-validation>
       <b-row>
         <b-col>
           <b-button-group class="float-right">
@@ -12,7 +12,7 @@
       </b-row>
       <b-row>
         <b-col cols="2">
-          <label :for="`partitionInput`">Партиција:</label>
+          <label for="partitionInput">Партиција:</label>
         </b-col>
         <b-col>
           <b-form-group>
@@ -22,7 +22,7 @@
       </b-row>
       <b-row>
         <b-col cols="2">
-          <label :for="`positionInput`">Позиција:</label>
+          <label for="positionInput">Позиција:</label>
         </b-col>
         <b-col>
           <b-form-group>
@@ -32,7 +32,7 @@
       </b-row>
       <b-row>
         <b-col cols="2">
-          <label :for="`descriptionInput`">Опис:</label>
+          <label for="descriptionInput">Опис:</label>
         </b-col>
         <b-col>
           <b-form-group>
@@ -43,10 +43,10 @@
       <b-row >
         <b-col>
           <b-button-group class="float-right">
-            <b-button id="saveOutcomeCodeBtn" v-on:mouseleave="hideTooltip('saveOutcomeCodeBtn')" type="submit" variant="link" class="btn-lg">
+            <b-button ref="saveOutcomeCodeBtn" id="saveOutcomeCodeBtn" v-on:mouseleave="hideTooltip('saveOutcomeCodeBtn')" type="submit" variant="link" class="btn-lg">
               <img src="~@/assets/save.png">
             </b-button>
-            <b-button id="clearFormBtn" v-on:mouseleave="hideTooltip('clearFormBtn')" @click.stop="clearForm()" variant="link" class="btn-lg">
+            <b-button ref="clearFormBtn" id="clearFormBtn" v-on:mouseleave="hideTooltip('clearFormBtn')" @click.stop="clearForm()" variant="link" class="btn-lg">
               <img src="~@/assets/clear.png">
             </b-button>
           </b-button-group>
@@ -91,6 +91,7 @@ const outcomeCodeController = require('../../../../../controllers/outcomeCodeCon
 const i18n = require('../../../../../../translations/i18n')
 const { partitionPositionNumberOptions, mapCodeToCodeForm, mapCodeFormToCode } = require('../../../../../utils/utils')
 const AutoNumeric = require('autonumeric')
+const Mousetrap = require('mousetrap');
 
 export default {
   props: {
@@ -137,6 +138,10 @@ export default {
     this.partitionInputAutonumeric = new AutoNumeric('#partitionInput', partitionPositionNumberOptions)
     this.positionInputAutonumeric = new AutoNumeric('#positionInput', partitionPositionNumberOptions)
     this.descriptionElement = document.getElementById('descriptionInput')
+    this.bindKeys()
+  },
+  beforeDestroy () {
+    this.unbindKeys()
   },
   computed: {
     disablePartitionTooltip: {
@@ -192,6 +197,25 @@ export default {
     }
   },
   methods: {
+    bindKeys() {
+      const self = this
+      Mousetrap.bind(['command+s', 'ctrl+s'], function(e) {
+        self.$refs.saveOutcomeCodeBtn.click()
+        return false
+      });
+      this.$refs.form.onkeypress = function (e) {
+        var key = e.charCode || e.keyCode || 0   
+        if (key == 13) {
+          e.preventDefault()
+        }
+      }
+      Mousetrap.prototype.stopCallback = function () {
+        return false
+      }
+    },
+    unbindKeys() {
+      Mousetrap.unbind(['command+s', 'ctrl+s'])
+    },
     limitDescriptionInput(evt) {
       if (this.descriptionElement.scrollWidth > this.descriptionElement.clientWidth) {
         evt.preventDefault()
@@ -272,13 +296,17 @@ input {
   letter-spacing: 95%;
   height:20px;
   font-weight: bold;
+  border-bottom: 1px solid black !important;
+  border-radius: 0 !important;
 }
 .partPosInput {
   width: 70px;
   max-width: 70px;
+  border-style: none;
 }
 .descriptionInput {
   width: 355px;
   max-width: 355px;
+  border-style: none;
 }
 </style>

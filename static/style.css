@@ -60,7 +60,7 @@ h1 {
   background-color:  rgb(221, 217, 240);
 }
 .is-invalid {
-  border: dotted 1px red !important;
+  border: dotted 2px red !important;
   /* To keep selects from getting wider when invalid */
   padding-right: 0 !important;
   background-color: white;
@@ -96,7 +96,6 @@ h1 {
   box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
   outline: 0 none !important;
 }
-
 
 .focus-visible {
   border-color:  rgb(221, 217, 240) !important;

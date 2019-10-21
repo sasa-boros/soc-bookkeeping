@@ -66,6 +66,7 @@ import MessageConfirmDialog from '../../../MessageConfirmDialog'
 const i18n = require('../../../../../translations/i18n');
 const annualReportController = require('../../../../controllers/annualReportController')
 const { saveAs } = require('../../../../utils/utils')
+const Mousetrap = require('mousetrap');
 
 const printStyle = `
 <style>
@@ -248,13 +249,12 @@ export default {
   created () {
     this.printSection = this.preparePrintSection(printStyle)
     this.downloadSection = this.preparePrintSection(downloadStyle)
-    window.addEventListener('keyup', (event) => {
-      if (event.keyCode == 37) { 
-        this.decrementPage()
-      } else if (event.keyCode == 39) {
-        this.incrementPage()
-      }
-    });
+  },
+  mounted () {
+    this.bindKeys()
+  },
+  beforeDestroy () {
+    this.unbindKeys()
   },
   computed: {
     isHeadline: function () {
@@ -309,6 +309,34 @@ export default {
     }
   },
   methods: {
+    bindKeys() {
+      const self = this
+      Mousetrap.bind(['command+p', 'ctrl+p'], function(e) {
+        self.printAnnualReport()
+        return false;
+      });
+      Mousetrap.bind(['command+d', 'ctrl+d'], function(e) {
+        self.downloadAnnualReport()
+        return false;
+      });
+      Mousetrap.bind('left', function(e) {
+        self.decrementPage()
+        return false;
+      });
+      Mousetrap.bind('right', function(e) {
+        self.incrementPage()
+        return false;
+      });
+      Mousetrap.prototype.stopCallback = function () {
+        return false;
+      }
+    },
+    unbindKeys() {
+      Mousetrap.unbind(['command+p', 'ctrl+p']);
+      Mousetrap.unbind(['command+d', 'ctrl+d']);
+      Mousetrap.unbind('left');
+      Mousetrap.unbind('right');
+    },
     decrementPage() {
       if(this.currentPage == 1) {
         this.currentPage = 29;
