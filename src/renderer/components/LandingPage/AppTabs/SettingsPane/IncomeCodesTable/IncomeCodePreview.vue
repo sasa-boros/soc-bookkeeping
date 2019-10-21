@@ -294,7 +294,7 @@ input {
   font-family: "Times New Roman";
   font-size: 90%;
   letter-spacing: 95%;
-  height:20px;
+  height:15px;
   font-weight: bold;
   border-bottom: 1px solid black !important;
   border-radius: 0 !important;

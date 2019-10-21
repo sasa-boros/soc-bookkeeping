@@ -67,6 +67,12 @@ h1 {
   background-image: url('~@/assets/invalid-red.png') !important;
 }
 
+input[type]:focus:not(.is-invalid) {
+  border-color:  rgb(221, 217, 240) !important;
+  box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
+  outline: 0 none !important;
+}
+
 *:focus:not(.focus-visible) {
   border-color: none !important;
   outline: none !important;
