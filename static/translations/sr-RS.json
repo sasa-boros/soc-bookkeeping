@@ -20,6 +20,7 @@
     "Enter reason": "Унеси разлог",
     "Enter partition": "Унеси партицију",
     "Enter position": "Унеси позицију",
+    "Automatically generated after save": "Аутоматски генерисано након чувања",
     "Enter at least one partition, position, amount": "Унеси бар једну партицију, позицију, износ",
     "Needs to equal to sum of amount by partitions and position": "Мора бити једнако суми износа по партицијама и позицијама",
     "Show annual report": "Прикажи дневник благајне",

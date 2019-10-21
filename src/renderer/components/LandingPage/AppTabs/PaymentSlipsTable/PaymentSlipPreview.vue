@@ -19,7 +19,7 @@
       <div class="my-0">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
-      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputFormGroup"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></b-form-group> р. бр. <b-form-group ref="ordinalInputFormGroup" class="input-form-group"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></b-form-group>.                                        <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
+      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputForm" id="annualReportPageInputForm"><span v-on:mouseleave="hideTooltip('annualReportPageInputForm')"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span></b-form-group> р. бр. <b-form-group ref="ordinalInputForm" class="input-form-group" id="ordinalInputForm"><span v-on:mouseleave="hideTooltip('ordinalInputForm')"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span></b-form-group>.                                        <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
       </div></div>
 
       </div>
@@ -99,6 +99,18 @@
     <b-tooltip target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip">
       <div class="tooltipInnerText">
         {{phrases.pickDate}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="annualReportPageInputForm" triggers="hover" placement="top" ref="annualReportPageInputTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.automaticallyGeneratedAfterSave}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="ordinalInputForm" triggers="hover" placement="top" ref="ordinalInputTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.automaticallyGeneratedAfterSave}}
       </div>
     </b-tooltip>
 
@@ -197,6 +209,7 @@
           download: i18n.getTranslation('Download'),
           permissionDenied: i18n.getTranslation('Permission denied.'),
           paymentSlipPdf: i18n.getTranslation('payment-slip.pdf'),
+          automaticallyGeneratedAfterSave: i18n.getTranslation('Automatically generated after save')
         },
         calendarLanguages: {
           sr: sr,
