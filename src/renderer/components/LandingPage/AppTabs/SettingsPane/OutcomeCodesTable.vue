@@ -130,10 +130,12 @@
         })
       },
       openCreateOutcomeCodeModal (outcomeCode) {
-        if(outcomeCode) {
+        if (outcomeCode) {
+          this.hideTooltip('updateOutcomeCodeBtn')
           this.selectedOutcomeCode = outcomeCode
           this.isUpdate = true
         } else {
+          this.hideTooltip('createOutcomeCodeBtn')
           if(this.outcomeCodes.length >= 16) {
             this.openErrorModal(this.phrases.maxNumberOfOutcomeCodesReached)
             return
@@ -147,8 +149,9 @@
         this.openCreateOutcomeCodeModal(record)
       },
       openDeleteOutcomeCodeModal(outcomeCode) {
-         this.deletedOutcomeCode = outcomeCode
-         this.$root.$emit('bv::show::modal', 'delete-outcome-code-modal')
+        this.hideTooltip('deleteOutcomeCodeBtn')
+        this.deletedOutcomeCode = outcomeCode
+        this.$root.$emit('bv::show::modal', 'delete-outcome-code-modal')
       },
       deleteOutcomeCode () {
         const self = this

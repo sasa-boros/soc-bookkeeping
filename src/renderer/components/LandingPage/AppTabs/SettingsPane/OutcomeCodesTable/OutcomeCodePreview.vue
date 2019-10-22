@@ -296,7 +296,7 @@ input {
   letter-spacing: 95%;
   height:15px;
   font-weight: bold;
-  border-bottom: 1px solid black !important;
+  border-bottom: .5pt solid black !important;
   border-radius: 0 !important;
 }
 .partPosInput {

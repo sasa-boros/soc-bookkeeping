@@ -4,9 +4,11 @@
     <b-row class="text-center">
       <b-col>
         {{phrases.showAnnualReport}}:
+        &nbsp;&nbsp;
         <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" variant="light" class="btn-xs">
           <img src="~@/assets/annual-report.png">
         </b-button>
+        &nbsp;&nbsp;
         {{phrases.forYear}}:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-col>
@@ -82,6 +84,7 @@
              annualReportController.getAnnualReportPages(res.data).then(function (res) {
                if (!res.err) {
                  self.annualReportPages = res.data ? res.data : []
+                 self.hideTooltip('annualReportBtn')
                  self.openAnnualReportPreviewModal()
                } else {
                  self.openErrorModal(res.err)

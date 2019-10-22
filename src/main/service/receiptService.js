@@ -3,6 +3,8 @@ const { app } = require('electron')
 const fs = require('fs')
 const path = require('path')
 
+const { PDFDocument } = require('pdf-lib')
+
 async function areReceiptsValid () {
   console.log('Checking if all receipts are valid')
   const receipts = await receiptDao.findAll()
@@ -84,12 +86,17 @@ async function assignAnnualReportValues () {
 }
 
 async function createReceiptPdf (webContents) {
-  webContents.printToPDF(pdfSettings(), function(err, data) {
+  webContents.printToPDF(pdfSettings(), async function(err, data) {
     if (err) {
       throw new Error('Failed creating receipt pdf')
     }
     try {
-      fs.writeFileSync(path.join(app.getPath('userData'), '/receipt.pdf'), data);
+      const pdfDoc = await PDFDocument.load(data)
+      const page = pdfDoc.getPages()[0]
+      page.setSize(page.getWidth(), page.getHeight()/2)
+      page.translateContent(0, -page.getHeight())
+      const pdfBytes = await pdfDoc.save()
+      fs.writeFileSync(path.join(app.getPath('userData'), '/receipt.pdf'), pdfBytes);
     } catch (err){
       throw new Error('Failed creating receipt pdf')
     }

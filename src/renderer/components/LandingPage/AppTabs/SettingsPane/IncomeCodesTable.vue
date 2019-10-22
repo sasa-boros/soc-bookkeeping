@@ -131,9 +131,11 @@
       },
       openCreateIncomeCodeModal (incomeCode) {
         if(incomeCode) {
+          this.hideTooltip('updateIncomeCodeBtn')
           this.selectedIncomeCode = incomeCode
           this.isUpdate = true
         } else {
+          this.hideTooltip('addIncomeCodeBtn')
           if(this.incomeCodes.length >= 15) {
             this.openErrorModal(this.phrases.maxNumberOfIncomeCodesReached)
             return
@@ -147,8 +149,9 @@
         this.openCreateIncomeCodeModal(record)
       },
       openDeleteIncomeCodeModal(incomeCode) {
-         this.deletedIncomeCode = incomeCode
-         this.$root.$emit('bv::show::modal', 'delete-income-code-modal')
+        this.hideTooltip('deleteIncomeCodeBtn')
+        this.deletedIncomeCode = incomeCode
+        this.$root.$emit('bv::show::modal', 'delete-income-code-modal')
       },
       deleteIncomeCode () {
         const self = this

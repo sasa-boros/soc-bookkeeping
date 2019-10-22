@@ -849,7 +849,7 @@
   input {
     text-align: center;
     /* Immitate the underline in the real receipt */
-    border-bottom: 1px solid black !important;
+    border-bottom: .5pt solid black !important;
     border-radius: 0 !important;
     font-family: "Times New Roman";
     font-size: 90%;
@@ -1034,7 +1034,7 @@
   .receiptDatepickerInput {
     display: inline;
     border-style: none;
-    border-bottom: 1px solid black;
+    border-bottom: .5pt solid black;
     text-align: center;
 
     white-space: nowrap;

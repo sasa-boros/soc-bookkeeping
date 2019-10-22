@@ -51,9 +51,10 @@
         <template slot="title">
           <img src="~@/assets/info.png" class="appTabsIcon">  
         </template>
-        <p>Овај производ је лиценциран од стране агенције <b>DAXON TECH</b> и на њега полаже ауторска права. &copy;</p>
-        <br>
         <p>Техничка подршка: <b>daxon.tech@outlook.com</b>,<b> +381642750071</b></p>
+        <br>
+        <br>
+        <p>Овај производ је лиценциран од стране агенције DAXON TECH и на њега полаже ауторска права. &copy;</p>
       </b-tab>
     </b-tabs>
     <b-modal id="app-tabs-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">

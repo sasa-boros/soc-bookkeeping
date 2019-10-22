@@ -5,12 +5,12 @@
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addReceiptBtn" v-on:mouseleave="hideTooltip('addReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.addReceipt, customClass: 'tooltipInnerText'}" @click.stop="openCreateReceiptModal($event.target)" variant="light" class="btn-xs">
+          <b-btn id="addReceiptBtn" v-on:mouseleave="hideTooltip('addReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.addReceipt, customClass: 'tooltipInnerText'}" @click.stop="openCreateReceiptModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group>
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="openDeleteCheckedReceiptsModal()" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" variant="light" class="btn-xs">
+          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected, customClass: 'tooltipInnerText'}" @click.stop="openDeleteCheckedReceiptsModal" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group> 
@@ -228,10 +228,11 @@
           }
         })
       },
-      openCreateReceiptModal (button) {
+      openCreateReceiptModal () {
+        this.hideTooltip('addReceiptBtn')
         this.isPreview = false;
         this.selectedItem = null;
-        this.$root.$emit('bv::show::modal', 'create-receipt-modal', button)
+        this.$root.$emit('bv::show::modal', 'create-receipt-modal')
       },
       toggleCheckAll () {
         /* Before the checkAll changes based on the click, so the logic is reversed in the check */
@@ -244,8 +245,9 @@
         return receipt.isValid
       },
       openDeleteReceiptModal(receipt) {
-         this.deletedReceipt = receipt
-         this.$root.$emit('bv::show::modal', 'delete-receipt-modal')
+        this.hideTooltip('deleteReceiptBtn')
+        this.deletedReceipt = receipt
+        this.$root.$emit('bv::show::modal', 'delete-receipt-modal')
       },
       deleteReceipt () {
         const self = this
@@ -258,7 +260,8 @@
         })
       },
       openDeleteCheckedReceiptsModal() {
-         this.$root.$emit('bv::show::modal', 'delete-checked-receipts-modal')
+        this.hideTooltip('deleteSelectedBtn')
+        this.$root.$emit('bv::show::modal', 'delete-checked-receipts-modal')
       },
       deleteCheckedReceipts () {
         var checkedReceiptsIds = []
@@ -275,6 +278,7 @@
         })
       },
       openUpdateReceiptModal (item) {
+        this.hideTooltip('updateReceiptBtn')
         this.isPreview = true
         this.selectedItem = item
         this.$root.$emit('bv::show::modal', 'create-receipt-modal')

@@ -15,6 +15,8 @@ const Mustache = require('mustache');
 const i18n = require('../../translations/i18n')
 const AutoNumeric = require('autonumeric')
 
+const { degrees, PDFDocument } = require('pdf-lib')
+
 async function getAnnualReport (year) {
   console.log(`Getting annual report for year ${year}`)
 
@@ -391,13 +393,18 @@ function formatAmount (n) {
 }
 
 async function createAnnualReportPdf (webContents) {
-  webContents.printToPDF(pdfSettings(), function(err, data) {
+  webContents.printToPDF(pdfSettings(), async function(err, data) {
     if (err) {
       console.error(err)
       throw new Error('Failed creating annual report pdf')
     }
     try {
-      fs.writeFileSync(path.join(app.getPath('userData'), '/annual-report.pdf'), data);
+      const pdfDoc = await PDFDocument.load(data)
+      pdfDoc.getPages().forEach(page => {
+        page.setRotation(degrees(90))
+      })
+      const pdfBytes = await pdfDoc.save()
+      fs.writeFileSync(path.join(app.getPath('userData'), '/annual-report.pdf'), pdfBytes);
     } catch(err) {
       console.error(err)
       throw new Error('Failed creating annual report pdf')

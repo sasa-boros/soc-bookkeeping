@@ -17,8 +17,8 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "Dnevnik Blagajne",
-    "appId": "soc.bookkeeping",
+    "productName": "Дневник Благајне",
+    "appId": "Дневник Благајне",
     "directories": {
       "output": "build"
     },
@@ -59,6 +59,7 @@
     "mousetrap": "^1.6.3",
     "mustache": "^3.1.0",
     "nedb": "^1.8.0",
+    "pdf-lib": "^1.2.1",
     "v8-compile-cache": "^2.1.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",

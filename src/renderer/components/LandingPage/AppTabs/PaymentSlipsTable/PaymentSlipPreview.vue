@@ -841,7 +841,7 @@
 <style scoped>
   input {
     /* Immitate the underline in the real payment slip */
-    border-bottom: 1px solid black !important;
+    border-bottom: .5pt solid black !important;
     border-radius: 0 !important;
     text-align:center;
     font-family: "Times New Roman";
@@ -1024,7 +1024,7 @@
   .paymentSlipDatepickerInput {
     display: inline;
     border-style: none;
-    border-bottom: 1px solid black;
+    border-bottom: .5pt solid black;
     text-align: center;
 
     white-space: nowrap;

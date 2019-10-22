@@ -5,7 +5,7 @@
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addPaymentSlipBtn" v-on:mouseleave="hideTooltip('addPaymentSlipBtn')" v-b-tooltip.hover.top="{title: phrases.addPaymentSlip, customClass: 'tooltipInnerText'}" @click.stop="openCreatePaymentSlipModal($event.target)" variant="light" class="btn-xs">
+          <b-btn id="addPaymentSlipBtn" v-on:mouseleave="hideTooltip('addPaymentSlipBtn')" v-b-tooltip.hover.top="{title: phrases.addPaymentSlip, customClass: 'tooltipInnerText'}" @click.stop="openCreatePaymentSlipModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
@@ -228,10 +228,11 @@
           }
         })
       },
-      openCreatePaymentSlipModal (button) {
+      openCreatePaymentSlipModal () {
+        this.hideTooltip('addPaymentSlipBtn')
         this.isPreview = false
         this.selectedItem = null
-        this.$root.$emit('bv::show::modal', 'create-payment-slip-modal', button)
+        this.$root.$emit('bv::show::modal', 'create-payment-slip-modal')
       },
       toggleCheckAll () {
         /* Before the checkAll changes based on the click, so the logic is reversed in the check */
@@ -244,8 +245,9 @@
         return paymentSlip.isValid
       },
       openDeletePaymentSlipModal(paymentSlip) {
-         this.deletedPaymentSlip = paymentSlip
-         this.$root.$emit('bv::show::modal', 'delete-payment-slip-modal')
+        this.hideTooltip('deletePaymentSlipBtn')
+        this.deletedPaymentSlip = paymentSlip
+        this.$root.$emit('bv::show::modal', 'delete-payment-slip-modal')
       },
       deletePaymentSlip () {
         const self = this
@@ -258,7 +260,8 @@
         })
       },
       openDeleteCheckedPaymentSlipsModal() {
-         this.$root.$emit('bv::show::modal', 'delete-checked-payment-slips-modal')
+        this.hideTooltip('deleteSelectedBtn')
+        this.$root.$emit('bv::show::modal', 'delete-checked-payment-slips-modal')
       },
       deleteCheckedPaymentSlips () {
         var checkedPaymentSlipsIds = []
@@ -275,6 +278,7 @@
         })
       },
       openUpdatePaymentSlipModal (item) {
+        this.hideTooltip('updatePaymentSlipBtn')
         this.selectedItem = item
         this.isPreview = true
         this.$root.$emit('bv::show::modal', 'create-payment-slip-modal')

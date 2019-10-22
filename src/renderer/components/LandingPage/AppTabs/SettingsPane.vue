@@ -12,7 +12,7 @@
     <hr>
     <b-row>
       <b-col>
-        {{ phrases.setDefaultsReceipts }}:&nbsp;
+        {{ phrases.setDefaultsReceipts }}:&nbsp;&nbsp;
         <b-btn id="defaultReceiptBtn" v-on:mouseleave="hideTooltip('defaultReceiptBtn')" @click.stop="openDefaultReceiptModal()" variant="light" class="btn-lg">
           <img src="~@/assets/receipt.png">
         </b-btn>
@@ -89,9 +89,11 @@
         this.$emit('updateDefaultReceipt')
       },
       openDefaultPaymentSlipModal () {
+        this.hideTooltip('defaultPaymentSlipBtn')
         this.$root.$emit('bv::show::modal', 'default-payment-slip-modal')
       },
       openDefaultReceiptModal () {
+        this.hideTooltip('defaultReceiptBtn')
         this.$root.$emit('bv::show::modal', 'default-receipt-modal')
       },
       hideTooltip (elementId) {
