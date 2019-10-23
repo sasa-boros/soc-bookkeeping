@@ -11,7 +11,7 @@ import '../../node_modules/focus-visible/dist/focus-visible.min.js'
 
 const {webFrame} = require('electron')
 // Zoom output
-webFrame.setZoomFactor(1.7);
+webFrame.setZoomFactor(1.3);
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
