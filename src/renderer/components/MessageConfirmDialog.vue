@@ -84,7 +84,7 @@ export default {
 
 <style scoped>
 .subText {
-  color:#505152;
+  color: #8e8e8e;
   font-size:10.0pt;
 }
 </style>

@@ -84,7 +84,7 @@ function checkIfEntitiesAreValid(entities) {
 function calculateIncome (paymentSlips, annualReportPage, annualReport) {
   paymentSlips.forEach((paymentSlip) => {
     paymentSlip.incomePerCode.forEach((incomePerCode) => {
-      annualReportPage.totalIncome = annualReportPage.totalIncome.plus(incomePerCode.income)
+      annualReportPage.totalIncome = annualReportPage.totalIncome.plus(Big(incomePerCode.income))
       const pageTotalIncomePerCode = annualReportPage.totalIncomePerCode.find((element) => {
         return element.incomeCode.partition === incomePerCode.incomeCode.partition && element.incomeCode.position === incomePerCode.incomeCode.position
       })
@@ -110,7 +110,7 @@ function calculateIncome (paymentSlips, annualReportPage, annualReport) {
 function calculateOutcome (receipts, annualReportPage, annualReport) {
   receipts.forEach((receipt) => {
     receipt.outcomePerCode.forEach((outcomePerCode) => {
-      annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(outcomePerCode.outcome)
+      annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(Big(outcomePerCode.outcome)
       const pageTotalOutcomePerCode = annualReportPage.totalOutcomePerCode.find((element) => {
         return element.outcomeCode.partition === outcomePerCode.outcomeCode.partition && element.outcomeCode.position === outcomePerCode.outcomeCode.position
       })

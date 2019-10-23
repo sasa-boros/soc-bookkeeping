@@ -23,8 +23,11 @@ const partitionPositionNumberOptions = {
   modifyValueOnWheel: false
 }
 
-function asFloat (formattedNumberAsString, numberOptions) {
+function asFloat (formattedNumberAsString, numberOptions, nullAsZero) {
   if (!formattedNumberAsString || formattedNumberAsString.trim() == '') {
+    if (nullAsZero) {
+      return 0.0
+    }
     return null
   }
   return parseFloat(AutoNumeric.unformat(formattedNumberAsString, numberOptions))
@@ -279,14 +282,14 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   return paymentSlipForm;
 }
 
-function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
+function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes, nullAsZero) {
   var paymentSlip = {};
   paymentSlip._id = paymentSlipForm._id;
   paymentSlip.createdAt = paymentSlipForm.createdAt;
   paymentSlip.updatedAt = paymentSlipForm.updatedAt;
   paymentSlip.isValid = paymentSlipForm.isValid;
   paymentSlip.date = paymentSlipForm.date;
-  paymentSlip.income = asFloat(paymentSlipForm.income, amountNumberOptions);
+  paymentSlip.income = asFloat(paymentSlipForm.income, amountNumberOptions, nullAsZero);
   paymentSlip.town = paymentSlipForm.town;
   paymentSlip.reason = paymentSlipForm.reason;
   paymentSlip.payed = paymentSlipForm.payed;
@@ -297,11 +300,11 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes) {
   const secondIncomeCode = incomeCodes.find(incomeCode => {
     return incomeCode.partition == paymentSlipForm.secondPartition && incomeCode.position == paymentSlipForm.secondPosition;
   })
-  if (firstIncomeCode && paymentSlipForm.firstIncome) {
-    paymentSlip.incomePerCode.push({incomeCode: firstIncomeCode, income: asFloat(paymentSlipForm.firstIncome, amountNumberOptions)});
+  if (firstIncomeCode) {
+    paymentSlip.incomePerCode.push({incomeCode: firstIncomeCode, income: asFloat(paymentSlipForm.firstIncome, amountNumberOptions, nullAsZero)});
   }
-  if (secondIncomeCode && paymentSlipForm.secondIncome) {
-    paymentSlip.incomePerCode.push({incomeCode: secondIncomeCode, income: asFloat(paymentSlipForm.secondIncome, amountNumberOptions)});
+  if (secondIncomeCode) {
+    paymentSlip.incomePerCode.push({incomeCode: secondIncomeCode, income: asFloat(paymentSlipForm.secondIncome, amountNumberOptions, nullAsZero)});
   }
   return paymentSlip;
 }
@@ -343,14 +346,14 @@ function mapReceiptToReceiptForm (receipt) {
     return receiptForm;
 }
 
-function mapReceiptFormToReceipt (receiptForm, outcomeCodes) {
+function mapReceiptFormToReceipt (receiptForm, outcomeCodes, nullAsZero) {
     var receipt = {};
     receipt._id = receiptForm._id;
     receipt.createdAt = receiptForm.createdAt;
     receipt.updatedAt = receiptForm.updatedAt;
     receipt.isValid = receiptForm.isValid;
     receipt.date = receiptForm.date;
-    receipt.outcome = asFloat(receiptForm.outcome, amountNumberOptions);
+    receipt.outcome = asFloat(receiptForm.outcome, amountNumberOptions, nullAsZero);
     receipt.churchMunicipality = receiptForm.churchMunicipality;
     receipt.town = receiptForm.town;
     receipt.reason = receiptForm.reason;
@@ -362,11 +365,11 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes) {
     const secondOutcomeCode = outcomeCodes.find(outcomeCode => {
       return outcomeCode.partition == receiptForm.secondPartition && outcomeCode.position == receiptForm.secondPosition;
     })
-    if (firstOutcomeCode && receiptForm.firstOutcome) {
-      receipt.outcomePerCode.push({outcomeCode: firstOutcomeCode, outcome: asFloat(receiptForm.firstOutcome, amountNumberOptions)});
+    if (firstOutcomeCode) {
+      receipt.outcomePerCode.push({outcomeCode: firstOutcomeCode, outcome: asFloat(receiptForm.firstOutcome, amountNumberOptions, nullAsZero)});
     }
-    if (secondOutcomeCode && receiptForm.secondOutcome) {
-      receipt.outcomePerCode.push({outcomeCode: secondOutcomeCode, outcome: asFloat(receiptForm.secondOutcome, amountNumberOptions)});
+    if (secondOutcomeCode) {
+      receipt.outcomePerCode.push({outcomeCode: secondOutcomeCode, outcome: asFloat(receiptForm.secondOutcome, amountNumberOptions, nullAsZero)});
     }
     return receipt;
 }

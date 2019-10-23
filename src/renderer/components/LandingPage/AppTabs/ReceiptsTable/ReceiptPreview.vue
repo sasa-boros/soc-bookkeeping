@@ -6,16 +6,16 @@
       </b-button>
       <div class="receipt-preview-text">
         <h1> ПРИЗНАНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input id="outcomeInput" ref="outcomeInput" v-on:mouseleave="hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" :disabled="defaultReceiptPreview" type="text" :autofocus="!receiptPreview"></b-form-input></b-form-group> и словима  <b-form-input disabled class="input-small" id="outcomeAsTextDivWrapper1" v-model="generatedOutcomeTextLine1"></b-form-input>
+      <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input id="outcomeInput" ref="outcomeInput" v-on:mouseleave="hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" type="text" :autofocus="!receiptPreview"></b-form-input></b-form-group> и словима  <b-form-input disabled class="input-small" id="outcomeAsTextDivWrapper1" v-model="generatedOutcomeTextLine1"></b-form-input>
       <br/><b-form-input disabled class="input-small" disable id="outcomeAsTextDivWrapper2" v-model="generatedOutcomeTextLine2"></b-form-input>
       <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input id="churchMunicipalityInput" v-on:keypress="limitChurchMunicipalityInput" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" v-on:keypress="limitTownInput" v-model="form.town" class="input-small" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" v-on:keypress="limitReasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
-      <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview }" :language="calendarLanguages.srCYRL" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="checkMaxReceipts" :disabled="defaultReceiptPreview"></datepicker></span> г.                                                                                         П р и м и о,
+      <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" :clear-button="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="checkMaxReceipts"></datepicker></span> г.                                                                                         П р и м и о,
                                                                                                         <b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-on:keypress="limitReceivedInput" v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerOnBlur"></b-form-input></b-form-group>  
       </div><div class="mt-2">                                                                                                      Да се исплати на терет расхода              <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> г.
-                                                                                          <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" :disabled="defaultReceiptPreview" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-form-select id="firstPartPosSelect" v-model="selectedFirstPartPos" v-on:change="onFirstPartPosChange" :options="firstPartPosOptions" :disabled="defaultReceiptPreview" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosInputForm"><span v-on:mouseleave="hideTooltip('firstPosInputForm')"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="defaultReceiptPreview || missingFirstPart" type="text"></b-form-input></span></b-form-group>
-                  Примио благајник,                                        <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartInput')"><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" :disabled="defaultReceiptPreview" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('secondPartPosSelect')"><b-form-select id="secondPartPosSelect" v-model="selectedSecondPartPos" v-on:change="onSecondPartPosChange" :options="secondPartPosOptions" :disabled="defaultReceiptPreview" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosInputForm"><span v-on:mouseleave="hideTooltip('secondPosInputForm')"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="hideTooltip('secondOutcomeInputForm')"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="defaultReceiptPreview || missingSecondPart" type="text"></b-form-input></span></b-form-group>
+                                                                                          <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-form-select id="firstPartPosSelect" v-model="selectedFirstPartPos" v-on:change="onFirstPartPosChange" :options="firstPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosInputForm"><span v-on:mouseleave="hideTooltip('firstPosInputForm')"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span></b-form-group>
+                  Примио благајник,                                        <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartInput')"><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('secondPartPosSelect')"><b-form-select id="secondPartPosSelect" v-model="selectedSecondPartPos" v-on:change="onSecondPartPosChange" :options="secondPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosInputForm"><span v-on:mouseleave="hideTooltip('secondPosInputForm')"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="hideTooltip('secondOutcomeInputForm')"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span></b-form-group>
                                                            
-      <br/><b-form-group  class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text" @blur.native="postDatepickerDefaultOnBlur"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="hideTooltip('totalOutcomeInputForm')"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalOutcomeTooltip }" type="text"></b-form-input></span></b-form-group>
+      <br/><b-form-group  class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="hideTooltip('totalOutcomeInputForm')"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalOutcomeTooltip }" type="text"></b-form-input></span></b-form-group>
       <div class="my-0">
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
@@ -23,11 +23,11 @@
       </div></div>
       </div>
       <div id="downloadPrintBtnsDiv">
-        <b-button v-on:mouseleave="hideTooltip('receiptDownloadBtn')" ref="receiptDownloadBtn" id="receiptDownloadBtn" @click.stop="downloadReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="!validForm && shouldValidate">
+        <b-button v-on:mouseleave="hideTooltip('receiptDownloadBtn')" ref="receiptDownloadBtn" id="receiptDownloadBtn" @click.stop="downloadReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="disablePrintAndDownload">
           <img src="~@/assets/download.png" class="ignoreInPrint">
         </b-button>
         &nbsp;
-        <b-button v-on:mouseleave="hideTooltip('receiptPrintBtn')" ref="receiptPrintBtn" id="receiptPrintBtn" @click.stop="printReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="!validForm && shouldValidate">
+        <b-button v-on:mouseleave="hideTooltip('receiptPrintBtn')" ref="receiptPrintBtn" id="receiptPrintBtn" @click.stop="printReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="disablePrintAndDownload">
           <img src="~@/assets/print.png" class="ignoreInPrint">
         </b-button>
       </div>
@@ -224,7 +224,8 @@
         receivedInputElement: null,
         selectedFirstPartPos: null,
         selectedSecondPartPos: null,
-        alreadySubmited: false
+        alreadySubmited: false,
+        disablePrintAndDownload: true
       }
     },
     created () {
@@ -233,14 +234,20 @@
         this.form = mapReceiptToReceiptForm(receipt);
         if (!this.form.isValid) {
           this.shouldValidate = true;
+        } else {
+          this.disablePrintAndDownload = false
         }
-        this.selectedFirstPartPos = this.form.firstPartition + '/' + this.form.firstPosition
-        this.selectedSecondPartPos = this.form.secondPartition + '/' + this.form.secondPosition
       } else {
         var defaultReceipt = JSON.parse(JSON.stringify(this.defaultReceipt))
         defaultReceipt._id = undefined;
         this.form = mapReceiptToReceiptForm(defaultReceipt);
       } 
+      if (this.form.firstPartition && this.form.firstPosition) {
+        this.selectedFirstPartPos = this.form.firstPartition + '/' + this.form.firstPosition
+      }
+      if (this.form.secondPartition && this.form.secondPosition) {
+        this.selectedSecondPartPos = this.form.secondPartition + '/' + this.form.secondPosition
+      }
       const self = this;
       outcomeCodeController.getOutcomeCodes().then(function (res) {
         if (!res.err) {
@@ -249,6 +256,10 @@
           self.openErrorModal(res.err)
         }
       })
+      const unwatch = this.$watch('form', () => {
+        self.disablePrintAndDownload = true
+        unwatch()
+      }, {deep: true})
     },
     mounted () {
       this.outcomeInputAutonumeric = new AutoNumeric('#outcomeInput', amountNumberOptions)
@@ -260,6 +271,9 @@
       this.reasonInputElement = document.getElementById('reasonInput')
       this.receivedInputElement = document.getElementById('receivedInput')
       this.bindKeys()
+      if (!this.receiptPreview) {
+         this.checkMaxReceipts()
+      }
     },
     beforeDestroy () {
       this.unbindKeys()
@@ -557,13 +571,13 @@
         const self = this
         if (!this.defaultReceiptPreview) {
           Mousetrap.bind(['command+p', 'ctrl+p'], function(e) {
-             if (self.validForm || !self.shouldValidate) {
+             if (!self.disablePrintAndDownload) {
                self.printReceipt()
              }
             return false
           })
           Mousetrap.bind(['command+d', 'ctrl+d'], function(e) {
-            if (self.validForm || !self.shouldValidate) {
+            if (!self.disablePrintAndDownload) {
               self.downloadReceipt()
             }
             return false
@@ -666,7 +680,7 @@
           return
         }
         // set date to null because of long processing
-        const formDate = this.form.date
+        const formDate = new Date(this.form.date)
         this.$refs.dateInput.clearDate()
         this.form.date = null
 
@@ -716,11 +730,6 @@
       postDatepickerOnBlur (evt) {
         this.postDatepickerJustBlurred = true
       },
-      postDatepickerDefaultOnBlur (evt) {
-        if(this.defaultReceiptPreview) {
-          this.postDatepickerJustBlurred = true
-        }
-      },
       onSubmit (evt) {
         evt.preventDefault()
         if(this.alreadySubmited) {
@@ -743,7 +752,7 @@
           if (this.validForm) {
             if (this.receiptPreview) {
               this.alreadySubmited = true
-              receiptController.updateReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then((res) => {
+              receiptController.updateReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes, true)).then((res) => {
                 if (!res.err) {
                   self.$emit('updateReceiptTable')
                   self.closeModal();
@@ -754,7 +763,7 @@
               })
             } else {
               this.alreadySubmited = true
-              receiptController.createReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then((res) => {
+              receiptController.createReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes, true)).then((res) => {
                 if (!res.err) {
                   self.$emit('updateReceiptTable')
                   self.closeModal();
@@ -1073,6 +1082,15 @@
     white-space: normal;
     z-index: 100;
     -webkit-transform: scale(0.7, 0.7) translate(-70px, -70px); /* Safari and Chrome */
+  }
+
+  .receiptDatepickerCalendar div span:hover  {
+    border-color:  rgb(221, 217, 240) !important;
+    box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
+    outline: 0 none !important;
+  }
+  .receiptDatepickerCalendar div span.selected  {
+    background-color:  rgb(221, 217, 240) !important;
   }
 
   @media screen {

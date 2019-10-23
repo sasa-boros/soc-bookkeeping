@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
      <br>
-    <b-row class="text-center">
+    <b-row class="text-center" v-show="atLeastOnePaymentSlipOrReceipt">
       <b-col>
         {{phrases.showAnnualReport}}:
         &nbsp;&nbsp;
@@ -13,6 +13,7 @@
         <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-col>
     </b-row>
+    <p v-show="!atLeastOnePaymentSlipOrReceipt" style="text-align:center">{{phrases.inputAtleastOne}}</p>
 
     <!-- Annual report preview modal -->
     <div>
@@ -74,7 +75,10 @@
             return bookedYears
           }
         }
-      )
+      ),
+      atLeastOnePaymentSlipOrReceipt: function() {
+        return this.yearOptions && this.yearOptions.length > 0
+      }
     },
     methods: {
       createAnnualReport: function () {
