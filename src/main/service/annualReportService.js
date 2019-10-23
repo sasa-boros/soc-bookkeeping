@@ -110,7 +110,7 @@ function calculateIncome (paymentSlips, annualReportPage, annualReport) {
 function calculateOutcome (receipts, annualReportPage, annualReport) {
   receipts.forEach((receipt) => {
     receipt.outcomePerCode.forEach((outcomePerCode) => {
-      annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(Big(outcomePerCode.outcome)
+      annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(Big(outcomePerCode.outcome))
       const pageTotalOutcomePerCode = annualReportPage.totalOutcomePerCode.find((element) => {
         return element.outcomeCode.partition === outcomePerCode.outcomeCode.partition && element.outcomeCode.position === outcomePerCode.outcomeCode.position
       })
