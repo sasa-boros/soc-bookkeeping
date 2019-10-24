@@ -113,7 +113,7 @@
         arePaymentSlipsValid: true,
         areReceiptsValid: true,
         errorText: "",
-        zoomLevel: Big(1.0)
+        zoomLevel: Big(1.3)
       }
     },
     created () {
@@ -126,6 +126,7 @@
       if (process.platform == 'darwin') {
         this.phrases.commandOrControl = 'cmd'
       }
+      webFrame.setZoomFactor(parseFloat(this.zoomLevel))
     },
     mounted () {
       this.bindKeys()
