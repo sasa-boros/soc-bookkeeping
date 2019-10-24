@@ -1,5 +1,6 @@
 const outcomeCodeDao = require('../dao/outcomeCodeDao')
 const receiptDao = require('../dao/receiptDao')
+const defaultReceiptDao = require('../dao/defaultReceiptDao')
 
 async function getOutcomeCodes () {
   console.log('Getting all outcome codes')
@@ -19,7 +20,7 @@ async function deleteOutcomeCode (outcomeCodeId) {
   console.log(`Deleting outcome code with id ${JSON.stringify(outcomeCodeId)}`)
   const deletedOutcomeCode = await outcomeCodeDao.findById(outcomeCodeId)
   await outcomeCodeDao.removeById(outcomeCodeId)
-  await makeReceiptsInvalid(deletedOutcomeCode)
+  await updateReceipts(deletedOutcomeCode)
   console.log('Successfully deleted outcome code')
 }
 
@@ -29,26 +30,45 @@ async function updateOutcomeCode (outcomeCode) {
   console.log('Successfully updated outcome code')
 }
 
-async function makeReceiptsInvalid (deletedOutcomeCode) {
-  console.log('Making associated receipts invalid')
+async function updateReceipts (deletedOutcomeCode) {
+  console.log('Making associated receipts invalid and updating default')
   let receipts = await receiptDao.findAll()
-  receipts.forEach(async receipt => {
+  for (let i=0; i<receipts.length; i++) {
+    let receipt = receipts[i]
     if (!receipt.outcomePerCode) {
-      return
+      continue
     }
-    var filteredOutcomesPerCode = receipt.outcomePerCode.filter(outcomePerCode => {
-      if (outcomePerCode.outcomeCode.partition == deletedOutcomeCode.partition && outcomePerCode.outcomeCode.position == deletedOutcomeCode.position) {
-        return false
-      }
-      return true
+    let outcomePerCodeIndex = receipt.outcomePerCode.findIndex(outcomePerCode => {
+      return outcomePerCode.outcomeCode.partition == deletedOutcomeCode.partition && outcomePerCode.outcomeCode.position == deletedOutcomeCode.position
     })
-    if (!filteredOutcomesPerCode || filteredOutcomesPerCode.length != receipt.outcomePerCode.length) {
+    if (outcomePerCodeIndex != -1) {
       receipt.isValid = false
-      receipt.outcomePerCode = []
-      console.log(`Receipt with id ${receipt._id} is no longer valid`)
+      receipt.outcomePerCode.splice(outcomePerCodeIndex, 1)
+      console.error(JSON.stringify(receipt))
+      if (receipt.outcomePerCode.length == 0) {
+        receipt.outcomePerCode = null
+      }
       await receiptDao.updateById(receipt._id, receipt, true)
+      console.log(`Receipt with id ${receipt._id} is no longer valid`)
     }
-  })
+  }
+  let defaultReceipt = await defaultReceiptDao.findOne()
+  if (defaultReceipt && defaultReceipt.outcomePerCode) {
+    let outcomePerCodeIndex = defaultReceipt.outcomePerCode.findIndex(outcomePerCode => {
+      return outcomePerCode.outcomeCode.partition == deletedOutcomeCode.partition && outcomePerCode.outcomeCode.position == deletedOutcomeCode.position
+    })
+    if (outcomePerCodeIndex != -1) {
+      defaultReceipt.outcomePerCode.splice(outcomePerCodeIndex, 1)
+      console.error(JSON.stringify(defaultReceipt))
+      if (defaultReceipt.outcomePerCode.length == 0) {
+        defaultReceipt.outcomePerCode = null
+      }
+      delete defaultReceipt._id
+      await defaultReceiptDao.removeAll()
+      await defaultReceiptDao.insert(defaultReceipt)
+      console.log(`Default receipt is updated`)
+    }
+  }
 }
 
 module.exports = {

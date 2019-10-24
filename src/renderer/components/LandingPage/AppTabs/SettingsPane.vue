@@ -32,13 +32,13 @@
     <div class="incomeCodesTable">
       <h3 class="codeHeader">{{phrases.incomeCodes}}</h3>
       <p class="codeSubHeader">{{phrases.addedCodesAutomaticallySortedByPartPos}}</p>
-      <income-codes-table></income-codes-table>
+      <income-codes-table v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip"></income-codes-table>
     </div>
     <br>
     <div>
       <h3 class="codeHeader">{{phrases.outcomeCodes}}</h3>
       <p class="codeSubHeader">{{phrases.addedCodesAutomaticallySortedByPartPos}}</p>
-      <outcome-codes-table></outcome-codes-table>
+      <outcome-codes-table v-on:updateDefaultReceipt="updateDefaultReceipt"></outcome-codes-table>
     </div>
 
     <b-tooltip target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip">

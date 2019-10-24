@@ -590,12 +590,6 @@
           self.$refs.paymentSlipSaveBtn.click()
           return false
         });
-        this.$refs.form.onkeypress = function (e) {
-          var key = e.charCode || e.keyCode || 0   
-          if (key == 13) {
-            e.preventDefault()
-          }
-        }
         Mousetrap.prototype.stopCallback = function () {
           return false
         }

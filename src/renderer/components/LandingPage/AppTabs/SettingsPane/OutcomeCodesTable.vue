@@ -158,6 +158,7 @@
         outcomeCodeController.deleteOutcomeCode(this.deletedOutcomeCode._id).then((res) => {
           if (!res.err) {
             self.update()
+            this.$emit('updateDefaultReceipt')
             EventBus.$emit('updateReceiptTable');
           } else {
             self.openErrorModal(res.err)

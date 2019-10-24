@@ -158,6 +158,7 @@
         incomeCodeController.deleteIncomeCode(this.deletedIncomeCode._id).then((res) => {
           if (!res.err) {
             self.update()
+            this.$emit('updateDefaultPaymentSlip')
             EventBus.$emit('updatePaymentSlipTable');
           } else {
             self.openErrorModal(res.err)
