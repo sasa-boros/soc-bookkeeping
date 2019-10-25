@@ -60,12 +60,12 @@
           <br>
           <h4 align="center">Пречице</h4>
           <br>
-          <p align="center">Сачувај:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{phrases.commandOrControl}}</b> + <b>s</b></p>
-          <p align="center">Обриши унето:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{phrases.commandOrControl}}</b> + <b>e</b></p>
-          <p align="center">Штампај:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{phrases.commandOrControl}}</b> + <b>p</b></p>
-          <p align="center">Преузми:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{phrases.commandOrControl}}</b> + <b>d</b></p>
-          <p align="center">Зумирај:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{phrases.commandOrControl}}</b> + <b>=</b></p>
-          <p align="center">Одзумирај:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{phrases.commandOrControl}}</b> + <b>-</b></p>
+          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>s</b>&nbsp;&nbsp;&nbsp;сачувај</p>
+          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>e</b>&nbsp;&nbsp;&nbsp;обриши унето</p>
+          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>p</b>&nbsp;&nbsp;&nbsp;штампај</p>
+          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>d</b>&nbsp;&nbsp;&nbsp;преузми</p>
+          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>=</b>&nbsp;&nbsp;&nbsp;зумирај</p>
+          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>-</b>&nbsp;&nbsp;&nbsp;одзумирај</p>
           <hr>
           <br>
           <p align="center">Апликација је лиценцирана од стране агенције DAXON TECH и на њу полаже ауторска права. &copy;</p>
@@ -113,7 +113,7 @@
         arePaymentSlipsValid: true,
         areReceiptsValid: true,
         errorText: "",
-        zoomLevel: Big(1.3)
+        zoomLevel: Big(1.5)
       }
     },
     created () {
