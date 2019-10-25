@@ -420,7 +420,13 @@
       },
       disableFirstIncomeTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.shouldValidate
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingFirstPart && this.missingFirstIncome && this.shouldValidate) {
+            return false
+          }
+          return true
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -453,7 +459,13 @@
       },
       disableSecondIncomeTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.shouldValidate
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingSecondPart && this.missingSecondIncome && this.shouldValidate) {
+            return false
+          }
+          return true
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -559,6 +571,8 @@
             this.missingReason ||
             this.missingDate ||
             this.atLeastOnePartPosNotSet ||
+            (!this.missingFirstPart && this.missingFirstIncome) ||
+            (!this.missingSecondPart && this.missingSecondIncome) ||
             this.totalIncomeNotValid) {
           return false
         }

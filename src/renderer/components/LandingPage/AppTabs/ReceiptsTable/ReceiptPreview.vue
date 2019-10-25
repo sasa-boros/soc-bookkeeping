@@ -421,7 +421,13 @@
       },
       disableFirstOutcomeTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.shouldValidate
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingFirstPart && this.missingFirstOutcome && this.shouldValidate) {
+            return false
+          }
+          return true
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -454,7 +460,13 @@
       },
       disableSecondOutcomeTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.shouldValidate
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingSecondPart && this.missingSecondOutcome && this.shouldValidate) {
+            return false
+          }
+          return true
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -560,6 +572,8 @@
             this.missingReason ||
             this.missingDate ||
             this.atLeastOnePartPosNotSet ||
+            (!this.missingFirstPart && this.missingFirstOutcome) ||
+            (!this.missingSecondPart && this.missingSecondOutcome) ||
             this.totalOutcomeNotValid) {
           return false
         }
