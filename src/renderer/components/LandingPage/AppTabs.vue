@@ -71,8 +71,8 @@
           <p align="center">Апликација је лиценцирана од стране агенције DAXON TECH и на њу полаже ауторска права. &copy;</p>
         </b-tab>
       </b-tabs>
-      <b-modal id="app-tabs-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-          <message-confirm-dialog parentModal="app-tabs-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      <b-modal id="app-tabs-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('appTabsErrorModal')">
+          <message-confirm-dialog ref="appTabsErrorModal" parentModal="app-tabs-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
     </b-card>
   </b-container>
@@ -140,6 +140,9 @@
       }
     },
     methods: {
+      focusModalCloseButton (modalRef) {
+        this.$refs[modalRef].$refs.closeButton.focus()
+      },
       bindKeys() {
         const self = this
         Mousetrap.bind(['command+=', 'ctrl+='], function(e) {

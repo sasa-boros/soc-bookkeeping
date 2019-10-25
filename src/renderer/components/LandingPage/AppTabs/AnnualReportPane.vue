@@ -27,12 +27,12 @@
       </div>
     </b-tooltip>
 
-    <b-modal id="annual-report-preview-failed-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="annual-report-preview-failed-modal" type="warning" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    <b-modal id="annual-report-preview-failed-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPreviewFailedModal')">
+        <message-confirm-dialog ref="annualReportPreviewFailedModal" parentModal="annual-report-preview-failed-modal" type="warning" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="annual-report-pane-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="annual-report-pane-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    <b-modal id="annual-report-pane-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPaneErrorModal')">
+        <message-confirm-dialog ref="annualReportPaneErrorModal" parentModal="annual-report-pane-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>
 </template>
@@ -54,9 +54,7 @@
         phrases: {
           showAnnualReport: i18n.getTranslation('Show annual report'),
           forYear: i18n.getTranslation('for year'),
-          invalidPaymentSlipsAndReceiptsFound: i18n.getTranslation('Invalid payment slips and receipts found'),
-          invalidPaymentSlipsFound: i18n.getTranslation('Invalid payment slips found'),
-          invalidReceiptsFound: i18n.getTranslation('Invalid receipts found'),
+          invalidPaymentSlipsOrReceiptsFound: i18n.getTranslation('Invalid payment slips or receipts found'),
           inputAtleastOne: i18n.getTranslation('To generate annual report input at least one payment slip or receipt'),
           ok: i18n.getTranslation('Ok')
         },
@@ -81,6 +79,9 @@
       }
     },
     methods: {
+      focusModalCloseButton (modalRef) {
+        this.$refs[modalRef].$refs.closeButton.focus()
+      },
       createAnnualReport: function () {
         const self = this
         annualReportController.getAnnualReport(this.year).then(function (res) {
@@ -95,12 +96,8 @@
                 }
              })
           } else {
-            if (res.err == 'Invalid payment slips and receipts found') {
-              self.openAnnualReportPreviewFailedModal(self.phrases.invalidPaymentSlipsAndReceiptsFound)
-            } else if (res.err == "Invalid payment slips found") {
-              self.openAnnualReportPreviewFailedModal(self.phrases.invalidPaymentSlipsFound)
-            } else if (res.err == "Invalid receipts found") {
-              self.openAnnualReportPreviewFailedModal(self.phrases.invalidReceiptsFound)
+            if (res.err == 'Invalid payment slips or receipts found') {
+              self.openAnnualReportPreviewFailedModal(self.phrases.invalidPaymentSlipsOrReceiptsFound)
             } else {
               self.openErrorModal(res.err)
             }

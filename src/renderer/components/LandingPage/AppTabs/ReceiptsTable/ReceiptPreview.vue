@@ -137,8 +137,8 @@
         {{phrases.clear}}
       </div>
     </b-tooltip>
-    <b-modal id="receipt-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="receipt-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    <b-modal id="receipt-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('receiptPreviewErrorModal')">
+        <message-confirm-dialog ref="receiptPreviewErrorModal" parentModal="receipt-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>
 </template>
@@ -224,7 +224,7 @@
         receivedInputElement: null,
         selectedFirstPartPos: null,
         selectedSecondPartPos: null,
-        alreadySubmited: false,
+        alreadyPressed: false,
         disablePrintAndDownload: true
       }
     },
@@ -581,6 +581,9 @@
       }
     },
     methods: {
+      focusModalCloseButton (modalRef) {
+        this.$refs[modalRef].$refs.closeButton.focus()
+      },
       bindKeys() {
         const self = this
         if (!this.defaultReceiptPreview) {
@@ -740,18 +743,18 @@
       },
       onSubmit (evt) {
         evt.preventDefault()
-        if(this.alreadySubmited) {
+        if(this.alreadyPressed) {
           return
         }
         const self = this;
         if (this.defaultReceiptPreview) {
-          this.alreadySubmited = true
+          this.alreadyPressed = true
           defaultReceiptController.createDefaultReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes)).then(function (res) {
             if (!res.err) {
               self.$emit('updateDefaultReceipt')
               self.closeModal();
             } else {
-              self.alreadySubmited = false
+              self.alreadyPressed = false
               self.openErrorModal(res.err)
             }
           })
@@ -759,24 +762,24 @@
           this.shouldValidate = true;
           if (this.validForm) {
             if (this.receiptPreview) {
-              this.alreadySubmited = true
+              this.alreadyPressed = true
               receiptController.updateReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes, true)).then((res) => {
                 if (!res.err) {
                   self.$emit('updateReceiptTable')
                   self.closeModal();
                 } else {
-                  self.alreadySubmited = false
+                  self.alreadyPressed = false
                   self.openErrorModal(res.err)
                 }
               })
             } else {
-              this.alreadySubmited = true
+              this.alreadyPressed = true
               receiptController.createReceipt(mapReceiptFormToReceipt(this.form, this.outcomeCodes, true)).then((res) => {
                 if (!res.err) {
                   self.$emit('updateReceiptTable')
                   self.closeModal();
                 } else {
-                  self.alreadySubmited = false
+                  self.alreadyPressed = false
                   self.openErrorModal(res.err)
                 }
               })
@@ -812,18 +815,27 @@
         this.$root.$emit('bv::show::modal', 'receipt-preview-error-modal')
       },
       printReceipt () {
+        if (this.alreadyPressed) {
+          return
+        }
         const section = this.preparePrintSection()
         document.body.appendChild(section)
         try {
+          this.alreadyPressed = true
           window.print()
         } finally {
+          this.alreadyPressed = false
           document.body.removeChild(section)
         }
       },
       async downloadReceipt () {
+        if (this.alreadyPressed) {
+          return
+        }
         const section = this.preparePrintSection()
         document.body.appendChild(section)
         try {
+          this.alreadyPressed = true
           const res = await receiptController.createReceiptPdf()
           if (!res.err) {
             const self = this
@@ -841,6 +853,7 @@
           }
         }
         finally {
+          this.alreadyPressed = false
           document.body.removeChild(section)
         }
       },

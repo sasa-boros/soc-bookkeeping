@@ -47,12 +47,12 @@
         <income-code-preview :incomeCode='selectedIncomeCode' :isUpdate='isUpdate' :existingIncomeCodes="incomeCodes" parentModal="create-income-code-modal" v-on:updateIncomeCodes="update"></income-code-preview>
       </b-modal>
 
-      <b-modal id="delete-income-code-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="delete-income-code-modal" type="confirm" :text="phrases.areYouSureToDeleteIncomeCode" :subText="phrases.incomeCodeDeleteConsequences" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteIncomeCode"></message-confirm-dialog>
+      <b-modal id="delete-income-code-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteIncomeCodeModal')">
+        <message-confirm-dialog ref="deleteIncomeCodeModal" parentModal="delete-income-code-modal" type="confirm" :text="phrases.areYouSureToDeleteIncomeCode" :subText="phrases.incomeCodeDeleteConsequences" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteIncomeCode"></message-confirm-dialog>
       </b-modal>
 
-      <b-modal id="income-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="income-code-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      <b-modal id="income-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('incomeCodeTableErrorModal')">
+        <message-confirm-dialog ref="incomeCodeTableErrorModal" parentModal="income-code-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>
 </template>
@@ -118,6 +118,9 @@
       this.loadIncomeCodes()
     },
     methods: {
+      focusModalCloseButton (modalRef) {
+        this.$refs[modalRef].$refs.closeButton.focus()
+      },
       loadIncomeCodes () {
         const self = this
         incomeCodeController.getIncomeCodes().then((res) => {

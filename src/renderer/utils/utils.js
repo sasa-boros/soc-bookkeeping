@@ -4,6 +4,7 @@ const path = require('path');
 const elerem = require('electron').remote
 const app = elerem.app
 const dialog = elerem.dialog
+const currentWindow = elerem.getCurrentWindow()
 const AutoNumeric = require('autonumeric')
 
 const amountNumberOptions = {
@@ -16,8 +17,8 @@ const amountNumberOptions = {
 }
 
 const partitionPositionNumberOptions = {
-  vMin: 0, 
-  vMax: 99,
+  minimumValue: 0, 
+  maximumValue: 99,
   decimalPlaces: 0,
   digitGroupSeparator: '',
   modifyValueOnWheel: false
@@ -380,7 +381,7 @@ function compareCodes( codeA, codeB ) {
 
 function saveAs (pathToFile, fileName, callback) {
   const localPath = path.join(os.homedir(), 'Desktop', fileName)
-  const userChosenPath = dialog.showSaveDialog({ defaultPath: localPath })
+  const userChosenPath = dialog.showSaveDialog(currentWindow, { defaultPath: localPath })
   const fullPathToFile = path.join(app.getPath('userData'), pathToFile)
   if (userChosenPath) {
     fs.rename(fullPathToFile, userChosenPath, err => {

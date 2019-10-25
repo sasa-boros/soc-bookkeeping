@@ -78,8 +78,8 @@
         </div>
       </b-tooltip>
 
-      <b-modal id="outcome-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="outcome-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      <b-modal id="outcome-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('outcomeCodePreviewErrorModal')">
+        <message-confirm-dialog ref="outcomeCodePreviewErrorModal" parentModal="outcome-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>
 </template>
@@ -197,6 +197,9 @@ export default {
     }
   },
   methods: {
+    focusModalCloseButton (modalRef) {
+      this.$refs[modalRef].$refs.closeButton.focus()
+    },
     bindKeys() {
       const self = this
       Mousetrap.bind(['command+s', 'ctrl+s'], function(e) {

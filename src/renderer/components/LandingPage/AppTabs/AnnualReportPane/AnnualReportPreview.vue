@@ -54,8 +54,9 @@
             {{phrases.nextPage}}
           </div>
       </b-tooltip>
-      <b-modal id="annual-report-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="annual-report-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      
+      <b-modal id="annual-report-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportErrorModal')">
+        <message-confirm-dialog ref="annualReportErrorModal" parentModal="annual-report-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>
 </template>
@@ -243,7 +244,8 @@ export default {
       currentPage: 1,
       errorText: "",
       printSection: null,
-      downloadSection: null
+      downloadSection: null,
+      alreadyPressed: false
     }
   },
   created () {
@@ -309,6 +311,9 @@ export default {
     }
   },
   methods: {
+    focusModalCloseButton (modalRef) {
+      this.$refs[modalRef].$refs.closeButton.focus()
+    },
     bindKeys() {
       const self = this
       Mousetrap.bind(['command+p', 'ctrl+p'], function(e) {
@@ -352,16 +357,25 @@ export default {
       }
     },
     printAnnualReport () {
+      if (this.alreadyPressed) {
+        return
+      }
       document.body.appendChild(this.printSection)
       try {
+        this.alreadyPressed = true
         window.print()
       } finally {
+        this.alreadyPressed = false
         document.body.removeChild(this.printSection)
       }
     },
     async downloadAnnualReport () {
+      if (this.alreadyPressed) {
+        return
+      }
       document.body.appendChild(this.downloadSection)
       try {
+        this.alreadyPressed = true
         const res = await annualReportController.createAnnualReportPdf()
         if (!res.err) {
             const self = this
@@ -378,6 +392,7 @@ export default {
             this.openErrorModal(res.err)       
           }
       } finally {
+        this.alreadyPressed = false
         document.body.removeChild(this.downloadSection)
       }
     },

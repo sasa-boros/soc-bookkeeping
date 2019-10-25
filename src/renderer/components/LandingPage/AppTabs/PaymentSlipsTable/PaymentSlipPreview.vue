@@ -137,8 +137,9 @@
         {{phrases.clear}}
       </div>
     </b-tooltip>
-    <b-modal id="payment-slip-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="payment-slip-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+
+    <b-modal id="payment-slip-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('paymentSlipPreviewErrorModal')">
+        <message-confirm-dialog ref="paymentSlipPreviewErrorModal" parentModal="payment-slip-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>
 </template>
@@ -224,7 +225,7 @@
         payedInputElement: null,
         selectedFirstPartPos: null,
         selectedSecondPartPos: null,
-        alreadySubmited: false,
+        alreadyPressed: false,
         disablePrintAndDownload: true
       }
     },
@@ -580,6 +581,9 @@
       }
     },
     methods: {
+      focusModalCloseButton (modalRef) {
+        this.$refs[modalRef].$refs.closeButton.focus()
+      },
       bindKeys() {
         const self = this
         if (!this.defaultPaymentSlipPreview) {
@@ -735,18 +739,18 @@
       },
       onSubmit (evt) {
         evt.preventDefault();
-        if (this.alreadySubmited) {
+        if (this.alreadyPressed) {
           return
         }
         const self = this;
         if (this.defaultPaymentSlipPreview) {
-          this.alreadySubmited = true
+          this.alreadyPressed = true
           defaultPaymentSlipController.createDefaultPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes)).then(function (res) {
             if (!res.err) {
               self.$emit('updateDefaultPaymentSlip')
               self.closeModal();
             } else {
-              self.alreadySubmited = false
+              self.alreadyPressed = false
               self.openErrorModal(res.err)
             }
           })
@@ -754,24 +758,24 @@
           this.shouldValidate = true;
           if (this.validForm) {
             if (this.paymentSlipPreview) {
-              this.alreadySubmited = true
+              this.alreadyPressed = true
               paymentSlipController.updatePaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes, true)).then((res) => {
                 if (!res.err) {
                   self.$emit('updatePaymentSlipTable')
                   self.closeModal();
                 } else {
-                  self.alreadySubmited = false
+                  self.alreadyPressed = false
                   self.openErrorModal(res.err)
                 }
               })
             } else {
-              this.alreadySubmited = true
+              this.alreadyPressed = true
               paymentSlipController.createPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes, true)).then((res) => {
                 if (!res.err) {
                   self.$emit('updatePaymentSlipTable')
                   self.closeModal();
                 } else {
-                  self.alreadySubmited = false
+                  self.alreadyPressed = false
                   self.openErrorModal(res.err)
                 }
               })
@@ -806,18 +810,27 @@
         this.$root.$emit('bv::show::modal', 'payment-slip-preview-error-modal')
       },
       printPaymentSlip () {
+        if (this.alreadyPressed) {
+          return
+        }
         const section = this.preparePrintSection()
         document.body.appendChild(section)
         try {
+          this.alreadyPressed = true
           window.print()
         } finally {
+          this.alreadyPressed = false
           document.body.removeChild(section)
         }
       },
       async downloadPaymentSlip () {
+        if (this.alreadyPressed) {
+          return
+        }
         const section = this.preparePrintSection()
         document.body.appendChild(section)
         try {
+          this.alreadyPressed = true
           const res = await paymentSlipController.createPaymentSlipPdf()
           if (!res.err) {
             const self = this
@@ -834,6 +847,7 @@
             this.openErrorModal(res.err)       
           }
         } finally {
+          this.alreadyPressed = false
           document.body.removeChild(section)
         }
       },

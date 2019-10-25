@@ -47,12 +47,12 @@
         <outcome-code-preview :outcomeCode='selectedOutcomeCode' :isUpdate='isUpdate' :existingOutcomeCodes="outcomeCodes" parentModal="create-outcome-code-modal" v-on:updateOutcomeCodes="update"></outcome-code-preview>
       </b-modal>
 
-      <b-modal id="delete-outcome-code-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="delete-outcome-code-modal" type="confirm" :text="phrases.areYouSureToDeleteOutcomeCode" :subText="phrases.outcomeCodeDeleteConsequences" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteOutcomeCode"></message-confirm-dialog>
+      <b-modal id="delete-outcome-code-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteOutcomeCodeModal')">
+        <message-confirm-dialog ref="deleteOutcomeCodeModal" parentModal="delete-outcome-code-modal" type="confirm" :text="phrases.areYouSureToDeleteOutcomeCode" :subText="phrases.outcomeCodeDeleteConsequences" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteOutcomeCode"></message-confirm-dialog>
       </b-modal>
 
-      <b-modal id="outcome-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow">
-        <message-confirm-dialog parentModal="outcome-code-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      <b-modal id="outcome-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('outcomeCodeTableErrorModal')">
+        <message-confirm-dialog ref="outcomeCodeTableErrorModal" parentModal="outcome-code-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>
 </template>
@@ -118,6 +118,9 @@
       this.loadOutcomeCodes()
     },
     methods: {
+      focusModalCloseButton (modalRef) {
+        this.$refs[modalRef].$refs.closeButton.focus()
+      },
       loadOutcomeCodes () {
         const self = this
         outcomeCodeController.getOutcomeCodes().then((res) => {

@@ -6,7 +6,7 @@
         <img v-show="type=='error'" src="~@/assets/error.png">
       </b-col>
       <b-col>
-        <b-button @click.stop="closeDialog()" variant="link" class="btn-xs float-right">
+        <b-button ref="closeButton" @click.stop="closeDialog()" variant="link" class="btn-xs float-right">
           <img src="~@/assets/close.png">
         </b-button>
       </b-col>
@@ -29,11 +29,11 @@
     <hr>
     <b-row>
       <b-col>
-        <b-button v-show="type=='confirm'" @click.stop="confirm()" variant="secondary" class="btn-xs">
+        <b-button ref="confirmButton" v-show="type=='confirm'" @click.stop="confirm()" variant="secondary" class="btn-xs">
           {{confirmText}}
         </b-button>
         &nbsp;
-        <b-button @click.stop="closeDialog()" variant="light" class="btn-xs">
+        <b-button ref="cancelOkButton" @click.stop="closeDialog()" variant="light" class="btn-xs">
           {{cancelOkText}}
         </b-button>
       </b-col>

@@ -32,13 +32,9 @@ async function getAnnualReport (year) {
     var paymentSlipsValid = checkIfEntitiesAreValid(paymentSlips)
     var receiptsValid = checkIfEntitiesAreValid(receipts)
 
-    if (!paymentSlipsValid && !receiptsValid) {
-      throw new Error('Invalid payment slips and receipts found')
-    } else if (!paymentSlipsValid) {
-      throw new Error('Invalid payment slips found')
-    } else if(!receiptsValid) {
-      throw new Error('Invalid receipts found')
-    }
+    if (!paymentSlipsValid || !receiptsValid) {
+      throw new Error('Invalid payment slips or receipts found')
+    } 
 
     if (paymentSlips) {
       calculateIncome(paymentSlips, annualReportPage, annualReport)
