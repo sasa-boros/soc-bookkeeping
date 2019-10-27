@@ -12,7 +12,7 @@
       </b-row>
       <b-row>
         <b-col cols="2">
-          <label for="partitionInput">Партиција:</label>
+          <label for="partitionInput">Партија:</label>
         </b-col>
         <b-col>
           <b-form-group>

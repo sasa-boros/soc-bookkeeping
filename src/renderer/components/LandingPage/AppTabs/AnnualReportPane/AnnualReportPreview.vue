@@ -132,7 +132,7 @@ const printStyle = `
     }
     .last-page {
       position:relative; 
-      top:450px;
+      top:490px;
     }
     #total-page {
       page-break-before: always;
@@ -201,14 +201,14 @@ const downloadStyle = `
     #shares-page {
       page-break-before: always;
       position: relative;
-      bottom: 930px;
+      bottom: 925px;
       left: 85px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     .last-page {
       position:relative; 
-      top:470px;
+      top:520px;
     }
     #total-page {
       page-break-before: always;
@@ -441,7 +441,7 @@ export default {
 .headline >>> #headline {
 	transform: scale(0.6);
 	position:relative;
-  bottom: 130px;
+  bottom: 70px;
   left:35px;
 }
 
@@ -483,7 +483,7 @@ export default {
 	transform: scale(0.5);
 	position:relative;
 	bottom: 228px;
-	right: 190px;
+	right: 185px;
 }
 
 i {
