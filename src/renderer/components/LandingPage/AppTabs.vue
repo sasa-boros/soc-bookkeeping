@@ -113,7 +113,7 @@
         arePaymentSlipsValid: true,
         areReceiptsValid: true,
         errorText: "",
-        zoomLevel: Big(1.5)
+        zoomLevel: Big(1.4)
       }
     },
     created () {
