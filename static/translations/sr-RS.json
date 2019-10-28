@@ -39,7 +39,7 @@
     "November.lokativ": "новембру",
     "December.lokativ": "децембру",
 
-    "Add a payment slip": "Додај нову уплатницу",
+    "Add a payment slip": "Додај уплатницу",
     "Delete payment slip": "Обриши уплатницу",
     "Delete payment slips": "Обриши уплатнице",
     "Are you sure you want to delete the payment slip?": "Да ли сте сигурни да желите да обришете уплатницу?",
@@ -51,7 +51,7 @@
 
     "Filter by year": "Филтрирај према години",
 
-    "Add a receipt": "Додај нову признаницу",
+    "Add a receipt": "Додај признаницу",
     "Delete the receipt": "Обриши признаницу",
     "Delete the receipts": "Обриши признанице",
     "Are you sure you want to delete the receipt?": "Да ли сте сигурни да желите да обришете признаницу?",
@@ -69,9 +69,9 @@
     "Outcome codes": "Кодови издавања",
     "There are no income codes to show": "Нема кодова за приказ",
     "There are no outcome codes to show": "Нема кодова за приказ",
-    "Create income code": "Додај нови код примања",
+    "Create income code": "Додај код примања",
     "Delete income code": "Обриши код примања",
-    "Create outcome code": "Додај нови код издавања",
+    "Create outcome code": "Додај код издавања",
     "Delete outcome code": "Обриши код издавања",
     "Income code partition and position not unique": "Већ постоји код примања са наведеном партијом и позицијом",
     "Outcome code partition and position not unique": "Већ постоји код издавања са наведеном партијом и позицијом",
@@ -99,7 +99,7 @@
     "Payed": "Уплатио",
     "Received": "Примио",
     "Reason": "На име",
-    "For date": "На датум",
+    "For date": "На дан",
     "Created at": "Креирано",
     "Updated at": "Ажурирано",
 
