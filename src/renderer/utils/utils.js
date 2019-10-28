@@ -10,7 +10,7 @@ const AutoNumeric = require('autonumeric')
 const amountNumberOptions = {
   decimalCharacter : ',',
   digitGroupSeparator : '.',
-  maximumValue: 99999999999,
+  maximumValue: 999999999,
   minimumValue: 0,
   decimalPlacesShownOnFocus: 2,
   modifyValueOnWheel: false
