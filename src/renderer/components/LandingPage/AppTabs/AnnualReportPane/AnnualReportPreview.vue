@@ -110,7 +110,7 @@ const printStyle = `
       page-break-before: always;
       position: relative;
       bottom: 895px;
-      left: 60px;
+      left: 63px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -118,7 +118,7 @@ const printStyle = `
       page-break-before: always;
       position: relative;
       bottom: 895px;
-      left: 59px;
+      left: 62px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -126,7 +126,7 @@ const printStyle = `
       page-break-before: always;
       position: relative;
       bottom: 905px;
-      left: 80px;
+      left: 77px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -138,7 +138,7 @@ const printStyle = `
       page-break-before: always;
       position: absolute;
       bottom:0px;
-      left: 80px;
+      left: 58px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -186,7 +186,7 @@ const downloadStyle = `
       page-break-before: always;
       position: relative;
       bottom: 920px;
-      left: 65px;
+      left: 63px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -194,7 +194,7 @@ const downloadStyle = `
       page-break-before: always;
       position: relative;
       bottom: 920px;
-      left: 67px;
+      left: 62px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -202,7 +202,7 @@ const downloadStyle = `
       page-break-before: always;
       position: relative;
       bottom: 925px;
-      left: 85px;
+      left: 77px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -214,7 +214,7 @@ const downloadStyle = `
       page-break-before: always;
       position: absolute;
       bottom:0px;
-      left: 80px;
+      left:43px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -448,7 +448,7 @@ export default {
 .incomePage >>> #income-page {
 	transform: scale(0.5);
 	position:relative;
-	bottom: 279px;
+	bottom: 280px;
 	right: 454px;
 }
 .outcomePage >>> #outcome-page {
@@ -461,14 +461,14 @@ export default {
 .totalIncomePage >>> #total-income-page {
   transform: scale(0.5);
 	position:relative;
-	bottom: 220px;
+	bottom: 222px;
 	right: 400px;
 }
 
 .totalOutcomePage >>> #total-outcome-page {
   transform: scale(0.5);
 	position:relative;
-	bottom: 281px;
+	bottom: 283px;
 	right: 400px;
 }
 
@@ -482,8 +482,8 @@ export default {
 .totalPage >>> #total-page {
 	transform: scale(0.5);
 	position:relative;
-	bottom: 228px;
-	right: 185px;
+	bottom: 240px;
+	right: 190px;
 }
 
 i {
