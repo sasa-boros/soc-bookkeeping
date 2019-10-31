@@ -19,14 +19,9 @@ async function arePaymentSlipsValid () {
   return result
 }
 
-async function getPaymentSlips (year) {
-  console.log(`Getting payment slips for year ${year}`)
-  var paymentSlips
-  if (year) {
-    paymentSlips = await paymentSlipDao.findBetweenDates(new Date(year, 0, 1), new Date(year + 1, 0, 1))
-  } else {
-    paymentSlips = await paymentSlipDao.findAll()
-  }
+async function getPaymentSlips () {
+  console.log(`Getting all payment slips`)
+  var paymentSlips = await paymentSlipDao.findAll()
   console.log(`Returning payment slips: \n${JSON.stringify(paymentSlips, null, 2)}`)
   return paymentSlips
 }

@@ -80,9 +80,9 @@ ipcMain.on('are-payment-slips-valid', async (event) => {
   }
 })
 
-ipcMain.on('get-payment-slips', async (event, year) => {
+ipcMain.on('get-payment-slips', async (event) => {
   try {
-    reply(event, 'get-payment-slips-reply', await paymentSlipService.getPaymentSlips(year))
+    reply(event, 'get-payment-slips-reply', await paymentSlipService.getPaymentSlips())
   } catch (err) {
     replyError(event, 'get-payment-slips-reply', err.message ? err.message : err)
   }
@@ -136,9 +136,9 @@ ipcMain.on('are-receipts-valid', async (event) => {
   }
 })
 
-ipcMain.on('get-receipts', async (event, year) => {
+ipcMain.on('get-receipts', async (event) => {
   try {
-    reply(event, 'get-receipts-reply', await receiptService.getReceipts(year))
+    reply(event, 'get-receipts-reply', await receiptService.getReceipts())
   } catch (err) {
     replyError(event, 'get-receipts-reply', err.message ? err.message : err)
   }

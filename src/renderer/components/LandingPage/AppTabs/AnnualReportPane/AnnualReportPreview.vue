@@ -31,7 +31,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <div v-html="annualReportPages[currentPage-1]" id="page-display" v-bind:class="{ headline: isHeadline, incomePage: isIncomePage, outcomePage: isOutcomePage, sharesPage: isSharesPage, totalIncomePage: isTotalIncomePage, totalOutcomePage: isTotalOutcomePage, totalPage: isTotalPage }">
+        <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
         </div>
       </b-row>
       <b-tooltip ref="annualReportPrintBtnTooltip" target="annualReportPrintBtn">
@@ -258,50 +258,6 @@ export default {
   beforeDestroy () {
     this.unbindKeys()
   },
-  computed: {
-    isHeadline: function () {
-      if (this.currentPage == 1) {
-        return true
-      }
-      return false
-    }, 
-    isIncomePage: function () {
-      if ([2,4,6,8,10,12,14,16,18,20,22,24].includes(this.currentPage)) {
-        return true
-      }
-      return false
-    },
-    isOutcomePage: function () {
-      if ([3,5,7,9,11,13,15,17,19,21,23,25].includes(this.currentPage)) {
-        return true
-      }
-      return false
-    },
-    isTotalIncomePage: function () {
-      if (this.currentPage == 26) {
-        return true
-      }
-      return false
-    }, 
-    isTotalOutcomePage: function () {
-      if (this.currentPage == 27) {
-        return true
-      }
-      return false
-    },
-    isSharesPage: function () {
-      if (this.currentPage == 28) {
-        return true
-      }
-      return false
-    },
-    isTotalPage: function () {
-      if (this.currentPage == 29) {
-        return true
-      }
-      return false
-    }
-  },
   filters: {
     formatPageCount (pageCount) {
       if (pageCount < 10) {
@@ -344,13 +300,13 @@ export default {
     },
     decrementPage() {
       if(this.currentPage == 1) {
-        this.currentPage = 29;
+        this.currentPage = this.annualReportPages.length;
       } else {
         this.currentPage--;
       }
     },
     incrementPage() {
-      if(this.currentPage == 29) {
+      if(this.currentPage == this.annualReportPages.length) {
         this.currentPage = 1;
       } else {
         this.currentPage++;
@@ -402,7 +358,7 @@ export default {
       section.innerHTML = style
       this.annualReportPages.forEach((annualReportPage, index) => {
         var page = document.createElement('div')
-        if(index == 28) {
+        if(index == this.annualReportPages.length-1) {
           page.className = 'last-page'
         } else {
         }

@@ -11,7 +11,7 @@ function findAll () {
 
 function findAllSortByDateAsc () {
     return new Promise((resolve, reject) => { 
-        db.paymentSlips.find({}).sort({ 'date': 1 }).exec((err, docs) => {
+        db.paymentSlips.find({}).sort({ 'date': 1, 'createdAt': 1 }).exec((err, docs) => {
             if (err) {
                 reject(err)
             }
@@ -20,20 +20,9 @@ function findAllSortByDateAsc () {
     })
 }
 
-function findBetweenDates (startDate, endDate) {
+function findBetweenDatesSortByOrdinalAsc (startDate, endDate) {
     return new Promise((resolve, reject) => { 
-        db.paymentSlips.find({ 'date': { '$gte': startDate, '$lt': endDate } }).sort({ 'createdAt': -1 }).exec((err, docs) => {
-            if (err) {
-                reject(err)
-            }
-            resolve(docs)
-        })
-    })
-}
-
-function findBetweenDatesSortAsc (startDate, endDate) {
-    return new Promise((resolve, reject) => { 
-        db.paymentSlips.find({ 'date': { '$gte': startDate, '$lt': endDate } }).sort({ 'date': 1 }).exec((err, docs) => {
+        db.paymentSlips.find({ 'date': { '$gte': startDate, '$lt': endDate } }).sort({ 'ordinal': 1}).exec((err, docs) => {
             if (err) {
                 reject(err)
             }
@@ -94,8 +83,7 @@ function updateById (id, doc, notTimestamped) {
 module.exports = {
     findAll: findAll,
     findAllSortByDateAsc: findAllSortByDateAsc,
-    findBetweenDates: findBetweenDates,
-    findBetweenDatesSortAsc: findBetweenDatesSortAsc,
+    findBetweenDatesSortByOrdinalAsc: findBetweenDatesSortByOrdinalAsc,
     insert: insert,
     removeById: removeById,
     removeManyByIds: removeManyByIds,

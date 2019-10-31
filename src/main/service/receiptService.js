@@ -19,14 +19,9 @@ async function areReceiptsValid () {
   return result
 }
 
-async function getReceipts (year) {
-  console.log(`Getting receipts for year ${year}`)
-  var receipts
-  if (year) {
-    receipts = await receiptDao.findBetweenDates(new Date(year, 0, 1), new Date(year + 1, 0, 1))
-  } else {
-    receipts = await receiptDao.findAll()
-  }
+async function getReceipts () {
+  console.log(`Getting all receipts`)
+  var receipts = await receiptDao.findAll()
   console.log(`Returning receipts: \n${JSON.stringify(receipts, null, 2)}`)
   return receipts
 }

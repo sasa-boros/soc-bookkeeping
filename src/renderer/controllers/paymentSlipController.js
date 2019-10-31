@@ -9,9 +9,9 @@ function arePaymentSlipsValid () {
   })
 }
 
-function getPaymentSlips (year) {
+function getPaymentSlips () {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-payment-slips', year)
+    ipcRenderer.send('get-payment-slips')
     ipcRenderer.once('get-payment-slips-reply', (event, res) => {
       resolve(res)
     })

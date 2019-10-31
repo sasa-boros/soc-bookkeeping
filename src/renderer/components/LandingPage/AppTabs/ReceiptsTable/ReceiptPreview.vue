@@ -10,7 +10,7 @@
         <br/><b-form-input disabled class="input-small" id="outcomeAsText2" v-model="generatedOutcomeTextLine2"></b-form-input>
         <br/>динара, примљених из благајне Српске православне црквене општине <b-form-input id="churchMunicipalityInput" v-on:keypress="limitChurchMunicipalityInput" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input>
         <br/>у <b-form-input id="townInput" v-on:keypress="limitTownInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" v-on:keypress="limitReasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" @blur.native="preDatepickerOnBlur"></b-form-input>
-        <br/><span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" :clear-button="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="checkMaxReceipts"></datepicker> год.</span>                                                                                                       Примио,
+        <br/><span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" :clear-button="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker> год.</span>                                                                                                       Примио,
 у <b-form-input id="townPayedInput" v-on:keypress="limitTownPayedInput" v-model="form.townPayed" class="input-small" type="text"></b-form-input>&nbsp;                                     <b-form-input v-on:keypress="limitReceivedInput" v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerOnBlur"></b-form-input>
         <br/>                                                                                                         Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
                                                                                            <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabIndex="-1"/></span><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-form-select id="firstPartPosSelect" v-model="selectedFirstPartPos" v-on:change="onFirstPartPosChange" :options="firstPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <span v-on:mouseleave="hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
@@ -273,9 +273,6 @@
       this.townPayedInputElement = document.getElementById('townPayedInput')
       this.receivedInputElement = document.getElementById('receivedInput')
       this.bindKeys()
-      if (!this.receiptPreview) {
-         this.checkMaxReceipts()
-      }
     },
     beforeDestroy () {
       this.unbindKeys()
@@ -692,30 +689,6 @@
       if (this.receivedInputElement.scrollWidth > this.receivedInputElement.clientWidth) {
           evt.preventDefault()
         } 
-      },
-      checkMaxReceipts () {
-        if (!this.form.date || !this.existingReceipts) {
-          return
-        }
-        // set date to null because of long processing
-        const formDate = new Date(this.form.date)
-        this.$refs.dateInput.clearDate()
-        this.form.date = null
-
-        var countOfSameMonthAndYear = 0
-        for (let i=0; i<this.existingReceipts.length; i++) {
-          const receiptDate = new Date(this.existingReceipts[i].date)
-          if (receiptDate.getUTCFullYear() == formDate.getFullYear() && receiptDate.getUTCMonth() == formDate.getMonth()) {
-            if (this.existingReceipts[i]._id != this.form._id) {
-              countOfSameMonthAndYear++
-            }
-            if (countOfSameMonthAndYear >= 27) {
-              this.openErrorModal(this.phrases.maxNumberOfReceiptsReached)
-              return
-            }
-          }
-        }
-        this.form.date = formDate
       },
       hideTooltip (elementId) {
         if (elementId) {

@@ -9,9 +9,9 @@ function areReceiptsValid () {
   })
 }
 
-function getReceipts (year) {
+function getReceipts () {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-receipts', year)
+    ipcRenderer.send('get-receipts')
     ipcRenderer.once('get-receipts-reply', (event, res) => {
       resolve(res)
     })

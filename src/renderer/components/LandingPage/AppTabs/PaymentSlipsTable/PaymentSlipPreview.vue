@@ -10,7 +10,7 @@
         <br/><b-form-input disabled class="input-small" id="IncomeAsText2" v-model="generatedIncomeTextLine2"></b-form-input>
         <br/>колико сам данас уплатио у благајну Српске православне црквене општине
 у <b-form-input id="townInput" v-on:keypress="limitTownInput" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" v-on:keypress="limitReasonInput" ref="reasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text" @blur.native="preDatepickerOnBlur"></b-form-input>
-        <br/><span v-on:mouseleave="hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate}" :language="calendarLanguages.srCYRL" :clear-button="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar" v-on:input="checkMaxPaymentSlips"></datepicker> год. </span>                                                                                                      Уплатио,
+        <br/><span v-on:mouseleave="hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate}" :language="calendarLanguages.srCYRL" :clear-button="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>                                                                                                      Уплатио,
                                                                                                          <b-form-input id="payedInput" v-on:keypress="limitPayedInput" ref="payedInput" v-on:mouseleave="hideTooltip('payedInput')" v-model="form.payed" class="input-small" type="text" @blur.native="postDatepickerOnBlur"></b-form-input> 
         <br/>                                                                                                         Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
                                                                                            <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabIndex="-1"/></span><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-form-select id="firstPartPosSelect" v-model="selectedFirstPartPos" v-on:change="onFirstPartPosChange" :options="firstPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <span v-on:mouseleave="hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
@@ -272,9 +272,6 @@
       this.reasonInputElement = document.getElementById('reasonInput')
       this.payedInputElement = document.getElementById('payedInput')
       this.bindKeys()
-      if (!this.paymentSlipPreview) {
-        this.checkMaxPaymentSlips()
-      }
     },
     beforeDestroy () {
       this.unbindKeys()
@@ -681,30 +678,6 @@
       if (this.payedInputElement.scrollWidth > this.payedInputElement.clientWidth) {
           evt.preventDefault()
         } 
-      },
-      checkMaxPaymentSlips () {
-        if (!this.form.date || !this.existingPaymentSlips) {
-          return
-        }
-        // set date to null because of long processing
-        const formDate = new Date(this.form.date)
-        this.$refs.dateInput.clearDate()
-        this.form.date = null
-
-        var countOfSameMonthAndYear = 0
-        for (let i=0; i<this.existingPaymentSlips.length; i++) {
-          const paymentSlipDate = new Date(this.existingPaymentSlips[i].date)
-          if (paymentSlipDate.getUTCFullYear() == formDate.getFullYear() && paymentSlipDate.getUTCMonth() == formDate.getMonth()) {
-            if (this.existingPaymentSlips[i]._id != this.form._id) {
-              countOfSameMonthAndYear++
-            }
-            if (countOfSameMonthAndYear >= 27) {
-              this.openErrorModal(this.phrases.maxNumberOfPaymentSlipsReached)
-              return
-            }
-          }
-        }
-        this.form.date = formDate
       },
       hideTooltip (elementId) {
         if (elementId) {
