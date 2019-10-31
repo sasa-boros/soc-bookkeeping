@@ -6,21 +6,21 @@
       </b-button>
       <div class="receipt-preview-text">
         <h1> ПРИЗНАНИЦА </h1>
-      <br/>На дин. <b-form-group class="input-form-group" ref="outcomeInputFormGroup"><b-form-input id="outcomeInput" ref="outcomeInput" v-on:mouseleave="hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" type="text" :autofocus="!receiptPreview"></b-form-input></b-form-group> и словима  <b-form-input disabled class="input-small" id="outcomeAsTextDivWrapper1" v-model="generatedOutcomeTextLine1"></b-form-input>
-      <br/><b-form-input disabled class="input-small" disable id="outcomeAsTextDivWrapper2" v-model="generatedOutcomeTextLine2"></b-form-input>
-      <br/>динара, примљених из благајне Српске православне црквене општине <b-form-group class="input-form-group" ref="churchMunicipalityInputFormGroup"><b-form-input id="churchMunicipalityInput" v-on:keypress="limitChurchMunicipalityInput" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input></b-form-group><br/>у <b-form-group class="input-form-group" ref="townInputFormGroup"><b-form-input id="townInput" v-on:keypress="limitTownInput" v-model="form.town" class="input-small" type="text"></b-form-input></b-form-group> на име <b-form-group class="input-form-group" ref="reasonInputFormGroup"><b-form-input id="reasonInput" v-on:keypress="limitReasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" @blur.native="preDatepickerOnBlur"></b-form-input></b-form-group>
-      <div class="mt-2">на дан <span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" :clear-button="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="checkMaxReceipts"></datepicker></span> г.                                                                                            Примио,
-                                                                                                        <b-form-group class="input-form-group" ref="receivedInputFormGroup"><b-form-input v-on:keypress="limitReceivedInput" v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerOnBlur"></b-form-input></b-form-group>  
-      </div><div class="mt-2">                                                                                                      Да се исплати на терет расхода              <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> г.
-                                                                                          <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="firstPartInputFormGroup"><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-form-select id="firstPartPosSelect" v-model="selectedFirstPartPos" v-on:change="onFirstPartPosChange" :options="firstPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="firstPosInputFormGroup" id="firstPosInputForm"><span v-on:mouseleave="hideTooltip('firstPosInputForm')"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="firstOutcomeInputFormGroup" id="firstOutcomeInputForm"><span v-on:mouseleave="hideTooltip('firstOutcomeInputForm')"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span></b-form-group>
-                  Исплатио благајник,                                     <span class="partText">Парт. </span><b-form-group class="input-form-group" ref="secondPartInputFormGroup"><span v-on:mouseleave="hideTooltip('secondPartInput')"><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabIndex="-1"/></span></b-form-group><span v-on:mouseleave="hideTooltip('secondPartPosSelect')"><b-form-select id="secondPartPosSelect" v-model="selectedSecondPartPos" v-on:change="onSecondPartPosChange" :options="secondPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <b-form-group class="input-form-group" ref="secondPosInputFormGroup" id="secondPosInputForm"><span v-on:mouseleave="hideTooltip('secondPosInputForm')"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span></b-form-group> дин. <b-form-group class="input-form-group" ref="secondOutcomeInputFormGroup" id="secondOutcomeInputForm"><span v-on:mouseleave="hideTooltip('secondOutcomeInputForm')"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span></b-form-group>
+        <br/>На дин. <b-form-input id="outcomeInput" ref="outcomeInput" v-on:mouseleave="hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" type="text" :autofocus="!receiptPreview"></b-form-input> и словима <b-form-input disabled class="input-small" id="outcomeAsText1" v-model="generatedOutcomeTextLine1"></b-form-input>
+        <br/><b-form-input disabled class="input-small" id="outcomeAsText2" v-model="generatedOutcomeTextLine2"></b-form-input>
+        <br/>динара, примљених из благајне Српске православне црквене општине <b-form-input id="churchMunicipalityInput" v-on:keypress="limitChurchMunicipalityInput" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input>
+        <br/>у <b-form-input id="townInput" v-on:keypress="limitTownInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" v-on:keypress="limitReasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" @blur.native="preDatepickerOnBlur"></b-form-input>
+        <br/><span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" :clear-button="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="checkMaxReceipts"></datepicker> год.</span>                                                                                                       Примио,
+у <b-form-input id="townPayedInput" v-on:keypress="limitTownPayedInput" v-model="form.townPayed" class="input-small" type="text"></b-form-input>&nbsp;                                     <b-form-input v-on:keypress="limitReceivedInput" v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerOnBlur"></b-form-input>
+        <br/>                                                                                                         Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
+                                                                                           <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabIndex="-1"/></span><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-form-select id="firstPartPosSelect" v-model="selectedFirstPartPos" v-on:change="onFirstPartPosChange" :options="firstPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <span v-on:mouseleave="hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
+                Исплатио благајник,                                        <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('secondPartInput')"><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabIndex="-1"/></span><span v-on:mouseleave="hideTooltip('secondPartPosSelect')"><b-form-select id="secondPartPosSelect" v-model="selectedSecondPartPos" v-on:change="onSecondPartPosChange" :options="secondPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <span v-on:mouseleave="hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('seondOutcomeInputWrapper')" id="seondOutcomeInputWrapper"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
                                                            
-      <br/><b-form-group  class="input-form-group" ref="payedInputFormGroup"><b-form-input disabled class="input-small" id="payedInput" type="text"></b-form-input></b-form-group>                                                                           Свега дин. <b-form-group class="input-form-group" ref="totalOutcomeInputFormGroup" id="totalOutcomeInputForm"><span v-on:mouseleave="hideTooltip('totalOutcomeInputForm')"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalOutcomeTooltip }" type="text"></b-form-input></span></b-form-group>
-      <div class="my-0">
+      <br/><b-form-input disabled class="input-small" id="payedInput" type="text"></b-form-input>                                                                              Свега дин. <span v-on:mouseleave="hideTooltip('totalOutcomeInputWrapper')" id="totalOutcomeInputWrapper"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalOutcomeTooltip }" type="text"></b-form-input></span>
+                                                                                                                                                
                                                                                                                                                 Наредбодавац
                                                                                                                                   Председник црквене општине,
-      </div><div style="margin-top:-15px;">Књижено у Дн. бл. стр. <b-form-group class="input-form-group" ref="annualReportPageInputForm" id="annualReportPageInputForm"><span v-on:mouseleave="hideTooltip('annualReportPageInputForm')"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span></b-form-group> р. бр. <b-form-group ref="ordinalInputForm" class="input-form-group" id="ordinalInputForm"><span v-on:mouseleave="hideTooltip('ordinalInputForm')"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span></b-form-group>.                                        <b-form-group class="input-form-group" ref="municipalityPresidentInputFormGroup"><b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input></b-form-group>
-      </div></div>
+Књижено у Дн. бл. стр. <span v-on:mouseleave="hideTooltip('annualReportPageInputWrapper')" id="annualReportPageInputWrapper"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span> р. бр. <span v-on:mouseleave="hideTooltip('ordinalInputWrapper')" id="ordinalInputWrapper"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span>.                                        <b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input>
       </div>
       <div id="downloadPrintBtnsDiv">
         <b-button v-on:mouseleave="hideTooltip('receiptDownloadBtn')" ref="receiptDownloadBtn" id="receiptDownloadBtn" @click.stop="downloadReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="disablePrintAndDownload">
@@ -60,13 +60,13 @@
       </div>
     </b-tooltip>
 
-    <b-tooltip target="firstPosInputForm" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
+    <b-tooltip target="firstPosInputWrapper" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
       <div class="tooltipInnerText">
         {{firstPartTooltipText}}
       </div>
     </b-tooltip>
 
-    <b-tooltip target="firstOutcomeInputForm" triggers="hover" placement="top" ref="firstOutcomeInputTooltip" :disabled.sync="disableFirstOutcomeTooltip">
+    <b-tooltip target="firstOutcomeInputWrapper" triggers="hover" placement="top" ref="firstOutcomeInputTooltip" :disabled.sync="disableFirstOutcomeTooltip">
       <div class="tooltipInnerText">
         {{firstOutcomeTooltipText}}
       </div>
@@ -78,19 +78,19 @@
       </div>
     </b-tooltip>
 
-    <b-tooltip target="secondPosInputForm" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip">
+    <b-tooltip target="secondPosInputWrapper" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip">
       <div class="tooltipInnerText">
         {{secondPosTooltipText}}
       </div>
     </b-tooltip>
 
-    <b-tooltip target="secondOutcomeInputForm" triggers="hover" placement="top" ref="secondOutcomeInputTooltip" :disabled.sync="disableSecondOutcomeTooltip">
+    <b-tooltip target="seondOutcomeInputWrapper" triggers="hover" placement="top" ref="secondOutcomeInputTooltip" :disabled.sync="disableSecondOutcomeTooltip">
       <div class="tooltipInnerText">
         {{secondOutcomeTooltipText}}
       </div>
     </b-tooltip>
 
-    <b-tooltip target="totalOutcomeInputForm" triggers="hover" placement="top" ref="totalOutcomeInputTooltip" :disabled.sync="disableTotalOutcomeTooltip">
+    <b-tooltip target="totalOutcomeInputWrapper" triggers="hover" placement="top" ref="totalOutcomeInputTooltip" :disabled.sync="disableTotalOutcomeTooltip">
       <div class="tooltipInnerText">
         {{totalOutcomeTooltipText}}
       </div>
@@ -102,13 +102,13 @@
       </div>
     </b-tooltip>
 
-    <b-tooltip target="annualReportPageInputForm" triggers="hover" placement="top" ref="annualReportPageInputTooltip">
+    <b-tooltip target="annualReportPageInputWrapper" triggers="hover" placement="top" ref="annualReportPageInputTooltip">
       <div class="tooltipInnerText">
         {{phrases.automaticallyGeneratedAfterSave}}
       </div>
     </b-tooltip>
 
-    <b-tooltip target="ordinalInputForm" triggers="hover" placement="top" ref="ordinalInputTooltip">
+    <b-tooltip target="ordinalInputWrapper" triggers="hover" placement="top" ref="ordinalInputTooltip">
       <div class="tooltipInnerText">
         {{phrases.automaticallyGeneratedAfterSave}}
       </div>
@@ -221,6 +221,7 @@
         churchMunicipalityInputElement: null,
         townInputElement: null,
         reasonInputElement: null,
+        townPayedInputElement: null,
         receivedInputElement: null,
         selectedFirstPartPos: null,
         selectedSecondPartPos: null,
@@ -269,6 +270,7 @@
       this.churchMunicipalityInputElement = document.getElementById('churchMunicipalityInput')
       this.townInputElement = document.getElementById('townInput')
       this.reasonInputElement = document.getElementById('reasonInput')
+      this.townPayedInputElement = document.getElementById('townPayedInput')
       this.receivedInputElement = document.getElementById('receivedInput')
       this.bindKeys()
       if (!this.receiptPreview) {
@@ -681,6 +683,11 @@
           evt.preventDefault()
         } 
       },
+      limitTownPayedInput(evt) {
+      if (this.townPayedInputElement.scrollWidth > this.townPayedInputElement.clientWidth) {
+          evt.preventDefault()
+        } 
+      },
       limitReceivedInput(evt) {
       if (this.receivedInputElement.scrollWidth > this.receivedInputElement.clientWidth) {
           evt.preventDefault()
@@ -788,24 +795,25 @@
         }
       },
       clearForm () {
-        this.form.ordinal = null;
-        this.form.annualReportPage = null;
-        this.form.date = null;
-        this.form.firstPartition = null;
-        this.form.firstPosition = null;
-        this.form.firstOutcome = null;
+        this.form.ordinal = null
+        this.form.annualReportPage = null
+        this.form.date = null
+        this.form.firstPartition = null
+        this.form.firstPosition = null
+        this.form.firstOutcome = null
         this.firstOutcomeInputAutonumeric.clear()
-        this.form.secondPartition = null;
-        this.form.secondPosition = null;
-        this.form.secondOutcome = null;
+        this.form.secondPartition = null
+        this.form.secondPosition = null
+        this.form.secondOutcome = null
         this.secondOutcomeInputAutonumeric.clear()
-        this.form.outcome = null;
+        this.form.outcome = null
         this.outcomeInputAutonumeric.clear()
-        this.form.outcomeAsText = null;
-        this.form.churchMunicipality = null;
-        this.form.town = null;
-        this.form.reason = null;
-        this.form.received = null;
+        this.form.outcomeAsText = null
+        this.form.churchMunicipality = null
+        this.form.town = null
+        this.form.reason = null
+        this.form.townPayed = null
+        this.form.received = null
         this.totalOutcomeInputAutonumeric.clear()
         this.selectedFirstPartPos = null
         this.selectedSecondPartPos = null
@@ -908,7 +916,7 @@
     line-height: 2;
     margin: 0;
     position: relative;
-    left: 50px;
+    left: 49px;
     top: 20px;
   }
   h1 {
@@ -919,12 +927,6 @@
     padding: 0px;
     font-family: "Times New Roman";
     letter-spacing: 95%;
-  }
-  .input-form-group {
-    display: inline;
-    height: 15px;
-    margin: 0px;
-    padding: 0px;
   }
   .input-small {
     border-style: none;
@@ -945,7 +947,7 @@
     color: black;
   }
   #yearInput {
-    width: 50px;
+    width: 70px;
   }
   #outcomeInput {
     width: 140px;
@@ -966,7 +968,10 @@
     width: 290px;
   }
   #receivedInput {
-    width: 300px;
+    width: 290px;
+  }
+  #townPayedInput {
+    width: 230px;
   }
   #payedInput {
     width: 230px;
@@ -1002,13 +1007,13 @@
     width: 50px;
   }
   #firstOutcomeInput {
-    width: 100px;
+    width: 90px;
   }
   #secondOutcomeInput {
-    width: 100px;
+    width: 90px;
   }
   #totalOutcomeInput {
-    width: 100px;
+    width: 90px;
   }
   #annualReportPageInput {
     width: 50px;
@@ -1047,13 +1052,13 @@
     display: inline-block;
     margin: 0;
   }
-  #outcomeAsTextDivWrapper1 {
-    width: 405px;
+  #outcomeAsText1 {
+    width: 410px;
     white-space: nowrap;
     overflow: hidden;
     display: inline-block;
   }
-  #outcomeAsTextDivWrapper2 {
+  #outcomeAsText2 {
     width: 670px;
     white-space: nowrap;
     overflow: hidden;

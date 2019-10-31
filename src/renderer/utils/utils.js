@@ -342,6 +342,7 @@ function mapReceiptToReceiptForm (receipt) {
     receiptForm.churchMunicipality = receipt.churchMunicipality;
     receiptForm.town = receipt.town;
     receiptForm.reason = receipt.reason;
+    receiptForm.townPayed = receipt.townPayed;
     receiptForm.received = receipt.received;
 
     return receiptForm;
@@ -358,6 +359,7 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes, nullAsZero) {
     receipt.churchMunicipality = receiptForm.churchMunicipality;
     receipt.town = receiptForm.town;
     receipt.reason = receiptForm.reason;
+    receipt.townPayed = receiptForm.townPayed;
     receipt.received = receiptForm.received;
     receipt.outcomePerCode = [];
     const firstOutcomeCode = outcomeCodes.find(outcomeCode => {
