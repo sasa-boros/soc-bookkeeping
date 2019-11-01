@@ -108,3 +108,23 @@ input[type]:focus:not(.is-invalid) {
   box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
   outline: 0 none !important;
 }
+.dropdown-menu {
+  padding:none !important;
+  padding-top:0px !important;
+  padding-bottom:0px !important;
+}
+
+.dropdown-item {
+  line-height:15px !important;
+  font-family: "Times New Roman" !important;
+  font-size: 90% !important;
+  letter-spacing: 95% !important;
+}
+
+.dropdown-item:hover {
+  background-color:  rgb(221, 217, 240) !important;
+}
+
+.dropdown-toggle::after {
+  color:black;
+}

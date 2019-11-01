@@ -3,13 +3,25 @@
     <br>
       <b-row>
         <b-col cols="3">
-          <b-button id="annualReportDownloadBtn" ref="annualReportDownloadBtn" v-on:mouseleave="hideTooltip('annualReportDownloadBtn')" @click.stop="downloadAnnualReport()" variant="light" class="btn-lg float-left">
-            <img src="~@/assets/download.png">
-          </b-button>
+          <span v-on:mouseleave="hideTooltip('annualReportDownloadDropdown')">
+            <b-dropdown v-on:mouseleave="hideTooltip('annualReportDownloadDropdown')" id="annualReportDownloadDropdown" variant="link">
+              <template v-slot:button-content>
+                <img src="~@/assets/download.png">
+              </template>
+              <b-dropdown-item class="dropdownOption" v-on:click="downloadAnnualReportPage">{{phrases.downloadPage}}</b-dropdown-item>
+              <b-dropdown-item class="dropdownOption" v-on:click="downloadAnnualReport">{{phrases.downloadWholeAnnualReport}}</b-dropdown-item>
+            </b-dropdown>
+          </span>
+          <span v-on:mouseleave="hideTooltip('annualReportPrintDropdown')">
+            <b-dropdown id="annualReportPrintDropdown" variant="link">
+              <template v-slot:button-content>
+                <img src="~@/assets/print.png">
+              </template>
+              <b-dropdown-item v-on:click="printAnnualReportPage">{{phrases.printPage}}</b-dropdown-item>
+              <b-dropdown-item v-on:click="printAnnualReport">{{phrases.printWholeAnnualReport}}</b-dropdown-item>
+            </b-dropdown>
+          </span>
           &nbsp;
-          <b-button id="annualReportPrintBtn" ref="annualReportPrintBtn" v-on:mouseleave="hideTooltip('annualReportPrintBtn')" @click.stop="printAnnualReport()" variant="light" class="btn-lg float-left">
-            <img src="~@/assets/print.png">
-          </b-button>
         </b-col>
         <b-col cols="2">
           <div class="float-right pageCount">
@@ -24,7 +36,7 @@
             <i class="arrow right"></i>
           </b-button>
         </b-col>
-        <b-col cols="5">
+        <b-col>
           <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" class="btn-xs float-right">
             <img src="~@/assets/close.png">
           </b-button>
@@ -34,12 +46,12 @@
         <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
         </div>
       </b-row>
-      <b-tooltip ref="annualReportPrintBtnTooltip" target="annualReportPrintBtn">
+      <b-tooltip ref="annualReportPrintDropdownTooltip" target="annualReportPrintDropdown">
           <div class="tooltipInnerText">
             {{phrases.print}}
           </div>
       </b-tooltip>
-      <b-tooltip ref="annualReportDownloadBtnTooltip" target="annualReportDownloadBtn">
+      <b-tooltip ref="annualReportDownloadDropdownTooltip" target="annualReportDownloadDropdown">
           <div class="tooltipInnerText">
             {{phrases.download}}
           </div>
@@ -145,6 +157,79 @@ const printStyle = `
   }
   </style>
 `
+const printPageStyle = `
+<style>
+@media screen {
+    #print-annual-report {
+      display: none;
+    }
+  }
+  @media print {
+    * {
+      visibility:hidden;
+    }
+    #print-annual-report, #print-annual-report * {
+      visibility:visible;
+    }
+    #headline {
+      page-break-before: always;
+      position: absolute;
+      bottom:1380px;
+      left: 220px;
+      transform: rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #income-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:955px;
+      left: -350px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #outcome-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:950px;
+      left: -350px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #total-income-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:1120px;
+      left: -430px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #total-outcome-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:1003px;
+      left: -380px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #shares-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:1082px;
+      left: -420px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #total-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:1190px;
+      left: -140px;
+      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+  }
+  </style>
+`
 const downloadStyle = `
 <style>
 @media screen {
@@ -222,6 +307,80 @@ const downloadStyle = `
   </style>
 `
 
+const downloadPageStyle = `
+<style>
+@media screen {
+    #print-annual-report {
+      display: none;
+    }
+  }
+  @media print {
+    * {
+      visibility:hidden;
+    }
+    #print-annual-report, #print-annual-report * {
+      visibility:visible;
+    }
+    #headline {
+      page-break-before: always;
+      position: absolute;
+      bottom:1415px;
+      left: 220px;
+      transform: rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #income-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:975px;
+      left: -350px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #outcome-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:965px;
+      left: -350px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #total-income-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:1145px;
+      left: -430px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #total-outcome-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:1023px;
+      left: -380px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #shares-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:1102px;
+      left: -420px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #total-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:1203px;
+      left: -140px;
+      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+  }
+  </style>
+`
+
 export default {
   props: {
     annualReportPages: {
@@ -233,24 +392,36 @@ export default {
   data () {
     return {
       phrases: {
+        download: i18n.getTranslation('Download'),
+        downloadPage: i18n.getTranslation('Download page'),
+        downloadWholeAnnualReport: i18n.getTranslation('Download whole annual report'),
         print: i18n.getTranslation('Print'),
+        printPage: i18n.getTranslation('Print page'),
+        printWholeAnnualReport: i18n.getTranslation('Print whole annual report'),
         previousPage: i18n.getTranslation('Previous page'),
         nextPage: i18n.getTranslation('Next page'),
         ok: i18n.getTranslation('Ok'),
-        download: i18n.getTranslation('Download'),
         permissionDenied: i18n.getTranslation('Permission denied.'),
-        annualReportPdf: i18n.getTranslation('annual-report.pdf')
+        annualReportFileName: i18n.getTranslation('annual-report'),
+        annualReportPageFileName: i18n.getTranslation('annual-report-page')
       },
       currentPage: 1,
       errorText: "",
       printSection: null,
+      printPageSections: [],
       downloadSection: null,
+      downloadPageSections: [],
       alreadyPressed: false
     }
   },
   created () {
-    this.printSection = this.preparePrintSection(printStyle)
-    this.downloadSection = this.preparePrintSection(downloadStyle)
+    this.printSection = this.preparePrintSection(printStyle, null)
+    this.downloadSection = this.preparePrintSection(downloadStyle, null)
+    const self = this
+    this.annualReportPages.forEach((annualReportPage, index) => {
+      self.printPageSections.push(self.preparePrintSection(printPageStyle, index))
+      self.downloadPageSections.push(self.preparePrintSection(downloadPageStyle, index))
+    })
   },
   mounted () {
     this.bindKeys()
@@ -325,6 +496,19 @@ export default {
         document.body.removeChild(this.printSection)
       }
     },
+    printAnnualReportPage () {
+      if (this.alreadyPressed) {
+        return
+      }
+      document.body.appendChild(this.printPageSections[this.currentPage-1])
+      try {
+        this.alreadyPressed = true
+        window.print()
+      } finally {
+        this.alreadyPressed = false
+        document.body.removeChild(this.printPageSections[this.currentPage-1])
+      }
+    },
     async downloadAnnualReport () {
       if (this.alreadyPressed) {
         return
@@ -335,7 +519,7 @@ export default {
         const res = await annualReportController.createAnnualReportPdf()
         if (!res.err) {
             const self = this
-            saveAs('/annual-report.pdf', this.phrases.annualReportPdf, err => {
+            saveAs('/annual-report.pdf', this.phrases.annualReportFileName + '.pdf', err => {
               if (err) {
                 if (err.message.toLowerCase().indexOf('permission denied') != -1) {
                   self.openErrorModal(self.phrases.permissionDenied)
@@ -352,19 +536,51 @@ export default {
         document.body.removeChild(this.downloadSection)
       }
     },
-    preparePrintSection (style) {
+    async downloadAnnualReportPage () {
+      if (this.alreadyPressed) {
+        return
+      }
+      document.body.appendChild(this.downloadPageSections[this.currentPage-1])
+      try {
+        this.alreadyPressed = true
+        const res = await annualReportController.createAnnualReportPdf()
+        if (!res.err) {
+            const self = this
+            saveAs('/annual-report.pdf', this.phrases.annualReportPageFileName + '-' + this.currentPage + '.pdf', err => {
+              if (err) {
+                if (err.message.toLowerCase().indexOf('permission denied') != -1) {
+                  self.openErrorModal(self.phrases.permissionDenied)
+                } else {
+                  self.openErrorModal(err.message)
+                }
+              }
+            })
+          } else {
+            this.openErrorModal(res.err)       
+          }
+      } finally {
+        this.alreadyPressed = false
+        document.body.removeChild(this.downloadPageSections[this.currentPage-1])
+      }
+    },
+    preparePrintSection (style, pageIndex) {
       var section = document.createElement('div')
       section.id = 'print-annual-report'
       section.innerHTML = style
-      this.annualReportPages.forEach((annualReportPage, index) => {
+      if (pageIndex != null) {
         var page = document.createElement('div')
-        if(index == this.annualReportPages.length-1) {
-          page.className = 'last-page'
-        } else {
-        }
-        page.innerHTML = annualReportPage
+        page.innerHTML = this.annualReportPages[pageIndex]
         section.appendChild(page)
-      })
+      } else {
+        this.annualReportPages.forEach((annualReportPage, index) => {
+          var page = document.createElement('div')
+          if(index == this.annualReportPages.length-1) {
+            page.className = 'last-page'
+          } 
+          page.innerHTML = annualReportPage
+          section.appendChild(page)
+        })
+      }
   
       return section
     },

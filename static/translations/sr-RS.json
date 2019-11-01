@@ -12,7 +12,11 @@
     "Save": "Сачувај",
     "Permission denied." : "Немате адекватна права писања за преузимање на изабрану локацију.",
     "Print": "Штампај",
+    "Print page": "Штампај страну",
+    "Print whole annual report": "Штампај дневник благајне",
     "Download": "Преузми",
+    "Download page": "Преузми страну",
+    "Download whole annual report": "Преузми дневник благајне",
     "Clear": "Обриши унето",
     "Delete": "Обриши",
     "Cancel": "Одустани",
@@ -104,7 +108,8 @@
     "Updated at": "Ажурирано",
 
     "for year" : "за годину",
-    "annual-report.pdf": "дневник-благајне.pdf",
-    "payment-slip.pdf": "уплатница.pdf",
-    "receipt.pdf": "признаница.pdf"
+    "annual-report": "дневник-благајне",
+    "annual-report-page": "дневник-благајне-страна",
+    "payment-slip": "уплатница",
+    "receipt": "признаница"
 }

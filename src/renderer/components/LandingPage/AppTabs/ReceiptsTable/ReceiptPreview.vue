@@ -13,8 +13,8 @@
         <br/><span v-on:mouseleave="hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate }" :language="calendarLanguages.srCYRL" :clear-button="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker> год.</span>                                                                                                       Примио,
 у <b-form-input id="townPayedInput" v-on:keypress="limitTownPayedInput" v-model="form.townPayed" class="input-small" type="text"></b-form-input>&nbsp;                                     <b-form-input v-on:keypress="limitReceivedInput" v-model="form.received" class="input-small" id="receivedInput" type="text" @blur.native="postDatepickerOnBlur"></b-form-input>
         <br/>                                                                                                         Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
-                                                                                           <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabIndex="-1"/></span><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-form-select id="firstPartPosSelect" v-model="selectedFirstPartPos" v-on:change="onFirstPartPosChange" :options="firstPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <span v-on:mouseleave="hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
-                Исплатио благајник,                                        <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('secondPartInput')"><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabIndex="-1"/></span><span v-on:mouseleave="hideTooltip('secondPartPosSelect')"><b-form-select id="secondPartPosSelect" v-model="selectedSecondPartPos" v-on:change="onSecondPartPosChange" :options="secondPartPosOptions" size="sm" class="select-small ignoreInPrint"><template v-slot:first><option :value="null"></option></template></b-form-select></span> поз. <span v-on:mouseleave="hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('seondOutcomeInputWrapper')" id="seondOutcomeInputWrapper"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
+                                                                                           <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small"/></span><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
+                Исплатио благајник,                                        <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('secondPartInput')"><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small"/></span><span v-on:mouseleave="hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('seondOutcomeInputWrapper')" id="seondOutcomeInputWrapper"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
                                                            
       <br/><b-form-input disabled class="input-small" id="payedInput" type="text"></b-form-input>                                                                              Свега дин. <span v-on:mouseleave="hideTooltip('totalOutcomeInputWrapper')" id="totalOutcomeInputWrapper"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalOutcomeTooltip }" type="text"></b-form-input></span>
                                                                                                                                                 
@@ -206,7 +206,7 @@
           download: i18n.getTranslation('Download'),
           permissionDenied: i18n.getTranslation('Permission denied.'),
           maxNumberOfReceiptsReached: i18n.getTranslation('Maximum number of receipts reached for this month and year (27). Choose another date.'),
-          receiptPdf: i18n.getTranslation('receipt.pdf'),
+          receiptFileName: i18n.getTranslation('receipt'),
           chooseDifferentOutcomeCodes: i18n.getTranslation('Choose different outcome codes'),
           automaticallyGeneratedAfterSave: i18n.getTranslation('Automatically generated after save')
         },
@@ -223,8 +223,6 @@
         reasonInputElement: null,
         townPayedInputElement: null,
         receivedInputElement: null,
-        selectedFirstPartPos: null,
-        selectedSecondPartPos: null,
         alreadyPressed: false,
         disablePrintAndDownload: true
       }
@@ -243,12 +241,6 @@
         defaultReceipt._id = undefined;
         this.form = mapReceiptToReceiptForm(defaultReceipt);
       } 
-      if (this.form.firstPartition && this.form.firstPosition) {
-        this.selectedFirstPartPos = this.form.firstPartition + '/' + this.form.firstPosition
-      }
-      if (this.form.secondPartition && this.form.secondPosition) {
-        this.selectedSecondPartPos = this.form.secondPartition + '/' + this.form.secondPosition
-      }
       const self = this;
       outcomeCodeController.getOutcomeCodes().then(function (res) {
         if (!res.err) {
@@ -498,9 +490,9 @@
       },
       firstPartPosOptions: function() {
         var options = this.getInitialPartPosOptions()
-        if(this.selectedSecondPartPos) {
+        if(this.form.secondPartition) {
           for (let i=0; i<options.length; i++) {
-            if (options[i].value == this.selectedSecondPartPos) {
+            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
               options.splice(i, 1)
               break
             }
@@ -510,9 +502,9 @@
       },
       secondPartPosOptions: function() {
         var options = this.getInitialPartPosOptions()
-        if(this.selectedFirstPartPos) {
+        if(this.form.firstPartition) {
           for (let i=0; i<options.length; i++) {
-            if (options[i].value == this.selectedFirstPartPos) {
+            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
               options.splice(i, 1)
               break
             }
@@ -624,6 +616,7 @@
           return []
         }
         var options = []
+        options.push({html: '&nbsp', value: null})
         this.outcomeCodes.forEach(ic => {
           let padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
           let paddingCount = ic.partition.toString().length + ic.position.toString().length
@@ -636,9 +629,9 @@
         })
         return options
       },
-      onFirstPartPosChange () {
-        if (this.selectedFirstPartPos) {
-          const partPos = this.selectedFirstPartPos.split('/')
+      setSelectedFirstPartPos (selectedPartPos) {
+        if (selectedPartPos) {
+          const partPos = selectedPartPos.split('/')
           this.form.firstPartition = partPos[0]
           this.form.firstPosition = partPos[1]
         } else {
@@ -650,12 +643,11 @@
           }
         }
       },
-      onSecondPartPosChange () {
-        if (this.selectedSecondPartPos) {
-          const partPos = this.selectedSecondPartPos.split('/')
+      setSelectedSecondPartPos (selectedPartPos) {
+        if (selectedPartPos) {
+          const partPos = selectedPartPos.split('/')
           this.form.secondPartition = partPos[0]
           this.form.secondPosition = partPos[1]
-          document.getElementById('secondPartPosSelect').nodeValue = partPos[0]
         } else {
           this.form.secondPartition = null
           this.form.secondPosition = null
@@ -788,8 +780,6 @@
         this.form.townPayed = null
         this.form.received = null
         this.totalOutcomeInputAutonumeric.clear()
-        this.selectedFirstPartPos = null
-        this.selectedSecondPartPos = null
       },
       openErrorModal(error) {
         this.errorText = error
@@ -820,7 +810,7 @@
           const res = await receiptController.createReceiptPdf()
           if (!res.err) {
             const self = this
-            saveAs('/receipt.pdf', this.phrases.receiptPdf, err => {
+            saveAs('/receipt.pdf', this.phrases.receiptFileName + '.pdf', err => {
               if (err) {
                 if (err.message.toLowerCase().indexOf('permission denied') != -1) {
                   self.openErrorModal(self.phrases.permissionDenied)
@@ -966,6 +956,7 @@
     position:relative;
     left:50px;
     pointer-events: none;
+    z-index: 1;
   }
   #firstPosInput {
     width: 50px;
@@ -975,6 +966,7 @@
     position:relative;
     left:50px;
     pointer-events: none;
+    z-index: 1;
   }
   #secondPosInput {
     width: 50px;
