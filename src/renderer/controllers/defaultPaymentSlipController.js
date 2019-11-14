@@ -18,17 +18,7 @@ function createDefaultPaymentSlip (defaultPaymentSlip) {
   })
 }
 
-function deleteDefaultPaymentSlip () {
-  return new Promise(function (resolve) {
-    ipcRenderer.send('delete-default-payment-slip')
-    ipcRenderer.once('delete-default-payment-slip-reply', (event, res) => {
-      resolve(res)
-    })
-  })
-}
-
 module.exports = {
   getDefaultPaymentSlip: getDefaultPaymentSlip,
-  createDefaultPaymentSlip: createDefaultPaymentSlip,
-  deleteDefaultPaymentSlip: deleteDefaultPaymentSlip
+  createDefaultPaymentSlip: createDefaultPaymentSlip
 }

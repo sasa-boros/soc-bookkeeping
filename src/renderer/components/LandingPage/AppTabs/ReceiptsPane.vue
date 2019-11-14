@@ -117,7 +117,7 @@
 <script>
   import store from '@/store'
   import { mapState } from 'vuex'
-  import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
+  import ReceiptPreview from './ReceiptsPane/ReceiptPreview'
   import MessageConfirmDialog from '../../MessageConfirmDialog'
   import { EventBus } from '../../../eventbus/event-bus.js';
   

@@ -15,14 +15,7 @@ async function createDefaultPaymentSlip (defaultPaymentSlip) {
   console.log('Successfully created default payment slip')
 }
 
-async function deleteDefaultPaymentSlip () {
-  console.log('Deleting default payment slip')
-  await defaultPaymentSlipDao.removeAll()
-  console.log('Successfully deleted default payment slip')
-}
-
 module.exports = {
   getDefaultPaymentSlip: getDefaultPaymentSlip,
-  createDefaultPaymentSlip: createDefaultPaymentSlip,
-  deleteDefaultPaymentSlip: deleteDefaultPaymentSlip
+  createDefaultPaymentSlip: createDefaultPaymentSlip
 }

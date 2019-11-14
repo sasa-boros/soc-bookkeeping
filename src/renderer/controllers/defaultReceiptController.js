@@ -18,17 +18,7 @@ function createDefaultReceipt (defaultReceipt) {
   })
 }
 
-function deleteDefaultReceipt () {
-  return new Promise(function (resolve) {
-    ipcRenderer.send('delete-default-receipt')
-    ipcRenderer.once('delete-default-receipt-reply', (event, res) => {
-      resolve(res)
-    })
-  })
-}
-
 module.exports = {
   getDefaultReceipt: getDefaultReceipt,
-  createDefaultReceipt: createDefaultReceipt,
-  deleteDefaultReceipt: deleteDefaultReceipt
+  createDefaultReceipt: createDefaultReceipt
 }

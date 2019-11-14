@@ -117,7 +117,7 @@
 <script>
   import store from '@/store'
   import { mapState } from 'vuex'
-  import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
+  import PaymentSlipPreview from './PaymentSlipsPane/PaymentSlipPreview'
   import MessageConfirmDialog from '../../MessageConfirmDialog'
   import { EventBus } from '../../../eventbus/event-bus.js';
   

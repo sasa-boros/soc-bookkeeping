@@ -9,12 +9,23 @@
         </b-btn>
       </b-col>
     </b-row>
-    <hr>
     <b-row>
       <b-col>
-        {{ phrases.setDefaultsReceipts }}:&nbsp;&nbsp;
+        {{ phrases.setDefaultsReceipt }}:&nbsp;&nbsp;
         <b-btn id="defaultReceiptBtn" v-on:mouseleave="hideTooltip('defaultReceiptBtn')" @click.stop="openDefaultReceiptModal()" variant="light" class="btn-lg">
           <img src="~@/assets/receipt.png">
+        </b-btn>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        {{ phrases.setDefaultZoomLevel }}:&nbsp;&nbsp; 
+        <b-btn id="decreaseZoomLevelButton" v-on:mouseleave="hideTooltip('decreaseZoomLevelButton')" @click.stop="decreaseZoomLevel()" variant="link" class="btn-lg">
+          <img src="~@/assets/minus.png">
+        </b-btn>
+        {{ zoomLevelFormated }}
+        <b-btn id="increaseZoomLevelButton" v-on:mouseleave="hideTooltip('increaseZoomLevelButton')" @click.stop="increaseZoomLevel()" variant="link" class="btn-lg">
+          <img src="~@/assets/plus.png">
         </b-btn>
       </b-col>
     </b-row>
@@ -28,18 +39,6 @@
     <b-modal hide-footer hide-header size="a5" id="default-receipt-modal">
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
-    <br>
-    <div class="incomeCodesTable">
-      <h3 class="codeHeader">{{phrases.incomeCodes}}</h3>
-      <p class="codeSubHeader">{{phrases.addedCodesAutomaticallySortedByPartPos}}</p>
-      <income-codes-table v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip"></income-codes-table>
-    </div>
-    <br>
-    <div>
-      <h3 class="codeHeader">{{phrases.outcomeCodes}}</h3>
-      <p class="codeSubHeader">{{phrases.addedCodesAutomaticallySortedByPartPos}}</p>
-      <outcome-codes-table v-on:updateDefaultReceipt="updateDefaultReceipt"></outcome-codes-table>
-    </div>
 
     <b-tooltip target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip">
       <div class="tooltipInnerText">
@@ -53,33 +52,62 @@
       </div>
     </b-tooltip>
 
+    <b-tooltip target="increaseZoomLevelButton" triggers="hover" placement="top" ref="increaseZoomLevelButtonTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.increase}}
+      </div>
+    </b-tooltip>
+
+    <b-tooltip target="decreaseZoomLevelButton" triggers="hover" placement="top" ref="decreaseZoomLevelButtonTooltip">
+      <div class="tooltipInnerText">
+        {{phrases.decrease}}
+      </div>
+    </b-tooltip>
   </b-container>
 </template>
 
 <script>
-  import PaymentSlipPreview from './PaymentSlipsTable/PaymentSlipPreview'
-  import ReceiptPreview from './ReceiptsTable/ReceiptPreview'
-  import IncomeCodesTable from './SettingsPane/IncomeCodesTable'
-  import OutcomeCodesTable from './SettingsPane/OutcomeCodesTable'
+  import PaymentSlipPreview from './PaymentSlipsPane/PaymentSlipPreview'
+  import ReceiptPreview from './ReceiptsPane/ReceiptPreview'
 
+  const Big = require('big.js')
   const i18n = require('../../../../translations/i18n')
+  const settingsController = require('../../../controllers/settingsController')
 
   export default {
     data () {
       return {
         phrases: {
-          setDefaultPaymentSlip: i18n.getTranslation('Set default values for payment slips'),
-          setDefaultsReceipts: i18n.getTranslation('Set default values for receipts'),
+          setDefaultPaymentSlip: i18n.getTranslation('Default values for payment slips'),
+          setDefaultsReceipt: i18n.getTranslation('Default values for receipts'),
+          setDefaultZoomLevel: i18n.getTranslation('Default zoom level'),
           adaptPaymentSlips: i18n.getTranslation('Adapt payment slips'),
           adaptReceipts: i18n.getTranslation('Adapt receipts'),
-          incomeCodes: i18n.getTranslation('Income codes'),
-          outcomeCodes: i18n.getTranslation('Outcome codes'),
-          addedCodesAutomaticallySortedByPartPos: i18n.getTranslation('Added codes are being sorted automatically by partition and position')
-        }
+          increase: i18n.getTranslation('Increase'),
+          decrease: i18n.getTranslation('Decrease')
+        },
+        zoomLevel: Big(1.5)
       }
     },
     created () {
-      const self = this;
+      const self = this
+      settingsController.getSettings().then(function (res) {
+        if (!res.err) {
+          self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.5)
+          self.updateZoomLevel()
+        } else {
+          self.openErrorModal(res.err)
+        }
+      })
+    },
+    computed: {
+      zoomLevelFormated: function() {
+        if(!this.zoomLevel) {
+          return null;
+        }
+        var formatedZoomLevel = this.zoomLevel.times(100).minus(50)
+        return formatedZoomLevel.toString() + ' %'
+      }
     },
     methods: {
       updateDefaultPaymentSlip () {
@@ -96,6 +124,28 @@
         this.hideTooltip('defaultReceiptBtn')
         this.$root.$emit('bv::show::modal', 'default-receipt-modal')
       },
+      increaseZoomLevel () {
+        if(!this.zoomLevel.gte(2.0)) {
+          this.zoomLevel = this.zoomLevel.plus(0.1)
+        }
+        this.updateZoomLevel()
+      },
+      decreaseZoomLevel () {
+        if(!this.zoomLevel.lte(1.0)) {
+          this.zoomLevel = this.zoomLevel.minus(0.1)
+        }
+        this.updateZoomLevel()
+      },
+      updateZoomLevel () {
+        const self = this
+        settingsController.createSettings({zoomLevel: parseFloat(self.zoomLevel)}).then(function (res) {
+          if (!res.err) {
+            self.$emit('updateZoomLevel', parseFloat(self.zoomLevel))
+          } else {
+            self.openErrorModal(res.err)
+          }
+        })
+      },
       hideTooltip (elementId) {
         if (elementId) {
           this.$root.$emit('bv::hide::tooltip', elementId)
@@ -104,21 +154,29 @@
         }
       }
     },
-    components: { PaymentSlipPreview, ReceiptPreview, IncomeCodesTable, OutcomeCodesTable }
+    components: { PaymentSlipPreview, ReceiptPreview }
   }
 </script>
 
 <style scoped>
-  .incomeCodesTable {
-    background-color:#e6f4ff; 
-    overflow:auto;
+  #zoomLevelInput {
+    width: 60px;
   }
-  .codeHeader {
-    text-align: center;
+  .input-small {
+    border-style: none;
+    font-weight: bold;
+    display: inline;
+    height: 15px;
+    margin: 0px;
+    color: black;
   }
-  .codeSubHeader {
-    text-align: center;
-    font-size: 10.0pt;
-    color: #8e8e8e;
+  input {
+    /* Immitate the underline in the real payment slip */
+    border-bottom: .5pt solid black !important;
+    border-radius: 0 !important;
+    text-align:center;
+    font-family: "Times New Roman";
+    font-size: 90%;
+    letter-spacing: 95%;
   }
 </style>

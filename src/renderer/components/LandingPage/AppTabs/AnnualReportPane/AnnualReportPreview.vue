@@ -43,7 +43,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
+        <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
         </div>
       </b-row>
       <b-tooltip ref="annualReportPrintDropdownTooltip" target="annualReportPrintDropdown">
@@ -100,6 +100,14 @@ const printStyle = `
       bottom: 1265px;
       left: 260px;
       transform: rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #manual-page {
+      page-break-before: always;
+      position: relative;
+      bottom:853px;
+      left: 65px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #income-page {
@@ -174,16 +182,24 @@ const printPageStyle = `
     #headline {
       page-break-before: always;
       position: absolute;
-      bottom:1380px;
+      bottom:1395px;
       left: 220px;
       transform: rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
+    #manual-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:995px;
+      left: -425px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
     #income-page {
       page-break-before: always;
       position: absolute;
       bottom:955px;
-      left: -350px;
+      left: -355px;
       transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
@@ -199,7 +215,7 @@ const printPageStyle = `
       page-break-before: always;
       position: absolute;
       bottom:1120px;
-      left: -430px;
+      left: -466px;
       transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
@@ -207,7 +223,7 @@ const printPageStyle = `
       page-break-before: always;
       position: absolute;
       bottom:1003px;
-      left: -380px;
+      left: -370px;
       transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
@@ -215,7 +231,7 @@ const printPageStyle = `
       page-break-before: always;
       position: absolute;
       bottom:1082px;
-      left: -420px;
+      left: -413px;
       transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
@@ -223,7 +239,7 @@ const printPageStyle = `
       page-break-before: always;
       position: absolute;
       bottom:1190px;
-      left: -140px;
+      left: -146px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
@@ -251,10 +267,18 @@ const downloadStyle = `
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
-    #income-page {
+    #manual-page {
       page-break-before: always;
       position: relative;
       bottom:873px;
+      left: 60px;
+      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #income-page {
+      page-break-before: always;
+      position: relative;
+      bottom:875px;
       left: 98px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -262,7 +286,7 @@ const downloadStyle = `
     #outcome-page {
       page-break-before: always;
       position: relative;
-      bottom:880px;
+      bottom:877px;
       left: 99px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -329,11 +353,19 @@ const downloadPageStyle = `
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
+    #manual-page {
+      page-break-before: always;
+      position: absolute;
+      bottom:1015px;
+      left: -435px;
+      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0 1;
+    }
     #income-page {
       page-break-before: always;
       position: absolute;
       bottom:975px;
-      left: -350px;
+      left: -360px;
       transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
@@ -349,7 +381,7 @@ const downloadPageStyle = `
       page-break-before: always;
       position: absolute;
       bottom:1145px;
-      left: -430px;
+      left: -473px;
       transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
@@ -373,7 +405,7 @@ const downloadPageStyle = `
       page-break-before: always;
       position: absolute;
       bottom:1203px;
-      left: -140px;
+      left: -155px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0 1;
     }
@@ -613,53 +645,60 @@ export default {
 .headline >>> #headline {
 	transform: scale(0.6);
 	position:relative;
-  bottom: 70px;
-  left:35px;
+  bottom:50px;
+  left:120px;
+}
+
+.manualPage >>> #manual-page {
+	transform: scale(0.6);
+	position:relative;
+  bottom:220px;
+  right:363px;
 }
 
 .incomePage >>> #income-page {
-	transform: scale(0.5);
+	transform: scale(0.6);
 	position:relative;
-	bottom: 280px;
-	right: 454px;
+	bottom: 200px;
+	right: 366px;
 }
 .outcomePage >>> #outcome-page {
-	transform: scale(0.5);
+	transform: scale(0.6);
 	position:relative;
-	bottom: 285px;
-	right: 453px;
+	bottom: 205px;
+	right: 366px;
 }
 
 .totalIncomePage >>> #total-income-page {
-  transform: scale(0.5);
+  transform: scale(0.6);
 	position:relative;
-	bottom: 222px;
-	right: 400px;
+	bottom: 162px;
+	right: 316px;
 }
 
 .totalOutcomePage >>> #total-outcome-page {
-  transform: scale(0.5);
+  transform: scale(0.6);
 	position:relative;
-	bottom: 283px;
-	right: 400px;
+	bottom: 211px;
+	right: 313px;
 }
 
 .sharesPage >>> #shares-page {
-  transform: scale(0.5);
+  transform: scale(0.6);
   position:relative;
-  bottom: 235px;
-  right: 390px;
+  bottom: 169px;
+  right: 302px;
 }
 
 .totalPage >>> #total-page {
-	transform: scale(0.5);
+	transform: scale(0.6);
 	position:relative;
-	bottom: 240px;
-	right: 190px;
+	bottom: 173px;
+	right: 103px;
 }
 
 i {
-  border: solid black;
+  border: solid #514A4A;
   border-width: 0 5px 5px 0;
   display: inline-block;
   padding: 3px;

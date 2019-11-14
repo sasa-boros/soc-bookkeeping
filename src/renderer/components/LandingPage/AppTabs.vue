@@ -16,7 +16,7 @@
               </b-tooltip>
             </span>
           </template>
-          <payment-slips-table v-on:updateBookedYears="updateBookedYears" v-on:updateInvalidPaymentSlipsInfo="updateInvalidPaymentSlipsInfo"></payment-slips-table>
+          <payment-slips-pane v-on:updateBookedYears="updateBookedYears" v-on:updateInvalidPaymentSlipsInfo="updateInvalidPaymentSlipsInfo"></payment-slips-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
@@ -32,7 +32,7 @@
               </b-tooltip>
             </span>
           </template>
-          <receipts-table v-on:updateBookedYears="updateBookedYears" v-on:updateInvalidReceiptsInfo="updateInvalidReceiptsInfo"></receipts-table>
+          <receipts-pane v-on:updateBookedYears="updateBookedYears" v-on:updateInvalidReceiptsInfo="updateInvalidReceiptsInfo"></receipts-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
@@ -43,10 +43,17 @@
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
+            <img src="~@/assets/codes.png" class="appTabsIcon">  
+            {{phrases.incomeAndOutcomeCodes}}
+          </template>
+          <code-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></code-pane>
+        </b-tab>
+        <b-tab class="appTab">
+          <template slot="title">
             <img src="~@/assets/settings.png" class="appTabsIcon">  
             {{phrases.settings}}
           </template>
-          <settings-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></settings-pane>
+          <settings-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt" v-on:updateZoomLevel="updateZoomLevel"></settings-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
@@ -80,9 +87,10 @@
 
 <script>
   import store from '@/store'
-  import ReceiptsTable from './AppTabs/ReceiptsTable'
-  import PaymentSlipsTable from './AppTabs/PaymentSlipsTable'
+  import ReceiptsPane from './AppTabs/ReceiptsPane'
+  import PaymentSlipsPane from './AppTabs/PaymentSlipsPane'
   import AnnualReportPane from './AppTabs/AnnualReportPane'
+  import CodePane from './AppTabs/CodePane'
   import SettingsPane from './AppTabs/SettingsPane'
   import MessageConfirmDialog from '../MessageConfirmDialog'
 
@@ -103,6 +111,7 @@
           paymentSlips: i18n.getTranslation('Payment slips'),
           receipts: i18n.getTranslation('Receipts'),
           annualReport: i18n.getTranslation('Annual report'),
+          incomeAndOutcomeCodes: i18n.getTranslation('Income and outcome codes'),
           settings: i18n.getTranslation('Settings'),
           invalidPaymentSlipsExist: i18n.getTranslation('Invalid payment slips exist'),
           invalidReceiptsExist: i18n.getTranslation('Invalid receipts exist'),
@@ -113,7 +122,7 @@
         arePaymentSlipsValid: true,
         areReceiptsValid: true,
         errorText: "",
-        zoomLevel: Big(1.4)
+        zoomLevel: Big(1.5)
       }
     },
     created () {
@@ -122,22 +131,15 @@
       this.updateDefaultPaymentSlip();
       this.updateDefaultReceipt();
       this.updateBookedYears();
-      // load zoom level
       if (process.platform == 'darwin') {
         this.phrases.commandOrControl = 'cmd'
       }
-      webFrame.setZoomFactor(parseFloat(this.zoomLevel))
     },
     mounted () {
       this.bindKeys()
     },
     beforeDestroy () {
       this.unbindKeys()
-    },
-    watch: {
-      'zoomLevel': function () {
-        webFrame.setZoomFactor(parseFloat(this.zoomLevel))
-      }
     },
     methods: {
       focusModalCloseButton (modalRef) {
@@ -147,16 +149,12 @@
         const self = this
         Mousetrap.bind(['command+=', 'ctrl+='], function(e) {
           e.preventDefault()
-          if(!self.zoomLevel.gte(2.0)) {
-            self.zoomLevel = self.zoomLevel.plus(0.1)
-          }
+          self.increaseZoomLevel()
           return false
         });
         Mousetrap.bind(['command+-', 'ctrl+-'], function(e) {
           e.preventDefault()
-          if(!self.zoomLevel.lte(1.0)) {
-            self.zoomLevel = self.zoomLevel.minus(0.1)
-          }
+          self.decreaseZoomLevel()
           return false
         });
         Mousetrap.prototype.stopCallback = function () {
@@ -220,7 +218,20 @@
           }
         })
       },
-      changeZoomLevel () {
+      increaseZoomLevel () {
+        if(!this.zoomLevel.gte(2.0)) {
+          this.zoomLevel = this.zoomLevel.plus(0.1)
+        }
+        webFrame.setZoomFactor(parseFloat(this.zoomLevel))
+      },
+      decreaseZoomLevel () {
+        if(!this.zoomLevel.lte(1.0)) {
+          this.zoomLevel = this.zoomLevel.minus(0.1)
+        }
+        webFrame.setZoomFactor(parseFloat(this.zoomLevel))
+      },
+      updateZoomLevel (zoomLevel) {
+        this.zoomLevel = Big(zoomLevel)
         webFrame.setZoomFactor(parseFloat(this.zoomLevel))
       },
       hideTooltip (elementId) {
@@ -235,7 +246,7 @@
         this.$root.$emit('bv::show::modal', 'app-tabs-error-modal')
       }
     },
-    components: { ReceiptsTable, PaymentSlipsTable, AnnualReportPane, SettingsPane, MessageConfirmDialog }
+    components: { ReceiptsPane, PaymentSlipsPane, AnnualReportPane, CodePane, SettingsPane, MessageConfirmDialog }
   }
 </script>
 
@@ -252,7 +263,6 @@
     overflow: auto;
   }
   .appTabsIcon {
-    height: 28px;
     width: auto;
     margin-right: 5px;
   }

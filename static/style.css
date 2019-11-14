@@ -6,13 +6,14 @@
   letter-spacing: 95%;
 }
 .invalidIcon {
-  height: 20px;
+  height: 25px;
   width: auto;
 }
 body {
   font-family: "Times New Roman";
   font-size: 90%;
   letter-spacing: 95%;
+  color:#514A4A;
 }
 input {
   text-align: center;
@@ -54,10 +55,31 @@ h1 {
   background-color: rgb(153, 153, 153);
 }
 .btn-light:hover:enabled {
-  background-color:  rgb(221, 217, 240);
+  background-color:  rgb(208, 226, 247);
 }
+
+.nav-link {
+  color:#514A4A !important;
+}
+.table tbody tr:hover {
+  background-color:  rgb(208, 226, 247) !important;
+}
+.page-link {
+  color:#514A4A !important;
+}
+
+.page-link:hover {
+  background-color:  rgb(208, 226, 247) !important;
+}
+
+li.active .page-link {
+  border:rgb(208, 226, 247) !important;
+  background-color:  rgb(208, 226, 247) !important;
+}
+
+
 .btn-light:active:enabled {
-  background-color:  rgb(221, 217, 240);
+  background-color:  rgb(208, 226, 247);
 }
 .is-invalid {
   border: dotted 2px red !important;
@@ -68,8 +90,8 @@ h1 {
 }
 
 input[type]:focus:not(.is-invalid) {
-  border-color:  rgb(221, 217, 240) !important;
-  box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
+  border-color:  rgb(208, 226, 247) !important;
+  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
   outline: 0 none !important;
 }
 
@@ -86,26 +108,26 @@ input[type]:focus:not(.is-invalid) {
 
 .custom-control-input~.custom-control-label::before
 {
-  border-color:  rgb(221, 217, 240) !important;
+  border-color:  rgb(208, 226, 247) !important;
   outline: none !important;
   box-shadow: none !important;
 }
 
 .custom-select
 {
-  border-color:  rgb(221, 217, 240) !important;
+  border-color:  rgb(208, 226, 247) !important;
 }
 
 .custom-control-input.focus-visible~.custom-control-label::before
 {
-  border-color:  rgb(221, 217, 240) !important;
-  box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
+  border-color:  rgb(208, 226, 247) !important;
+  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
   outline: 0 none !important;
 }
 
 .focus-visible {
-  border-color:  rgb(221, 217, 240) !important;
-  box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
+  border-color:  rgb(208, 226, 247) !important;
+  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
   outline: 0 none !important;
 }
 .dropdown-menu {
@@ -122,9 +144,9 @@ input[type]:focus:not(.is-invalid) {
 }
 
 .dropdown-item:hover {
-  background-color:  rgb(221, 217, 240) !important;
+  background-color:  rgb(208, 226, 247) !important;
 }
 
 .dropdown-toggle::after {
-  color:black;
+  color:#514A4A;
 }

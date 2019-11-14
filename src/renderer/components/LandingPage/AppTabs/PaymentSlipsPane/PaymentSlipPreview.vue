@@ -1057,15 +1057,15 @@
   }
 
  .paymentSlipDatepickerCalendar div span:hover  {
-    border-color:  rgb(221, 217, 240) !important;
-    box-shadow: 0 1px 1px rgba(124, 113, 175, 0.075) inset, 0 0 8px rgba(124, 113, 175, 0.6) !important;
-    outline: 0 none !important;
+    border: rgb(208, 226, 247) !important;
+    background-color:  rgb(208, 226, 247) !important;
   }
   .paymentSlipDatepickerCalendar div span.selected  {
-    background-color:  rgb(221, 217, 240) !important;
+    border: rgb(208, 226, 247) !important;
+    background-color:  rgb(208, 226, 247) !important;
   }
 
-  @media screen {
+@media screen {
     #print-payment-slip {
       display: none;
     }

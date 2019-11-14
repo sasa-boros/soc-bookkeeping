@@ -14,6 +14,7 @@ db.defaultPaymentSlips = new Datastore({ filename: path.join(app.getPath('userDa
 db.defaultReceipts = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.defaultReceipts), autoload: true})
 db.incomeCodes = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.incomeCodes), autoload: true})
 db.outcomeCodes = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.outcomeCodes), autoload: true})
+db.settings = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.settings), autoload: true})
 global.db = db
 
 // Loading store

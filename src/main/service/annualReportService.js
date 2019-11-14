@@ -154,7 +154,8 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 async function getAnnualReportPages (annualReport) {
   console.log('Getting annual report pages')
   const annualReportPages = []
-  populateHeadline(annualReport, annualReportPages)
+  await populateHeadline(annualReport, annualReportPages)
+  await populateManualPage(annualReport, annualReportPages)
 
   var incomeCodes = await incomeCodeDao.findAll()
   incomeCodes.sort(compareCodes)
@@ -190,6 +191,10 @@ async function populateHeadline(annualReport, annualReportPages) {
   const headline = await readFile(path.join(__static, "/templates/annual-report/headline.html"), { encoding: 'utf8'});
   Mustache.parse(headline);   // optional, speeds up future uses
   annualReportPages.push(Mustache.render(headline, headlineContext));
+}
+
+async function populateManualPage(annualReport, annualReportPages) {
+  annualReportPages.push(await readFile(path.join(__static, "/templates/annual-report/manual-page.html"), { encoding: 'utf8'}));
 }
 
 async function populateIncomePage (annualReport, annualReportPage, incomeCodes, incomePageTemplate, annualReportPages, paymentSlipStartIndex) {
@@ -368,6 +373,10 @@ async function populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcome
   annualReportPages.push(Mustache.render(totalOutcomePageTemplate, totalOutcomePageContext));
 }
 
+async function populateSharesPage(annualReport, annualReportPages) {
+  annualReportPages.push(await readFile(path.join(__static, "/templates/annual-report/shares-page.html"), { encoding: 'utf8'}));
+}
+
 async function populateTotalPage(annualReport, annualReportPages) {
   const totalPageContext = {};
 
@@ -381,10 +390,6 @@ async function populateTotalPage(annualReport, annualReportPages) {
   const totalPageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-page.html"), { encoding: 'utf8'});
   Mustache.parse(totalPageTemplate);   // optional, speeds up future uses
   annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext));
-}
-
-async function populateSharesPage(annualReport, annualReportPages) {
-  annualReportPages.push(await readFile(path.join(__static, "/templates/annual-report/shares-page.html"), { encoding: 'utf8'}));
 }
 
 const amountNumberOptions = {

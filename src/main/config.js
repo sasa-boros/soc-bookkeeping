@@ -8,7 +8,8 @@ const config = {
       defaultPaymentSlips: `${dbPath}/defaultPaymentSlips`,
       defaultReceipts: `${dbPath}/defaultReceipts`,
       incomeCodes: `${dbPath}/incomeCodes`,
-      outcomeCodes: `${dbPath}/outcomeCodes`
+      outcomeCodes: `${dbPath}/outcomeCodes`,
+      settings: `${dbPath}/settings`
     }
   }
 }

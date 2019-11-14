@@ -15,14 +15,7 @@ async function createDefaultReceipt (defaultReceipt) {
   console.log('Successfully created default receipt')
 }
 
-async function deleteDefaultReceipt () {
-  console.log('Deleting default receipt')
-  await defaultReceiptDao.removeAll()
-  console.log('Successfully deleted default receipt')
-}
-
 module.exports = {
   getDefaultReceipt: getDefaultReceipt,
-  createDefaultReceipt: createDefaultReceipt,
-  deleteDefaultReceipt: deleteDefaultReceipt
+  createDefaultReceipt: createDefaultReceipt
 }

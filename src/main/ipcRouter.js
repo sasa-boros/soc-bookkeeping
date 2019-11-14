@@ -6,6 +6,7 @@ const receiptService = require('./service/receiptService')
 const defaultPaymentSlipService = require('./service/defaultPaymentSlipService')
 const defaultReceiptService = require('./service/defaultReceiptService')
 const annualReportService = require('./service/annualReportService')
+const settingsService = require('./service/settingsService')
 const commonService = require('./service/commonService')
 
 ipcMain.on('get-income-codes', async (event) => {
@@ -200,14 +201,6 @@ ipcMain.on('create-default-payment-slip', async (event, defaultPaymentSlip) => {
   }
 })
 
-ipcMain.on('delete-default-payment-slip', async (event) => {
-  try {
-    reply(event, 'delete-default-payment-slip-reply', await defaultPaymentSlipService.deleteDefaultPaymentSlip())
-  } catch (err) {
-    replyError(event, 'delete-default-payment-slip-reply', err.message ? err.message : err)
-  }
-})
-
 ipcMain.on('get-default-receipt', async (event) => {
   try {
     reply(event, 'get-default-receipt-reply', await defaultReceiptService.getDefaultReceipt())
@@ -221,14 +214,6 @@ ipcMain.on('create-default-receipt', async (event, defaultReceipt) => {
     reply(event, 'create-default-receipt-reply', await defaultReceiptService.createDefaultReceipt(defaultReceipt))
   } catch (err) {
     replyError(event, 'create-default-receipt-reply', err.message ? err.message : err)
-  }
-})
-
-ipcMain.on('delete-default-receipt', async (event) => {
-  try {
-    reply(event, 'delete-default-receipt-reply', await defaultReceiptService.deleteDefaultReceipt())
-  } catch (err) {
-    replyError(event, 'delete-default-receipt-reply', err.message ? err.message : err)
   }
 })
 
@@ -261,6 +246,22 @@ ipcMain.on('get-booked-years', async (event) => {
     reply(event, 'get-booked-years-reply', await commonService.getBookedYears())
   } catch (err) {
     replyError(event, 'get-booked-years-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('get-settings', async (event) => {
+  try {
+    reply(event, 'get-settings-reply', await settingsService.getSettings())
+  } catch (err) {
+    replyError(event, 'get-settings-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('create-settings', async (event, settings) => {
+  try {
+    reply(event, 'create-settings-reply', await settingsService.createSettings(settings))
+  } catch (err) {
+    replyError(event, 'create-settings-reply', err.message ? err.message : err)
   }
 })
 

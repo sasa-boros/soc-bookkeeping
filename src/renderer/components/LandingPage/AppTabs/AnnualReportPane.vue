@@ -129,10 +129,10 @@
 
 <style>
   .modal .modal-ar {
-    max-width: 1000px;
-    width: 1000px;
-    max-height:707px;
-    height: 707px;
+    max-width: 1173px;
+    width: 1173px;
+    max-height:844px;
+    height:844px;
     overflow: hidden;
   }
 </style>
