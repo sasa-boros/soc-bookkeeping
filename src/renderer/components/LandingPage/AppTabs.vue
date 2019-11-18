@@ -10,9 +10,7 @@
               &nbsp;
               <img id="invalidPsImg" v-on:mouseleave="hideTooltip('invalidPsImg')" src="~@/assets/invalid.png" class="invalidIcon">
               <b-tooltip target="invalidPsImg">
-                <div class="tooltipInnerText">
                   {{phrases.invalidPaymentSlipsExist}}
-                </div>
               </b-tooltip>
             </span>
           </template>
@@ -26,9 +24,7 @@
               &nbsp;
               <img id="invalidRImg" v-on:mouseleave="hideTooltip('invalidRImg')" src="~@/assets/invalid.png" class="invalidIcon">
               <b-tooltip target="invalidRImg">
-                <div class="tooltipInnerText">
                   {{phrases.invalidReceiptsExist}}
-                </div>
               </b-tooltip>
             </span>
           </template>
@@ -221,14 +217,14 @@
       increaseZoomLevel () {
         if(!this.zoomLevel.gte(2.0)) {
           this.zoomLevel = this.zoomLevel.plus(0.1)
+          webFrame.setZoomFactor(parseFloat(this.zoomLevel))
         }
-        webFrame.setZoomFactor(parseFloat(this.zoomLevel))
       },
       decreaseZoomLevel () {
         if(!this.zoomLevel.lte(1.0)) {
           this.zoomLevel = this.zoomLevel.minus(0.1)
+          webFrame.setZoomFactor(parseFloat(this.zoomLevel))
         }
-        webFrame.setZoomFactor(parseFloat(this.zoomLevel))
       },
       updateZoomLevel (zoomLevel) {
         this.zoomLevel = Big(zoomLevel)

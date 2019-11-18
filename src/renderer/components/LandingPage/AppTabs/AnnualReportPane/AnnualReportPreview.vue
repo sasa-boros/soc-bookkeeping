@@ -46,25 +46,17 @@
         <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
         </div>
       </b-row>
-      <b-tooltip ref="annualReportPrintDropdownTooltip" target="annualReportPrintDropdown">
-          <div class="tooltipInnerText">
-            {{phrases.print}}
-          </div>
+      <b-tooltip ref="annualReportPrintDropdownTooltip" target="annualReportPrintDropdown" v-on:hide.prevent>
+        {{phrases.print}}
       </b-tooltip>
-      <b-tooltip ref="annualReportDownloadDropdownTooltip" target="annualReportDownloadDropdown">
-          <div class="tooltipInnerText">
-            {{phrases.download}}
-          </div>
+      <b-tooltip ref="annualReportDownloadDropdownTooltip" target="annualReportDownloadDropdown" v-on:hide.prevent>
+        {{phrases.download}}
       </b-tooltip>
-      <b-tooltip ref="decrementPageBtnTooltip" target="decrementPageBtn">
-          <div class="tooltipInnerText">
-            {{phrases.previousPage}}
-          </div>
+      <b-tooltip ref="decrementPageBtnTooltip" target="decrementPageBtn" v-on:hide.prevent>
+        {{phrases.previousPage}}
       </b-tooltip>
-      <b-tooltip ref="incrementPageBtnTooltip" target="incrementPageBtn">
-          <div class="tooltipInnerText">
-            {{phrases.nextPage}}
-          </div>
+      <b-tooltip ref="incrementPageBtnTooltip" target="incrementPageBtn" v-on:hide.prevent>
+        {{phrases.nextPage}}
       </b-tooltip>
       
       <b-modal id="annual-report-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportErrorModal')">

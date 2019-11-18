@@ -16,7 +16,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="partitionInput" v-on:mouseleave="hideTooltip('partitionInput')" type="text" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }" :autofocus="!isUpdate"/>
+            <b-form-input id="partitionInput" v-on:mouseleave="disablePartitionTooltip ? null : hideTooltip('partitionInput')" type="text" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }" :autofocus="!isUpdate"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -26,7 +26,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="positionInput" v-on:mouseleave="hideTooltip('positionInput')" type="text" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
+            <b-form-input id="positionInput" v-on:mouseleave="disablePositionTooltip ? null : hideTooltip('positionInput')" type="text" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -54,28 +54,20 @@
       </b-row>
     </b-form>
 
-    <b-tooltip target="saveIncomeCodeBtn" triggers="hover" placement="top" ref="saveIncomeCodeBtnTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.save}}
-        </div>
+      <b-tooltip target="saveIncomeCodeBtn" triggers="hover" placement="top" ref="saveIncomeCodeBtnTooltip" v-on:hide.prevent>
+        {{phrases.save}}
       </b-tooltip>
 
-      <b-tooltip target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip">
-        <div class="tooltipInnerText">
-          {{phrases.clear}}
-        </div>
+      <b-tooltip target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
+        {{phrases.clear}}
       </b-tooltip>
 
-      <b-tooltip target="partitionInput" triggers="hover" placement="top" ref="partitionInputTooltip" :disabled.sync="disablePartitionTooltip">
-        <div class="tooltipInnerText">
-          {{partitionTooltipText}}
-        </div>
+      <b-tooltip target="partitionInput" triggers="hover" placement="top" ref="partitionInputTooltip" :disabled.sync="disablePartitionTooltip" v-on:hide.prevent>
+        {{partitionTooltipText}}
       </b-tooltip>
 
-      <b-tooltip target="positionInput" triggers="hover" placement="top" ref="positionInputTooltip" :disabled.sync="disablePositionTooltip">
-        <div class="tooltipInnerText">
-          {{positionTooltipText}}
-        </div>
+      <b-tooltip target="positionInput" triggers="hover" placement="top" ref="positionInputTooltip" :disabled.sync="disablePositionTooltip" v-on:hide.prevent>
+        {{positionTooltipText}}
       </b-tooltip>
 
       <b-modal id="income-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('incomeCodePreviewErrorModal')">
@@ -126,7 +118,8 @@ export default {
       partitionInputAutonumeric: null,
       positionInputAutonumeric: null,
       descriptionElement: null,
-      alreadySubmited: false
+      alreadySubmited: false,
+      tooltipTimeouts: []
     }
   },
   created () {
@@ -150,7 +143,7 @@ export default {
       },
       set: function (newValue) {
         if (newValue) {
-          this.$refs.partitionInputTooltip.$emit('close')
+          this.hideTooltip('partitionInput')
         }
       }
     },
@@ -160,7 +153,7 @@ export default {
       },
       set: function (newValue) {
         if (newValue) {
-          this.$refs.positionInputTooltip.$emit('close')
+          this.hideTooltip('positionInput')
         }
       }
     },
@@ -224,33 +217,35 @@ export default {
         return
       }
       this.shouldValidate = true;
+      if (!this.isFormValid()) {
+        this.showInvalidTooltips()
+        return
+      }
       const self = this;
-      if (this.isFormValid()) {
-        if (this.isUpdate) {
-          this.alreadySubmited = true
-          incomeCodeController.updateIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
-              if (!res.err) {
-                this.shouldValidate = false;
-                self.$emit('updateIncomeCodes')
-                self.closeModal();
-              } else {
-                self.alreadySubmited = false
-                self.openErrorModal(res.err)
-              }
-          })
-        } else {
-          this.alreadySubmited = true
-          incomeCodeController.createIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
-              if (!res.err) {
-                this.shouldValidate = false;
-                self.$emit('updateIncomeCodes')
-                self.closeModal();
-              } else {
-                self.alreadySubmited = false
-                self.openErrorModal(res.err)
-              }
-          })
-        }
+      if (this.isUpdate) {
+        this.alreadySubmited = true
+        incomeCodeController.updateIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
+            if (!res.err) {
+              this.shouldValidate = false;
+              self.$emit('updateIncomeCodes')
+              self.closeModal();
+            } else {
+              self.alreadySubmited = false
+              self.openErrorModal(res.err)
+            }
+        })
+      } else {
+        this.alreadySubmited = true
+        incomeCodeController.createIncomeCode(mapCodeFormToCode(this.form)).then((res) => {
+            if (!res.err) {
+              this.shouldValidate = false;
+              self.$emit('updateIncomeCodes')
+              self.closeModal();
+            } else {
+              self.alreadySubmited = false
+              self.openErrorModal(res.err)
+            }
+        })
       }
     },
     isFormValid() {
@@ -266,12 +261,24 @@ export default {
       this.positionInputAutonumeric.clear()
       this.form.description = null;
     },
+    showInvalidTooltips () {
+      if (this.missingPartition || this.notUnique) {
+        this.showTooltip('partitionInput')
+      } else if (this.missingPosition) {
+        this.showTooltip('positionInput')
+      } 
+    },
+    showTooltip (elementId) {
+      this.$root.$emit('bv::show::tooltip', elementId)
+      clearTimeout(this.tooltipTimeouts[elementId])
+      const self = this
+      this.tooltipTimeouts[elementId] = setTimeout(() => {
+        self.hideTooltip(elementId)
+        self.tooltipTimeouts[elementId] = null
+      }, 2500)
+    },
     hideTooltip (elementId) {
-      if (elementId) {
-        this.$root.$emit('bv::hide::tooltip', elementId)
-      } else {
-        this.$root.$emit('bv::hide::tooltip')
-      }
+      this.$root.$emit('bv::hide::tooltip', elementId)
     },
     openErrorModal(error) {
       this.errorText = error

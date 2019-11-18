@@ -6,17 +6,17 @@
       </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-        <br/>На дин. <b-form-input id="incomeInput" ref="incomeInput" v-on:mouseleave="hideTooltip('incomeInput')" v-model="form.income" class="input-small number-input" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" type="text" :autofocus="!paymentSlipPreview"></b-form-input> и словима <b-form-input type="text" disabled class="input-small" id="IncomeAsText1" v-model="generatedIncomeTextLine1"></b-form-input>
+        <br/>На дин. <b-form-input id="incomeInput" ref="incomeInput" v-on:mouseleave="disableIncomeTooltip ? null : hideTooltip('incomeInput')" v-model="form.income" class="input-small number-input" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" type="text" :autofocus="!paymentSlipPreview"></b-form-input> и словима <b-form-input type="text" disabled class="input-small" id="IncomeAsText1" v-model="generatedIncomeTextLine1"></b-form-input>
         <br/><b-form-input disabled class="input-small" id="IncomeAsText2" v-model="generatedIncomeTextLine2"></b-form-input>
         <br/>колико сам данас уплатио у благајну Српске православне црквене општине
-у <b-form-input id="townInput" v-on:keypress="limitTownInput" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" v-on:keypress="limitReasonInput" ref="reasonInput" v-on:mouseleave="hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text" @blur.native="preDatepickerOnBlur"></b-form-input>
-        <br/><span v-on:mouseleave="hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate}" :language="calendarLanguages.srCYRL" :clear-button="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>                                                                                                      Уплатио,
-                                                                                                         <b-form-input id="payedInput" v-on:keypress="limitPayedInput" ref="payedInput" v-on:mouseleave="hideTooltip('payedInput')" v-model="form.payed" class="input-small" type="text" @blur.native="postDatepickerOnBlur"></b-form-input> 
+у <b-form-input id="townInput" v-on:keypress="limitTownInput" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" v-on:keypress="limitReasonInput" ref="reasonInput" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text" @blur.native="preDatepickerOnBlur"></b-form-input>
+        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate}" :language="calendarLanguages.srCYRL" :clear-button="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>                                                                                                      Уплатио,
+                                                                                                         <b-form-input id="payedInput" v-on:keypress="limitPayedInput" ref="payedInput" v-model="form.payed" class="input-small" type="text" @blur.native="postDatepickerOnBlur"></b-form-input> 
         <br/>                                                                                                         Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
-                                                                                           <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('firstPartInput')"><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small"/></span><span v-on:mouseleave="hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
-                Примио благајник,                                           <span class="partText">Парт. </span><span v-on:mouseleave="hideTooltip('secondPartInput')"><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small"/></span><span v-on:mouseleave="hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
+                                                                                           <span class="partText">Парт. </span><b-form-input id="firstPartInput" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
+                Примио благајник,                                           <span class="partText">Парт. </span><b-form-input id="secondPartInput" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
                                                            
-      <br/><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input>                                                                              Свега дин. <span v-on:mouseleave="hideTooltip('totalIncomeInputWrapper')" id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalIncomeTooltip }"></b-form-input></span>
+      <br/><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input>                                                                              Свега дин. <span v-on:mouseleave="disableTotalIncomeTooltip ? null : hideTooltip('totalIncomeInputWrapper')" id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalIncomeTooltip }"></b-form-input></span>
 
                                                                                                                                               Наредбодавац
                                                                                                                                 Председник црквене општине,
@@ -43,100 +43,68 @@
       </div>
     </b-form>
 
-    <b-tooltip target="incomeInput" triggers="hover" placement="top" ref="incomeInputTooltip" :disabled.sync="disableIncomeTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.enterAmount}}
-      </div>
+    <b-tooltip target="incomeInput" triggers="hover" placement="top" ref="incomeInputTooltip" :disabled.sync="disableIncomeTooltip" v-on:hide.prevent>
+      {{phrases.enterAmount}}
     </b-tooltip>
 
-    <b-tooltip target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.enterReason}}
-      </div>
+    <b-tooltip target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip" v-on:hide.prevent>
+      {{phrases.enterReason}}
     </b-tooltip>
 
-    <b-tooltip target="firstPartPosSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip">
-      <div class="tooltipInnerText">
-        {{firstPartTooltipText}}
-      </div>
+    <b-tooltip target="firstPartPosSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip" v-on:hide.prevent>
+      {{firstPartTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="firstPosInputWrapper" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip">
-      <div class="tooltipInnerText">
-        {{firstPosTooltipText}}
-      </div>
+    <b-tooltip target="firstPosInputWrapper" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip" v-on:hide.prevent>
+      {{firstPosTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="firstIncomeInputWrapper" triggers="hover" placement="top" ref="firstIncomeInputTooltip" :disabled.sync="disableFirstIncomeTooltip">
-      <div class="tooltipInnerText">
-        {{firstIncomeTooltipText}}
-      </div>
+    <b-tooltip target="firstIncomeInputWrapper" triggers="hover" placement="top" ref="firstIncomeInputTooltip" :disabled.sync="disableFirstIncomeTooltip" v-on:hide.prevent>
+      {{firstIncomeTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="secondPartPosSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip">
-      <div class="tooltipInnerText">
-        {{secondPartTooltipText}}
-      </div>
+    <b-tooltip target="secondPartPosSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip" v-on:hide.prevent>
+      {{secondPartTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="secondPosInputWrapper" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip">
-      <div class="tooltipInnerText">
-        {{secondPosTooltipText}}
-      </div>
+    <b-tooltip target="secondPosInputWrapper" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip" v-on:hide.prevent>
+      {{secondPosTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="secondIncomeInputWrapper" triggers="hover" placement="top" ref="secondIncomeInputTooltip" :disabled.sync="disableSecondIncomeTooltip">
-      <div class="tooltipInnerText">
-        {{secondIncomeTooltipText}}
-      </div>
+    <b-tooltip target="secondIncomeInputWrapper" triggers="hover" placement="top" ref="secondIncomeInputTooltip" :disabled.sync="disableSecondIncomeTooltip" v-on:hide.prevent>
+      {{secondIncomeTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="totalIncomeInputWrapper" triggers="hover" placement="top" ref="totalIncomeInputTooltip" :disabled.sync="disableTotalIncomeTooltip">
-      <div class="tooltipInnerText">
-        {{totalIncomeTooltipText}}
-      </div>
+    <b-tooltip target="totalIncomeInputWrapper" triggers="hover" placement="top" ref="totalIncomeInputTooltip" :disabled.sync="disableTotalIncomeTooltip" v-on:hide.prevent>
+      {{totalIncomeTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.pickDate}}
-      </div>
+    <b-tooltip target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip" v-on:hide.prevent>
+      {{phrases.pickDate}}
     </b-tooltip>
 
-    <b-tooltip target="annualReportPageInputWrapper" triggers="hover" placement="top" ref="annualReportPageInputTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.automaticallyGeneratedAfterSave}}
-      </div>
+    <b-tooltip target="annualReportPageInputWrapper" triggers="hover" placement="top" ref="annualReportPageInputTooltip" v-on:hide.prevent>
+      {{phrases.automaticallyGeneratedAfterSave}}
     </b-tooltip>
 
-    <b-tooltip target="ordinalInputWrapper" triggers="hover" placement="top" ref="ordinalInputTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.automaticallyGeneratedAfterSave}}
-      </div>
+    <b-tooltip target="ordinalInputWrapper" triggers="hover" placement="top" ref="ordinalInputTooltip" v-on:hide.prevent>
+      {{phrases.automaticallyGeneratedAfterSave}}
     </b-tooltip>
 
-    <b-tooltip target="paymentSlipDownloadBtn" triggers="hover" placement="top" ref="paymentSlipDownloadBtnTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.download}}
-      </div>
+    <b-tooltip target="paymentSlipDownloadBtn" triggers="hover" placement="top" ref="paymentSlipDownloadBtnTooltip" v-on:hide.prevent>
+      {{phrases.download}}
     </b-tooltip>
 
-    <b-tooltip target="paymentSlipPrintBtn" triggers="hover" placement="top" ref="paymentSlipPrintBtnTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.print}}
-      </div>
+    <b-tooltip target="paymentSlipPrintBtn" triggers="hover" placement="top" ref="paymentSlipPrintBtnTooltip" v-on:hide.prevent>
+      {{phrases.print}}
     </b-tooltip>
 
-    <b-tooltip target="paymentSlipSaveBtn" triggers="hover" placement="top"  ref="paymentSlipSaveBtnTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.save}}
-      </div>
+    <b-tooltip target="paymentSlipSaveBtn" triggers="hover" placement="top" ref="paymentSlipSaveBtnTooltip" v-on:hide.prevent>
+      {{phrases.save}}
     </b-tooltip>
 
-    <b-tooltip target="paymentSlipClearBtn" triggers="hover" placement="top" ref="paymentSlipClearBtnTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.clear}}
-      </div>
+    <b-tooltip target="paymentSlipClearBtn" triggers="hover" placement="top" ref="paymentSlipClearBtnTooltip" v-on:hide.prevent>
+      {{phrases.clear}}
     </b-tooltip>
 
     <b-modal id="payment-slip-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('paymentSlipPreviewErrorModal')">
@@ -225,7 +193,8 @@
         reasonInputElement: null,
         payedInputElement: null,
         alreadyPressed: false,
-        disablePrintAndDownload: true
+        disablePrintAndDownload: true,
+        tooltipTimeouts: []
       }
     },
     created () {
@@ -372,7 +341,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.incomeInputTooltip.$emit('close')
+            this.hideTooltip('incomeInput')
           }
         }
       },
@@ -383,7 +352,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.reasonInputTooltip.$emit('close')
+            this.hideTooltip('reasonInput')
           }
         }
       },
@@ -394,7 +363,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.firstPartInputTooltip.$emit('close')
+            this.hideTooltip('firstPartPosSelect')
           }
         }
       },
@@ -405,7 +374,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.firstPosInputTooltip.$emit('close')
+            this.hideTooltip('firstPosInputWrapper')
           }
         }
       },
@@ -422,7 +391,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.firstIncomeInputTooltip.$emit('close')
+            this.hideTooltip('firstIncomeInputWrapper')
           }
         }
       },
@@ -433,7 +402,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.secondPartInputTooltip.$emit('close')
+            this.hideTooltip('secondPartPosSelect')
           }
         }
       },
@@ -444,7 +413,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.secondPosInputTooltip.$emit('close')
+            this.hideTooltip('secondPosInputWrapper')
           }
         }
       },
@@ -461,7 +430,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.secondIncomeInputTooltip.$emit('close')
+            this.hideTooltip('secondIncomeInputWrapper')
           }
         }
       },
@@ -472,7 +441,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.totalIncomeInputTooltip.$emit('close')
+            this.hideTooltip('totalIncomeInputWrapper')
           }
         }
       },
@@ -483,7 +452,7 @@
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
           if (newValue) {
-            this.$refs.dateInputTooltip.$emit('close')
+            this.hideTooltip('dateInput')
           }
         }
       },
@@ -617,12 +586,12 @@
         var options = []
         options.push({html: '&nbsp', value: null})
         this.incomeCodes.forEach(ic => {
-          let padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+          let padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
           let paddingCount = ic.partition.toString().length + ic.position.toString().length
           if (paddingCount == 3) {
             padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
           } else if(paddingCount == 4) {
-            padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+            padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
           }
           options.push({html: ic.partition + '/' + ic.position + (ic.description ? padding + ic.description : ''), value: ic.partition + '/' + ic.position})
         })
@@ -657,12 +626,12 @@
         }
       },
       limitTownInput(evt) {
-      if (this.townInputElement.scrollWidth > this.townInputElement.clientWidth) {
+        if (this.townInputElement.scrollWidth > this.townInputElement.clientWidth) {
           evt.preventDefault()
         } 
       },
       limitReasonInput(evt) {
-      if (this.reasonInputElement.scrollWidth > this.reasonInputElement.clientWidth) {
+        if (this.reasonInputElement.scrollWidth > this.reasonInputElement.clientWidth) {
           evt.preventDefault()
         } 
       },
@@ -671,12 +640,34 @@
           evt.preventDefault()
         } 
       },
-      hideTooltip (elementId) {
-        if (elementId) {
-          this.$root.$emit('bv::hide::tooltip', elementId)
-        } else {
-          this.$root.$emit('bv::hide::tooltip')
+      showInvalidTooltips () {
+        if (this.missingIncome) {
+          this.showTooltip('incomeInput')
+        } else if (this.missingReason) {
+          this.showTooltip('reasonInput')
+        } else if (this.missingDate) {
+          this.showTooltip('dateInput')
+        } else if (this.atLeastOnePartPosNotSet) {
+          this.showTooltip('firstPartPosSelect')
+        } else if (!this.missingFirstPart && this.missingFirstIncome) {
+          this.showTooltip('firstIncomeInputWrapper')
+        } else if (!this.missingSecondPart && this.missingSecondIncome) {
+          this.showTooltip('secondIncomeInputWrapper')
+        } else if (this.totalIncomeNotValid) {
+          this.showTooltip('totalIncomeInputWrapper')
         }
+      },
+      showTooltip (elementId) {
+        this.$root.$emit('bv::show::tooltip', elementId)
+        clearTimeout(this.tooltipTimeouts[elementId])
+        const self = this
+        this.tooltipTimeouts[elementId] = setTimeout(() => {
+          self.hideTooltip(elementId)
+          self.tooltipTimeouts[elementId] = null
+        }, 2500)
+      },
+      hideTooltip (elementId) {
+        this.$root.$emit('bv::hide::tooltip', elementId)
       },
       tabPressedHandler (evt) {
         if (this.preDatepickerJustBlurred) {
@@ -722,30 +713,32 @@
           })
         } else {
           this.shouldValidate = true;
-          if (this.validForm) {
-            if (this.paymentSlipPreview) {
-              this.alreadyPressed = true
-              paymentSlipController.updatePaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes, true)).then((res) => {
-                if (!res.err) {
-                  self.$emit('updatePaymentSlipTable')
-                  self.closeModal();
-                } else {
-                  self.alreadyPressed = false
-                  self.openErrorModal(res.err)
-                }
-              })
-            } else {
-              this.alreadyPressed = true
-              paymentSlipController.createPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes, true)).then((res) => {
-                if (!res.err) {
-                  self.$emit('updatePaymentSlipTable')
-                  self.closeModal();
-                } else {
-                  self.alreadyPressed = false
-                  self.openErrorModal(res.err)
-                }
-              })
-            }
+          if (!this.validForm) {
+            this.showInvalidTooltips()
+            return
+          } 
+          if (this.paymentSlipPreview) {
+            this.alreadyPressed = true
+            paymentSlipController.updatePaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes, true)).then((res) => {
+              if (!res.err) {
+                self.$emit('updatePaymentSlipTable')
+                self.closeModal();
+              } else {
+                self.alreadyPressed = false
+                self.openErrorModal(res.err)
+              }
+            })
+          } else {
+            this.alreadyPressed = true
+            paymentSlipController.createPaymentSlip(mapPaymentSlipFormToPaymentSlip(this.form, this.incomeCodes, true)).then((res) => {
+              if (!res.err) {
+                self.$emit('updatePaymentSlipTable')
+                self.closeModal();
+              } else {
+                self.alreadyPressed = false
+                self.openErrorModal(res.err)
+              }
+            })
           }
         }
       },
@@ -922,11 +915,9 @@
   }
   #firstPartPosSelect {
     width: 50px;
-    padding: 2px 2px 2px 2px;
   }
   #secondPartPosSelect {
     width: 50px;
-    padding: 2px 2px 2px 2px;
   }
   .partText {
     position: relative;

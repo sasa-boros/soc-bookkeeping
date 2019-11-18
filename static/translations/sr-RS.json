@@ -70,7 +70,7 @@
     "Description": "Опис",
 
     "Income codes": "Партије и позиције примања",
-    "Added codes are being sorted automatically by partition and position":"Табела се аутоматски сортира према партији и позицији",
+    "Added codes are being sorted automatically by partition and position":"Додате партије и позиције се аутоматски сортирају",
     "Outcome codes": "Партије и позиције издавања",
     "There are no income codes to show": "Нема партија и позиција за приказ",
     "There are no outcome codes to show": "Нема партија и позиција за приказ",

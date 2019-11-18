@@ -21,10 +21,8 @@
       <annual-report-preview :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
     </b-modal>
     </div>
-    <b-tooltip target="annualReportBtn" triggers="hover" placement="top" ref="annualReportBtnTooltip">
-      <div class="tooltipInnerText">
+    <b-tooltip target="annualReportBtn" triggers="hover" placement="top" ref="annualReportBtnTooltip" v-on:hide.prevent>
         {{phrases.showAnnualReport}}
-      </div>
     </b-tooltip>
 
     <b-modal id="annual-report-preview-failed-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPreviewFailedModal')">

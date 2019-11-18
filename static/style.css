@@ -1,10 +1,19 @@
-.tooltipInnerText {
+.tooltip .tooltip-inner {
   font-size: 80%;
   line-height: 1;
   margin: 1px;
   font-family: "Times New Roman";
   letter-spacing: 95%;
+  background-color:#514A4A;
 }
+
+.tooltip .arrow {
+  bottom: 1px;
+}
+.tooltip .arrow::before {
+  border-top-color:#514A4A;
+}
+
 .invalidIcon {
   height: 25px;
   width: auto;
@@ -65,6 +74,7 @@ h1 {
   background-color:  rgb(208, 226, 247) !important;
 }
 .page-link {
+  border-color:rgb(208, 226, 247) !important;
   color:#514A4A !important;
 }
 
@@ -73,7 +83,6 @@ h1 {
 }
 
 li.active .page-link {
-  border:rgb(208, 226, 247) !important;
   background-color:  rgb(208, 226, 247) !important;
 }
 
@@ -111,6 +120,10 @@ input[type]:focus:not(.is-invalid) {
   border-color:  rgb(208, 226, 247) !important;
   outline: none !important;
   box-shadow: none !important;
+}
+
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before{
+  background-color: #3B88BF !important;
 }
 
 .custom-select

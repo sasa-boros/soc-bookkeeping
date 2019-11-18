@@ -40,28 +40,20 @@
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
 
-    <b-tooltip target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.adaptPaymentSlips}}
-      </div>
+    <b-tooltip target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip" v-on:hide.prevent>
+      {{phrases.adaptPaymentSlips}}
     </b-tooltip>
 
-    <b-tooltip target="defaultReceiptBtn" triggers="hover" placement="top" ref="defaultReceiptBtnTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.adaptReceipts}}
-      </div>
+    <b-tooltip target="defaultReceiptBtn" triggers="hover" placement="top" ref="defaultReceiptBtnTooltip" v-on:hide.prevent>
+      {{phrases.adaptReceipts}}
     </b-tooltip>
 
-    <b-tooltip target="increaseZoomLevelButton" triggers="hover" placement="top" ref="increaseZoomLevelButtonTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.increase}}
-      </div>
+    <b-tooltip target="increaseZoomLevelButton" triggers="hover" placement="top" ref="increaseZoomLevelButtonTooltip" v-on:hide.prevent>
+      {{phrases.increase}}
     </b-tooltip>
 
-    <b-tooltip target="decreaseZoomLevelButton" triggers="hover" placement="top" ref="decreaseZoomLevelButtonTooltip">
-      <div class="tooltipInnerText">
-        {{phrases.decrease}}
-      </div>
+    <b-tooltip target="decreaseZoomLevelButton" triggers="hover" placement="top" ref="decreaseZoomLevelButtonTooltip" v-on:hide.prevent>
+      {{phrases.decrease}}
     </b-tooltip>
   </b-container>
 </template>
@@ -127,14 +119,14 @@
       increaseZoomLevel () {
         if(!this.zoomLevel.gte(2.0)) {
           this.zoomLevel = this.zoomLevel.plus(0.1)
+          this.updateZoomLevel()
         }
-        this.updateZoomLevel()
       },
       decreaseZoomLevel () {
         if(!this.zoomLevel.lte(1.0)) {
           this.zoomLevel = this.zoomLevel.minus(0.1)
+          this.updateZoomLevel()
         }
-        this.updateZoomLevel()
       },
       updateZoomLevel () {
         const self = this
