@@ -2,33 +2,42 @@
   <b-container fluid>
     <br>
     <b-row>
+      <b-col cols=4>
+        {{ phrases.setDefaultPaymentSlip }}:
+      </b-col>
       <b-col>
-        {{ phrases.setDefaultPaymentSlip }}:&nbsp;&nbsp;&nbsp;&nbsp;
         <b-btn id="defaultPaymentSlipBtn" v-on:mouseleave="hideTooltip('defaultPaymentSlipBtn')" @click.stop="openDefaultPaymentSlipModal()" variant="light" class="btn-lg">
           <img src="~@/assets/payment-slip.png">
         </b-btn>
       </b-col>
     </b-row>
     <b-row>
+      <b-col cols=4>
+        {{ phrases.setDefaultReceipt }}:
+      </b-col>
       <b-col>
-        {{ phrases.setDefaultsReceipt }}:&nbsp;&nbsp;
         <b-btn id="defaultReceiptBtn" v-on:mouseleave="hideTooltip('defaultReceiptBtn')" @click.stop="openDefaultReceiptModal()" variant="light" class="btn-lg">
           <img src="~@/assets/receipt.png">
         </b-btn>
       </b-col>
     </b-row>
     <b-row>
+      <b-col cols=4>
+        {{ phrases.setDefaultZoomLevel }}: 
+      </b-col>
       <b-col>
-        {{ phrases.setDefaultZoomLevel }}:&nbsp;&nbsp; 
-        <b-btn id="decreaseZoomLevelButton" v-on:mouseleave="hideTooltip('decreaseZoomLevelButton')" @click.stop="decreaseZoomLevel()" variant="link" class="btn-lg">
+        <b-btn id="decreaseZoomLevelButton" v-on:mouseleave="hideTooltip('decreaseZoomLevelButton')" @click.stop="decreaseZoomLevel()" variant="light" class="btn-lg">
           <img src="~@/assets/minus.png">
         </b-btn>
         {{ zoomLevelFormated }}
-        <b-btn id="increaseZoomLevelButton" v-on:mouseleave="hideTooltip('increaseZoomLevelButton')" @click.stop="increaseZoomLevel()" variant="link" class="btn-lg">
+        <b-btn id="increaseZoomLevelButton" v-on:mouseleave="hideTooltip('increaseZoomLevelButton')" @click.stop="increaseZoomLevel()" variant="light" class="btn-lg">
           <img src="~@/assets/plus.png">
         </b-btn>
       </b-col>
     </b-row>
+
+    <br>
+    <code-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></code-pane>
 
     <!-- Default slip modal -->
     <b-modal hide-footer hide-header size="a5" id="default-payment-slip-modal">
@@ -39,7 +48,7 @@
     <b-modal hide-footer hide-header size="a5" id="default-receipt-modal">
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
-
+      
     <b-tooltip target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip" v-on:hide.prevent>
       {{phrases.adaptPaymentSlips}}
     </b-tooltip>
@@ -61,6 +70,7 @@
 <script>
   import PaymentSlipPreview from './PaymentSlipsPane/PaymentSlipPreview'
   import ReceiptPreview from './ReceiptsPane/ReceiptPreview'
+  import CodePane from './CodePane'
 
   const Big = require('big.js')
   const i18n = require('../../../../translations/i18n')
@@ -71,7 +81,7 @@
       return {
         phrases: {
           setDefaultPaymentSlip: i18n.getTranslation('Default values for payment slips'),
-          setDefaultsReceipt: i18n.getTranslation('Default values for receipts'),
+          setDefaultReceipt: i18n.getTranslation('Default values for receipts'),
           setDefaultZoomLevel: i18n.getTranslation('Default zoom level'),
           adaptPaymentSlips: i18n.getTranslation('Adapt payment slips'),
           adaptReceipts: i18n.getTranslation('Adapt receipts'),
@@ -86,7 +96,7 @@
       settingsController.getSettings().then(function (res) {
         if (!res.err) {
           self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.5)
-          self.updateZoomLevel()
+          self.$emit('updateZoomLevel', parseFloat(self.zoomLevel))
         } else {
           self.openErrorModal(res.err)
         }
@@ -107,6 +117,12 @@
       },
       updateDefaultReceipt () {
         this.$emit('updateDefaultReceipt')
+      },
+      updateDefaultShare () {
+        this.$emit('updateDefaultShare')
+      },
+      updateDefaultSaving () {
+        this.$emit('updateDefaultSaving')
       },
       openDefaultPaymentSlipModal () {
         this.hideTooltip('defaultPaymentSlipBtn')
@@ -146,7 +162,7 @@
         }
       }
     },
-    components: { PaymentSlipPreview, ReceiptPreview }
+    components: { PaymentSlipPreview, ReceiptPreview, CodePane }
   }
 </script>
 

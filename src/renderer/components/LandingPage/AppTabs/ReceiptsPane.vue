@@ -1,6 +1,5 @@
 <template> 
   <b-container fluid>
-    <!-- User Interface controls -->
      <br>
      <b-row>
       <b-col cols="6">
@@ -25,67 +24,65 @@
     </b-row>
 
     <div class="tableDiv">
-    <!-- Main table element -->
-    <b-table show-empty hover small id="receipts-table" class="mt-3"
-             stacked="md"
-             :items="items"
-             v-model="itemsShownInTable"
-             :fields="fields"
-             :current-page="currentPage"
-             :per-page="perPage"
-             :filter="filter"
-             :sort-compare="sortCompare"
-             :sort-by.sync="sortBy"
-             :sort-desc.sync="sortDesc"
-             :sort-direction="sortDirection"
-             :no-provider-sorting="true"
-             :no-provider-filtering="true"
-             :no-provider-paging="true"
-              head-variant="light"
-             @row-dblclicked="rowDblClickHandler" 
-             responsive
-             :empty-text="phrases.noRecordsToShow"
-             :empty-filtered-text="phrases.noRecordsToShow"
-    >
-      <template v-slot:head(select)="row">
-        <span v-on:mouseleave="hideTooltip()">
-          <b-form-checkbox v-b-tooltip.hover.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
-          </b-form-checkbox>
-         </span>
-      </template>
-      <template v-slot:cell(preview)="row">
-        <b-button-group>
-          <b-button id="updateReceiptBtn" v-on:mouseleave="hideTooltip('updateReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.seeDetails}" @click.stop="openUpdateReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
-            <img src="~@/assets/see-more.png">                                           
-          </b-button>
-        </b-button-group>                
-      </template>
-      <template v-slot:cell(select)="row">
-        <span v-on:mouseleave="hideTooltip()">
-          <b-form-checkbox :id="row._id" v-b-tooltip.hover.top="{title: phrases.select}" :value="row.item" v-model="checkedReceipts">
-          </b-form-checkbox>
-        </span>
-      </template>
-      <template v-slot:cell(outcome)="row">{{ row.item.outcome | formatOutcome }}</template>
-      <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
-      <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
-      <template v-slot:cell(formatedUpdatedAt)="row">{{ row.item.updatedAt | formatUpdatedAt }}</template>
-      <template v-slot:cell(invalid)="row">
-        <div v-show="!isValid(row.item)">
-          <img v-on:mouseleave="hideTooltip('invalid' + row.item._id)" :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
-          <b-tooltip :target="'invalid' + row.item._id" v-on:hide.prevent>
-              {{phrases.invalidReceipt}}
-          </b-tooltip>
-        </div>
-      </template>
-      <template v-slot:cell(delete)="row">
-        <b-button-group>
-          <b-button id="deleteReceiptBtn" v-on:mouseleave="hideTooltip('deleteReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.deleteReceipt}" @click.stop="openDeleteReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
-            <img src="~@/assets/delete.png">                                           
-          </b-button>     
-        </b-button-group>                
-      </template>
-    </b-table>
+      <b-table show-empty hover small id="receipts-table" class="mt-3"
+              stacked="md"
+              :items="items"
+              v-model="itemsShownInTable"
+              :fields="fields"
+              :current-page="currentPage"
+              :per-page="perPage"
+              :filter="filter"
+              :sort-compare="sortCompare"
+              :sort-by.sync="sortBy"
+              :sort-desc.sync="sortDesc"
+              :sort-direction="sortDirection"
+              :no-provider-sorting="true"
+              :no-provider-filtering="true"
+              :no-provider-paging="true"
+                head-variant="light"
+              @row-dblclicked="rowDblClickHandler" 
+              responsive
+              :empty-text="phrases.noRecordsToShow"
+              :empty-filtered-text="phrases.noRecordsToShow"
+      >
+        <template v-slot:head(select)="row">
+          <span v-on:mouseleave="hideTooltip()">
+            <b-form-checkbox v-b-tooltip.hover.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
+            </b-form-checkbox>
+          </span>
+        </template>
+        <template v-slot:cell(preview)="row">
+          <b-button-group>
+            <b-button id="updateReceiptBtn" v-on:mouseleave="hideTooltip('updateReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.seeDetails}" @click.stop="openUpdateReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+              <img src="~@/assets/see-more.png">                                           
+            </b-button>
+          </b-button-group>                
+        </template>
+        <template v-slot:cell(select)="row">
+          <span v-on:mouseleave="hideTooltip()">
+            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top="{title: phrases.select}" :value="row.item" v-model="checkedReceipts">
+            </b-form-checkbox>
+          </span>
+        </template>
+        <template v-slot:cell(outcome)="row">{{ row.item.outcome | formatOutcome }}</template>
+        <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
+        <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
+        <template v-slot:cell(invalid)="row">
+          <div v-show="!isValid(row.item)">
+            <img v-on:mouseleave="hideTooltip('invalid' + row.item._id)" :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
+            <b-tooltip :target="'invalid' + row.item._id" v-on:hide.prevent>
+                {{phrases.invalidReceipt}}
+            </b-tooltip>
+          </div>
+        </template>
+        <template v-slot:cell(delete)="row">
+          <b-button-group>
+            <b-button id="deleteReceiptBtn" v-on:mouseleave="hideTooltip('deleteReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.deleteReceipt}" @click.stop="openDeleteReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+              <img src="~@/assets/delete.png">                                           
+            </b-button>     
+          </b-button-group>                
+        </template>
+      </b-table>
     </div>
 
     <b-row>
@@ -95,7 +92,7 @@
     </b-row>
 
     <b-modal hide-footer hide-header size="a5" id="create-receipt-modal">
-      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" :existingReceipts="receipts" v-on:updateReceiptTable="update"></receipt-preview>
+      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" v-on:updateReceiptTable="update"></receipt-preview>
     </b-modal>
 
     <b-modal id="delete-receipt-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteReceiptModal')">
@@ -120,7 +117,6 @@
   import { EventBus } from '../../../eventbus/event-bus.js';
   
   const receiptController = require('../../../controllers/receiptController')
-  const commonController = require('../../../controllers/commonController')
   const i18n = require('../../../../translations/i18n')
   const { asFormatedString, amountNumberOptions } = require('../../../utils/utils')
 
@@ -130,19 +126,17 @@
         phrases: {
           cancel: i18n.getTranslation('Cancel'),
           delete: i18n.getTranslation('Delete'),
-          addReceipt: i18n.getTranslation('Add a receipt'),
+          addReceipt: i18n.getTranslation('Add receipt'),
+          deleteReceipt: i18n.getTranslation('Delete receipt'),
           deleteSelected: i18n.getTranslation('Delete selected'),
           seeDetails: i18n.getTranslation('See details'),
-          deleteReceipt: i18n.getTranslation('Delete the receipt'),
-          deleteReceipts: i18n.getTranslation('Delete receipt'),
           town: i18n.getTranslation('Town'),
           outcome: i18n.getTranslation('Amount'),
           payed: i18n.getTranslation('Payed'),
           received: i18n.getTranslation('Received'),
           reason: i18n.getTranslation('Reason'),
           forDate: i18n.getTranslation('For date'),
-          updatedAt: i18n.getTranslation('Updated at'),
-          areYouSureToDeleteReceipt: i18n.getTranslation('Are you sure you want to delete the receipt?'),
+          areYouSureToDeleteReceipt: i18n.getTranslation('Are you sure you want to delete receipt?'),
           areYouSureToDeleteCheckedReceipts: i18n.getTranslation('Are you sure you want to delete selected receipts?'),
           noRecordsToShow: i18n.getTranslation('There are no receipts to show'),
           filterByYear: i18n.getTranslation('Filter by year'),
@@ -337,7 +331,7 @@
         return (new Date(date)).toLocaleDateString(language, options)
       },
       formatOutcome (outcome) {
-        return asFormatedString(outcome, amountNumberOptions) + " din."
+        return asFormatedString(outcome, amountNumberOptions) + " дин."
       }
     },
     watch: {
@@ -379,7 +373,7 @@
   .disabledBtn {
     background-color: gray;
   }
-  .tableDiv{
+  .tableDiv {
     display: block;
     overflow: auto;
   }

@@ -10,6 +10,8 @@
           </b-button-group>
         </b-col>
       </b-row>
+      <h5 align="center">Партија и позиција издавања</h5>
+      <br>
       <b-row>
         <b-col cols="2">
           <label for="partitionInput">Партија:</label>
@@ -36,7 +38,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-on:keypress="limitDescriptionInput"/>
+            <b-form-input id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-on:keypress="limitInputPerSize"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -117,7 +119,6 @@ export default {
       errorText: "",
       partitionInputAutonumeric: null,
       positionInputAutonumeric: null,
-      descriptionElement: null,
       alreadySubmited: false,
       tooltipTimeouts: []
     }
@@ -130,7 +131,6 @@ export default {
   mounted () {
     this.partitionInputAutonumeric = new AutoNumeric('#partitionInput', partitionPositionNumberOptions)
     this.positionInputAutonumeric = new AutoNumeric('#positionInput', partitionPositionNumberOptions)
-    this.descriptionElement = document.getElementById('descriptionInput')
     this.bindKeys()
   },
   beforeDestroy () {
@@ -206,8 +206,8 @@ export default {
     unbindKeys() {
       Mousetrap.unbind(['command+s', 'ctrl+s'])
     },
-    limitDescriptionInput(evt) {
-      if (this.descriptionElement.scrollWidth > this.descriptionElement.clientWidth) {
+    limitInputPerSize(evt) {
+      if (evt.target.scrollWidth > evt.target.clientWidth) {
         evt.preventDefault()
       } 
     },

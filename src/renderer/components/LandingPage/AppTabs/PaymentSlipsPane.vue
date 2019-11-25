@@ -1,6 +1,5 @@
 <template> 
   <b-container fluid>
-    <!-- User Interface controls -->
      <br>
      <b-row>
       <b-col cols="6">
@@ -25,66 +24,65 @@
     </b-row>
 
     <div class="tableDiv">
-    <!-- Main table element -->
-    <b-table show-empty hover small id="payment-slips-table" class="mt-3"
-             stacked="md"
-             :items="items"
-             v-model="itemsShownInTable"
-             :fields="fields"
-             :current-page="currentPage"
-             :per-page="perPage"
-             :filter="filter"
-             :sort-compare="sortCompare"
-             :sort-by.sync="sortBy"
-             :sort-desc.sync="sortDesc"
-             :sort-direction="sortDirection"
-             :no-provider-sorting="true"
-             :no-provider-filtering="true"
-             :no-provider-paging="true"
-             @row-dblclicked="rowDblClickHandler" 
-             responsive
-             head-variant="light"
-             :empty-text="phrases.noRecordsToShow"
-             :empty-filtered-text="phrases.noRecordsToShow"
-    >
-      <template v-slot:head(select)="row">
-        <span v-on:mouseleave="hideTooltip()">
-          <b-form-checkbox  v-b-tooltip.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
-          </b-form-checkbox>
-         </span>
-      </template>
-      <template v-slot:cell(preview)="row">
-        <b-button-group>
-          <b-button id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.html.top="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
-            <img src="~@/assets/see-more.png">                                           
-          </b-button>
-        </b-button-group>                
-      </template>
-      <template v-slot:cell(select)="row">
-        <span v-on:mouseleave="hideTooltip()">
-          <b-form-checkbox :id="row._id" v-b-tooltip.hover.top="{title: phrases.select}" :value="row.item" v-model="checkedPaymentSlips">
-          </b-form-checkbox>
-        </span>
-      </template>
-      <template v-slot:cell(income)="row">{{ row.item.income | formatIncome }}</template>
-      <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
-      <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
-      <template v-slot:cell(invalid)="row">
-        <div v-show="!isValid(row.item)">
-          <img v-on:mouseleave="hideTooltip('invalid' + row.item._id)" :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
-          <b-tooltip :target="'invalid' + row.item._id" v-on:hide.prevent>
-              {{phrases.invalidPaymentSlip}}
-          </b-tooltip>
-        </div>
-      </template>
-      <template v-slot:cell(delete)="row">
-        <b-button-group>
-          <b-button id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
-            <img src="~@/assets/delete.png">                                           
-          </b-button>     
-        </b-button-group>                
-      </template>
-    </b-table>
+      <b-table show-empty hover small id="payment-slips-table" class="mt-3"
+              stacked="md"
+              :items="items"
+              v-model="itemsShownInTable"
+              :fields="fields"
+              :current-page="currentPage"
+              :per-page="perPage"
+              :filter="filter"
+              :sort-compare="sortCompare"
+              :sort-by.sync="sortBy"
+              :sort-desc.sync="sortDesc"
+              :sort-direction="sortDirection"
+              :no-provider-sorting="true"
+              :no-provider-filtering="true"
+              :no-provider-paging="true"
+              @row-dblclicked="rowDblClickHandler" 
+              responsive
+              head-variant="light"
+              :empty-text="phrases.noRecordsToShow"
+              :empty-filtered-text="phrases.noRecordsToShow"
+      >
+        <template v-slot:head(select)="row">
+          <span v-on:mouseleave="hideTooltip()">
+            <b-form-checkbox  v-b-tooltip.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
+            </b-form-checkbox>
+          </span>
+        </template>
+        <template v-slot:cell(preview)="row">
+          <b-button-group>
+            <b-button id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.html.top="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+              <img src="~@/assets/see-more.png">                                           
+            </b-button>
+          </b-button-group>                
+        </template>
+        <template v-slot:cell(select)="row">
+          <span v-on:mouseleave="hideTooltip()">
+            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top="{title: phrases.select}" :value="row.item" v-model="checkedPaymentSlips">
+            </b-form-checkbox>
+          </span>
+        </template>
+        <template v-slot:cell(income)="row">{{ row.item.income | formatIncome }}</template>
+        <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
+        <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
+        <template v-slot:cell(invalid)="row">
+          <div v-show="!isValid(row.item)">
+            <img v-on:mouseleave="hideTooltip('invalid' + row.item._id)" :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
+            <b-tooltip :target="'invalid' + row.item._id" v-on:hide.prevent>
+                {{phrases.invalidPaymentSlip}}
+            </b-tooltip>
+          </div>
+        </template>
+        <template v-slot:cell(delete)="row">
+          <b-button-group>
+            <b-button id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+              <img src="~@/assets/delete.png">                                           
+            </b-button>     
+          </b-button-group>                
+        </template>
+      </b-table>
     </div>
 
     <b-row>
@@ -93,7 +91,6 @@
       </b-col>
     </b-row>
 
-    <!-- Create payment slip modal -->
     <b-modal hide-footer hide-header size="a5" id="create-payment-slip-modal">
       <payment-slip-preview :paymentSlip='selectedItem' :paymentSlipPreview='isPreview' :existingPaymentSlips="paymentSlips" parentModal="create-payment-slip-modal" v-on:updatePaymentSlipTable="update"></payment-slip-preview>
     </b-modal>
@@ -120,7 +117,6 @@
   import { EventBus } from '../../../eventbus/event-bus.js';
   
   const paymentSlipController = require('../../../controllers/paymentSlipController')
-  const commonController = require('../../../controllers/commonController')
   const i18n = require('../../../../translations/i18n')
   const { asFormatedString, amountNumberOptions } = require('../../../utils/utils')
 
@@ -130,19 +126,17 @@
         phrases: {
           cancel: i18n.getTranslation('Cancel'),
           delete: i18n.getTranslation('Delete'),
-          addPaymentSlip: i18n.getTranslation('Add a payment slip'),
+          addPaymentSlip: i18n.getTranslation('Add payment slip'),
+          deletePaymentSlip: i18n.getTranslation('Delete payment slip'),
           deleteSelected: i18n.getTranslation('Delete selected'),
           seeDetails: i18n.getTranslation('See details'),
-          deletePaymentSlip: i18n.getTranslation('Delete payment slip'),
-          deletePaymentSlips: i18n.getTranslation('Delete payment slips'),
           town: i18n.getTranslation('Town'),
           income: i18n.getTranslation('Amount'),
           payed: i18n.getTranslation('Payed'),
           received: i18n.getTranslation('Received'),
           reason: i18n.getTranslation('Reason'),
           forDate: i18n.getTranslation('For date'),
-          updatedAt: i18n.getTranslation('Updated at'),
-          areYouSureToDeletePaymentSlip: i18n.getTranslation('Are you sure you want to delete the payment slip?'),
+          areYouSureToDeletePaymentSlip: i18n.getTranslation('Are you sure you want to delete payment slip?'),
           areYouSureToDeleteCheckedPaymentSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
           noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
           filterByYear: i18n.getTranslation('Filter by year'),
@@ -337,7 +331,7 @@
         return (new Date(date)).toLocaleDateString(language, options)
       },
       formatIncome (income) {
-        return asFormatedString(income, amountNumberOptions) + " din."
+        return asFormatedString(income, amountNumberOptions) + " дин."
       }
     },
     watch: {

@@ -1,6 +1,5 @@
 const incomeCodeDao = require('../dao/incomeCodeDao')
 const paymentSlipDao = require('../dao/paymentSlipDao')
-const defaultPaymentSlipDao = require('../dao/defaultPaymentSlipDao')
 
 async function getIncomeCodes () {
   console.log('Getting all income codes')
@@ -44,29 +43,11 @@ async function updatePaymentSlips (deletedIncomeCode) {
     if (incomePerCodeIndex != -1) {
       paymentSlip.isValid = false
       paymentSlip.incomePerCode.splice(incomePerCodeIndex, 1)
-      console.error(JSON.stringify(paymentSlip))
       if (paymentSlip.incomePerCode.length == 0) {
         paymentSlip.incomePerCode = null
       }
       await paymentSlipDao.updateById(paymentSlip._id, paymentSlip, true)
       console.log(`Payment slip with id ${paymentSlip._id} is no longer valid`)
-    }
-  }
-  let defaultPaymentSlip = await defaultPaymentSlipDao.findOne()
-  if (defaultPaymentSlip && defaultPaymentSlip.incomePerCode) {
-    let incomePerCodeIndex = defaultPaymentSlip.incomePerCode.findIndex(incomePerCode => {
-      return incomePerCode.incomeCode.partition == deletedIncomeCode.partition && incomePerCode.incomeCode.position == deletedIncomeCode.position
-    })
-    if (incomePerCodeIndex != -1) {
-      defaultPaymentSlip.incomePerCode.splice(incomePerCodeIndex, 1)
-      console.error(JSON.stringify(defaultPaymentSlip))
-      if (defaultPaymentSlip.incomePerCode.length == 0) {
-        defaultPaymentSlip.incomePerCode = null
-      }
-      delete defaultPaymentSlip._id
-      await defaultPaymentSlipDao.removeAll()
-      await defaultPaymentSlipDao.insert(defaultPaymentSlip)
-      console.log(`Default payment slip is updated`)
     }
   }
 }

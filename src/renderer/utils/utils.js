@@ -215,7 +215,6 @@ function numberToSerbianDinars (n) {
 }
 
 function getCodeCombinations (codes) {
-  codes.sort(compareCodes)
   var parts = {}
   if (codes) {
     codes.forEach(function (code) {
@@ -231,21 +230,136 @@ function getCodeCombinations (codes) {
 }
 
 function mapCodeToCodeForm (code) {
-  const codeForm = {};
-  codeForm._id = code._id;
+  const codeForm = {}
+  codeForm._id = code._id
   codeForm.partition = asFormatedString(code.partition, partitionPositionNumberOptions)
   codeForm.position = asFormatedString(code.position, partitionPositionNumberOptions)
   codeForm.description = code.description
-  return codeForm;
+  return codeForm
 }
 
 function mapCodeFormToCode (codeForm) {
-  const code = {};
-  code._id = codeForm._id;
+  const code = {}
+  code._id = codeForm._id
   code.partition = asInt(codeForm.partition, partitionPositionNumberOptions)
   code.position = asInt(codeForm.position, partitionPositionNumberOptions)
   code.description = codeForm.description
-  return code;
+  return code
+}
+
+function mapShareToShareForm (share) {
+  const shareForm = {}
+  shareForm._id = share._id
+  shareForm.createdAt = share.createdAt;
+  shareForm.updatedAt = share.updatedAt;
+  if (!share.year) {
+    shareForm.year = new Date()
+  } else {
+    shareForm.year = share.year
+  }
+  shareForm.series = share.series
+  shareForm.ordinal = share.ordinal
+  shareForm.name = share.name
+  shareForm.nominalValue = asFormatedString(share.nominalValue, amountNumberOptions)
+  return shareForm
+}
+
+function mapShareFormToShare (shareForm) {
+  const share = {}
+  share._id = shareForm._id
+  share.createdAt = shareForm.createdAt;
+  share.updatedAt = shareForm.updatedAt;
+  share.year = shareForm.year
+  share.series = shareForm.series
+  share.ordinal = shareForm.ordinal
+  share.name = shareForm.name
+  share.nominalValue = asFloat(shareForm.nominalValue, amountNumberOptions)
+  return share
+}
+
+function mapSavingToSavingForm (saving) {
+  const savingForm = {}
+  savingForm._id = saving._id
+  savingForm.createdAt = saving.createdAt;
+  savingForm.updatedAt = saving.updatedAt;
+  if (!saving.year) {
+    savingForm.year = new Date()
+  } else {
+    savingForm.year = saving.year
+  }
+  savingForm.account = saving.account
+  savingForm.savingEntity = saving.savingEntity
+  savingForm.amount = asFormatedString(saving.amount, amountNumberOptions)
+  savingForm.amountDeposited = asFormatedString(saving.amountDeposited, amountNumberOptions)
+  savingForm.amountWithdrawn = asFormatedString(saving.amountWithdrawn, amountNumberOptions)
+  return savingForm
+}
+
+function mapSavingFormToSaving (savingForm) {
+  const saving = {}
+  saving._id = savingForm._id
+  saving.createdAt = savingForm.createdAt;
+  saving.updatedAt = savingForm.updatedAt;
+  saving.year = savingForm.year
+  saving.account = savingForm.account
+  saving.savingEntity = savingForm.savingEntity
+  saving.name = savingForm.name
+  saving.amount = asFloat(savingForm.amount, amountNumberOptions)
+  saving.amountDeposited = asFloat(savingForm.amountDeposited, amountNumberOptions)
+  saving.amountWithdrawn = asFloat(savingForm.amountWithdrawn, amountNumberOptions)
+  return saving
+}
+
+function mapItemToItemForm (item) {
+  const itemForm = {}
+  itemForm._id = item._id
+  itemForm.createdAt = item.createdAt;
+  itemForm.updatedAt = item.updatedAt;
+  if (!item.year) {
+    itemForm.year = new Date()
+  } else {
+    itemForm.year = item.year
+  }
+  itemForm.name = item.name
+  itemForm.value = asFormatedString(item.value, amountNumberOptions)
+  return itemForm
+}
+
+function mapItemFormToItem (itemForm) {
+  const item = {}
+  item._id = itemForm._id
+  item.createdAt = itemForm.createdAt;
+  item.updatedAt = itemForm.updatedAt;
+  item.year = itemForm.year
+  item.name = itemForm.name
+  item.value = asFloat(itemForm.value, amountNumberOptions)
+  return item
+}
+
+function mapDebtToDebtForm (debt) {
+  const debtForm = {}
+  debtForm._id = debt._id
+  debtForm.createdAt = debt.createdAt;
+  debtForm.updatedAt = debt.updatedAt;
+  if (!debt.year) {
+    debtForm.year = new Date()
+  } else {
+    debtForm.year = debt.year
+  }
+  debtForm.description = debt.description
+  debtForm.amount = asFormatedString(debt.amount, amountNumberOptions)
+  return debtForm
+}
+
+function mapDebtFormToDebt (debtForm) {
+  const debt = {}
+  debt._id = debtForm._id
+  debt.createdAt = debtForm.createdAt;
+  debt.updatedAt = debtForm.updatedAt;
+  debt.year = debtForm.year
+  debt.description = debtForm.description
+  debt.amount = asFloat(debtForm.amount, amountNumberOptions)
+  return debt
 }
 
 function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
@@ -377,10 +491,6 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes, nullAsZero) {
     return receipt;
 }
 
-function compareCodes( codeA, codeB ) {
-  return codeA.partition - codeB.partition || codeA.position - codeB.position;
-}
-
 function saveAs (pathToFile, fileName, callback) {
   const localPath = path.join(os.homedir(), 'Desktop', fileName)
   const userChosenPath = dialog.showSaveDialog(currentWindow, { defaultPath: localPath })
@@ -428,6 +538,13 @@ module.exports = {
   mapPaymentSlipFormToPaymentSlip: mapPaymentSlipFormToPaymentSlip,
   mapReceiptToReceiptForm, mapReceiptToReceiptForm,
   mapReceiptFormToReceipt: mapReceiptFormToReceipt,
-  compareCodes: compareCodes,
+  mapShareToShareForm: mapShareToShareForm,
+  mapShareFormToShare: mapShareFormToShare,
+  mapSavingToSavingForm: mapSavingToSavingForm,
+  mapSavingFormToSaving: mapSavingFormToSaving,
+  mapItemToItemForm: mapItemToItemForm,
+  mapItemFormToItem: mapItemFormToItem,
+  mapDebtToDebtForm: mapDebtToDebtForm,
+  mapDebtFormToDebt: mapDebtFormToDebt,
   saveAs: saveAs
 }

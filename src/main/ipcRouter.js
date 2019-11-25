@@ -5,6 +5,10 @@ const paymentSlipService = require('./service/paymentSlipService')
 const receiptService = require('./service/receiptService')
 const defaultPaymentSlipService = require('./service/defaultPaymentSlipService')
 const defaultReceiptService = require('./service/defaultReceiptService')
+const shareService = require('./service/shareService')
+const savingService = require('./service/savingService')
+const itemService = require('./service/itemService')
+const debtService = require('./service/debtService')
 const annualReportService = require('./service/annualReportService')
 const settingsService = require('./service/settingsService')
 const commonService = require('./service/commonService')
@@ -217,11 +221,187 @@ ipcMain.on('create-default-receipt', async (event, defaultReceipt) => {
   }
 })
 
+ipcMain.on('get-shares', async (event) => {
+  try {
+    reply(event, 'get-shares-reply', await shareService.getShares())
+  } catch (err) {
+    replyError(event, 'get-shares-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('create-share', async (event, share) => {
+  try {
+    reply(event, 'create-share-reply', await shareService.createShare(share))
+  } catch (err) {
+    replyError(event, 'create-share-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('delete-share', async (event, shareId) => {
+  try {
+    reply(event, 'delete-share-reply', await shareService.deleteShare(shareId))
+  } catch (err) {
+    replyError(event, 'delete-share-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('delete-shares', async (event, sharesIds) => {
+  try {
+    reply(event, 'delete-shares-reply', await shareService.deleteShares(sharesIds))
+  } catch (err) {
+    replyError(event, 'delete-shares-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('update-share', async (event, share) => {
+  try {
+    reply(event, 'update-share-reply', await shareService.updateShare(share))
+  } catch (err) {
+    replyError(event, 'update-share-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('get-savings', async (event) => {
+  try {
+    reply(event, 'get-savings-reply', await savingService.getSavings())
+  } catch (err) {
+    replyError(event, 'get-savings-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('create-saving', async (event, saving) => {
+  try {
+    reply(event, 'create-saving-reply', await savingService.createSaving(saving))
+  } catch (err) {
+    replyError(event, 'create-saving-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('delete-saving', async (event, savingId) => {
+  try {
+    reply(event, 'delete-saving-reply', await savingService.deleteSaving(savingId))
+  } catch (err) {
+    replyError(event, 'delete-saving-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('delete-savings', async (event, savingsIds) => {
+  try {
+    reply(event, 'delete-savings-reply', await savingService.deleteSavings(savingsIds))
+  } catch (err) {
+    replyError(event, 'delete-savings-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('update-saving', async (event, saving) => {
+  try {
+    reply(event, 'update-saving-reply', await savingService.updateSaving(saving))
+  } catch (err) {
+    replyError(event, 'update-saving-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('get-items', async (event) => {
+  try {
+    reply(event, 'get-items-reply', await itemService.getItems())
+  } catch (err) {
+    replyError(event, 'get-items-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('create-item', async (event, item) => {
+  try {
+    reply(event, 'create-item-reply', await itemService.createItem(item))
+  } catch (err) {
+    replyError(event, 'create-item-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('delete-item', async (event, itemId) => {
+  try {
+    reply(event, 'delete-item-reply', await itemService.deleteItem(itemId))
+  } catch (err) {
+    replyError(event, 'delete-item-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('delete-items', async (event, itemsIds) => {
+  try {
+    reply(event, 'delete-items-reply', await itemService.deleteItems(itemsIds))
+  } catch (err) {
+    replyError(event, 'delete-items-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('update-item', async (event, item) => {
+  try {
+    reply(event, 'update-item-reply', await itemService.updateItem(item))
+  } catch (err) {
+    replyError(event, 'update-item-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('get-debts', async (event) => {
+  try {
+    reply(event, 'get-debts-reply', await debtService.getDebts())
+  } catch (err) {
+    replyError(event, 'get-debts-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('create-debt', async (event, debt) => {
+  try {
+    reply(event, 'create-debt-reply', await debtService.createDebt(debt))
+  } catch (err) {
+    replyError(event, 'create-debt-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('delete-debt', async (event, debtId) => {
+  try {
+    reply(event, 'delete-debt-reply', await debtService.deleteDebt(debtId))
+  } catch (err) {
+    replyError(event, 'delete-debt-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('delete-debts', async (event, debtsIds) => {
+  try {
+    reply(event, 'delete-debts-reply', await debtService.deleteDebts(debtsIds))
+  } catch (err) {
+    replyError(event, 'delete-debts-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('update-debt', async (event, debt) => {
+  try {
+    reply(event, 'update-debt-reply', await debtService.updateDebt(debt))
+  } catch (err) {
+    replyError(event, 'update-debt-reply', err.message ? err.message : err)
+  }
+})
+
 ipcMain.on('get-annual-report', async (event, year) => {
   try {
     reply(event, 'get-annual-report-reply', await annualReportService.getAnnualReport(year))
   } catch (err) {
     replyError(event, 'get-annual-report-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('get-annual-report-data', async (event, year) => {
+  try {
+    reply(event, 'get-annual-report-data-reply', await annualReportService.getAnnualReportData(year))
+  } catch (err) {
+    replyError(event, 'get-annual-report-data-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('create-annual-report-data', async (event, annualReportData) => {
+  try {
+    reply(event, 'create-annual-report-data-reply', await annualReportService.createAnnualReportData(annualReportData))
+  } catch (err) {
+    replyError(event, 'create-annual-report-data-reply', err.message ? err.message : err)
   }
 })
 

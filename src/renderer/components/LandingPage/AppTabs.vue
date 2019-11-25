@@ -2,6 +2,13 @@
   <b-container fluid>
     <b-card no-body id="appTabsCard">
       <b-tabs card>
+        <b-tab class="appTab">
+          <template slot="title">
+            <img src="~@/assets/annual-report.png" class="appTabsIcon">  
+            {{phrases.annualReport}}
+          </template>
+          <annual-report-pane></annual-report-pane>
+        </b-tab>
         <b-tab active class="appTab">
           <template slot="title">
             <img src="~@/assets/payment-slip.png" class="appTabsIcon">  
@@ -32,17 +39,31 @@
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
-            <img src="~@/assets/annual-report.png" class="appTabsIcon">  
-            {{phrases.annualReport}}
+            <img src="~@/assets/share.png" class="appTabsIcon">  
+            {{phrases.shares}}
           </template>
-          <annual-report-pane></annual-report-pane>
+          <shares-pane v-on:updateBookedYears="updateBookedYears"></shares-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
-            <img src="~@/assets/codes.png" class="appTabsIcon">  
-            {{phrases.incomeAndOutcomeCodes}}
+            <img src="~@/assets/savings.png" class="appTabsIcon">  
+            {{phrases.savings}}
           </template>
-          <code-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></code-pane>
+          <savings-pane v-on:updateBookedYears="updateBookedYears"></savings-pane>
+        </b-tab>
+        <b-tab class="appTab">
+          <template slot="title">
+            <img src="~@/assets/inventory.png" class="appTabsIcon">  
+            {{phrases.inventory}}
+          </template>
+          <items-pane v-on:updateBookedYears="updateBookedYears"></items-pane>
+        </b-tab>
+        <b-tab class="appTab">
+          <template slot="title">
+            <img src="~@/assets/debt.png" class="appTabsIcon">  
+            {{phrases.debts}}
+          </template>
+          <debts-pane v-on:updateBookedYears="updateBookedYears"></debts-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
@@ -56,22 +77,7 @@
             <img src="~@/assets/info.png" class="appTabsIcon">
             {{phrases.info}}  
           </template>
-          <h4 align="center">Техничка подршка</h4>
-          <br>
-          <p align="center"><b>daxon.tech@outlook.com</b></p>
-          <p align="center"><b>+381642750071</b></p>
-          <br>
-          <h4 align="center">Пречице</h4>
-          <br>
-          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>s</b>&nbsp;&nbsp;&nbsp;сачувај</p>
-          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>e</b>&nbsp;&nbsp;&nbsp;обриши унето</p>
-          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>p</b>&nbsp;&nbsp;&nbsp;штампај</p>
-          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>d</b>&nbsp;&nbsp;&nbsp;преузми</p>
-          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>=</b>&nbsp;&nbsp;&nbsp;зумирај</p>
-          <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>-</b>&nbsp;&nbsp;&nbsp;одзумирај</p>
-          <hr>
-          <br>
-          <p align="center">Апликација је лиценцирана од стране агенције DAXON TECH и на њу полаже ауторска права. &copy;</p>
+          <about-pane></about-pane>
         </b-tab>
       </b-tabs>
       <b-modal id="app-tabs-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('appTabsErrorModal')">
@@ -85,9 +91,14 @@
   import store from '@/store'
   import ReceiptsPane from './AppTabs/ReceiptsPane'
   import PaymentSlipsPane from './AppTabs/PaymentSlipsPane'
+  import SharesPane from './AppTabs/SharesPane'
+  import SavingsPane from './AppTabs/SavingsPane'
+  import ItemsPane from './AppTabs/ItemsPane'
+  import DebtsPane from './AppTabs/DebtsPane'
   import AnnualReportPane from './AppTabs/AnnualReportPane'
   import CodePane from './AppTabs/CodePane'
   import SettingsPane from './AppTabs/SettingsPane'
+  import AboutPane from './AppTabs/AboutPane'
   import MessageConfirmDialog from '../MessageConfirmDialog'
 
   const {webFrame} = require('electron')
@@ -95,8 +106,8 @@
 
   const i18n = require('../../../translations/i18n')
   const paymentSlipController = require('../../controllers/paymentSlipController')
-  const receiptController = require('../../controllers/receiptController')
   const defaultPaymentSlipController = require('../../controllers/defaultPaymentSlipController')
+  const receiptController = require('../../controllers/receiptController')
   const defaultReceiptController = require('../../controllers/defaultReceiptController')
   const commonController = require('../../controllers/commonController')
 
@@ -104,16 +115,19 @@
     data () {
       return {
         phrases: {
+          annualReport: i18n.getTranslation('Annual report'),
           paymentSlips: i18n.getTranslation('Payment slips'),
           receipts: i18n.getTranslation('Receipts'),
-          annualReport: i18n.getTranslation('Annual report'),
+          shares: i18n.getTranslation('Shares'),
+          savings: i18n.getTranslation('Savings'),
+          inventory: i18n.getTranslation('Inventory'),
+          debts: i18n.getTranslation('Debts'),
           incomeAndOutcomeCodes: i18n.getTranslation('Income and outcome codes'),
           settings: i18n.getTranslation('Settings'),
           invalidPaymentSlipsExist: i18n.getTranslation('Invalid payment slips exist'),
           invalidReceiptsExist: i18n.getTranslation('Invalid receipts exist'),
           ok: i18n.getTranslation('Ok'),
-          info: i18n.getTranslation('Information'),
-          commandOrControl: 'ctrl'
+          info: i18n.getTranslation('Information')
         },
         arePaymentSlipsValid: true,
         areReceiptsValid: true,
@@ -127,9 +141,6 @@
       this.updateDefaultPaymentSlip();
       this.updateDefaultReceipt();
       this.updateBookedYears();
-      if (process.platform == 'darwin') {
-        this.phrases.commandOrControl = 'cmd'
-      }
     },
     mounted () {
       this.bindKeys()
@@ -242,7 +253,7 @@
         this.$root.$emit('bv::show::modal', 'app-tabs-error-modal')
       }
     },
-    components: { ReceiptsPane, PaymentSlipsPane, AnnualReportPane, CodePane, SettingsPane, MessageConfirmDialog }
+    components: { ReceiptsPane, PaymentSlipsPane, SharesPane, SavingsPane, ItemsPane, DebtsPane, AnnualReportPane, CodePane, SettingsPane, AboutPane, MessageConfirmDialog }
   }
 </script>
 

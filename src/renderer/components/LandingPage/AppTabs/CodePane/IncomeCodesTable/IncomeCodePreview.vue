@@ -10,6 +10,8 @@
           </b-button-group>
         </b-col>
       </b-row>
+      <h5 align="center">Партија и позиција примања</h5>
+      <br>
       <b-row>
         <b-col cols="2">
           <label for="partitionInput">Партија:</label>
@@ -22,7 +24,7 @@
       </b-row>
       <b-row>
         <b-col cols="2">
-          <label for="positionInput" class="positionLabel">Позиција:</label>
+          <label for="positionInput">Позиција:</label>
         </b-col>
         <b-col>
           <b-form-group>
@@ -36,7 +38,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input ref="descriptionInput" id="descriptionInput" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" v-on:keypress="limitDescriptionInput" class="descriptionInput"/>
+            <b-form-input ref="descriptionInput" id="descriptionInput" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" v-on:keypress="limitInputPerSize" class="descriptionInput"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -117,7 +119,6 @@ export default {
       errorText: "",
       partitionInputAutonumeric: null,
       positionInputAutonumeric: null,
-      descriptionElement: null,
       alreadySubmited: false,
       tooltipTimeouts: []
     }
@@ -130,7 +131,6 @@ export default {
   mounted () {
     this.partitionInputAutonumeric = new AutoNumeric('#partitionInput', partitionPositionNumberOptions)
     this.positionInputAutonumeric = new AutoNumeric('#positionInput', partitionPositionNumberOptions)
-    this.descriptionElement = document.getElementById('descriptionInput')
     this.bindKeys()
   },
   beforeDestroy () {
@@ -206,8 +206,8 @@ export default {
     unbindKeys() {
       Mousetrap.unbind(['command+s', 'ctrl+s'])
     },
-    limitDescriptionInput(evt) {
-      if (this.descriptionElement.scrollWidth > this.descriptionElement.clientWidth) {
+    limitInputPerSize(evt) {
+      if (evt.target.scrollWidth > evt.target.clientWidth) {
         evt.preventDefault()
       } 
     },

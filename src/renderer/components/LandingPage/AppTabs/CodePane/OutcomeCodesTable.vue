@@ -65,7 +65,6 @@
   const { dialog } = require('electron').remote
   const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
   const i18n = require('../../../../../translations/i18n')
-  const { compareCodes } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -125,8 +124,7 @@
         const self = this
         outcomeCodeController.getOutcomeCodes().then((res) => {
           if (!res.err) {
-            var outcomeCodes = res.data ? res.data : []
-            self.outcomeCodes = outcomeCodes.sort(compareCodes)
+            self.outcomeCodes = res.data ? res.data : []
           } else {
             self.openErrorModal(res.err)
           }
@@ -181,6 +179,7 @@
       },
       update () {
         this.loadOutcomeCodes()
+        EventBus.$emit('updateAnnualReportPane')
       }
     },
     components: { OutcomeCodePreview, MessageConfirmDialog }

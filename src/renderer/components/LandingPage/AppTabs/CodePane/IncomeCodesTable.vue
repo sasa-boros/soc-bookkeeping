@@ -65,7 +65,6 @@
   const { dialog } = require('electron').remote
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const i18n = require('../../../../../translations/i18n')
-  const { compareCodes } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -125,8 +124,7 @@
         const self = this
         incomeCodeController.getIncomeCodes().then((res) => {
           if (!res.err) {
-            var incomeCodes = res.data ? res.data : []
-            self.incomeCodes = incomeCodes.sort(compareCodes)
+            self.incomeCodes = res.data ? res.data : []
           } else {
             self.openErrorModal(res.err)
           }
@@ -162,7 +160,7 @@
           if (!res.err) {
             self.update()
             this.$emit('updateDefaultPaymentSlip')
-            EventBus.$emit('updatePaymentSlipTable');
+            EventBus.$emit('updatePaymentSlipTable')
           } else {
             self.openErrorModal(res.err)
           }
@@ -181,6 +179,7 @@
       },
       update () {
         this.loadIncomeCodes()
+        EventBus.$emit('updateAnnualReportPane')
       }
     },
     components: { IncomeCodePreview, MessageConfirmDialog }

@@ -1,6 +1,6 @@
 function findAll () {
     return new Promise((resolve, reject) => { 
-        db.outcomeCodes.find({}).sort({ 'partition': 1, 'position': 1 }).exec((err, docs) => {
+        db.shares.find({}).sort({ 'createdAt': -1 }).exec( (err, docs) => {
             if (err) {
                 reject(err)
             }
@@ -9,20 +9,22 @@ function findAll () {
     })
 }
 
-function findById (id) {
+function findAllForYear (year) {
     return new Promise((resolve, reject) => { 
-        db.outcomeCodes.findOne({_id: id}, (err, doc) => {
+        db.shares.find({ 'year': year }).sort({ 'createdAt': -1 }).exec((err, docs) => {
             if (err) {
                 reject(err)
             }
-            resolve(doc)
+            resolve(docs)
         })
     })
 }
 
 function insert (doc) {
+    doc.createdAt = Date.now()
+    doc.updatedAt = Date.now()
     return new Promise((resolve, reject) => { 
-        db.outcomeCodes.insert(doc, (err, newDoc) => {
+        db.shares.insert(doc, (err, newDoc) => {
             if (err) {
                 reject(err)
             }
@@ -33,7 +35,18 @@ function insert (doc) {
 
 function removeById (id) {
     return new Promise((resolve, reject) => { 
-        db.outcomeCodes.remove({ _id: id }, {}, (err, numRemoved) => {
+        db.shares.remove({ _id: id }, {}, (err, numRemoved) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(numRemoved)
+        })
+    })
+}
+
+function removeManyByIds (ids) {
+    return new Promise((resolve, reject) => { 
+        db.shares.remove({ _id: { $in : ids }}, {multi: true}, (err, numRemoved) => {
             if (err) {
                 reject(err)
             }
@@ -43,8 +56,9 @@ function removeById (id) {
 }
 
 function updateById (id, doc) {
+    doc.updatedAt = Date.now()
     return new Promise((resolve, reject) => { 
-        db.outcomeCodes.update({ _id: id }, doc, (err, numReplaced) => {
+        db.shares.update({ _id: id }, doc, (err, numReplaced) => {
             if (err) {
                 reject(err)
             }
@@ -55,8 +69,9 @@ function updateById (id, doc) {
 
 module.exports = {
     findAll: findAll,
-    findById: findById,
+    findAllForYear: findAllForYear,
     insert: insert,
     removeById: removeById,
+    removeManyByIds: removeManyByIds,
     updateById: updateById
 }

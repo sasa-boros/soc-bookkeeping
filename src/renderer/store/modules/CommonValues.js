@@ -18,10 +18,10 @@ const mutations = {
 
 const actions = {
   SET_DEFAULT_PAYMENT_SLIP ({ commit }, paymentSlip) {
-        commit('SET_DEFAULT_PAYMENT_SLIP', paymentSlip);
+    commit('SET_DEFAULT_PAYMENT_SLIP', paymentSlip);
   },
   SET_DEFAULT_RECEIPT ({ commit }, receipt) {
-        commit('SET_DEFAULT_RECEIPT', receipt);
+    commit('SET_DEFAULT_RECEIPT', receipt);
   },
   SET_BOOKED_YEARS ({ commit }, bookedYears) {
     commit('SET_BOOKED_YEARS', bookedYears);

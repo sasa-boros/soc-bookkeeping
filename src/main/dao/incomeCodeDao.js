@@ -1,6 +1,6 @@
 function findAll () {
     return new Promise((resolve, reject) => { 
-        db.incomeCodes.find({}, (err, docs) => {
+        db.incomeCodes.find({}).sort({ 'partition': 1, 'position': 1 }).exec((err, docs) => {
             if (err) {
                 reject(err)
             }

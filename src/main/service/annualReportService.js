@@ -1,7 +1,10 @@
 const { AnnualReportPage } = require('../model/annualReportPage')
 const { AnnualReport } = require('../model/annualReport')
+const annualReportDao = require('../dao/annualReportDao')
 const paymentSlipDao = require('../dao/paymentSlipDao')
 const receiptDao = require('../dao/receiptDao')
+const shareDao = require('../dao/shareDao')
+const savingDao = require('../dao/savingDao')
 const incomeCodeDao = require('../dao/incomeCodeDao')
 const outcomeCodeDao = require('../dao/outcomeCodeDao')
 
@@ -16,6 +19,21 @@ const i18n = require('../../translations/i18n')
 const AutoNumeric = require('autonumeric')
 
 const { degrees, PDFDocument } = require('pdf-lib')
+
+async function getAnnualReportData (year) {
+  console.log(`Getting annual report data for year ${year}`)
+  const annualReportData = await annualReportDao.findOneForYear(year)
+  console.log(`Returning annual report data: \n${JSON.stringify(annualReportData, null, 2)}`)
+  return annualReportData
+}
+
+async function createAnnualReportData (annualReportData) {
+  delete annualReportData._id
+  console.log(`Creating annual report data: \n${JSON.stringify(annualReportData, null, 2)}`)
+  await annualReportDao.removeOneForYear(annualReportData.year)
+  await annualReportDao.insert(annualReportData)
+  console.log('Successfully created annual report data')
+}
 
 async function getAnnualReport (year) {
   console.log(`Getting annual report for year ${year}`)
@@ -51,6 +69,11 @@ async function getAnnualReport (year) {
     annualReport.pages.push(annualReportPage)
   }
   annualReport.total = annualReport.totalIncome.minus(annualReport.totalOutcome)
+
+  const shares = await shareDao.findAllForYear(year)
+  const savings = await savingDao.findAllForYear(year)
+
+  
 
   transformBigsToNumbers(annualReport);
   console.log(`Returning annual report: \n${JSON.stringify(annualReport, null, 2)}`)
@@ -158,9 +181,7 @@ async function getAnnualReportPages (annualReport) {
   await populateManualPage(annualReport, annualReportPages)
 
   var incomeCodes = await incomeCodeDao.findAll()
-  incomeCodes.sort(compareCodes)
   var outcomeCodes = await outcomeCodeDao.findAll()
-  outcomeCodes.sort(compareCodes)
 
   const incomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/income-page.html"), { encoding: 'utf8'})
   const outcomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/outcome-page.html"), { encoding: 'utf8'})
@@ -174,10 +195,6 @@ async function getAnnualReportPages (annualReport) {
 
   console.log(`Returning annual report ${annualReportPages.length} pages`)
   return annualReportPages
-}
-
-function compareCodes( codeA, codeB ) {
-  return codeA.partition - codeB.partition || codeA.position - codeB.position;
 }
 
 async function populateHeadline(annualReport, annualReportPages) {
@@ -436,6 +453,8 @@ function pdfSettings () {
 }
 
 module.exports = {
+  getAnnualReportData: getAnnualReportData,
+  createAnnualReportData: createAnnualReportData,
   getAnnualReport: getAnnualReport,
   getAnnualReportPages: getAnnualReportPages,
   createAnnualReportPdf: createAnnualReportPdf
