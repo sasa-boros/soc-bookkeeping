@@ -9,7 +9,6 @@ async function getSavings () {
 
 async function createSaving (saving) {
   delete saving._id
-  saving.year = new Date(saving.year)
   console.log(`Creating saving: \n${JSON.stringify(saving, null, 2)}`)
   await savingDao.insert(saving)
   console.log('Successfully created saving')
@@ -29,7 +28,6 @@ async function deleteSavings (savingsIds) {
 
 async function updateSaving (saving) {
   console.log(`Updating saving: \n${JSON.stringify(saving, null, 2)}`)
-  saving.year = new Date(saving.year)
   await savingDao.updateById(saving._id, saving)
   console.log('Successfully updated saving')
 }

@@ -27,6 +27,33 @@ function getAnnualReportPages (annualReport) {
   })
 }
 
+function getAnnualReportCommonData () {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('get-annual-report-common-data')
+    ipcRenderer.once('get-annual-report-common-data-reply', (event, res) => {
+      resolve(res)
+    })
+  })
+}
+
+function createAnnualReportCommonData (common) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('create-annual-report-common-data', common)
+    ipcRenderer.once('create-annual-report-common-data-reply', (event, res) => {
+      resolve(res)
+    })
+  })
+}
+
+function createAnnualReportData (annualReportData) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('create-annual-report-data', annualReportData)
+    ipcRenderer.once('create-annual-report-data-reply', (event, res) => {
+      resolve(res)
+    })
+  })
+}
+
 function createAnnualReportPdf () {
   return new Promise(function (resolve) {
     ipcRenderer.send('create-annual-report-pdf')
@@ -38,7 +65,10 @@ function createAnnualReportPdf () {
 
 module.exports = {
   getAnnualReport: getAnnualReport,
+  getAnnualReportCommonData: getAnnualReportCommonData,
   getAnnualReportData: getAnnualReportData,
+  createAnnualReportCommonData: createAnnualReportCommonData,
+  createAnnualReportData: createAnnualReportData,
   getAnnualReportPages: getAnnualReportPages,
   createAnnualReportPdf: createAnnualReportPdf
 }

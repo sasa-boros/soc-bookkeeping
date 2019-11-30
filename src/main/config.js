@@ -3,6 +3,7 @@ const dbPath = '/bookkeeping_db'
 const config = {
   db: {
     collections: {
+      annualReportCommons: `${dbPath}/annualReportCommons`,
       annualReports: `${dbPath}/annualReports`,
       paymentSlips: `${dbPath}/paymentSlips`,
       defaultPaymentSlips: `${dbPath}/defaultPaymentSlips`,

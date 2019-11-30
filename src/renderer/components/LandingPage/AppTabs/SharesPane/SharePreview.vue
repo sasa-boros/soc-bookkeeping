@@ -108,7 +108,7 @@
   import MessageConfirmDialog from '../../../MessageConfirmDialog'
   
   const shareController = require('../../../../controllers/shareController')
-  const { mapShareToShareForm, mapShareFormToShare, amountNumberOptions } = require('../../../../utils/utils')
+  const { mapShareToShareForm, mapShareFormToShare, largeAmountNumberOptions } = require('../../../../utils/utils')
   
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
@@ -160,7 +160,7 @@
       }
     },
     mounted () {
-      this.nominalValueInputAutonumeric = new AutoNumeric('#nominalValueInput', amountNumberOptions)
+      this.nominalValueInputAutonumeric = new AutoNumeric('#nominalValueInput', largeAmountNumberOptions)
       this.bindKeys()
     },
     beforeDestroy () {
@@ -332,19 +332,19 @@
     border-radius: 0 !important;
   }
   #seriesInput {
-    width: 50px;
+    width: 85px;
     border-style: none;
   }
   #ordinalInput {
-    width: 50px;
+    width: 85px;
     border-style: none;
   }
   #nameInput {
-    width: 235px;
+    width: 315px;
     border-style: none;
   }
   #nominalValueInput {
-    width: 105px;
+    width: 130px;
     border-style: none;
   }
 </style>

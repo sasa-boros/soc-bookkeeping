@@ -13,7 +13,7 @@
       <h5 align="center">Улог на штедњи</h5>
       <br>
       <b-row>
-        <b-col cols="5">
+        <b-col cols="3">
           <label for="yearInput">Година:</label>
         </b-col>
         <b-col>
@@ -23,7 +23,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="5">
+        <b-col cols="3">
           <label for="accountInput">Број рачуна:</label>
         </b-col>
         <b-col>
@@ -33,7 +33,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="5">
+        <b-col cols="3">
           <label for="savingEntityInput">Новчани завод:</label>
         </b-col>
         <b-col>
@@ -43,7 +43,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="5">
+        <b-col cols="3">
           <label for="amountInput">Стање на почетку године:</label>
         </b-col>
         <b-col>
@@ -53,7 +53,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="5">
+        <b-col cols="3">
           <label for="amountDepositedInput">У току године уложено:</label>
         </b-col>
         <b-col>
@@ -63,7 +63,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="5">
+        <b-col cols="3">
           <label for="amountWithdrawnInput">У току године изузето:</label>
         </b-col>
         <b-col>
@@ -130,7 +130,7 @@
   import MessageConfirmDialog from '../../../MessageConfirmDialog'
   
   const savingController = require('../../../../controllers/savingController')
-  const { mapSavingToSavingForm, mapSavingFormToSaving, amountNumberOptions } = require('../../../../utils/utils')
+  const { mapSavingToSavingForm, mapSavingFormToSaving, largeAmountNumberOptions } = require('../../../../utils/utils')
   
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
@@ -185,9 +185,9 @@
       }
     },
     mounted () {
-      this.amountInputAutonumeric = new AutoNumeric('#amountInput', amountNumberOptions)
-      this.amountDepositedInputAutonumeric = new AutoNumeric('#amountDepositedInput', amountNumberOptions)
-      this.amountWithdrawnInputAutonumeric = new AutoNumeric('#amountWithdrawnInput', amountNumberOptions)
+      this.amountInputAutonumeric = new AutoNumeric('#amountInput', largeAmountNumberOptions)
+      this.amountDepositedInputAutonumeric = new AutoNumeric('#amountDepositedInput', largeAmountNumberOptions)
+      this.amountWithdrawnInputAutonumeric = new AutoNumeric('#amountWithdrawnInput', largeAmountNumberOptions)
       this.bindKeys()
     },
     beforeDestroy () {
@@ -413,23 +413,23 @@
     border-radius: 0 !important;
   }
   #accountInput {
-    width: 105px;
+    width: 170px;
     border-style: none;
   }
   #savingEntityInput {
-    width: 235px;
+    width: 315px;
     border-style: none;
   }
   #amountInput {
-    width: 105px;
+    width: 130px;
     border-style: none;
   }
   #amountWithdrawnInput {
-    width: 105px;
+    width: 130px;
     border-style: none;
   }
   #amountDepositedInput {
-    width: 105px;
+    width: 130px;
     border-style: none;
   }
 </style>

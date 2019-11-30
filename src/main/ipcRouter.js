@@ -1,4 +1,5 @@
 const { ipcMain } = require('electron')
+const annualReportService = require('./service/annualReportService')
 const incomeCodeService = require('./service/incomeCodeService')
 const outcomeCodeService = require('./service/outcomeCodeService')
 const paymentSlipService = require('./service/paymentSlipService')
@@ -9,7 +10,6 @@ const shareService = require('./service/shareService')
 const savingService = require('./service/savingService')
 const itemService = require('./service/itemService')
 const debtService = require('./service/debtService')
-const annualReportService = require('./service/annualReportService')
 const settingsService = require('./service/settingsService')
 const commonService = require('./service/commonService')
 
@@ -386,6 +386,22 @@ ipcMain.on('get-annual-report', async (event, year) => {
     reply(event, 'get-annual-report-reply', await annualReportService.getAnnualReport(year))
   } catch (err) {
     replyError(event, 'get-annual-report-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('get-annual-report-common-data', async (event) => {
+  try {
+    reply(event, 'get-annual-report-common-data-reply', await annualReportService.getAnnualReportCommonData())
+  } catch (err) {
+    replyError(event, 'get-annual-report-common-data-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('create-annual-report-common-data', async (event, common) => {
+  try {
+    reply(event, 'create-annual-report-commmon-data-reply', await annualReportService.createAnnualReportCommonData(common))
+  } catch (err) {
+    replyError(event, 'create-annual-report-common-data-reply', err.message ? err.message : err)
   }
 })
 

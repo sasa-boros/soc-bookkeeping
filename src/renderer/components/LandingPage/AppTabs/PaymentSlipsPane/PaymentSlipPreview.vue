@@ -10,8 +10,8 @@
         <br/><b-form-input disabled class="input-small" id="IncomeAsText2" v-model="generatedIncomeTextLine2"></b-form-input>
         <br/>колико сам данас уплатио у благајну Српске православне црквене општине
 у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" v-on:keypress="limitInputPerSize" ref="reasonInput" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" :disabled="defaultPaymentSlipPreview" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text"></b-form-input>
-        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview}" :language="calendarLanguages.srCYRL" :disabled="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>                                                                                                      Уплатио,
-                                                                                                         <b-form-input id="payedInput" :disabled="defaultPaymentSlipPreview" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text"></b-form-input> 
+        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview}" :language="calendarLanguages.srCYRL" :disabled="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>                                                                                                               Уплатио,
+                                                                                                                        <b-form-input id="payedInput" :disabled="defaultPaymentSlipPreview" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text"></b-form-input> 
         <br/>                                                                                                         Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
                                                                                            <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
                 Примио благајник,                                           <span class="partText">Парт. </span><b-form-input id="secondPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
@@ -120,6 +120,7 @@
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
   import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
+  const annualReportController = require('../../../../controllers/annualReportController')
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const paymentSlipController = require('../../../../controllers/paymentSlipController')
   const defaultPaymentSlipController = require('../../../../controllers/defaultPaymentSlipController')
@@ -199,6 +200,7 @@
         var defaultPaymentSlip = JSON.parse(JSON.stringify(this.defaultPaymentSlip))
         defaultPaymentSlip._id = undefined
         this.form = mapPaymentSlipToPaymentSlipForm(defaultPaymentSlip)
+        this.loadAnnualReportCommon()
       }
       const self = this;
       incomeCodeController.getIncomeCodes().then(function (res) {
@@ -526,6 +528,16 @@
       }
     },
     methods: {
+      loadAnnualReportCommon () {
+        const self = this
+        annualReportController.getAnnualReportCommonData().then((res) => {
+          if (!res.err) {
+            self.form.town = res.data ? res.data.churchTown : null
+          } else {
+            self.openErrorModal(res.err)
+          }
+        })
+      },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
@@ -856,7 +868,7 @@
     width: 290px;
   }
   #payedInput {
-    width: 290px;
+    width: 235px;
   }
   #receivedInput {
     width: 230px;

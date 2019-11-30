@@ -1,7 +1,21 @@
 <template>
   <b-container fluid>
-    <br>
     <b-row>
+      <b-col cols=2>
+        <span class="zoomLevelText">{{ phrases.setDefaultZoomLevel }}:</span> 
+      </b-col>
+      <b-col>
+        <b-btn id="decreaseZoomLevelButton" v-on:mouseleave="hideTooltip('decreaseZoomLevelButton')" @click.stop="decreaseZoomLevel()" variant="light" class="btn-lg">
+          <img src="~@/assets/minus.png">
+        </b-btn>
+          {{ zoomLevelFormated }}
+        <b-btn id="increaseZoomLevelButton" v-on:mouseleave="hideTooltip('increaseZoomLevelButton')" @click.stop="increaseZoomLevel()" variant="light" class="btn-lg">
+          <img src="~@/assets/plus.png">
+        </b-btn>
+      </b-col>
+    </b-row>
+    <br>
+    <!--<b-row>
       <b-col cols=4>
         {{ phrases.setDefaultPaymentSlip }}:
       </b-col>
@@ -20,19 +34,12 @@
           <img src="~@/assets/receipt.png">
         </b-btn>
       </b-col>
-    </b-row>
+    </b-row>-->
     <b-row>
-      <b-col cols=4>
-        {{ phrases.setDefaultZoomLevel }}: 
-      </b-col>
       <b-col>
-        <b-btn id="decreaseZoomLevelButton" v-on:mouseleave="hideTooltip('decreaseZoomLevelButton')" @click.stop="decreaseZoomLevel()" variant="light" class="btn-lg">
-          <img src="~@/assets/minus.png">
-        </b-btn>
-        {{ zoomLevelFormated }}
-        <b-btn id="increaseZoomLevelButton" v-on:mouseleave="hideTooltip('increaseZoomLevelButton')" @click.stop="increaseZoomLevel()" variant="light" class="btn-lg">
-          <img src="~@/assets/plus.png">
-        </b-btn>
+      Дневник благајне Српске православне црквене општине&nbsp;
+      <b-form-input id="churchMunicipalityInput" type="text" v-model="churchMunicipality" v-on:input="createAnnualReportCommonData" v-on:keypress="limitInputPerSize"/> у
+      <b-form-input id="churchTownInput" type="text" v-model="churchTown" v-on:input="createAnnualReportCommonData" v-on:keypress="limitInputPerSize"/>.
       </b-col>
     </b-row>
 
@@ -74,6 +81,7 @@
 
   const Big = require('big.js')
   const i18n = require('../../../../translations/i18n')
+  const annualReportController = require('../../../controllers/annualReportController')
   const settingsController = require('../../../controllers/settingsController')
 
   export default {
@@ -88,19 +96,15 @@
           increase: i18n.getTranslation('Increase'),
           decrease: i18n.getTranslation('Decrease')
         },
-        zoomLevel: Big(1.5)
+        churchMunicipality: null,
+        churchTown: null,
+        zoomLevel: Big(1.5),
+        commonDataSaveTimeout: null
       }
     },
     created () {
-      const self = this
-      settingsController.getSettings().then(function (res) {
-        if (!res.err) {
-          self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.5)
-          self.$emit('updateZoomLevel', parseFloat(self.zoomLevel))
-        } else {
-          self.openErrorModal(res.err)
-        }
-      })
+      this.loadAnnualReportCommon()
+      this.loadSettings()
     },
     computed: {
       zoomLevelFormated: function() {
@@ -112,6 +116,46 @@
       }
     },
     methods: {
+      loadAnnualReportCommon () {
+        const self = this
+        annualReportController.getAnnualReportCommonData().then((res) => {
+          if (!res.err) {
+            self.churchMunicipality = res.data ? res.data.churchMunicipality : null
+            self.churchTown = res.data ? res.data.churchTown : null
+          } else {
+            self.openErrorModal(res.err)
+          }
+        })
+      },
+      createAnnualReportCommonData () {
+        const self = this
+        clearTimeout(this.commonDataSaveTimeout)
+        this.commonDataSaveTimeout = setTimeout(() => {
+          annualReportController.createAnnualReportCommonData({churchMunicipality: self.churchMunicipality, churchTown: self.churchTown}).then(function(res) {
+            if (!res.err) {
+              // noop
+            } else {
+              self.openErrorModal(res.err)
+            }
+          })
+        }, 2000)
+      },
+      loadSettings () {
+        const self = this
+        settingsController.getSettings().then(function (res) {
+          if (!res.err) {
+            self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.5)
+            self.$emit('updateZoomLevel', parseFloat(self.zoomLevel))
+          } else {
+            self.openErrorModal(res.err)
+          }
+        })
+      },
+      limitInputPerSize (evt) {
+        if (evt.target.scrollWidth > evt.target.clientWidth) {
+          evt.preventDefault()
+        } 
+      },
       updateDefaultPaymentSlip () {
         this.$emit('updateDefaultPaymentSlip')
       },
@@ -167,6 +211,31 @@
 </script>
 
 <style scoped>
+  input {
+    text-align: center;
+    font-family: "Times New Roman";
+    font-size: 90%;
+    letter-spacing: 95%;
+    height:15px;
+    font-weight: bold;
+    border-bottom: .5pt solid black !important;
+    border-radius: 0 !important;
+  }
+
+  #churchMunicipalityInput {
+    width: 235px;
+    max-width: 320px;
+    border-style: none;
+    display:inline;
+  }
+
+  #churchTownInput {
+    width: 320px;
+    max-width: 320px;
+    border-style: none;
+    display:inline;
+  }
+
   #zoomLevelInput {
     width: 60px;
   }
@@ -186,5 +255,10 @@
     font-family: "Times New Roman";
     font-size: 90%;
     letter-spacing: 95%;
+  }
+
+  .zoomLevelText {
+    position: relative;
+    top:13px;
   }
 </style>

@@ -88,7 +88,7 @@
   import MessageConfirmDialog from '../../../MessageConfirmDialog'
   
   const debtController = require('../../../../controllers/debtController')
-  const { mapDebtToDebtForm, mapDebtFormToDebt, amountNumberOptions } = require('../../../../utils/utils')
+  const { mapDebtToDebtForm, mapDebtFormToDebt, largeAmountNumberOptions } = require('../../../../utils/utils')
   
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
@@ -140,7 +140,7 @@
       }
     },
     mounted () {
-      this.amountInputAutonumeric = new AutoNumeric('#amountInput', amountNumberOptions)
+      this.amountInputAutonumeric = new AutoNumeric('#amountInput', largeAmountNumberOptions)
       this.bindKeys()
     },
     beforeDestroy () {
@@ -310,11 +310,11 @@
     border-radius: 0 !important;
   }
   #descriptionInput {
-    width: 235px;
+    width: 470px;
     border-style: none;
   }
   #amountInput {
-    width: 105px;
+    width: 140px;
     border-style: none;
   }
 </style>

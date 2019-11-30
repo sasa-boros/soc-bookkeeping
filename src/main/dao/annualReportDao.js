@@ -1,3 +1,14 @@
+function findAll () {
+    return new Promise((resolve, reject) => { 
+        db.annualReports.find({}, (err, docs) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(docs)
+        })
+    })
+}
+
 function findOneForYear (year) {
     return new Promise((resolve, reject) => { 
         db.annualReports.findOne({year: year}, (err, doc) => {
@@ -31,8 +42,21 @@ function removeOneForYear (year) {
     })
 }
 
+function updateById (id, doc) {
+    return new Promise((resolve, reject) => { 
+        db.annualReports.update({ _id: id }, doc, (err, numReplaced) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(numReplaced)
+        })
+    })
+}
+
 module.exports = {
+    findAll: findAll,
     findOneForYear: findOneForYear,
     insert: insert,
-    removeOneForYear: removeOneForYear
+    removeOneForYear: removeOneForYear,
+    updateById: updateById
 }

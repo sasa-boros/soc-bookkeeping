@@ -9,7 +9,6 @@ async function getItems () {
 
 async function createItem (item) {
   delete item._id
-  item.year = new Date(item.year)
   console.log(`Creating item: \n${JSON.stringify(item, null, 2)}`)
   await itemDao.insert(item)
   console.log('Successfully created item')
@@ -29,7 +28,6 @@ async function deleteItems (itemsIds) {
 
 async function updateItem (item) {
   console.log(`Updating item: \n${JSON.stringify(item, null, 2)}`)
-  item.year = new Date(item.year)
   await itemDao.updateById(item._id, item)
   console.log('Successfully updated item')
 }

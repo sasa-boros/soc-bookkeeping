@@ -9,7 +9,6 @@ async function getShares () {
 
 async function createShare (share) {
   delete share._id
-  share.year = new Date(share.year)
   console.log(`Creating share: \n${JSON.stringify(share, null, 2)}`)
   await shareDao.insert(share)
   console.log('Successfully created share')
@@ -29,7 +28,6 @@ async function deleteShares (sharesIds) {
 
 async function updateShare (share) {
   console.log(`Updating share: \n${JSON.stringify(share, null, 2)}`)
-  share.year = new Date(share.year)
   await shareDao.updateById(share._id, share)
   console.log('Successfully updated share')
 }

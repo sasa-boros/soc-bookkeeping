@@ -1,12 +1,20 @@
-const { AnnualReportPage } = require('../model/annualReportPage')
-const { AnnualReport } = require('../model/annualReport')
+const { AnnualReport } = require('../model/annualReport/annualReport')
+const { IncomePage } = require('../model/annualReport/incomePage')
+const { OutcomePage } = require('../model/annualReport/outcomePage')
+const { TotalIncomePage } = require('../model/annualReport/totalIncomePage')
+const { TotalOutcomePage } = require('../model/annualReport/totalOutcomePage')
+const { SharesPage } = require('../model/annualReport/sharesPage')
+const { TotalPage } = require('../model/annualReport/totalPage')
+const annualReportCommonDao = require('../dao/annualReportCommonDao')
 const annualReportDao = require('../dao/annualReportDao')
+const incomeCodeDao = require('../dao/incomeCodeDao')
+const outcomeCodeDao = require('../dao/outcomeCodeDao')
 const paymentSlipDao = require('../dao/paymentSlipDao')
 const receiptDao = require('../dao/receiptDao')
 const shareDao = require('../dao/shareDao')
 const savingDao = require('../dao/savingDao')
-const incomeCodeDao = require('../dao/incomeCodeDao')
-const outcomeCodeDao = require('../dao/outcomeCodeDao')
+const itemDao = require('../dao/itemDao')
+const debtDao = require('../dao/debtDao')
 
 const { app } = require('electron')
 const Big = require('big.js')
@@ -20,11 +28,26 @@ const AutoNumeric = require('autonumeric')
 
 const { degrees, PDFDocument } = require('pdf-lib')
 
+async function getAnnualReportCommonData () {
+  console.log('Getting annual report common data')
+  const common = await annualReportCommonDao.findOne()
+  console.log(`Returning annual report common data: \n${JSON.stringify(common, null, 2)}`)
+  return common
+}
+
 async function getAnnualReportData (year) {
   console.log(`Getting annual report data for year ${year}`)
   const annualReportData = await annualReportDao.findOneForYear(year)
   console.log(`Returning annual report data: \n${JSON.stringify(annualReportData, null, 2)}`)
   return annualReportData
+}
+
+async function createAnnualReportCommonData (common) {
+  delete common._id
+  console.log(`Creating annual report common data: \n${JSON.stringify(common, null, 2)}`)
+  await annualReportCommonDao.removeAll(common)
+  await annualReportCommonDao.insert(common)
+  console.log('Successfully created annual report common data')
 }
 
 async function createAnnualReportData (annualReportData) {
@@ -37,12 +60,69 @@ async function createAnnualReportData (annualReportData) {
 
 async function getAnnualReport (year) {
   console.log(`Getting annual report for year ${year}`)
-
+  const annualReportCommonData = await getAnnualReportCommonData()
+  const annualReportData = await getAnnualReportData(year)
+  const incomeCodes = await incomeCodeDao.findAll()
+  const outcomeCodes = await outcomeCodeDao.findAll()
+  const shares = await shareDao.findAllForYear(year)
+  const savings = await savingDao.findAllForYear(year)
+  const items = await itemDao.findAllForYear(year)
+  const debts = await debtDao.findAllForYear(year)
+  
   const annualReport = new AnnualReport()
+  // common
   annualReport.year = year
+  annualReport.churchMunicipality = annualReportCommonData ? annualReportCommonData.churchMunicipality : null
+  annualReport.churchTown = annualReportCommonData ? annualReportCommonData.churchTown : null
+  annualReport.incomeCodes = incomeCodes ? incomeCodes : []
+  annualReport.outcomeCodes = outcomeCodes ? outcomeCodes : []
+  // total income page
+  annualReport.totalIncomePage = new TotalIncomePage()
+  annualReport.totalIncomePage.totalIncomePerCodePredicted = annualReportData && annualReportData.totalIncomePerCodePredicted ? annualReportData.totalIncomePerCodePredicted : []
+  annualReport.totalIncomePage.totalIncomePerCodePredicted.forEach(ipcp => {
+    annualReport.totalIncomePage.totalIncomePredicted = annualReport.totalIncomePage.totalIncomePredicted.plus(ipcp.income ? Big(ipcp.income) : Big(0.0))
+  })
+  // total outcome page
+  annualReport.totalOutcomePage = new TotalOutcomePage()
+  annualReport.totalOutcomePage.totalOutcomePerCodeAllowed = annualReportData && annualReportData.totalOutcomePerCodeAllowed ? annualReportData.totalOutcomePerCodeAllowed : []
+  annualReport.totalOutcomePage.totalOutcomePerCodeAllowed.forEach(opca => {
+    annualReport.totalOutcomePage.totalOutcomeAllowed = annualReport.totalOutcomePage.totalOutcomeAllowed.plus(opca.outcome ? Big(opca.outcome) : Big(0.0))
+  })
+  annualReport.totalOutcomePage.transferFromPreviousYear = annualReportData && annualReportData.transferFromPreviousYear ? Big(annualReportData.transferFromPreviousYear) : Big(0.0)
+  // shares page
+  annualReport.sharesPage = new SharesPage()
+  annualReport.sharesPage.shares = shares ? shares : []
+  annualReport.sharesPage.savings = savings ? savings : []
+  annualReport.sharesPage.shares.forEach(s => {
+    annualReport.sharesPage.totalNominalValue = annualReport.sharesPage.totalNominalValue.plus(s.nominalValue ? Big(s.nominalValue) : Big(0.0))
+  })
+  annualReport.sharesPage.shareValueDepreciatedDuringYear = annualReportData && annualReportData.shareValueDepreciatedDuringYear ? Big(annualReportData.shareValueDepreciatedDuringYear) : Big(0.0)
+  annualReport.sharesPage.nominalValueOnYearEnd = annualReport.sharesPage.totalNominalValue.minus(annualReport.sharesPage.shareValueDepreciatedDuringYear)
+  annualReport.sharesPage.savings.forEach(s => {
+    annualReport.sharesPage.totalSavingAmountAtYearStart = annualReport.sharesPage.totalSavingAmountAtYearStart.plus(s.amount ? Big(s.amount) : Big(0.0))
+    annualReport.sharesPage.totalSavingAmountDeposited = annualReport.sharesPage.totalSavingAmountDeposited.plus(s.amountDeposited ? Big(s.amountDeposited) : Big(0.0))
+    annualReport.sharesPage.totalSavingAmountWithdrawn = annualReport.sharesPage.totalSavingAmountWithdrawn.plus(s.amountWithdrawn ? Big(s.amountWithdrawn) : Big(0.0))
+  })
+  annualReport.sharesPage.totalSavingAmountPlusDeposited = annualReport.sharesPage.totalSavingAmountAtYearStart.plus(annualReport.sharesPage.totalSavingAmountDeposited)
+  annualReport.sharesPage.savingAmountOnYearEnd = annualReport.sharesPage.totalSavingAmountPlusDeposited.minus(annualReport.sharesPage.totalSavingAmountWithdrawn)
+  // total page
+  annualReport.totalPage = new TotalPage()
+  annualReport.totalPage.items = items ? items : []
+  annualReport.totalPage.debts = debts ? debts : []
+  annualReport.totalPage.realEstateLandValue = annualReportData && annualReportData.realEstateLandValue ? Big(annualReportData.realEstateLandValue) : Big(0.0)
+  annualReport.totalPage.realEstateBuildingsValue = annualReportData && annualReportData.realEstateBuildingsValue ? Big(annualReportData.realEstateBuildingsValue) : Big(0.0)
+  annualReport.totalPage.items.forEach(i => {
+    annualReport.totalPage.totalItemValue = annualReport.totalPage.totalItemValue.plus(i.value ? Big(i.value) : Big(0.0))
+  })
+  annualReport.totalPage.debts.forEach(d => {
+    annualReport.totalPage.totalDebt = annualReport.totalPage.totalDebt.plus(d.amount ? Big(d.amount) : Big(0.0))
+  })
+
   for (let i = 0; i < 12; i++) {
-    const annualReportPage = new AnnualReportPage()
-    annualReportPage.ordinal = i + 1
+    const incomePage = new IncomePage()
+    const outcomePage = new OutcomePage()
+    incomePage.ordinal = i + 1
+    outcomePage.ordinal = incomePage.ordinal
 
     const paymentSlips = await paymentSlipDao.findBetweenDatesSortByOrdinalAsc(new Date(year, i, 1), new Date(year, i + 1, 1))
     const receipts = await receiptDao.findBetweenDatesSortByOrdinalAsc(new Date(year, i, 1), new Date(year, i + 1, 1))
@@ -53,27 +133,26 @@ async function getAnnualReport (year) {
     if (!paymentSlipsValid || !receiptsValid) {
       throw new Error('Invalid payment slips or receipts found')
     } 
-
     if (paymentSlips) {
-      calculateIncome(paymentSlips, annualReportPage, annualReport)
+      calculateIncomes(incomePage, annualReport, paymentSlips)
     }
     if (receipts) {
-      calculateOutcome(receipts, annualReportPage, annualReport)
+      calculateOutcomes(outcomePage, annualReport, receipts)
     }
     if (i !== 0) {
-      annualReportPage.transferFromPreviousMonth = annualReport.pages[i - 1].transferToNextMonth
+      incomePage.transferFromPreviousMonth = annualReport.outcomePages[i - 1].transferToNextMonth
     }
-    annualReportPage.total = annualReportPage.totalIncome.plus(annualReportPage.transferFromPreviousMonth)
-    annualReportPage.transferToNextMonth = annualReportPage.total.minus(annualReportPage.totalOutcome)
+    incomePage.total = incomePage.totalIncome.plus(incomePage.transferFromPreviousMonth)
+    outcomePage.total = incomePage.total
+    outcomePage.transferToNextMonth = outcomePage.total.minus(outcomePage.totalOutcome)
 
-    annualReport.pages.push(annualReportPage)
+    annualReport.incomePages.push(incomePage)
+    annualReport.outcomePages.push(outcomePage)
   }
-  annualReport.total = annualReport.totalIncome.minus(annualReport.totalOutcome)
-
-  const shares = await shareDao.findAllForYear(year)
-  const savings = await savingDao.findAllForYear(year)
-
-  
+  annualReport.totalOutcomePage.netIncome = annualReport.totalIncomePage.totalIncome.minus(annualReport.totalOutcomePage.totalOutcome)
+  annualReport.totalOutcomePage.transferToNextYear = annualReport.totalOutcomePage.netIncome.plus(annualReport.totalOutcomePage.transferFromPreviousYear)
+  annualReport.totalPage.totalPropertyValue = annualReport.totalOutcomePage.transferToNextYear.plus(annualReport.sharesPage.nominalValueOnYearEnd).plus(annualReport.sharesPage.savingAmountOnYearEnd).plus(annualReport.totalPage.realEstateLandValue).plus(annualReport.totalPage.realEstateBuildingsValue).plus(annualReport.totalPage.totalItemValue)
+  annualReport.totalPage.propertyValue = annualReport.totalPage.totalPropertyValue.minus(annualReport.totalPage.totalDebt)
 
   transformBigsToNumbers(annualReport);
   console.log(`Returning annual report: \n${JSON.stringify(annualReport, null, 2)}`)
@@ -92,84 +171,114 @@ function checkIfEntitiesAreValid(entities) {
   return true
 }
 
-function calculateIncome (paymentSlips, annualReportPage, annualReport) {
-  paymentSlips.forEach((paymentSlip) => {
-    paymentSlip.incomePerCode.forEach((incomePerCode) => {
-      annualReportPage.totalIncome = annualReportPage.totalIncome.plus(Big(incomePerCode.income))
-      const pageTotalIncomePerCode = annualReportPage.totalIncomePerCode.find((element) => {
-        return element.incomeCode.partition === incomePerCode.incomeCode.partition && element.incomeCode.position === incomePerCode.incomeCode.position
+function calculateIncomes (incomePage, annualReport, paymentSlips) {
+  incomePage.paymentSlips = paymentSlips
+  paymentSlips.forEach(ps => {
+    incomePage.totalIncome = incomePage.totalIncome.plus(ps.income ? Big(ps.income) : Big(0.0))
+    ps.incomePerCode.forEach(opc => {
+      const pageTotalIncomePerCode = incomePage.totalIncomePerCode.find((tipc) => {
+        return tipc.incomeCode.partition === opc.incomeCode.partition && tipc.incomeCode.position === opc.incomeCode.position
       })
       if (pageTotalIncomePerCode) {
-        pageTotalIncomePerCode.income = pageTotalIncomePerCode.income.plus(Big(incomePerCode.income))
+        pageTotalIncomePerCode.income = pageTotalIncomePerCode.income.plus(opc.income ? Big(opc.income) : Big(0.0))
       } else {
-        annualReportPage.totalIncomePerCode.push({ incomeCode: incomePerCode.incomeCode, income: Big(incomePerCode.income) })
+        incomePage.totalIncomePerCode.push({ incomeCode: opc.incomeCode, income: Big(opc.income) })
       }
-      const reportTotalIncomePerCode = annualReport.totalIncomePerCode.find((element) => {
-        return element.incomeCode.partition === incomePerCode.incomeCode.partition && element.incomeCode.position === incomePerCode.incomeCode.position
+      const reportTotalIncomePerCode = annualReport.totalIncomePage.totalIncomePerCode.find((tipc) => {
+        return tipc.incomeCode.partition === opc.incomeCode.partition && tipc.incomeCode.position === opc.incomeCode.position
       })
       if (reportTotalIncomePerCode) {
-        reportTotalIncomePerCode.income = reportTotalIncomePerCode.income.plus(Big(incomePerCode.income))
+        reportTotalIncomePerCode.income = reportTotalIncomePerCode.income.plus(opc.income ? Big(opc.income) : Big(0.0))
       } else {
-        annualReport.totalIncomePerCode.push({ incomeCode: incomePerCode.incomeCode, income: Big(incomePerCode.income) })
+        annualReport.totalIncomePage.totalIncomePerCode.push({ incomeCode: opc.incomeCode, income: Big(opc.income) })
       }
     })
-    annualReportPage.paymentSlips.push(paymentSlip)
   })
-  annualReport.totalIncome = annualReport.totalIncome.plus(annualReportPage.totalIncome)
+  annualReport.totalIncomePage.totalIncome = annualReport.totalIncomePage.totalIncome.plus(incomePage.totalIncome)
 }
 
-function calculateOutcome (receipts, annualReportPage, annualReport) {
-  receipts.forEach((receipt) => {
-    receipt.outcomePerCode.forEach((outcomePerCode) => {
-      annualReportPage.totalOutcome = annualReportPage.totalOutcome.plus(Big(outcomePerCode.outcome))
-      const pageTotalOutcomePerCode = annualReportPage.totalOutcomePerCode.find((element) => {
-        return element.outcomeCode.partition === outcomePerCode.outcomeCode.partition && element.outcomeCode.position === outcomePerCode.outcomeCode.position
+function calculateOutcomes (outcomePage, annualReport, receipts) {
+  outcomePage.receipts = receipts
+  receipts.forEach((r) => {
+    outcomePage.totalOutcome = outcomePage.totalOutcome.plus(r.outcome ? Big(r.outcome) : Big(0.0))
+    r.outcomePerCode.forEach((opc) => {
+      const pageTotalOutcomePerCode = outcomePage.totalOutcomePerCode.find((topc) => {
+        return topc.outcomeCode.partition === opc.outcomeCode.partition && topc.outcomeCode.position === opc.outcomeCode.position
       })
       if (pageTotalOutcomePerCode) {
-        pageTotalOutcomePerCode.outcome = pageTotalOutcomePerCode.outcome.plus(Big(outcomePerCode.outcome))
+        pageTotalOutcomePerCode.outcome = pageTotalOutcomePerCode.outcome.plus(opc.outcome ? Big(opc.outcome) : Big(0.0))
       } else {
-        annualReportPage.totalOutcomePerCode.push({ outcomeCode: outcomePerCode.outcomeCode, outcome: Big(outcomePerCode.outcome) })
+        outcomePage.totalOutcomePerCode.push({ outcomeCode: opc.outcomeCode, outcome: Big(opc.outcome) })
       }
-      const reportTotalOutcomePerCode = annualReport.totalOutcomePerCode.find((element) => {
-        return element.outcomeCode.partition === outcomePerCode.outcomeCode.partition && element.outcomeCode.position === outcomePerCode.outcomeCode.position
+      const reportTotalOutcomePerCode = annualReport.totalOutcomePage.totalOutcomePerCode.find((topc) => {
+        return topc.outcomeCode.partition === opc.outcomeCode.partition && topc.outcomeCode.position === opc.outcomeCode.position
       })
       if (reportTotalOutcomePerCode) {
-        reportTotalOutcomePerCode.outcome = reportTotalOutcomePerCode.outcome.plus(Big(outcomePerCode.outcome))
+        reportTotalOutcomePerCode.outcome = reportTotalOutcomePerCode.outcome.plus(opc.outcome ? Big(opc.outcome) : Big(0.0))
       } else {
-        annualReport.totalOutcomePerCode.push({ outcomeCode: outcomePerCode.outcomeCode, outcome: Big(outcomePerCode.outcome) })
+        annualReport.totalOutcomePage.totalOutcomePerCode.push({ outcomeCode: opc.outcomeCode, outcome: Big(opc.outcome) })
       }
     })
-
-    annualReportPage.receipts.push(receipt)
   })
-  annualReport.totalOutcome = annualReport.totalOutcome.plus(annualReportPage.totalOutcome)
+  annualReport.totalOutcomePage.totalOutcome = annualReport.totalOutcomePage.totalOutcome.plus(outcomePage.totalOutcome)
 }
 
 function transformBigsToNumbers(annualReport) {
-  for(let i=0; i<annualReport.pages.length; i++) {
-    const page = annualReport.pages[i]
-    for(let j=0; j<page.totalIncomePerCode.length; j++) {
-      page.totalIncomePerCode[j].income = parseFloat(page.totalIncomePerCode[j].income)
+  for(let i=0; i<annualReport.incomePages.length; i++) {
+    const incomePage = annualReport.incomePages[i]
+    for(let j=0; j<incomePage.totalIncomePerCode.length; j++) {
+      incomePage.totalIncomePerCode[j].income = parseFloat(incomePage.totalIncomePerCode[j].income)
     }
-    for(let j=0; j<page.totalOutcomePerCode.length; j++) {
-      page.totalOutcomePerCode[j].outcome = parseFloat(page.totalOutcomePerCode[j].outcome)
+    incomePage.totalIncome = parseFloat(incomePage.totalIncome)
+    incomePage.transferFromPreviousMonth = parseFloat(incomePage.transferFromPreviousMonth);
+    incomePage.total = parseFloat(incomePage.total)
+  }
+  for(let i=0; i<annualReport.outcomePages.length; i++) {
+    const outcomePage = annualReport.outcomePages[i]
+    for(let j=0; j<outcomePage.totalOutcomePerCode.length; j++) {
+      outcomePage.totalOutcomePerCode[j].outcome = parseFloat(outcomePage.totalOutcomePerCode[j].outcome)
     }
-    page.totalIncome = parseFloat(page.totalIncome)
-    page.totalOutcome = parseFloat(page.totalOutcome)
-    page.transferFromPreviousMonth = parseFloat(page.transferFromPreviousMonth);
-    page.transferToNextMonth = parseFloat(page.transferToNextMonth)
-    page.total = parseFloat(page.total)
+    outcomePage.totalOutcome = parseFloat(outcomePage.totalOutcome)
+    outcomePage.transferToNextMonth = parseFloat(outcomePage.transferToNextMonth)
+    outcomePage.total = parseFloat(outcomePage.total)
   }
-  for(let i=0; i<annualReport.totalIncomePerCode.length; i++) {
-    annualReport.totalIncomePerCode[i].income = parseFloat(annualReport.totalIncomePerCode[i].income)
+  for(let i=0; i<annualReport.totalIncomePage.totalIncomePerCode.length; i++) {
+    annualReport.totalIncomePage.totalIncomePerCode[i].income = parseFloat(annualReport.totalIncomePage.totalIncomePerCode[i].income)
   }
-  for(let i=0; i<annualReport.totalOutcomePerCode.length; i++) {
-    annualReport.totalOutcomePerCode[i].outcome = parseFloat(annualReport.totalOutcomePerCode[i].outcome)
+  for(let i=0; i<annualReport.totalIncomePage.totalIncomePerCodePredicted.length; i++) {
+    annualReport.totalIncomePage.totalIncomePerCodePredicted[i].income = parseFloat(annualReport.totalIncomePage.totalIncomePerCodePredicted[i].income)
   }
-  annualReport.totalIncome = parseFloat(annualReport.totalIncome)
-  annualReport.totalOutcome = parseFloat(annualReport.totalOutcome)
-  annualReport.total = parseFloat(annualReport.total)
+  annualReport.totalIncomePage.totalIncomePredicted = parseFloat(annualReport.totalIncomePage.totalIncomePredicted)
+  annualReport.totalIncomePage.totalIncome = parseFloat(annualReport.totalIncomePage.totalIncome)
+  for(let i=0; i<annualReport.totalOutcomePage.totalOutcomePerCode.length; i++) {
+    annualReport.totalOutcomePage.totalOutcomePerCode[i].outcome = parseFloat(annualReport.totalOutcomePage.totalOutcomePerCode[i].outcome)
+  }
+  for(let i=0; i<annualReport.totalOutcomePage.totalOutcomePerCodeAllowed.length; i++) {
+    annualReport.totalOutcomePage.totalOutcomePerCodeAllowed[i].outcome = parseFloat(annualReport.totalOutcomePage.totalOutcomePerCodeAllowed[i].outcome)
+  }
+  annualReport.totalOutcomePage.totalOutcomeAllowed = parseFloat(annualReport.totalOutcomePage.totalOutcomeAllowed)
+  annualReport.totalOutcomePage.totalOutcome = parseFloat(annualReport.totalOutcomePage.totalOutcome)
+  annualReport.totalOutcomePage.netIncome = parseFloat(annualReport.totalOutcomePage.netIncome)
+  annualReport.totalOutcomePage.transferFromPreviousYear = parseFloat(annualReport.totalOutcomePage.transferFromPreviousYear)
+  annualReport.totalOutcomePage.transferToNextYear = parseFloat(annualReport.totalOutcomePage.transferToNextYear)
+
+  annualReport.sharesPage.totalNominalValue = parseFloat(annualReport.sharesPage.totalNominalValue)
+  annualReport.sharesPage.shareValueDepreciatedDuringYear = parseFloat(annualReport.sharesPage.shareValueDepreciatedDuringYear)
+  annualReport.sharesPage.nominalValueOnYearEnd = parseFloat(annualReport.sharesPage.nominalValueOnYearEnd)
+  annualReport.sharesPage.totalSavingAmountAtYearStart = parseFloat(annualReport.sharesPage.totalSavingAmountAtYearStart)
+  annualReport.sharesPage.totalSavingAmountDeposited = parseFloat(annualReport.sharesPage.totalSavingAmountDeposited)
+  annualReport.sharesPage.totalSavingAmountPlusDeposited = parseFloat(annualReport.sharesPage.totalSavingAmountPlusDeposited)
+  annualReport.sharesPage.totalSavingAmountWithdrawn = parseFloat(annualReport.sharesPage.totalSavingAmountWithdrawn)
+  annualReport.sharesPage.savingAmountOnYearEnd = parseFloat(annualReport.sharesPage.savingAmountOnYearEnd)
+
+  annualReport.totalPage.realEstateLandValue = parseFloat(annualReport.totalPage.realEstateLandValue)
+  annualReport.totalPage.realEstateBuildingsValue = parseFloat(annualReport.totalPage.realEstateBuildingsValue)
+  annualReport.totalPage.totalItemValue = parseFloat(annualReport.totalPage.totalItemValue)
+  annualReport.totalPage.totalPropertyValue = parseFloat(annualReport.totalPage.totalPropertyValue)
+  annualReport.totalPage.totalDebt = parseFloat(annualReport.totalPage.totalDebt)
+  annualReport.totalPage.propertyValue = parseFloat(annualReport.totalPage.propertyValue)
 }
+
 const monthNames = ["January", "February", "March", "April", "May", "June",
 "July", "August", "September", "October", "November", "December"
 ]
@@ -177,236 +286,356 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 async function getAnnualReportPages (annualReport) {
   console.log('Getting annual report pages')
   const annualReportPages = []
-  await populateHeadline(annualReport, annualReportPages)
-  await populateManualPage(annualReport, annualReportPages)
-
-  var incomeCodes = await incomeCodeDao.findAll()
-  var outcomeCodes = await outcomeCodeDao.findAll()
+  
+  const headlineTemplate = await readFile(path.join(__static, "/templates/annual-report/headline.html"), { encoding: 'utf8'});
+  Mustache.parse(headlineTemplate);
+  populateHeadline(annualReport, headlineTemplate, annualReportPages)
+  
+  const manualPageTemplate = await readFile(path.join(__static, "/templates/annual-report/manual-page.html"), { encoding: 'utf8'});
+  Mustache.parse(manualPageTemplate);
+  populateManualPage(annualReport, manualPageTemplate, annualReportPages)
 
   const incomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/income-page.html"), { encoding: 'utf8'})
+  Mustache.parse(incomePageTemplate);
+  
   const outcomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/outcome-page.html"), { encoding: 'utf8'})
-  for(let i=0; i<annualReport.pages.length; i++) {
-    await populateIncomePage(annualReport, annualReport.pages[i], incomeCodes, new String(incomePageTemplate).toString(), annualReportPages, 0)
-    await populateOutcomePage(annualReport, annualReport.pages[i], outcomeCodes, new String(outcomePageTemplate).toString(), annualReportPages, 0)
+  Mustache.parse(outcomePageTemplate);
+  
+  var i = 0
+  while (i < annualReport.incomePages.length || i < annualReport.outcomePages.length) {
+    if (i < annualReport.incomePages.length) {
+      populateIncomePage(annualReport, annualReport.incomePages[i], incomePageTemplate, annualReportPages, 0)
+    }
+    if (i < annualReport.outcomePages.length) {
+      populateOutcomePage(annualReport, annualReport.outcomePages[i], outcomePageTemplate, annualReportPages, 0)
+    }
+    i++
   }
-  await populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcomeCodes, annualReportPages)
-  await populateSharesPage(annualReport, annualReportPages)
-  await populateTotalPage(annualReport, annualReportPages)
+  const totalIncomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-income-page.html"), { encoding: 'utf8'})
+  Mustache.parse(totalIncomePageTemplate)
+  populateTotalIncomePage(annualReport, totalIncomePageTemplate, annualReportPages)
+  
+  const totalOutcomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-outcome-page.html"), { encoding: 'utf8'});
+  Mustache.parse(totalOutcomePageTemplate);
+  populateTotalOutcomePage(annualReport, totalOutcomePageTemplate, annualReportPages)
+ 
+  const sharesPageTemplate = await readFile(path.join(__static, "/templates/annual-report/shares-page.html"), { encoding: 'utf8'})
+  Mustache.parse(sharesPageTemplate)
+  populateSharesPage(annualReport, sharesPageTemplate, annualReportPages, 0, 0)
+
+  const totalPageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-page.html"), { encoding: 'utf8'});
+  Mustache.parse(totalPageTemplate);   // optional, speeds up future uses
+  populateTotalPage(annualReport, totalPageTemplate, annualReportPages, 0, 0)
 
   console.log(`Returning annual report ${annualReportPages.length} pages`)
   return annualReportPages
 }
 
-async function populateHeadline(annualReport, annualReportPages) {
+function populateHeadline(annualReport, headlineTemplate, annualReportPages) {
   const headlineContext = {};
   if (!annualReport.year) {
     headlineContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
   } else {
     headlineContext.year = annualReport.year;
   }
+  headlineContext.churchMunicipality = annualReport.churchMunicipality
+  headlineContext.churchTown = annualReport.churchTown
 
-  const headline = await readFile(path.join(__static, "/templates/annual-report/headline.html"), { encoding: 'utf8'});
-  Mustache.parse(headline);   // optional, speeds up future uses
-  annualReportPages.push(Mustache.render(headline, headlineContext));
+  annualReportPages.push(Mustache.render(headlineTemplate, headlineContext));
 }
 
-async function populateManualPage(annualReport, annualReportPages) {
-  annualReportPages.push(await readFile(path.join(__static, "/templates/annual-report/manual-page.html"), { encoding: 'utf8'}));
+function populateManualPage(annualReport, manualPageTemplate, annualReportPages) {
+  annualReportPages.push(manualPageTemplate);
 }
 
-async function populateIncomePage (annualReport, annualReportPage, incomeCodes, incomePageTemplate, annualReportPages, paymentSlipStartIndex) {
+function populateIncomePage (annualReport, incomePage, incomePageTemplate, annualReportPages, paymentSlipStartIndex) {
   var incomePageContext = {};
-  incomePageContext.page = annualReportPage.ordinal;
-  incomePageContext.monthLokativ = i18n.getTranslation(monthNames[annualReportPage.ordinal-1] + '.lokativ');
+  incomePageContext.page = incomePage.ordinal;
+  incomePageContext.monthLokativ = i18n.getTranslation(monthNames[incomePage.ordinal-1] + '.lokativ');
 
   var colsPerIncomeCodes = {}
   var col = 'D';
   // income codes
-  incomeCodes.forEach(incomeCode => {
-    let incomeCodeText = incomeCode.partition + '/' + incomeCode.position;
+  annualReport.incomeCodes.forEach(ic => {
+    let incomeCodeText = ic.partition + '/' + ic.position;
     incomePageContext[col+'6'] = incomeCodeText;
-    incomePageContext[col+'7'] = incomeCode.description;
+    incomePageContext[col+'7'] = ic.description;
     colsPerIncomeCodes[incomeCodeText] = col;
     col = String.fromCharCode(col.charCodeAt() + 1);
   });
   var row = 14;
-  for (let i = paymentSlipStartIndex; i < annualReportPage.paymentSlips.length; i++) {
+  for (let i = paymentSlipStartIndex; i < incomePage.paymentSlips.length; i++) {
     if (row >= 41) {
       Mustache.parse(incomePageTemplate);
       annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext));
-      await populateIncomePage(annualReport, annualReportPage, incomeCodes, incomePageTemplate, annualReportPages, i)
+      populateIncomePage(annualReport, incomePage, incomePageTemplate, annualReportPages, i)
       return
     }
-    const paymentSlip = annualReportPage.paymentSlips[i]
+    const paymentSlip = incomePage.paymentSlips[i]
     // payment slip ordinal/date(day)/reason
     incomePageContext['A'+row] = paymentSlip.ordinal;
     let date = new Date(paymentSlip.date).getUTCDate();
     incomePageContext['B'+row] = date ? date + '.' : date;
     incomePageContext['C'+row] = paymentSlip.reason;
     // payment slip income per code
-    paymentSlip.incomePerCode.forEach(incomePerCode => {
-      let incomeCodeText = incomePerCode.incomeCode.partition + '/' + incomePerCode.incomeCode.position;
-      incomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = formatAmount(incomePerCode.income);
+    paymentSlip.incomePerCode.forEach(ipc => {
+      let incomeCodeText = ipc.incomeCode.partition + '/' + ipc.incomeCode.position;
+      incomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = formatAmount(ipc.income);
     });
     // payment slip total income
     incomePageContext['S'+row] = formatAmount(paymentSlip.income)
     row++;
   }
   // total per income code
-  annualReportPage.totalIncomePerCode.forEach(totalIncomePerCode => {
-    let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-    incomePageContext[colsPerIncomeCodes[incomeCodeText] + 41] = formatAmount(totalIncomePerCode.income);
+  incomePage.totalIncomePerCode.forEach(tipc => {
+    let incomeCodeText = tipc.incomeCode.partition + '/' + tipc.incomeCode.position;
+    incomePageContext[colsPerIncomeCodes[incomeCodeText] + 41] = formatAmount(tipc.income);
   });
   // total incomes per page
-  incomePageContext['S41'] = formatAmount(annualReportPage.totalIncome);
-  incomePageContext['S42'] = formatAmount(annualReportPage.transferFromPreviousMonth);
-  incomePageContext['S43'] = formatAmount(annualReportPage.total);
+  incomePageContext['S41'] = formatAmount(incomePage.totalIncome);
+  incomePageContext['S42'] = formatAmount(incomePage.transferFromPreviousMonth);
+  incomePageContext['S43'] = formatAmount(incomePage.total);
 
-  Mustache.parse(incomePageTemplate);
   annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext));
 }
 
-async function populateOutcomePage (annualReport, annualReportPage, outcomeCodes, outcomePageTemplate, annualReportPages, receiptStartIndex) {
+function populateOutcomePage (annualReport, outcomePage, outcomePageTemplate, annualReportPages, receiptStartIndex) {
   var outcomePageContext = {};
-  outcomePageContext.page = annualReportPage.ordinal;
+  outcomePageContext.page = outcomePage.ordinal;
   if (!annualReport.year) {
     outcomePageContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
   } else {
     outcomePageContext.year = annualReport.year;
   }
-
   var colsPerOutcomeCodes = {}
   var col = 'D';
    // outcome codes
-  outcomeCodes.forEach(outcomeCode => {
-    let outcomeCodeText = outcomeCode.partition + '/' + outcomeCode.position;
+   annualReport.outcomeCodes.forEach(oc => {
+    let outcomeCodeText = oc.partition + '/' + oc.position;
     outcomePageContext[col+'6'] = outcomeCodeText;
-    outcomePageContext[col+'7'] = outcomeCode.description;
+    outcomePageContext[col+'7'] = oc.description;
     colsPerOutcomeCodes[outcomeCodeText] = col;
     col = String.fromCharCode(col.charCodeAt() + 1);
   });
   var row = 14;
-  for (let i = receiptStartIndex; i < annualReportPage.receipts.length; i++) {
+  for (let i = receiptStartIndex; i < outcomePage.receipts.length; i++) {
     if (row >= 41) {
       Mustache.parse(outcomePageTemplate);
       annualReportPages.push(Mustache.render(outcomePageTemplate, outcomePageContext));
-      await populateOutcomePage(annualReport, annualReportPage, outcomeCodes, outcomePageTemplate, annualReportPages, i)
+      populateOutcomePage(annualReport, outcomePage, outcomePageTemplate, annualReportPages, i)
       return
     }
-    const receipt = annualReportPage.receipts[i]
+    const receipt = outcomePage.receipts[i]
      // receipt ordinal/date(day)/reason
     outcomePageContext['A'+row] = receipt.ordinal;
     let date = new Date(receipt.date).getUTCDate();
     outcomePageContext['B'+row] = date ? date + '.' : date;
     outcomePageContext['C'+row] = receipt.reason;
     // receipt outcome per code
-    receipt.outcomePerCode.forEach(outcomePerCode => {
-      let outcomeCodeText = outcomePerCode.outcomeCode.partition + '/' + outcomePerCode.outcomeCode.position;
-      outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(outcomePerCode.outcome);
+    receipt.outcomePerCode.forEach(opc => {
+      let outcomeCodeText = opc.outcomeCode.partition + '/' + opc.outcomeCode.position;
+      outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(opc.outcome);
     });
     // receipt total outcome
     outcomePageContext['T'+row] = formatAmount(receipt.outcome)
     row++;
   }
   // total per outcome code
-  annualReportPage.totalOutcomePerCode.forEach(totalOutcomePerCode => {
-    let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-    outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + 41] = formatAmount(totalOutcomePerCode.outcome);
+  outcomePage.totalOutcomePerCode.forEach(topc => {
+    let outcomeCodeText = topc.outcomeCode.partition + '/' + topc.outcomeCode.position;
+    outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + 41] = formatAmount(topc.outcome);
   });
   // total outcomes per page
-  outcomePageContext['T41'] = formatAmount(annualReportPage.totalOutcome);
-  outcomePageContext['T42'] = formatAmount(annualReportPage.transferToNextMonth);
-  outcomePageContext['T43'] = formatAmount(annualReportPage.total);
+  outcomePageContext['T41'] = formatAmount(outcomePage.totalOutcome);
+  outcomePageContext['T42'] = formatAmount(outcomePage.transferToNextMonth);
+  outcomePageContext['T43'] = formatAmount(outcomePage.total);
 
-  Mustache.parse(outcomePageTemplate);
   annualReportPages.push(Mustache.render(outcomePageTemplate, outcomePageContext));
 }
 
-async function populateTotalIncomeOutcomePage(annualReport, incomeCodes, outcomeCodes, annualReportPages) {
+function populateTotalIncomePage(annualReport, totalIncomePageTemplate, annualReportPages) {
   var totalIncomePageContext = {};
+  var colsPerIncomeCodes = {}
+  var col = 'B';
+  annualReport.incomeCodes.forEach(ic => {
+    let incomeCodeText = ic.partition + '/' + ic.position;
+    totalIncomePageContext[col+'5'] = incomeCodeText;
+    totalIncomePageContext[col+'6'] = ic.description;
+    colsPerIncomeCodes[incomeCodeText] = col;
+    col = String.fromCharCode(col.charCodeAt() + 1);
+  });
+  var row = 8;
+  annualReport.incomePages.forEach(ip => {
+    ip.totalIncomePerCode.forEach(tipc => {
+      let incomeCodeText = tipc.incomeCode.partition + '/' + tipc.incomeCode.position;
+      totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = formatAmount(tipc.income);
+    })
+    totalIncomePageContext['Q'+row] = formatAmount(ip.totalIncome);
+    row++;
+  });
+  annualReport.totalIncomePage.totalIncomePerCode.forEach(tipc => {
+    let incomeCodeText = tipc.incomeCode.partition + '/' + tipc.incomeCode.position;
+    totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + '20'] = formatAmount(tipc.income);
+  })
+  annualReport.totalIncomePage.totalIncomePerCodePredicted.forEach(tipcp => {
+    let incomeCodeText = tipcp.incomeCode.partition + '/' + tipcp.incomeCode.position;
+    totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + '21'] = formatAmount(tipcp.income);
+  })
+  totalIncomePageContext['Q20'] = formatAmount(annualReport.totalIncomePage.totalIncome)
+  totalIncomePageContext['Q21'] = formatAmount(annualReport.totalIncomePage.totalIncomePredicted)
+
+  annualReportPages.push(Mustache.render(totalIncomePageTemplate, totalIncomePageContext))
+}
+
+function populateTotalOutcomePage(annualReport, totalOutcomePageTemplate, annualReportPages) {
   var totalOutcomePageContext = {};
   if (!annualReport.year) {
     totalOutcomePageContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
   } else {
     totalOutcomePageContext.year = annualReport.year;
   }
-
-  var colsPerIncomeCodes = {}
   var colsPerOutcomeCodes = {}
-
   var col = 'B';
-  // income codes
-  incomeCodes.forEach(incomeCode => {
-    let incomeCodeText = incomeCode.partition + '/' + incomeCode.position;
-    totalIncomePageContext[col+'5'] = incomeCodeText;
-    totalIncomePageContext[col+'6'] = incomeCode.description;
-    colsPerIncomeCodes[incomeCodeText] = col;
-    col = String.fromCharCode(col.charCodeAt() + 1);
-  });
-  var col = 'B';
-  // outcome codes
-  outcomeCodes.forEach(outcomeCode => {
-    let outcomeCodeText = outcomeCode.partition + '/' + outcomeCode.position;
+  annualReport.outcomeCodes.forEach(oc => {
+    let outcomeCodeText = oc.partition + '/' + oc.position;
     totalOutcomePageContext[col+'5'] = outcomeCodeText;
-    totalOutcomePageContext[col+'6'] = outcomeCode.description;
+    totalOutcomePageContext[col+'6'] = oc.description;
     colsPerOutcomeCodes[outcomeCodeText] = col;
     col = String.fromCharCode(col.charCodeAt() + 1);
   });
-  // totals per code per page
   var row = 8;
-  annualReport.pages.forEach((page) => {
-    page.totalIncomePerCode.forEach(totalIncomePerCode => {
-      let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-      totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = formatAmount(totalIncomePerCode.income);
-    })
-    page.totalOutcomePerCode.forEach(totalOutcomePerCode => {
-      let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-      totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(totalOutcomePerCode.outcome);
+  annualReport.outcomePages.forEach(op => {
+    op.totalOutcomePerCode.forEach(topc => {
+      let outcomeCodeText = topc.outcomeCode.partition + '/' + topc.outcomeCode.position;
+      totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(topc.outcome);
     });
-    totalIncomePageContext['Q'+row] = formatAmount(page.totalIncome);
-    totalOutcomePageContext['R'+row] = formatAmount(page.totalOutcome);
+    totalOutcomePageContext['R'+row] = formatAmount(op.totalOutcome);
     row++;
   });
-  annualReport.totalIncomePerCode.forEach(totalIncomePerCode => {
-    let incomeCodeText = totalIncomePerCode.incomeCode.partition + '/' + totalIncomePerCode.incomeCode.position;
-    totalIncomePageContext[colsPerIncomeCodes[incomeCodeText] + '20'] = formatAmount(totalIncomePerCode.income);
-  });
-  annualReport.totalOutcomePerCode.forEach(totalOutcomePerCode => {
-    let outcomeCodeText = totalOutcomePerCode.outcomeCode.partition + '/' + totalOutcomePerCode.outcomeCode.position;
-    totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + '20'] = formatAmount(totalOutcomePerCode.outcome);
-  });
-  // totals
-  totalIncomePageContext['Q20'] = formatAmount(annualReport.totalIncome);
-  totalOutcomePageContext['R20'] = formatAmount(annualReport.totalOutcome);
-  totalOutcomePageContext['R24'] = formatAmount(annualReport.totalIncome);
-  totalOutcomePageContext['R25'] = formatAmount(annualReport.totalOutcome);
-  totalOutcomePageContext['R26'] = formatAmount(annualReport.total);
+  annualReport.totalOutcomePage.totalOutcomePerCode.forEach(topc => {
+    let outcomeCodeText = topc.outcomeCode.partition + '/' + topc.outcomeCode.position;
+    totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + '20'] = formatAmount(topc.outcome);
+  })
+  annualReport.totalOutcomePage.totalOutcomePerCodeAllowed.forEach(topca => {
+    let outcomeCodeText = topca.outcomeCode.partition + '/' + topca.outcomeCode.position;
+    totalOutcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + '21'] = formatAmount(topca.outcome);
+  })
+  totalOutcomePageContext['R20'] = formatAmount(annualReport.totalOutcomePage.totalOutcome);
+  totalOutcomePageContext['R21'] = formatAmount(annualReport.totalOutcomePage.totalOutcomeAllowed);
+  totalOutcomePageContext['R24'] = formatAmount(annualReport.totalIncomePage.totalIncome);
+  totalOutcomePageContext['R25'] = formatAmount(annualReport.totalOutcomePage.totalOutcome);
+  totalOutcomePageContext['R26'] = formatAmount(annualReport.totalOutcomePage.netIncome);
+  totalOutcomePageContext['R27'] = formatAmount(annualReport.totalOutcomePage.transferFromPreviousYear);
+  totalOutcomePageContext['R28'] = formatAmount(annualReport.totalOutcomePage.transferToNextYear);
 
-  const totalIncomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-income-page.html"), { encoding: 'utf8'})
-  const totalOutcomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-outcome-page.html"), { encoding: 'utf8'});
-  Mustache.parse(totalIncomePageTemplate);   // optional, speeds up future uses
-  Mustache.parse(totalOutcomePageTemplate);
-  annualReportPages.push(Mustache.render(totalIncomePageTemplate, totalIncomePageContext));
   annualReportPages.push(Mustache.render(totalOutcomePageTemplate, totalOutcomePageContext));
 }
 
-async function populateSharesPage(annualReport, annualReportPages) {
-  annualReportPages.push(await readFile(path.join(__static, "/templates/annual-report/shares-page.html"), { encoding: 'utf8'}));
+function populateSharesPage(annualReport, sharesPageTemplate, annualReportPages, sharesStartIndex, savingsStartIndex) {
+  const sharesPageContext = {}
+  var newSharesStartIndex, newSavingsStartIndex
+  if (sharesStartIndex || sharesStartIndex == 0) {
+    let row = 7
+    for (let i=sharesStartIndex; i<annualReport.sharesPage.shares.length; i++) {
+      if (row >= 15) {
+        newSharesStartIndex = i
+        break
+      }
+      const share = annualReport.sharesPage.shares[i]
+      sharesPageContext['A'+row] = share.series
+      sharesPageContext['B'+row] = share.ordinal
+      sharesPageContext['C'+row] = share.name
+      sharesPageContext['D'+row] = formatAmount(share.nominalValue)
+      row++
+    }
+  }
+  if (savingsStartIndex || savingsStartIndex == 0) {
+    let row = 7
+    for (let i=savingsStartIndex; i<annualReport.sharesPage.savings.length; i++) {
+      if (row >= 13) {
+        newSavingsStartIndex = i
+        break
+      }
+      const saving = annualReport.sharesPage.savings[i]
+      sharesPageContext['E'+row] = saving.account
+      sharesPageContext['F'+row] = saving.savingEntity
+      sharesPageContext['G'+row] = formatAmount(saving.amount)
+      sharesPageContext['H'+row] = formatAmount(saving.amountDeposited)
+      sharesPageContext['I'+row] = formatAmount(saving.amountWithdrawn)
+      row++
+    }
+  }
+  if(newSharesStartIndex || newSavingsStartIndex) {
+    annualReportPages.push(Mustache.render(sharesPageTemplate, sharesPageContext))
+    populateSharesPage(annualReport, sharesPageTemplate, annualReportPages, newSharesStartIndex, newSavingsStartIndex)
+    return
+  }
+  sharesPageContext['D15'] = formatAmount(annualReport.sharesPage.totalNominalValue)
+  sharesPageContext['D16'] = formatAmount(annualReport.sharesPage.shareValueDepreciatedDuringYear)
+  sharesPageContext['D17'] = formatAmount(annualReport.sharesPage.nominalValueOnYearEnd)
+  sharesPageContext['G13'] = formatAmount(annualReport.sharesPage.totalSavingAmountAtYearStart)
+  sharesPageContext['G14'] = formatAmount(annualReport.sharesPage.totalSavingAmountDeposited)
+  sharesPageContext['G15'] = formatAmount(annualReport.sharesPage.totalSavingAmountPlusDeposited)
+  sharesPageContext['G16'] = formatAmount(annualReport.sharesPage.totalSavingAmountWithdrawn)
+  sharesPageContext['G17'] = formatAmount(annualReport.sharesPage.savingAmountOnYearEnd)
+
+  annualReportPages.push(Mustache.render(sharesPageTemplate, sharesPageContext))
 }
 
-async function populateTotalPage(annualReport, annualReportPages) {
-  const totalPageContext = {};
-
+function populateTotalPage(annualReport, totalPageTemplate, annualReportPages, itemsStartIndex, debtsStartIndex) {
+  const totalPageContext = {}
   if (!annualReport.year) {
     totalPageContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
   } else {
-    totalPageContext.year = annualReport.year;
+    totalPageContext.year = annualReport.year
   }
-  totalPageContext['E5'] = formatAmount(annualReport.total);
+  totalPageContext.churchMunicipality = annualReport.churchMunicipality
+  if (itemsStartIndex == 0 &&  debtsStartIndex == 0) {
+    totalPageContext['E5'] = formatAmount(annualReport.totalOutcomePage.transferToNextYear)
+    totalPageContext['E6'] = formatAmount(annualReport.sharesPage.savingAmountOnYearEnd)
+    totalPageContext['E7'] = formatAmount(annualReport.sharesPage.nominalValueOnYearEnd)
+    totalPageContext['E8'] = formatAmount(annualReport.totalPage.realEstateBuildingsValue)
+    totalPageContext['E9'] = formatAmount(annualReport.totalPage.realEstateLandValue)
+  }
+  var newItemsStartIndex, newDebtsStartIndex
+  if (itemsStartIndex || itemsStartIndex == 0) {
+    let row = 11
+    for (let i=itemsStartIndex; i<annualReport.totalPage.items.length; i++) {
+      if (row >= 16) {
+        newItemsStartIndex = i
+        break
+      }
+      const item = annualReport.totalPage.items[i]
+      totalPageContext['A'+row] = item.name
+      totalPageContext['E'+row] = formatAmount(item.value)
+      row++
+    }
+  }
+  if (debtsStartIndex || debtsStartIndex == 0) {
+    let row = 5
+    for (let i=debtsStartIndex; i<annualReport.totalPage.debts.length; i++) {
+      if (row >= 16) {
+        newDebtsStartIndex = i
+        break
+      }
+      const debt = annualReport.totalPage.debts[i]
+      totalPageContext['F'+row] = debt.description
+      totalPageContext['G'+row] = formatAmount(debt.amount)
+      row++
+    }
+  }
+  if(newItemsStartIndex || newDebtsStartIndex) {
+    annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext))
+    populateTotalPage(annualReport, totalPageTemplate, annualReportPages, newItemsStartIndex, newDebtsStartIndex)
+    return
+  }
+  totalPageContext['E16'] = formatAmount(annualReport.totalPage.totalPropertyValue)
+  totalPageContext['G16'] = formatAmount(annualReport.totalPage.totalDebt)
+  totalPageContext['G17'] = formatAmount(annualReport.totalPage.totalPropertyValue)
+  totalPageContext['G18'] = formatAmount(annualReport.totalPage.totalDebt)
+  totalPageContext['G19'] = formatAmount(annualReport.totalPage.propertyValue)
 
-  const totalPageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-page.html"), { encoding: 'utf8'});
-  Mustache.parse(totalPageTemplate);   // optional, speeds up future uses
-  annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext));
+  annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext))
 }
 
 const amountNumberOptions = {
@@ -453,7 +682,9 @@ function pdfSettings () {
 }
 
 module.exports = {
+  getAnnualReportCommonData: getAnnualReportCommonData,
   getAnnualReportData: getAnnualReportData,
+  createAnnualReportCommonData: createAnnualReportCommonData,
   createAnnualReportData: createAnnualReportData,
   getAnnualReport: getAnnualReport,
   getAnnualReportPages: getAnnualReportPages,

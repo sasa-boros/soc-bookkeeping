@@ -1,5 +1,6 @@
 const outcomeCodeDao = require('../dao/outcomeCodeDao')
 const receiptDao = require('../dao/receiptDao')
+const annualReportDao = require('../dao/annualReportDao')
 
 async function getOutcomeCodes () {
   console.log('Getting all outcome codes')
@@ -31,7 +32,7 @@ async function updateOutcomeCode (outcomeCode) {
 
 async function updateReceipts (deletedOutcomeCode) {
   console.log('Making associated receipts invalid and updating default')
-  let receipts = await receiptDao.findAll()
+  const receipts = await receiptDao.findAll()
   for (let i=0; i<receipts.length; i++) {
     let receipt = receipts[i]
     if (!receipt.outcomePerCode) {
@@ -49,6 +50,24 @@ async function updateReceipts (deletedOutcomeCode) {
       }
       await receiptDao.updateById(receipt._id, receipt, true)
       console.log(`Receipt with id ${receipt._id} is no longer valid`)
+    }
+  }
+  const annualReportsData = await annualReportDao.findAll()
+  for (let i=0; i<annualReportsData.length; i++) {
+    let annualReportData = annualReportsData[i]
+    if (!annualReportData.totalOutcomePerCodeAllowed) {
+      continue
+    }
+    let outcomePerCodeIndex = annualReportData.totalOutcomePerCodeAllowed.findIndex(topca => {
+      return topca.outcomeCode.partition == deletedOutcomeCode.partition && topca.outcomeCode.position == deletedOutcomeCode.position
+    })
+    if (outcomePerCodeIndex != -1) {
+      annualReportData.totalOutcomePerCodeAllowed.splice(outcomePerCodeIndex, 1)
+      if (annualReportData.totalOutcomePerCodeAllowed.length == 0) {
+        annualReportData.totalOutcomePerCodeAllowed = null
+      }
+      await annualReportDao.updateById(annualReportData._id, annualReportData)
+      console.log(`Annual report data with id ${annualReportData._id} is updated`)
     }
   }
 }

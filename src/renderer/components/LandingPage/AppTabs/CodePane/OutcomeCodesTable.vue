@@ -43,7 +43,7 @@
         </template>
       </b-table>
 
-      <b-modal hide-footer hide-header size="sm" id="create-outcome-code-modal">
+      <b-modal hide-footer hide-header size="lg" id="create-outcome-code-modal">
         <outcome-code-preview :outcomeCode='selectedOutcomeCode' :isUpdate='isUpdate' :existingOutcomeCodes="outcomeCodes" parentModal="create-outcome-code-modal" v-on:updateOutcomeCodes="update"></outcome-code-preview>
       </b-modal>
 

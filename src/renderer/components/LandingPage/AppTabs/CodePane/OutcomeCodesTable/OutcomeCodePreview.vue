@@ -13,7 +13,7 @@
       <h5 align="center">Партија и позиција издавања</h5>
       <br>
       <b-row>
-        <b-col cols="2">
+        <b-col cols="3">
           <label for="partitionInput">Партија:</label>
         </b-col>
         <b-col>
@@ -23,7 +23,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="2">
+        <b-col cols="3">
           <label for="positionInput">Позиција:</label>
         </b-col>
         <b-col>
@@ -33,7 +33,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="2">
+        <b-col cols="3">
           <label for="descriptionInput">Опис:</label>
         </b-col>
         <b-col>

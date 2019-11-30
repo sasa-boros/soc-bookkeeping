@@ -65,7 +65,7 @@
         </template>
         <template v-slot:cell(description)="row">{{ row.item.description }}</template>
         <template v-slot:cell(amount)="row">{{ row.item.amount | formatAmount }}</template>
-        <template v-slot:cell(year)="row">{{ row.item.year | formatYear }}</template>
+        <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
             <b-button id="deleteDebtBtn" v-on:mouseleave="hideTooltip('deleteDebtBtn')" v-b-tooltip.hover.top="{title: phrases.deleteDebt}" @click.stop="openDeleteDebtModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
@@ -82,7 +82,7 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="sm" id="create-debt-modal">
+    <b-modal hide-footer hide-header size="lg" id="create-debt-modal">
       <debt-preview :debt='selectedItem' :debtPreview='isPreview' parentModal="create-debt-modal" v-on:updateDebtsTable="update"></debt-preview>
     </b-modal>
 
@@ -109,7 +109,7 @@
 
   const debtController = require('../../../controllers/debtController')
   const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, amountNumberOptions } = require('../../../utils/utils')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -271,11 +271,8 @@
       }
     },
     filters: {
-      formatYear (year) {
-        return new Date(year).getUTCFullYear()
-      },
       formatAmount (amount) {
-        return asFormatedString(amount, amountNumberOptions) + " дин."
+        return asFormatedString(amount, largeAmountNumberOptions) + " дин."
       }
     },
     watch: {
@@ -291,7 +288,7 @@
           this.items = this.debts;
         } else {
           this.items = this.debts.filter(value => {
-            if(new Date(value.year).getUTCFullYear() == newYearValue) {
+            if(value.year == newYearValue) {
               return true;
             }
             return false;

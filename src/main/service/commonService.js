@@ -24,12 +24,12 @@ async function getBookedYears () {
     }
     if (shares) {
         shares.forEach(share => {
-            yearsSet.add(share.year.getFullYear())
+            yearsSet.add(share.year)
         })
     }
     if (savings) {
         savings.forEach(saving => {
-            yearsSet.add(saving.year.getFullYear())
+            yearsSet.add(saving.year)
         })
     }
 

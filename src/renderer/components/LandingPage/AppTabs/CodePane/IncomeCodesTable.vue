@@ -43,7 +43,7 @@
         </template>
       </b-table>
 
-      <b-modal hide-footer hide-header size="sm" id="create-income-code-modal">
+      <b-modal hide-footer hide-header size="lg" id="create-income-code-modal">
         <income-code-preview :incomeCode='selectedIncomeCode' :isUpdate='isUpdate' :existingIncomeCodes="incomeCodes" parentModal="create-income-code-modal" v-on:updateIncomeCodes="update"></income-code-preview>
       </b-modal>
 

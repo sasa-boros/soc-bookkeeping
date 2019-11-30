@@ -65,7 +65,7 @@
         </template>
         <template v-slot:cell(name)="row">{{ row.item.name }}</template>
         <template v-slot:cell(value)="row">{{ row.item.value | formatValue }}</template>
-        <template v-slot:cell(year)="row">{{ row.item.year | formatYear }}</template>
+        <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
             <b-button id="deleteItemBtn" v-on:mouseleave="hideTooltip('deleteItemBtn')" v-b-tooltip.hover.top="{title: phrases.deleteItem}" @click.stop="openDeleteItemModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
@@ -82,7 +82,7 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="sm" id="create-item-modal">
+    <b-modal hide-footer hide-header size="lg" id="create-item-modal">
       <item-preview :item='selectedItem' :itemPreview='isPreview' parentModal="create-item-modal" v-on:updateItemsTable="update"></item-preview>
     </b-modal>
 
@@ -109,7 +109,7 @@
 
   const itemController = require('../../../controllers/itemController')
   const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, amountNumberOptions } = require('../../../utils/utils')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -271,11 +271,8 @@
       }
     },
     filters: {
-      formatYear (year) {
-        return new Date(year).getUTCFullYear()
-      },
       formatValue (value) {
-        return asFormatedString(value, amountNumberOptions) + " дин."
+        return asFormatedString(value, largeAmountNumberOptions) + " дин."
       }
     },
     watch: {
@@ -291,7 +288,7 @@
           this.tableItems = this.items;
         } else {
           this.tableItems = this.items.filter(value => {
-            if(new Date(value.year).getUTCFullYear() == newYearValue) {
+            if(value.year == newYearValue) {
               return true;
             }
             return false;

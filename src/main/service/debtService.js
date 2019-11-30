@@ -9,7 +9,6 @@ async function getDebts () {
 
 async function createDebt (debt) {
   delete debt._id
-  debt.year = new Date(debt.year)
   console.log(`Creating debt: \n${JSON.stringify(debt, null, 2)}`)
   await debtDao.insert(debt)
   console.log('Successfully created debt')
@@ -29,7 +28,6 @@ async function deleteDebts (debtsIds) {
 
 async function updateDebt (debt) {
   console.log(`Updating debt: \n${JSON.stringify(debt, null, 2)}`)
-  debt.year = new Date(debt.year)
   await debtDao.updateById(debt._id, debt)
   console.log('Successfully updated debt')
 }

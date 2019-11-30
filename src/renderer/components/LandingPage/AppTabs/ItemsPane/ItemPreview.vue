@@ -88,7 +88,7 @@
   import MessageConfirmDialog from '../../../MessageConfirmDialog'
   
   const itemController = require('../../../../controllers/itemController')
-  const { mapItemToItemForm, mapItemFormToItem, amountNumberOptions } = require('../../../../utils/utils')
+  const { mapItemToItemForm, mapItemFormToItem, largeAmountNumberOptions } = require('../../../../utils/utils')
   
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
@@ -140,7 +140,7 @@
       } 
     },
     mounted () {
-      this.valueInputAutonumeric = new AutoNumeric('#valueInput', amountNumberOptions)
+      this.valueInputAutonumeric = new AutoNumeric('#valueInput', largeAmountNumberOptions)
       this.bindKeys()
     },
     beforeDestroy () {
@@ -310,11 +310,11 @@
     border-radius: 0 !important;
   }
   #nameInput {
-    width: 235px;
+    width: 470px;
     border-style: none;
   }
   #valueInput {
-    width: 105px;
+    width: 140px;
     border-style: none;
   }
 </style>

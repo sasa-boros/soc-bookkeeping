@@ -68,7 +68,7 @@
         <template v-slot:cell(amount)="row">{{ row.item.amount | formatAmount }}</template>
         <template v-slot:cell(amountDeposited)="row">{{ row.item.amountDeposited | formatAmount }}</template>
         <template v-slot:cell(amountWithdrawn)="row">{{ row.item.amountWithdrawn | formatAmount }}</template>
-        <template v-slot:cell(year)="row">{{ row.item.year | formatYear }}</template>
+        <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
             <b-button id="deleteSavingBtn" v-on:mouseleave="hideTooltip('deleteSavingBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSaving}" @click.stop="openDeleteSavingModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
@@ -85,7 +85,7 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="sm" id="create-saving-modal">
+    <b-modal hide-footer hide-header size="lg" id="create-saving-modal">
       <saving-preview :saving='selectedItem' :savingPreview='isPreview' parentModal="create-saving-modal" v-on:updateSavingsTable="update"></saving-preview>
     </b-modal>
 
@@ -112,7 +112,7 @@
 
   const savingController = require('../../../controllers/savingController')
   const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, amountNumberOptions } = require('../../../utils/utils')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -280,11 +280,8 @@
       }
     },
     filters: {
-      formatYear (year) {
-        return new Date(year).getUTCFullYear()
-      },
       formatAmount (amount) {
-        return asFormatedString(amount, amountNumberOptions) + " дин."
+        return asFormatedString(amount, largeAmountNumberOptions) + " дин."
       }
     },
     watch: {
@@ -300,7 +297,7 @@
           this.items = this.savings;
         } else {
           this.items = this.savings.filter(value => {
-            if(new Date(value.year).getUTCFullYear() == newYearValue) {
+            if(value.year == newYearValue) {
               return true;
             }
             return false;

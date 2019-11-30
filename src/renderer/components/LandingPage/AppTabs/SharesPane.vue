@@ -67,7 +67,7 @@
         <template v-slot:cell(ordinal)="row">{{ row.item.ordinal }}</template>
         <template v-slot:cell(name)="row">{{ row.item.name }}</template>
         <template v-slot:cell(nominalValue)="row">{{ row.item.nominalValue | formatNominalValue }}</template>
-        <template v-slot:cell(year)="row">{{ row.item.year | formatYear }}</template>
+        <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
             <b-button id="deleteShareBtn" v-on:mouseleave="hideTooltip('deleteShareBtn')" v-b-tooltip.hover.top="{title: phrases.deleteShare}" @click.stop="openDeleteShareModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
@@ -84,7 +84,7 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="sm" id="create-share-modal">
+    <b-modal hide-footer hide-header size="lg" id="create-share-modal">
       <share-preview :share='selectedItem' :sharePreview='isPreview' parentModal="create-share-modal" v-on:updateSharesTable="update"></share-preview>
     </b-modal>
 
@@ -111,7 +111,7 @@
 
   const shareController = require('../../../controllers/shareController')
   const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, amountNumberOptions } = require('../../../utils/utils')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -277,11 +277,8 @@
       }
     },
     filters: {
-      formatYear (year) {
-        return new Date(year).getUTCFullYear()
-      },
       formatNominalValue (nominalValue) {
-        return asFormatedString(nominalValue, amountNumberOptions) + " дин."
+        return asFormatedString(nominalValue, largeAmountNumberOptions) + " дин."
       }
     },
     watch: {
@@ -297,7 +294,7 @@
           this.items = this.shares;
         } else {
           this.items = this.shares.filter(value => {
-            if(new Date(value.year).getUTCFullYear() == newYearValue) {
+            if(value.year == newYearValue) {
               return true;
             }
             return false;

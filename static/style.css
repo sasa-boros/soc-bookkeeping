@@ -56,6 +56,10 @@ h1 {
 .btn-link:disabled {
   background-color: rgb(153, 153, 153);
 }
+.btn-secondary:disabled {
+  background-color: rgb(153, 153, 153);
+  border:rgb(153, 153, 153);
+}
 .btn-light {
   background-color:  rgb(255, 255, 255);
   border: none;
