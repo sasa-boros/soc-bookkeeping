@@ -112,7 +112,9 @@
     data () {
       return {
         form: {
-          year: new Date()
+          year: new Date(),
+          name: null,
+          value: null
         },
         shouldValidate: false,
         errorText: "",
@@ -135,8 +137,8 @@
     },
     created () {
       if(this.itemPreview) {
-        var item = JSON.parse(JSON.stringify(this.item));
-        this.form = mapItemToItemForm(item);
+        var item = JSON.parse(JSON.stringify(this.item))
+        this.form = mapItemToItemForm(item)
       } 
     },
     mounted () {
@@ -250,14 +252,15 @@
         if(this.alreadyPressed) {
           return
         }
+        console.log(this.form)
         const self = this
-        this.shouldValidate = true;
+        this.shouldValidate = true
         if (!this.validForm) {
           this.showInvalidTooltips()
           return
         }
+        this.alreadyPressed = true
         if (this.itemPreview) {
-          this.alreadyPressed = true
           itemController.updateItem(mapItemFormToItem(this.form)).then((res) => {
             if (!res.err) {
               self.$emit('updateItemsTable')
@@ -268,7 +271,6 @@
             }
           })
         } else {
-          this.alreadyPressed = true
           itemController.createItem(mapItemFormToItem(this.form)).then((res) => {
             if (!res.err) {
               self.$emit('updateItemsTable')

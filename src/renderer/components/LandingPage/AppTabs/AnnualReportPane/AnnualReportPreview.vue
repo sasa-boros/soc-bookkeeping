@@ -4,7 +4,7 @@
       <b-row>
         <b-col cols="3">
           <span v-on:mouseleave="hideTooltip('annualReportDownloadDropdown')">
-            <b-dropdown v-on:mouseleave="hideTooltip('annualReportDownloadDropdown')" id="annualReportDownloadDropdown" variant="link">
+            <b-dropdown id="annualReportDownloadDropdown" variant="link">
               <template v-slot:button-content>
                 <img src="~@/assets/download.png">
               </template>
@@ -46,16 +46,16 @@
         <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
         </div>
       </b-row>
-      <b-tooltip ref="annualReportPrintDropdownTooltip" target="annualReportPrintDropdown" v-on:hide.prevent>
+      <b-tooltip ref="annualReportPrintDropdownTooltip" triggers="hover" target="annualReportPrintDropdown" v-on:hide.prevent>
         {{phrases.print}}
       </b-tooltip>
-      <b-tooltip ref="annualReportDownloadDropdownTooltip" target="annualReportDownloadDropdown" v-on:hide.prevent>
+      <b-tooltip ref="annualReportDownloadDropdownTooltip" triggers="hover" target="annualReportDownloadDropdown" v-on:hide.prevent>
         {{phrases.download}}
       </b-tooltip>
-      <b-tooltip ref="decrementPageBtnTooltip" target="decrementPageBtn" v-on:hide.prevent>
+      <b-tooltip ref="decrementPageBtnTooltip" triggers="hover" target="decrementPageBtn" v-on:hide.prevent>
         {{phrases.previousPage}}
       </b-tooltip>
-      <b-tooltip ref="incrementPageBtnTooltip" target="incrementPageBtn" v-on:hide.prevent>
+      <b-tooltip ref="incrementPageBtnTooltip" triggers="hover" target="incrementPageBtn" v-on:hide.prevent>
         {{phrases.nextPage}}
       </b-tooltip>
       
@@ -556,6 +556,7 @@ export default {
       if (this.alreadyPressed) {
         return
       }
+      this.hideTooltip('')
       document.body.appendChild(this.downloadPageSections[this.currentPage-1])
       try {
         this.alreadyPressed = true

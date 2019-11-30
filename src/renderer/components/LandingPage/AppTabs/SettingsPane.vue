@@ -39,7 +39,7 @@
       <b-col>
       Дневник благајне Српске православне црквене општине&nbsp;
       <b-form-input id="churchMunicipalityInput" type="text" v-model="churchMunicipality" v-on:input="disableCommonSaveBtn = false" v-on:keypress="limitInputPerSize"/> у
-      <b-form-input id="churchTownInput" type="text" v-model="churchTown" v-on:input="disableCommonSaveBtn = false" v-on:keypress="limitInputPerSize"/>.
+      <b-form-input id="churchTownInput" type="text" v-model="churchTown" v-on:input="disableCommonSaveBtn = false" v-on:keypress="limitInputPerSize"/>.&nbsp;
       <b-button id="commonSaveBtn" ref="commonSaveBtn" :disabled="disableCommonSaveBtn" v-on:mouseleave="hideTooltip('commonSaveBtn')" v-on:click="createAnnualReportCommonData" variant="light">
         <img src="~@/assets/save.png">
       </b-button>

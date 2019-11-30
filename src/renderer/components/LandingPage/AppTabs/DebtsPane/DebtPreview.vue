@@ -112,7 +112,9 @@
     data () {
       return {
         form: {
-          year: new Date()
+          year: new Date(),
+          description: null,
+          amount: null
         },
         shouldValidate: false,
         errorText: "",

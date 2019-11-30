@@ -132,7 +132,11 @@
     data () {
       return {
         form: {
-          year: new Date()
+          year: new Date(),
+          series: null,
+          ordinal: null,
+          name: null,
+          nominalValue: null
         },
         shouldValidate: false,
         errorText: "",

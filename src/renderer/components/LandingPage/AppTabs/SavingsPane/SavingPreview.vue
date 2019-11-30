@@ -154,7 +154,12 @@
     data () {
       return {
         form: {
-          year: new Date()
+          year: new Date(),
+          account: null,
+          savingEntity: null,
+          amount: null,
+          amountDeposited: null,
+          amountWithdrawn: null
         },
         shouldValidate: false,
         errorText: "",
