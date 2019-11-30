@@ -399,7 +399,7 @@ ipcMain.on('get-annual-report-common-data', async (event) => {
 
 ipcMain.on('create-annual-report-common-data', async (event, common) => {
   try {
-    reply(event, 'create-annual-report-commmon-data-reply', await annualReportService.createAnnualReportCommonData(common))
+    reply(event, 'create-annual-report-common-data-reply', await annualReportService.createAnnualReportCommonData(common))
   } catch (err) {
     replyError(event, 'create-annual-report-common-data-reply', err.message ? err.message : err)
   }

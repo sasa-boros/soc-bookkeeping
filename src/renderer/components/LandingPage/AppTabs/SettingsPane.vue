@@ -38,8 +38,11 @@
     <b-row>
       <b-col>
       Дневник благајне Српске православне црквене општине&nbsp;
-      <b-form-input id="churchMunicipalityInput" type="text" v-model="churchMunicipality" v-on:input="createAnnualReportCommonData" v-on:keypress="limitInputPerSize"/> у
-      <b-form-input id="churchTownInput" type="text" v-model="churchTown" v-on:input="createAnnualReportCommonData" v-on:keypress="limitInputPerSize"/>.
+      <b-form-input id="churchMunicipalityInput" type="text" v-model="churchMunicipality" v-on:input="disableCommonSaveBtn = false" v-on:keypress="limitInputPerSize"/> у
+      <b-form-input id="churchTownInput" type="text" v-model="churchTown" v-on:input="disableCommonSaveBtn = false" v-on:keypress="limitInputPerSize"/>.
+      <b-button id="commonSaveBtn" ref="commonSaveBtn" :disabled="disableCommonSaveBtn" v-on:mouseleave="hideTooltip('commonSaveBtn')" v-on:click="createAnnualReportCommonData" variant="light">
+        <img src="~@/assets/save.png">
+      </b-button>
       </b-col>
     </b-row>
 
@@ -55,6 +58,10 @@
     <b-modal hide-footer hide-header size="a5" id="default-receipt-modal">
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
+
+    <b-tooltip target="commonSaveBtn" triggers="hover" placement="top" ref="commonSaveBtnTooltip" v-on:hide.prevent>
+        {{phrases.save}}
+      </b-tooltip>
       
     <b-tooltip target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip" v-on:hide.prevent>
       {{phrases.adaptPaymentSlips}}
@@ -94,12 +101,15 @@
           adaptPaymentSlips: i18n.getTranslation('Adapt payment slips'),
           adaptReceipts: i18n.getTranslation('Adapt receipts'),
           increase: i18n.getTranslation('Increase'),
-          decrease: i18n.getTranslation('Decrease')
+          decrease: i18n.getTranslation('Decrease'),
+          save: i18n.getTranslation('Save'),
+          alreadyPressed: false
         },
         churchMunicipality: null,
         churchTown: null,
         zoomLevel: Big(1.5),
-        commonDataSaveTimeout: null
+        commonDataSaveTimeout: null,
+        disableCommonSaveBtn: true
       }
     },
     created () {
@@ -128,17 +138,20 @@
         })
       },
       createAnnualReportCommonData () {
+        if (this.alreadyPressed) {
+          return
+        }
+        this.hideTooltip('commonSaveBtn')
         const self = this
-        clearTimeout(this.commonDataSaveTimeout)
-        this.commonDataSaveTimeout = setTimeout(() => {
-          annualReportController.createAnnualReportCommonData({churchMunicipality: self.churchMunicipality, churchTown: self.churchTown}).then(function(res) {
-            if (!res.err) {
-              // noop
-            } else {
-              self.openErrorModal(res.err)
-            }
-          })
-        }, 2000)
+        this.alreadyPressed = true
+        annualReportController.createAnnualReportCommonData({churchMunicipality: self.churchMunicipality, churchTown: self.churchTown}).then(function(res) {
+          self.alreadyPressed = false
+          if (!res.err) {
+            self.disableCommonSaveBtn = true
+          } else {
+            self.openErrorModal(res.err)
+          }
+        })
       },
       loadSettings () {
         const self = this

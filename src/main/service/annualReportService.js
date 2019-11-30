@@ -110,7 +110,9 @@ async function getAnnualReport (year) {
   annualReport.totalPage.items = items ? items : []
   annualReport.totalPage.debts = debts ? debts : []
   annualReport.totalPage.realEstateLandValue = annualReportData && annualReportData.realEstateLandValue ? Big(annualReportData.realEstateLandValue) : Big(0.0)
+  annualReport.totalPage.realEstateLandSurface= annualReportData ? annualReportData.realEstateLandSurface : null
   annualReport.totalPage.realEstateBuildingsValue = annualReportData && annualReportData.realEstateBuildingsValue ? Big(annualReportData.realEstateBuildingsValue) : Big(0.0)
+  annualReport.totalPage.realEstateBuildingsSurface= annualReportData ? annualReportData.realEstateBuildingsSurface : null
   annualReport.totalPage.items.forEach(i => {
     annualReport.totalPage.totalItemValue = annualReport.totalPage.totalItemValue.plus(i.value ? Big(i.value) : Big(0.0))
   })
@@ -594,8 +596,10 @@ function populateTotalPage(annualReport, totalPageTemplate, annualReportPages, i
     totalPageContext['E5'] = formatAmount(annualReport.totalOutcomePage.transferToNextYear)
     totalPageContext['E6'] = formatAmount(annualReport.sharesPage.savingAmountOnYearEnd)
     totalPageContext['E7'] = formatAmount(annualReport.sharesPage.nominalValueOnYearEnd)
+    totalPageContext['C8'] = annualReport.totalPage.realEstateBuildingsSurface
     totalPageContext['E8'] = formatAmount(annualReport.totalPage.realEstateBuildingsValue)
     totalPageContext['E9'] = formatAmount(annualReport.totalPage.realEstateLandValue)
+    totalPageContext['C9'] = annualReport.totalPage.realEstateLandSurface
   }
   var newItemsStartIndex, newDebtsStartIndex
   if (itemsStartIndex || itemsStartIndex == 0) {

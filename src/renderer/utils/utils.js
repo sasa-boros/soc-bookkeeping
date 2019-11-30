@@ -229,6 +229,8 @@ function mapAnnualReportDataToAnnualReportDataForm (annualReportData, incomeCode
     shareValueDepreciatedDuringYear: null,
     realEstateLandValue: null,
     realEstateBuildingsValue: null,
+    realEstateLandSurface: null,
+    realEstateBuildingsSurface: null,
     totalIncomePerCodePredicted: [],
     totalOutcomePerCodeAllowed: []
   }
@@ -237,6 +239,8 @@ function mapAnnualReportDataToAnnualReportDataForm (annualReportData, incomeCode
     annualReportDataForm.shareValueDepreciatedDuringYear = asFormatedString(annualReportData.shareValueDepreciatedDuringYear, largeAmountNumberOptions)
     annualReportDataForm.realEstateLandValue = asFormatedString(annualReportData.realEstateLandValue, largeAmountNumberOptions)
     annualReportDataForm.realEstateBuildingsValue = asFormatedString(annualReportData.realEstateBuildingsValue, largeAmountNumberOptions)
+    annualReportDataForm.realEstateLandSurface = annualReportData.realEstateLandSurface
+    annualReportDataForm.realEstateBuildingsSurface = annualReportData.realEstateBuildingsSurface
   }
   for (let i=0; i < incomeCodes.length; i++) {
     const incomeCode = incomeCodes[i]
@@ -279,6 +283,8 @@ function mapAnnualReportDataFormToAnnualReportData (annualReportDataForm, year) 
   annualReportData.shareValueDepreciatedDuringYear = asFloat(annualReportDataForm.shareValueDepreciatedDuringYear, largeAmountNumberOptions)
   annualReportData.realEstateLandValue = asFloat(annualReportDataForm.realEstateLandValue, largeAmountNumberOptions)
   annualReportData.realEstateBuildingsValue = asFloat(annualReportDataForm.realEstateBuildingsValue, largeAmountNumberOptions)
+  annualReportData.realEstateLandSurface = annualReportDataForm.realEstateLandSurface
+  annualReportData.realEstateBuildingsSurface = annualReportDataForm.realEstateBuildingsSurface
   return annualReportData
 }
 

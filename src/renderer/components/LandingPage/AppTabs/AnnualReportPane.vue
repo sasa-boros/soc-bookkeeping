@@ -2,27 +2,15 @@
   <b-container fluid>
     <b-row class="text-center">
       <b-col>
-        <br>
-        Прикажи дневник благајне&nbsp;
-        <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" variant="light" class="btn-xs">
-          <img src="~@/assets/annual-report.png">
-        </b-button>
-        &nbsp;за годину&nbsp;
+        Дневник благајне за годину&nbsp;
         <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
       </b-col> 
     </b-row>
     <div v-if="form">
       <hr>
-      <b-row>
-        <b-col>
-          <b-button id="annualReportDataSaveBtn" ref="annualReportDataSaveBtn" :disabled="disableAnnualReportDataSaveBtn" v-on:mouseleave="hideTooltip('annualReportDataSaveBtn')" v-on:click="createAnnualReportData" variant="secondary" class="btn-xs text-center">
-            Сачувај измене <img src="~@/assets/save.png">
-          </b-button>
-        </b-col>
-      </b-row>
       <br>
       <b-row>
-        <b-col cols=5>
+        <b-col cols="4">
           Пренос готовине из претходне године (рез. фонд):
         </b-col>
         <b-col>
@@ -31,7 +19,7 @@
       </b-row>
       <br>
       <b-row>
-        <b-col cols=5>
+        <b-col cols="4">
           Хартије од вредности - у току године отуђено - амортизовано:
         </b-col>
         <b-col>
@@ -40,8 +28,17 @@
       </b-row>
       <br>
       <b-row>
-        <b-col cols=5>
-        Некретнине - земљиште:
+        <b-col cols="4">
+          Некретнине - земљиште - површина:
+        </b-col>
+        <b-col>
+          <b-form-input id="realEstateLandSurfaceInput" type="text" v-model="form.realEstateLandSurface" v-on:keypress="limitInputPerSize"/>
+        </b-col>
+      </b-row>
+      <br>
+      <b-row>
+        <b-col cols="4">
+          Некретнине - земљиште - вредност:
         </b-col>
         <b-col>
           <b-form-input id="realEstateLandValueInput" type="text" v-model="form.realEstateLandValue"/>
@@ -49,8 +46,17 @@
       </b-row>
       <br>
       <b-row>
-        <b-col cols=5>
-          Некретнине - зграде:
+        <b-col cols="4">
+          Некретнине - зграде - површина:
+        </b-col>
+        <b-col>
+          <b-form-input id="realEstateBuildingsSurfaceInput" type="text" v-model="form.realEstateBuildingsSurface" v-on:keypress="limitInputPerSize"/>
+        </b-col>
+      </b-row>
+      <br>
+      <b-row>
+        <b-col cols="4">
+          Некретнине - зграде - вредност:
         </b-col>
         <b-col>
         <b-form-input id="realEstateBuildingsValueInput" type="text" v-model="form.realEstateBuildingsValue"/>
@@ -77,6 +83,16 @@
           <b-form-input :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
         </div>
       </div>
+      <b-row class="text-right">
+        <b-col>
+          <b-button id="annualReportDataSaveBtn" ref="annualReportDataSaveBtn" :disabled="disableAnnualReportDataSaveBtn" v-on:mouseleave="hideTooltip('annualReportDataSaveBtn')" v-on:click="createAnnualReportData" variant="light" class="btn-xs text-center">
+            <img src="~@/assets/save.png">
+          </b-button>
+          <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" :disabled="!disableAnnualReportDataSaveBtn" variant="light" class="btn-xs">
+            <img src="~@/assets/annual-report.png">
+          </b-button>
+        </b-col> 
+      </b-row>
       <!-- Annual report preview modal -->
       <b-modal hide-footer hide-header id="annual-report-preview-modal" size="ar">
         <annual-report-preview :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
@@ -84,6 +100,10 @@
 
       <b-tooltip target="annualReportBtn" triggers="hover" placement="top" ref="annualReportBtnTooltip" v-on:hide.prevent>
         {{phrases.showAnnualReport}}
+      </b-tooltip>
+
+      <b-tooltip target="annualReportDataSaveBtn" triggers="hover" placement="top" ref="annualReportDataSaveBtnTooltip" v-on:hide.prevent>
+        {{phrases.save}}
       </b-tooltip>
 
       <b-modal id="annual-report-preview-failed-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPreviewFailedModal')">
@@ -119,7 +139,8 @@
         phrases: {
           showAnnualReport: i18n.getTranslation('Show annual report'),
           invalidPaymentSlipsOrReceiptsFound: i18n.getTranslation('Invalid payment slips or receipts found'),
-          ok: i18n.getTranslation('Ok')
+          ok: i18n.getTranslation('Ok'),
+          save: i18n.getTranslation('Save')
         },
         year: null,
         churchMunicipality: null,
@@ -167,6 +188,11 @@
       )
     },
     methods: {
+      limitInputPerSize (evt) {
+        if (evt.target.scrollWidth > evt.target.clientWidth) {
+          evt.preventDefault()
+        } 
+      },
       async loadAnnualReportDataForm () {
         const self = this
         this.disableAnnualReportDataSaveBtn = true
@@ -231,6 +257,7 @@
         }
         const self = this
         this.alreadyPressed = true
+        self.hideTooltip('annualReportDataSaveBtn')
         annualReportController.createAnnualReportData(mapAnnualReportDataFormToAnnualReportData(this.form, this.year)).then(function(res) {
           self.alreadyPressed = false
           if (!res.err) {
@@ -341,7 +368,19 @@ input {
   border-style: none;
 }
 
+#realEstateBuildingsSurfaceInput {
+  width: 140px;
+  max-width: 140px;
+  border-style: none;
+}
+
 #realEstateLandValueInput {
+  width: 140px;
+  max-width: 140px;
+  border-style: none;
+}
+
+#realEstateLandSurfaceInput {
   width: 140px;
   max-width: 140px;
   border-style: none;
