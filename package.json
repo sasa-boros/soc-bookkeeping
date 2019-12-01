@@ -17,8 +17,8 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "Dnevnik Blagajne",
-    "appId": "Dnevnik Blagajne",
+    "productName": "Dnevnik Blagajne - Crkva",
+    "appId": "Dnevnik Blagajne - Crkva",
     "directories": {
       "output": "build"
     },
