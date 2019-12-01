@@ -1,7 +1,7 @@
 {
   "name": "soc-bookkeeping",
   "version": "1.0.0",
-  "author": "Boroš Saša <borossasa@gmail.com> & Popović Radmila <popovicradmila3@gmail.com>",
+  "author": "Daxon TECH",
   "description": "Serbian Orthodox Church bookkeeping application",
   "license": "MIT",
   "main": "./dist/electron/main.js",
