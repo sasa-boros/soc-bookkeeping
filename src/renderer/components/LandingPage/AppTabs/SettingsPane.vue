@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols=2>
+      <b-col cols=3>
         <span class="zoomLevelText">{{ phrases.setDefaultZoomLevel }}:</span> 
       </b-col>
       <b-col>
