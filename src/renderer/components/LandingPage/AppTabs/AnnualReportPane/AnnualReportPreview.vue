@@ -89,15 +89,15 @@ const printStyle = `
     }
     #headline {
       position: relative;
-      top: 300px;
-      left: 260px;
+      top: 283px;
+      left: 180px;
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #manual-page {
       page-break-before: always;
       position: relative;
-      top: 720px;
+      top: 697px;
       left: 65px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -105,7 +105,7 @@ const printStyle = `
     #income-page {
       page-break-before: always;
       position: relative;
-      top: 725px;
+      top: 699px;
       left: 98px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -113,7 +113,7 @@ const printStyle = `
     #outcome-page {
       page-break-before: always;
       position: relative;
-      top: 715px;
+      top: 698px;
       left: 99px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -121,7 +121,7 @@ const printStyle = `
     #total-income-page {
       page-break-before: always;
       position: relative;
-      top: 670px;
+      top: 655px;
       left: 63px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -129,15 +129,15 @@ const printStyle = `
     #total-outcome-page {
       page-break-before: always;
       position: relative;
-      top: 670px;
-      left: 62px;
+      top: 651px;
+      left: 63px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #shares-page {
       page-break-before: always;
       position: relative;
-      top: 680px;
+      top: 660px;
       left: 77px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -145,8 +145,8 @@ const printStyle = `
     #total-page {
       page-break-before: always;
       position: relative;
-      top: 475px;
-      left: 72px;
+      top: 465px;
+      left: 70px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -161,75 +161,67 @@ const printPageStyle = `
     }
   }
   @media print {
-    * {
-      visibility:hidden;
+    #app {
+      display:none;
     }
     #print-annual-report, #print-annual-report * {
       visibility:visible;
     }
     #headline {
-      page-break-before: always;
-      position: absolute;
-      bottom:1375px;
-      left: 370px;
+      position: relative;
+      top: 237px;
+      left: 160px;
       transform: rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      transform-origin: 0 0;
     }
     #manual-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:995px;
-      left: -425px;
+      position: relative;
+      top: 672px;
+      left: 65px;
       transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      transform-origin: 0 0;
     }
     #income-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:955px;
-      left: -355px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 675px;
+      left: 98px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #outcome-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:950px;
-      left: -350px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 673px;
+      left: 98px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #total-income-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:1120px;
-      left: -466px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 632px;
+      left: 63px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #total-outcome-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:1003px;
-      left: -370px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 628px;
+      left: 63px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #shares-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:1082px;
-      left: -413px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 638px;
+      left: 77px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #total-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:1190px;
-      left: -146px;
+      position: relative;
+      top: 440px;
+      left: 70px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      transform-origin: 0 0;
     }
   }
   </style>
@@ -250,15 +242,15 @@ const downloadStyle = `
     }
     #headline {
       position: relative;
-      top: 300px;
-      left: 260px;
+      top: 283px;
+      left: 180px;
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #manual-page {
       page-break-before: always;
       position: relative;
-      top: 720px;
+      top: 697px;
       left: 65px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -266,7 +258,7 @@ const downloadStyle = `
     #income-page {
       page-break-before: always;
       position: relative;
-      top: 725px;
+      top: 699px;
       left: 98px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -274,7 +266,7 @@ const downloadStyle = `
     #outcome-page {
       page-break-before: always;
       position: relative;
-      top: 715px;
+      top: 698px;
       left: 99px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -282,7 +274,7 @@ const downloadStyle = `
     #total-income-page {
       page-break-before: always;
       position: relative;
-      top: 670px;
+      top: 655px;
       left: 63px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -290,15 +282,15 @@ const downloadStyle = `
     #total-outcome-page {
       page-break-before: always;
       position: relative;
-      top: 670px;
-      left: 62px;
+      top: 651px;
+      left: 63px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #shares-page {
       page-break-before: always;
       position: relative;
-      top: 680px;
+      top: 660px;
       left: 77px;
       transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -306,8 +298,8 @@ const downloadStyle = `
     #total-page {
       page-break-before: always;
       position: relative;
-      top: 475px;
-      left: 72px;
+      top: 465px;
+      left: 70px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -323,75 +315,67 @@ const downloadPageStyle = `
     }
   }
   @media print {
-    * {
-      visibility:hidden;
+    #app {
+      display:none;
     }
     #print-annual-report, #print-annual-report * {
       visibility:visible;
     }
     #headline {
-      page-break-before: always;
-      position: absolute;
-      bottom:1395px;
-      left: 370px;
+      position: relative;
+      top: 240px;
+      left: 160px;
       transform: rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      transform-origin: 0 0;
     }
     #manual-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:1015px;
-      left: -435px;
+      position: relative;
+      top: 672px;
+      left: 65px;
       transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      transform-origin: 0 0;
     }
     #income-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:975px;
-      left: -360px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 675px;
+      left: 98px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #outcome-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:965px;
-      left: -350px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 673px;
+      left: 98px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #total-income-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:1145px;
-      left: -473px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 632px;
+      left: 63px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #total-outcome-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:1023px;
-      left: -380px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 628px;
+      left: 63px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #shares-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:1102px;
-      left: -420px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      position: relative;
+      top: 638px;
+      left: 77px;
+      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
     }
     #total-page {
-      page-break-before: always;
-      position: absolute;
-      bottom:1203px;
-      left: -155px;
+      position: relative;
+      top: 440px;
+      left: 70px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0 1;
+      transform-origin: 0 0;
     }
   }
   </style>
@@ -399,6 +383,9 @@ const downloadPageStyle = `
 
 export default {
   props: {
+    year: {
+      type: Number
+    },
     annualReportPages: {
       type: Array,
       default: []
@@ -460,11 +447,11 @@ export default {
     bindKeys() {
       const self = this
       Mousetrap.bind(['command+p', 'ctrl+p'], function(e) {
-        self.printAnnualReport()
+        self.printAnnualReportPage()
         return false;
       });
       Mousetrap.bind(['command+d', 'ctrl+d'], function(e) {
-        self.downloadAnnualReport()
+        self.downloadAnnualReportPage()
         return false;
       });
       Mousetrap.bind('left', function(e) {
@@ -535,7 +522,7 @@ export default {
         const res = await annualReportController.createAnnualReportPdf()
         if (!res.err) {
             const self = this
-            saveAs('/annual-report.pdf', this.phrases.annualReportFileName + '.pdf', err => {
+            saveAs('/annual-report.pdf', this.phrases.annualReportFileName + (this.year ? '-' + this.year : '' ) + '.pdf', err => {
               if (err) {
                 if (err.message.toLowerCase().indexOf('permission denied') != -1) {
                   self.openErrorModal(self.phrases.permissionDenied)
@@ -563,7 +550,7 @@ export default {
         const res = await annualReportController.createAnnualReportPdf()
         if (!res.err) {
             const self = this
-            saveAs('/annual-report.pdf', this.phrases.annualReportPageFileName + '-' + this.currentPage + '.pdf', err => {
+            saveAs('/annual-report.pdf', this.phrases.annualReportPageFileName + '-' + this.currentPage  + (this.year ? '-' + this.year : '' ) + '.pdf', err => {
               if (err) {
                 if (err.message.toLowerCase().indexOf('permission denied') != -1) {
                   self.openErrorModal(self.phrases.permissionDenied)
@@ -589,11 +576,8 @@ export default {
         page.innerHTML = this.annualReportPages[pageIndex]
         section.appendChild(page)
       } else {
-        this.annualReportPages.forEach((annualReportPage, index) => {
+        this.annualReportPages.forEach(annualReportPage => {
           var page = document.createElement('div')
-          if(index == this.annualReportPages.length-1) {
-            page.className = 'last-page'
-          } 
           page.innerHTML = annualReportPage
           section.appendChild(page)
         })
@@ -631,55 +615,55 @@ export default {
 	transform: scale(0.6);
 	position:relative;
   bottom:50px;
-  left:310px;
+  left:304px;
 }
 
 .manualPage >>> #manual-page {
 	transform: scale(0.6);
 	position:relative;
-  bottom:220px;
-  right:363px;
+  bottom:215px;
+  right:364px;
 }
 
 .incomePage >>> #income-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 200px;
+	bottom: 199px;
 	right: 366px;
 }
 .outcomePage >>> #outcome-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 205px;
+	bottom: 203px;
 	right: 366px;
 }
 
 .totalIncomePage >>> #total-income-page {
   transform: scale(0.6);
 	position:relative;
-	bottom: 162px;
-	right: 316px;
+	bottom: 164px;
+	right: 314px;
 }
 
 .totalOutcomePage >>> #total-outcome-page {
   transform: scale(0.6);
 	position:relative;
-	bottom: 211px;
-	right: 313px;
+	bottom: 213px;
+	right: 312px;
 }
 
 .sharesPage >>> #shares-page {
   transform: scale(0.6);
   position:relative;
-  bottom: 169px;
-  right: 320px;
+  bottom: 171px;
+  right: 321px;
 }
 
 .totalPage >>> #total-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 173px;
-	right: 120px;
+	bottom: 175px;
+	right: 123px;
 }
 
 i {

@@ -95,7 +95,7 @@
       </b-row>
       <!-- Annual report preview modal -->
       <b-modal hide-footer hide-header id="annual-report-preview-modal" size="ar">
-        <annual-report-preview :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
+        <annual-report-preview :year="year" :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
       </b-modal>
 
       <b-tooltip target="annualReportBtn" triggers="hover" placement="top" ref="annualReportBtnTooltip" v-on:hide.prevent>
