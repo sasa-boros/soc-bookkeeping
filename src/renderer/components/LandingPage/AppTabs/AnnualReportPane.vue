@@ -173,14 +173,16 @@
             const bookedYears = state.CommonValues.bookedYears
             const currentYear = new Date().getFullYear()
             if (bookedYears && bookedYears.length > 0) {
-              const currentYearBooked = bookedYears.filter(by => {
+              const currentYearBooked = bookedYears.find(by => {
                 return by == currentYear
               })
               if (currentYearBooked) {
                 this.year = currentYear
               } else {
                 this.year = bookedYears[0]
-              }
+              }  
+            } else {
+              this.year = null
             }
             return bookedYears
           }

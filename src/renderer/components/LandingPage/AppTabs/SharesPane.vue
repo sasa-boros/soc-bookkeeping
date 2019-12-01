@@ -161,9 +161,18 @@
     computed: {
       ...mapState(
         {
-          yearOptions: state => {
+          yearOptions: function (state) {
             var yearOptions = JSON.parse(JSON.stringify(state.CommonValues.bookedYears))
             yearOptions.unshift('')
+            var yearToFilter = this.yearToFilter
+            if (yearToFilter != '') {
+              var yearFiltered = yearOptions.find(yo => {
+                return yo == yearToFilter
+              })
+              if (!yearFiltered) {
+                this.yearToFilter = ''
+              }
+            }
             return yearOptions
           }
         }

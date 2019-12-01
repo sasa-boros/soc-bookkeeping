@@ -2,6 +2,8 @@ const paymentSlipDao = require('../dao/paymentSlipDao')
 const receiptDao = require('../dao/receiptDao')
 const shareDao = require('../dao/shareDao')
 const savingDao = require('../dao/savingDao')
+const itemDao = require('../dao/itemDao')
+const debtDao = require('../dao/debtDao')
 
 async function getBookedYears () {
     console.log('Getting all booked years')
@@ -10,6 +12,8 @@ async function getBookedYears () {
     var receipts = await receiptDao.findAll()
     var shares = await shareDao.findAll()
     var savings = await savingDao.findAll()
+    var items = await itemDao.findAll()
+    var debts = await debtDao.findAll()
 
     var yearsSet = new Set()
     if (paymentSlips) {
@@ -30,6 +34,18 @@ async function getBookedYears () {
     if (savings) {
         savings.forEach(saving => {
             yearsSet.add(saving.year)
+        })
+    }
+
+    if (items) {
+        items.forEach(item => {
+            yearsSet.add(item.year)
+        })
+    }
+    
+    if (debts) {
+        debts.forEach(debt => {
+            yearsSet.add(debt.year)
         })
     }
 
