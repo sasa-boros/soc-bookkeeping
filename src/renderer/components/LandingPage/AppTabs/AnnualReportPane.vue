@@ -79,7 +79,7 @@
       <br>
       <div>
         <div class="predictedAllowedDiv" v-for="(opcp, index) in form.totalOutcomePerCodeAllowed" v-bind:key="'oc' + index">
-          <div class="predictedAllowedLabelDiv">{{opcp.outcomeCode.partition + "/" + opcp.outcomeCode.position + "   " + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
+          <div class="predictedAllowedLabelDiv">{{opcp.outcomeCode.partition + "/" + opcp.outcomeCode.position + "\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
           <b-form-input :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
         </div>
       </div>
