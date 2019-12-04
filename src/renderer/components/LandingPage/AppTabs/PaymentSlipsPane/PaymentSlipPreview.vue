@@ -13,8 +13,8 @@
         <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview}" :language="calendarLanguages.srCYRL" :disabled="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>                                                                                                               Уплатио,
                                                                                                                         <b-form-input id="payedInput" :disabled="defaultPaymentSlipPreview" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text"></b-form-input> 
         <br/>                                                                                                         Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
-                                                                                           <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
-                Примио благајник,                                           <span class="partText">Парт. </span><b-form-input id="secondPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
+                                                                                           <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
+                Примио благајник,                                           <span class="partText">Парт. </span><b-form-input id="secondPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
                                                            
       <br/><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input>                                                                              Свега дин. <span v-on:mouseleave="disableTotalIncomeTooltip ? null : hideTooltip('totalIncomeInputWrapper')" id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalIncomeTooltip }"></b-form-input></span>
 
@@ -107,7 +107,7 @@
       {{phrases.clear}}
     </b-tooltip>
 
-    <b-modal id="payment-slip-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('paymentSlipPreviewErrorModal')">
+    <b-modal no-close-on-backdrop id="payment-slip-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('paymentSlipPreviewErrorModal')">
         <message-confirm-dialog ref="paymentSlipPreviewErrorModal" parentModal="payment-slip-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>
@@ -124,7 +124,7 @@
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const paymentSlipController = require('../../../../controllers/paymentSlipController')
   const defaultPaymentSlipController = require('../../../../controllers/defaultPaymentSlipController')
-  const { numberToSerbianDinars, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
+  const { asRoman, numberToSerbianDinars, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const Mousetrap = require('mousetrap')
@@ -184,7 +184,9 @@
         totalIncomeInputAutonumeric: null,
         alreadyPressed: false,
         disablePrintAndDownload: true,
-        tooltipTimeouts: []
+        tooltipTimeouts: [],
+        formatedFirstPart: null,
+        formatedSecondPart: null
       }
     },
     created () {
@@ -214,6 +216,14 @@
         self.disablePrintAndDownload = true
         unwatch()
       }, {deep: true})
+      this.formatedFirstPart = asRoman(this.form.firstPartition)
+      this.$watch('form.firstPartition', () => {
+        self.formatedFirstPart = asRoman(self.form.firstPartition)
+      })
+      this.formatedSecondPart = asRoman(this.form.secondPartition)
+      this.$watch('form.secondPartition', () => {
+        self.formatedSecondPart = asRoman(self.form.secondPartition)
+      })
     },
     mounted () {
       this.incomeInputAutonumeric = new AutoNumeric('#incomeInput', amountNumberOptions)
@@ -582,16 +592,9 @@
           return []
         }
         var options = []
-        options.push({html: '&nbsp', value: null})
+        options.push({html: '&nbsp;', value: null})
         this.incomeCodes.forEach(ic => {
-          let padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-          let paddingCount = ic.partition.toString().length + ic.position.toString().length
-          if (paddingCount == 3) {
-            padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-          } else if(paddingCount == 4) {
-            padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-          }
-          options.push({html: ic.partition + '/' + ic.position + (ic.description ? padding + ic.description : ''), value: ic.partition + '/' + ic.position})
+          options.push({html: '<span class="partPosOptionText">' + asRoman(ic.partition) + '/' + ic.position + '</span><span class="descriptionOptionText">' + (ic.description ? ic.description : '&nbsp;') + '</span>', value: ic.partition + '/' + ic.position})
         })
         return options
       },
@@ -878,9 +881,11 @@
   }
   #firstPartPosSelect {
     width: 50px;
+    height:20px;
   }
   #secondPartPosSelect {
     width: 50px;
+    height:20px;
   }
   .partText {
     position: relative;
@@ -892,6 +897,7 @@
     left:50px;
     pointer-events: none;
     z-index: 1;
+    padding:0px;
   }
   #firstPosInput {
     width: 50px;
@@ -902,6 +908,7 @@
     left:50px;
     pointer-events: none;
     z-index: 1;
+    padding:0px;
   }
   #secondPosInput {
     width: 50px;
@@ -942,6 +949,21 @@
   .displayNone {
     display:none;
   }
+
+  .partPosOption {
+    overflow: auto;
+  }
+
+  .partPosOption >>> .partPosOptionText {
+    float:left;
+    min-width:70px;
+    width:70px;
+  }
+
+  .partPosOption >>> .descriptionOptionText {
+    margin-right: 70px;
+  }
+
   .incomeAsTextDivWrapper {
     display: inline;
     font-weight: bold;

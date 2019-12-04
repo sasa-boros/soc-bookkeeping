@@ -91,19 +91,19 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="a5" id="create-receipt-modal">
+    <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="create-receipt-modal">
       <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" v-on:updateReceiptTable="update"></receipt-preview>
     </b-modal>
 
-    <b-modal id="delete-receipt-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteReceiptModal')">
+    <b-modal no-close-on-backdrop id="delete-receipt-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteReceiptModal')">
       <message-confirm-dialog ref="deleteReceiptModal" parentModal="delete-receipt-modal" type="confirm" :text="phrases.areYouSureToDeleteReceipt" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteReceipt"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="delete-checked-receipts-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedReceiptsModal')">
+    <b-modal no-close-on-backdrop id="delete-checked-receipts-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedReceiptsModal')">
       <message-confirm-dialog ref="deleteCheckedReceiptsModal" parentModal="delete-checked-receipts-modal" type="confirm" :text="phrases.areYouSureToDeleteCheckedReceipts" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteCheckedReceipts"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="receipt-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('receiptTableErrorModal')">
+    <b-modal no-close-on-backdrop id="receipt-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('receiptTableErrorModal')">
         <message-confirm-dialog ref="receiptTableErrorModal" parentModal="receipt-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>

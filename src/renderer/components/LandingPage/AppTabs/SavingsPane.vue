@@ -85,19 +85,19 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="lg" id="create-saving-modal">
+    <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-saving-modal">
       <saving-preview :saving='selectedItem' :savingPreview='isPreview' parentModal="create-saving-modal" v-on:updateSavingsTable="update"></saving-preview>
     </b-modal>
 
-    <b-modal id="delete-saving-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteSavingModal')">
+    <b-modal no-close-on-backdrop id="delete-saving-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteSavingModal')">
       <message-confirm-dialog ref="deleteSavingModal" parentModal="delete-saving-modal" type="confirm" :text="phrases.areYouSureToDeleteSaving" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteSaving"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="delete-checked-savings-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedSavingsModal')">
+    <b-modal no-close-on-backdrop id="delete-checked-savings-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedSavingsModal')">
       <message-confirm-dialog ref="deleteCheckedSavingsModal" parentModal="delete-checked-savings-modal" type="confirm" :text="phrases.areYouSureToDeleteCheckedSavings" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteCheckedSavings"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="saving-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('savingTableErrorModal')">
+    <b-modal no-close-on-backdrop id="saving-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('savingTableErrorModal')">
         <message-confirm-dialog ref="savingTableErrorModal" parentModal="saving-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
 

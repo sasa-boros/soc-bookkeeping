@@ -25,7 +25,7 @@
         </b-col>
         <b-col cols="2">
           <div class="float-right pageCount">
-            {{currentPage | formatPageCount}}/{{annualReportPages.length}}
+            <b-form-input id="currentPageInput" type="text" v-model="currentPage"/>/{{annualReportPages.length}}
           </div>
         </b-col>
         <b-col cols="2" class="text-center">
@@ -36,6 +36,14 @@
             <i class="arrow right"></i>
           </b-button>
         </b-col>
+        <b-col cols="4">
+          <span v-for="(value, arpn, index) in annualReportPagesNums" v-bind:key="value">
+            <b-button v-on:click="setPage(value)" type="text" variant="light" class="btn-sm">
+              {{index + 1}}
+            </b-button>
+            <br v-if="index == 7">
+          </span>
+        </b-col>
         <b-col>
           <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" class="btn-xs float-right">
             <img src="~@/assets/close.png">
@@ -43,7 +51,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
+        <div v-html="annualReportPages[(currentPage ? currentPage : 1)-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
         </div>
       </b-row>
       <b-tooltip ref="annualReportPrintDropdownTooltip" triggers="hover" target="annualReportPrintDropdown" v-on:hide.prevent>
@@ -59,7 +67,7 @@
         {{phrases.nextPage}}
       </b-tooltip>
       
-      <b-modal id="annual-report-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportErrorModal')">
+      <b-modal no-close-on-backdrop id="annual-report-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportErrorModal')">
         <message-confirm-dialog ref="annualReportErrorModal" parentModal="annual-report-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>
@@ -72,6 +80,7 @@ const i18n = require('../../../../../translations/i18n');
 const annualReportController = require('../../../../controllers/annualReportController')
 const { saveAs } = require('../../../../utils/utils')
 const Mousetrap = require('mousetrap');
+const AutoNumeric = require('autonumeric')
 
 const printStyle = `
 <style>
@@ -409,12 +418,14 @@ export default {
         annualReportPageFileName: i18n.getTranslation('annual-report-page')
       },
       currentPage: 1,
+      annualReportPagesNums: null,
       errorText: "",
       printSection: null,
       printPageSections: [],
       downloadSection: null,
       downloadPageSections: [],
-      alreadyPressed: false
+      alreadyPressed: false,
+      currentPageAutonumeric: null
     }
   },
   created () {
@@ -425,22 +436,62 @@ export default {
       self.printPageSections.push(self.preparePrintSection(printPageStyle, index))
       self.downloadPageSections.push(self.preparePrintSection(downloadPageStyle, index))
     })
+    this.findAnnualReportPagesNums()
   },
   mounted () {
     this.bindKeys()
+    const pageCountNumberOptions = {
+      minimumValue: 0, 
+      maximumValue: this.annualReportPages.length,
+      decimalPlaces: 0,
+      digitGroupSeparator: '',
+      modifyValueOnWheel: false,
+      watchExternalChanges: true
+    }
+    this.currentPageAutonumeric = new AutoNumeric('#currentPageInput', pageCountNumberOptions)
   },
   beforeDestroy () {
     this.unbindKeys()
   },
-  filters: {
-    formatPageCount (pageCount) {
-      if (pageCount < 10) {
-        return '0' + pageCount
-      }
-      return pageCount
-    }
-  },
   methods: {
+    setPage (pageNum) {
+      this.currentPage = pageNum
+    },
+    findAnnualReportPagesNums () {
+      const annualReportPagesNums = {}
+      for (let i=2;i<this.annualReportPages.length;i++) {
+        if (!annualReportPagesNums.page1 && this.annualReportPages[i].startsWith('<style accesskey="1">')) {
+          annualReportPagesNums.page1 = i + 1
+        } else if (i > 3 && !annualReportPagesNums.page2 && this.annualReportPages[i].startsWith('<style accesskey="2">')) {
+          annualReportPagesNums.page2 = i + 1
+        } else if (i > 5 && !annualReportPagesNums.page3 && this.annualReportPages[i].startsWith('<style accesskey="3">')) {
+          annualReportPagesNums.page3 = i + 1
+        } else if (i > 7 && !annualReportPagesNums.page4 && this.annualReportPages[i].startsWith('<style accesskey="4">')) {
+          annualReportPagesNums.page4 = i + 1
+        } else if (i > 9 && !annualReportPagesNums.page5 && this.annualReportPages[i].startsWith('<style accesskey="5">')) {
+          annualReportPagesNums.page5 = i + 1
+        } else if (i > 11 && !annualReportPagesNums.page6 && this.annualReportPages[i].startsWith('<style accesskey="6">')) {
+          annualReportPagesNums.page6 = i + 1
+        } else if (i > 13 && !annualReportPagesNums.page7 && this.annualReportPages[i].startsWith('<style accesskey="7">')) {
+          annualReportPagesNums.page7 = i + 1
+        } else if (i > 15 && !annualReportPagesNums.page8 && this.annualReportPages[i].startsWith('<style accesskey="8">')) {
+          annualReportPagesNums.page8 = i + 1
+        } else if (i > 17 && !annualReportPagesNums.page9 && this.annualReportPages[i].startsWith('<style accesskey="9">')) {
+          annualReportPagesNums.page9 = i + 1
+        } else if (i > 19 && !annualReportPagesNums.page10 && this.annualReportPages[i].startsWith('<style accesskey="10">')) {
+          annualReportPagesNums.page10 = i + 1
+        } else if (i > 21 && !annualReportPagesNums.page11 && this.annualReportPages[i].startsWith('<style accesskey="11">')) {
+          annualReportPagesNums.page11 = i + 1
+        } else if (i > 23 && !annualReportPagesNums.page12 && this.annualReportPages[i].startsWith('<style accesskey="12">')) {
+          annualReportPagesNums.page12 = i + 1
+        } else if (i > 25 && !annualReportPagesNums.page13 && this.annualReportPages[i].startsWith('<style accesskey="13">')) {
+          annualReportPagesNums.page13 = i + 1
+        } else if (i > 27 && !annualReportPagesNums.page14 && this.annualReportPages[i].startsWith('<style accesskey="14">')) {
+          annualReportPagesNums.page14 = i + 1
+        }
+      }
+      this.annualReportPagesNums = annualReportPagesNums
+    },
     focusModalCloseButton (modalRef) {
       this.$refs[modalRef].$refs.closeButton.focus()
     },
@@ -473,14 +524,14 @@ export default {
       Mousetrap.unbind('right');
     },
     decrementPage() {
-      if(this.currentPage == 1) {
+      if(this.currentPage <= 1) {
         this.currentPage = this.annualReportPages.length;
       } else {
         this.currentPage--;
       }
     },
     incrementPage() {
-      if(this.currentPage == this.annualReportPages.length) {
+      if(this.currentPage >= this.annualReportPages.length) {
         this.currentPage = 1;
       } else {
         this.currentPage++;
@@ -605,6 +656,22 @@ export default {
 </script>
 
 <style scoped>
+
+input {
+  text-align: center;
+  font-family: "Times New Roman";
+  font-size: 95%;
+  letter-spacing: 95%;
+  height:20px;
+  border-bottom: .5pt solid black !important;
+  border-radius: 0 !important;
+}
+#currentPageInput {
+  width: 38px;
+  max-width: 38px;
+  border-style: none;
+  display: inline;
+}
 
 .pageCount {
   position: relative;

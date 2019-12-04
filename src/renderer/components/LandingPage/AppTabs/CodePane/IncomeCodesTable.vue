@@ -26,7 +26,7 @@
           </b-button-group>
         </template>
         <template v-slot:cell(partition)="row">
-          {{ row.item.partition }}
+          {{ row.item.partition | formatPartition }}
         </template>
         <template v-slot:cell(position)="row">
           {{ row.item.position }}
@@ -43,15 +43,15 @@
         </template>
       </b-table>
 
-      <b-modal hide-footer hide-header size="lg" id="create-income-code-modal">
+      <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-income-code-modal">
         <income-code-preview :incomeCode='selectedIncomeCode' :isUpdate='isUpdate' :existingIncomeCodes="incomeCodes" parentModal="create-income-code-modal" v-on:updateIncomeCodes="update"></income-code-preview>
       </b-modal>
 
-      <b-modal id="delete-income-code-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteIncomeCodeModal')">
+      <b-modal no-close-on-backdrop id="delete-income-code-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteIncomeCodeModal')">
         <message-confirm-dialog ref="deleteIncomeCodeModal" parentModal="delete-income-code-modal" type="confirm" :text="phrases.areYouSureToDeleteIncomeCode" :subText="phrases.incomeCodeDeleteConsequences" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteIncomeCode"></message-confirm-dialog>
       </b-modal>
 
-      <b-modal id="income-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('incomeCodeTableErrorModal')">
+      <b-modal no-close-on-backdrop id="income-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('incomeCodeTableErrorModal')">
         <message-confirm-dialog ref="incomeCodeTableErrorModal" parentModal="income-code-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>
@@ -65,6 +65,7 @@
   const { dialog } = require('electron').remote
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const i18n = require('../../../../../translations/i18n')
+  const { asRoman } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -159,8 +160,7 @@
         incomeCodeController.deleteIncomeCode(this.deletedIncomeCode._id).then((res) => {
           if (!res.err) {
             self.update()
-            this.$emit('updateDefaultPaymentSlip')
-            EventBus.$emit('updatePaymentSlipTable')
+            //this.$emit('updateDefaultPaymentSlip')
           } else {
             self.openErrorModal(res.err)
           }
@@ -180,6 +180,12 @@
       update () {
         this.loadIncomeCodes()
         EventBus.$emit('updateAnnualReportPane')
+        EventBus.$emit('updatePaymentSlipTable')
+      }
+    },
+    filters: {
+      formatPartition (partition) {
+        return asRoman(partition)
       }
     },
     components: { IncomeCodePreview, MessageConfirmDialog }

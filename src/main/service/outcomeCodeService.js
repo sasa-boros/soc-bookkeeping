@@ -20,18 +20,20 @@ async function deleteOutcomeCode (outcomeCodeId) {
   console.log(`Deleting outcome code with id ${JSON.stringify(outcomeCodeId)}`)
   const deletedOutcomeCode = await outcomeCodeDao.findById(outcomeCodeId)
   await outcomeCodeDao.removeById(outcomeCodeId)
-  await updateReceipts(deletedOutcomeCode)
+  await updateDbAfterDelete(deletedOutcomeCode)
   console.log('Successfully deleted outcome code')
 }
 
 async function updateOutcomeCode (outcomeCode) {
   console.log(`Updating outcome code: \n${JSON.stringify(outcomeCode, null, 2)}`)
+  const oldOutcomeCode = await outcomeCodeDao.findById(outcomeCode._id)
   await outcomeCodeDao.updateById(outcomeCode._id, outcomeCode)
+  await updateDbAfterUpdate(oldOutcomeCode, outcomeCode)
   console.log('Successfully updated outcome code')
 }
 
-async function updateReceipts (deletedOutcomeCode) {
-  console.log('Making associated receipts invalid and updating default')
+async function updateDbAfterDelete (deletedOutcomeCode) {
+  console.log('Making associated receipts invalid and updating annual report data')
   const receipts = await receiptDao.findAll()
   for (let i=0; i<receipts.length; i++) {
     let receipt = receipts[i]
@@ -44,7 +46,6 @@ async function updateReceipts (deletedOutcomeCode) {
     if (outcomePerCodeIndex != -1) {
       receipt.isValid = false
       receipt.outcomePerCode.splice(outcomePerCodeIndex, 1)
-      console.error(JSON.stringify(receipt))
       if (receipt.outcomePerCode.length == 0) {
         receipt.outcomePerCode = null
       }
@@ -66,6 +67,40 @@ async function updateReceipts (deletedOutcomeCode) {
       if (annualReportData.totalOutcomePerCodeAllowed.length == 0) {
         annualReportData.totalOutcomePerCodeAllowed = null
       }
+      await annualReportDao.updateById(annualReportData._id, annualReportData)
+      console.log(`Annual report data with id ${annualReportData._id} is updated`)
+    }
+  }
+}
+
+async function updateDbAfterUpdate (oldOutcomeCode, newOutcomeCode) {
+  console.log('Updating associated receipts and annual report data')
+  const receipts = await receiptDao.findAll()
+  for (let i=0; i<receipts.length; i++) {
+    let receipt = receipts[i]
+    if (!receipt.outcomePerCode) {
+      continue
+    }
+    let outcomePerCodeIndex = receipt.outcomePerCode.findIndex(outcomePerCode => {
+      return outcomePerCode.outcomeCode.partition == oldOutcomeCode.partition && outcomePerCode.outcomeCode.position == oldOutcomeCode.position
+    })
+    if (outcomePerCodeIndex != -1) {
+      receipt.outcomePerCode[outcomePerCodeIndex].outcomeCode = newOutcomeCode
+      await receiptDao.updateById(receipt._id, receipt, true)
+      console.log(`Receipt with id ${receipt._id} is updated`)
+    }
+  }
+  const annualReportsData = await annualReportDao.findAll()
+  for (let i=0; i<annualReportsData.length; i++) {
+    let annualReportData = annualReportsData[i]
+    if (!annualReportData.totalOutcomePerCodeAllowed) {
+      continue
+    }
+    let outcomePerCodeIndex = annualReportData.totalOutcomePerCodeAllowed.findIndex(topca => {
+      return topca.outcomeCode.partition == oldOutcomeCode.partition && topca.outcomeCode.position == oldOutcomeCode.position
+    })
+    if (outcomePerCodeIndex != -1) {
+      annualReportData.totalOutcomePerCodeAllowed[outcomePerCodeIndex].outcomeCode = newOutcomeCode
       await annualReportDao.updateById(annualReportData._id, annualReportData)
       console.log(`Annual report data with id ${annualReportData._id} is updated`)
     }

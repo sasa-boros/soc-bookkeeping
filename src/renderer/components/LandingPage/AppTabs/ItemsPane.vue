@@ -82,19 +82,19 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="lg" id="create-item-modal">
+    <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-item-modal">
       <item-preview :item='selectedItem' :itemPreview='isPreview' parentModal="create-item-modal" v-on:updateItemsTable="update"></item-preview>
     </b-modal>
 
-    <b-modal id="delete-item-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteItemModal')">
+    <b-modal no-close-on-backdrop id="delete-item-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteItemModal')">
       <message-confirm-dialog ref="deleteItemModal" parentModal="delete-item-modal" type="confirm" :text="phrases.areYouSureToDeleteItem" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteItem"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="delete-checked-items-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedItemsModal')">
+    <b-modal no-close-on-backdrop id="delete-checked-items-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedItemsModal')">
       <message-confirm-dialog ref="deleteCheckedItemsModal" parentModal="delete-checked-items-modal" type="confirm" :text="phrases.areYouSureToDeleteCheckedItems" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteCheckedItems"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="item-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('itemTableErrorModal')">
+    <b-modal no-close-on-backdrop id="item-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('itemTableErrorModal')">
         <message-confirm-dialog ref="itemTableErrorModal" parentModal="item-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
 

@@ -80,7 +80,7 @@
           <about-pane></about-pane>
         </b-tab>
       </b-tabs>
-      <b-modal id="app-tabs-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('appTabsErrorModal')">
+      <b-modal no-close-on-backdrop id="app-tabs-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('appTabsErrorModal')">
           <message-confirm-dialog ref="appTabsErrorModal" parentModal="app-tabs-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
     </b-card>

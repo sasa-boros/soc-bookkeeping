@@ -96,7 +96,7 @@
       {{phrases.clear}}
     </b-tooltip>
 
-    <b-modal id="share-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('sharePreviewErrorModal')">
+    <b-modal no-close-on-backdrop id="share-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('sharePreviewErrorModal')">
       <message-confirm-dialog ref="sharePreviewErrorModal" parentModal="share-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>

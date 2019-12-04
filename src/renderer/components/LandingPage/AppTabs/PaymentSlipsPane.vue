@@ -91,19 +91,19 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="a5" id="create-payment-slip-modal">
+    <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="create-payment-slip-modal">
       <payment-slip-preview :paymentSlip='selectedItem' :paymentSlipPreview='isPreview' :existingPaymentSlips="paymentSlips" parentModal="create-payment-slip-modal" v-on:updatePaymentSlipTable="update"></payment-slip-preview>
     </b-modal>
 
-    <b-modal id="delete-payment-slip-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deletePaymentSlipModal')">
+    <b-modal no-close-on-backdrop id="delete-payment-slip-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deletePaymentSlipModal')">
       <message-confirm-dialog ref="deletePaymentSlipModal" parentModal="delete-payment-slip-modal" type="confirm" :text="phrases.areYouSureToDeletePaymentSlip" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deletePaymentSlip"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="delete-checked-payment-slips-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedPaymentSlipsModal')">
+    <b-modal no-close-on-backdrop id="delete-checked-payment-slips-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedPaymentSlipsModal')">
       <message-confirm-dialog ref="deleteCheckedPaymentSlipsModal" parentModal="delete-checked-payment-slips-modal" type="confirm" :text="phrases.areYouSureToDeleteCheckedPaymentSlips" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteCheckedPaymentSlips"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="payment-slip-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('paymentSlipTableErrorModal')">
+    <b-modal no-close-on-backdrop id="payment-slip-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('paymentSlipTableErrorModal')">
         <message-confirm-dialog ref="paymentSlipTableErrorModal" parentModal="payment-slip-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>

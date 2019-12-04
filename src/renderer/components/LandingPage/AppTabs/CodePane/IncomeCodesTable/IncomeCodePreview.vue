@@ -72,7 +72,7 @@
         {{positionTooltipText}}
       </b-tooltip>
 
-      <b-modal id="income-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('incomeCodePreviewErrorModal')">
+      <b-modal no-close-on-backdrop id="income-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('incomeCodePreviewErrorModal')">
         <message-confirm-dialog ref="incomeCodePreviewErrorModal" parentModal="income-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>

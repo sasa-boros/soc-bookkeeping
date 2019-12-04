@@ -118,7 +118,7 @@
       {{phrases.clear}}
     </b-tooltip>
 
-    <b-modal id="saving-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('savingPreviewErrorModal')">
+    <b-modal no-close-on-backdrop id="saving-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('savingPreviewErrorModal')">
       <message-confirm-dialog ref="savingPreviewErrorModal" parentModal="saving-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>

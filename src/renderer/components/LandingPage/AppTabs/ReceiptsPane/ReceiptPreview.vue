@@ -13,8 +13,8 @@
         <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview }" :language="calendarLanguages.srCYRL" :disabled="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker> год.</span>                                                                                                                 Примио,
 у <b-form-input id="townPayedInput" v-on:keypress="limitInputPerSize" v-model="form.townPayed" class="input-small" type="text"></b-form-input>&nbsp;                            <b-form-input v-on:keypress="limitInputPerSize" :disabled="defaultReceiptPreview" v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input>
         <br/>                                                                                                         Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
-                                                                                           <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultReceiptPreview" type="text" v-model="form.firstPartition" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstOutcomeTooltip ? null : hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
-                Исплатио благајник,                                        <span class="partText">Парт. </span><b-form-input id="secondPartInput" type="text" :disabled="defaultReceiptPreview" v-model="form.secondPartition" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondOutcomeTooltip ? null : hideTooltip('secondOutcomeInputWrapper')" id="secondOutcomeInputWrapper"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
+                                                                                           <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultReceiptPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstOutcomeTooltip ? null : hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
+                Исплатио благајник,                                        <span class="partText">Парт. </span><b-form-input id="secondPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondOutcomeTooltip ? null : hideTooltip('secondOutcomeInputWrapper')" id="secondOutcomeInputWrapper"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
                                                            
       <br/><b-form-input disabled class="input-small" id="payedInput" type="text"></b-form-input>                                                                              Свега дин. <span v-on:mouseleave="disableTotalOutcomeTooltip ? null : hideTooltip('totalOutcomeInputWrapper')" id="totalOutcomeInputWrapper"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalOutcomeTooltip }" type="text"></b-form-input></span>
                                                                                                                                                 
@@ -105,7 +105,7 @@
       {{phrases.clear}}
     </b-tooltip>
 
-    <b-modal id="receipt-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('receiptPreviewErrorModal')">
+    <b-modal no-close-on-backdrop id="receipt-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('receiptPreviewErrorModal')">
         <message-confirm-dialog ref="receiptPreviewErrorModal" parentModal="receipt-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>
@@ -122,7 +122,7 @@
   const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
   const receiptController = require('../../../../controllers/receiptController')
   const defaultReceiptController = require('../../../../controllers/defaultReceiptController')
-  const { numberToSerbianDinars, getCodeCombinations, mapReceiptToReceiptForm, mapReceiptFormToReceipt, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
+  const { asRoman, numberToSerbianDinars, getCodeCombinations, mapReceiptToReceiptForm, mapReceiptFormToReceipt, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const Mousetrap = require('mousetrap')
@@ -181,7 +181,9 @@
         totalOutcomeInputAutonumeric: null,
         alreadyPressed: false,
         disablePrintAndDownload: true,
-        tooltipTimeouts: []
+        tooltipTimeouts: [],
+        formatedFirstPart: null,
+        formatedSecondPart: null
       }
     },
     created () {
@@ -211,6 +213,14 @@
         self.disablePrintAndDownload = true
         unwatch()
       }, {deep: true})
+      this.formatedFirstPart = asRoman(this.form.firstPartition)
+      this.$watch('form.firstPartition', () => {
+        self.formatedFirstPart = asRoman(self.form.firstPartition)
+      })
+      this.formatedSecondPart = asRoman(this.form.secondPartition)
+      this.$watch('form.secondPartition', () => {
+        self.formatedSecondPart = asRoman(self.form.secondPartition)
+      })
     },
     mounted () {
       this.outcomeInputAutonumeric = new AutoNumeric('#outcomeInput', amountNumberOptions)
@@ -582,15 +592,8 @@
         }
         var options = []
         options.push({html: '&nbsp', value: null})
-        this.outcomeCodes.forEach(ic => {
-          let padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-          let paddingCount = ic.partition.toString().length + ic.position.toString().length
-          if (paddingCount == 3) {
-            padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-          } else if(paddingCount == 4) {
-            padding = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-          }
-          options.push({html: ic.partition + '/' + ic.position + (ic.description ? padding + ic.description : ''), value: ic.partition + '/' + ic.position})
+        this.outcomeCodes.forEach(oc => {
+          options.push({html: '<span class="partPosOptionText">' + asRoman(oc.partition) + '/' + oc.position + '</span><span class="descriptionOptionText">' + (oc.description ? oc.description : '') + '</span>', value: oc.partition + '/' + oc.position})
         })
         return options
       },
@@ -785,6 +788,11 @@
       closeModal () {
           this.$root.$emit('bv::hide::modal', this.parentModal)
       }
+    }, filters: {
+      asRomanNumber(num) {
+        console.log(num)
+        return asRoman(num)
+      }
     },
     components: { Datepicker, MessageConfirmDialog }
   }
@@ -885,9 +893,11 @@
   }
   #firstPartPosSelect {
     width: 50px;
+    height: 20px;
   }
   #secondPartPosSelect {
     width: 50px;
+    height: 20px;
   }
   .partText {
     position: relative;
@@ -899,6 +909,7 @@
     left:50px;
     pointer-events: none;
     z-index: 1;
+    padding:0px;
   }
   #firstPosInput {
     width: 50px;
@@ -909,6 +920,7 @@
     left:50px;
     pointer-events: none;
     z-index: 1;
+    padding:0px;
   }
   #secondPosInput {
     width: 50px;
@@ -949,6 +961,21 @@
   .displayNone {
     display:none;
   }
+
+  .partPosOption {
+    overflow: auto;
+  }
+
+  .partPosOption >>> .partPosOptionText {
+    float:left;
+    min-width:70px;
+    width:70px;
+  }
+
+  .partPosOption >>> .descriptionOptionText {
+    margin-right: 70px;
+  }
+
   .outcomeAsTextDivWrapper {
     display: inline;
     font-weight: bold;

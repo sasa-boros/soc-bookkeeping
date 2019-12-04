@@ -50,12 +50,12 @@
     <code-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></code-pane>
 
     <!-- Default slip modal -->
-    <b-modal hide-footer hide-header size="a5" id="default-payment-slip-modal">
+    <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="default-payment-slip-modal">
       <payment-slip-preview parentModal="default-payment-slip-modal" :defaultPaymentSlipPreview='true' v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip"></payment-slip-preview>
     </b-modal>
 
     <!-- Default receipt modal -->
-    <b-modal hide-footer hide-header size="a5" id="default-receipt-modal">
+    <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="default-receipt-modal">
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
 

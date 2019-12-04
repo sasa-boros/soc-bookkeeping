@@ -84,19 +84,19 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="lg" id="create-share-modal">
+    <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-share-modal">
       <share-preview :share='selectedItem' :sharePreview='isPreview' parentModal="create-share-modal" v-on:updateSharesTable="update"></share-preview>
     </b-modal>
 
-    <b-modal id="delete-share-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteShareModal')">
+    <b-modal no-close-on-backdrop id="delete-share-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteShareModal')">
       <message-confirm-dialog ref="deleteShareModal" parentModal="delete-share-modal" type="confirm" :text="phrases.areYouSureToDeleteShare" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteShare"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="delete-checked-shares-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedSharesModal')">
+    <b-modal no-close-on-backdrop id="delete-checked-shares-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedSharesModal')">
       <message-confirm-dialog ref="deleteCheckedSharesModal" parentModal="delete-checked-shares-modal" type="confirm" :text="phrases.areYouSureToDeleteCheckedShares" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteCheckedShares"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="share-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('shareTableErrorModal')">
+    <b-modal no-close-on-backdrop id="share-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('shareTableErrorModal')">
         <message-confirm-dialog ref="shareTableErrorModal" parentModal="share-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
 

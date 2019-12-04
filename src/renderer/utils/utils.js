@@ -33,6 +33,21 @@ const partitionPositionNumberOptions = {
   modifyValueOnWheel: false
 }
 
+function asRoman(num) {
+  if (num == NaN || num == null || num == undefined) 
+    return null; 
+  
+  var digits = String(+num).split(""),
+  key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+  "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+  "","I","II","III","IV","V","VI","VII","VIII","IX"],
+  roman_num = "",
+  i = 3;
+  while (i--)
+    roman_num = (key[+digits.pop() + (i * 10)] || "") + roman_num;
+  return Array(+digits.join("") + 1).join("M") + roman_num;
+}
+
 function asFloat (formattedNumberAsString, numberOptions, nullAsZero) {
   if (!formattedNumberAsString || formattedNumberAsString.trim() == '') {
     if (nullAsZero) {
@@ -603,6 +618,7 @@ function copy(pathToFile, userChosenPath, callback) {
 }
 
 module.exports = {
+  asRoman: asRoman,
   amountNumberOptions: amountNumberOptions,
   largeAmountNumberOptions: largeAmountNumberOptions,
   partitionPositionNumberOptions: partitionPositionNumberOptions,

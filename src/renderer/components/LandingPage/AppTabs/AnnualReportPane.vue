@@ -68,7 +68,7 @@
       <br>
       <div>
         <div class="predictedAllowedDiv" v-for="(ipcp, index) in form.totalIncomePerCodePredicted" v-bind:key="'ic' + index">
-          <div class="predictedAllowedLabelDiv">{{ipcp.incomeCode.partition + "/" + ipcp.incomeCode.position + "\n" + (ipcp.incomeCode.description ? ipcp.incomeCode.description : '')}}</div>
+          <div class="predictedAllowedLabelDiv">{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position + "\n" + (ipcp.incomeCode.description ? ipcp.incomeCode.description : '')}}</div>
           <b-form-input :id="'ic' + index" type="text" v-model="ipcp.income" class="codeAmountInput"/>
         </div>
       </div>
@@ -79,7 +79,7 @@
       <br>
       <div>
         <div class="predictedAllowedDiv" v-for="(opcp, index) in form.totalOutcomePerCodeAllowed" v-bind:key="'oc' + index">
-          <div class="predictedAllowedLabelDiv">{{opcp.outcomeCode.partition + "/" + opcp.outcomeCode.position + "\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
+          <div class="predictedAllowedLabelDiv">{{ asRomanNumber(opcp.outcomeCode.partition) + "/" + opcp.outcomeCode.position + "\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
           <b-form-input :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
         </div>
       </div>
@@ -94,7 +94,7 @@
         </b-col> 
       </b-row>
       <!-- Annual report preview modal -->
-      <b-modal hide-footer hide-header id="annual-report-preview-modal" size="ar">
+      <b-modal no-close-on-backdrop hide-footer hide-header id="annual-report-preview-modal" size="ar">
         <annual-report-preview :year="year" :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
       </b-modal>
 
@@ -106,11 +106,11 @@
         {{phrases.save}}
       </b-tooltip>
 
-      <b-modal id="annual-report-preview-failed-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPreviewFailedModal')">
+      <b-modal no-close-on-backdrop id="annual-report-preview-failed-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPreviewFailedModal')">
         <message-confirm-dialog ref="annualReportPreviewFailedModal" parentModal="annual-report-preview-failed-modal" type="warning" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
 
-      <b-modal id="annual-report-pane-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPaneErrorModal')">
+      <b-modal no-close-on-backdrop id="annual-report-pane-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPaneErrorModal')">
         <message-confirm-dialog ref="annualReportPaneErrorModal" parentModal="annual-report-pane-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
     </div>
@@ -131,7 +131,7 @@
   const { ipcRenderer } = require('electron')
   const AutoNumeric = require('autonumeric')
   const Mousetrap = require('mousetrap')
-  const { amountNumberOptions, largeAmountNumberOptions, mapAnnualReportDataToAnnualReportDataForm, mapAnnualReportDataFormToAnnualReportData } = require('../../../utils/utils')
+  const { amountNumberOptions, largeAmountNumberOptions, asRoman, mapAnnualReportDataToAnnualReportDataForm, mapAnnualReportDataFormToAnnualReportData } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -190,6 +190,9 @@
       )
     },
     methods: {
+      asRomanNumber(num) {
+        return asRoman(num)
+      },
       limitInputPerSize (evt) {
         if (evt.target.scrollWidth > evt.target.clientWidth) {
           evt.preventDefault()

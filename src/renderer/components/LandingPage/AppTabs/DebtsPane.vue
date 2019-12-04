@@ -82,19 +82,19 @@
       </b-col>
     </b-row>
 
-    <b-modal hide-footer hide-header size="lg" id="create-debt-modal">
+    <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-debt-modal">
       <debt-preview :debt='selectedItem' :debtPreview='isPreview' parentModal="create-debt-modal" v-on:updateDebtsTable="update"></debt-preview>
     </b-modal>
 
-    <b-modal id="delete-debt-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteDebtModal')">
+    <b-modal no-close-on-backdrop id="delete-debt-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteDebtModal')">
       <message-confirm-dialog ref="deleteDebtModal" parentModal="delete-debt-modal" type="confirm" :text="phrases.areYouSureToDeleteDebt" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteDebt"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="delete-checked-debts-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedDebtsModal')">
+    <b-modal no-close-on-backdrop id="delete-checked-debts-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteCheckedDebtsModal')">
       <message-confirm-dialog ref="deleteCheckedDebtsModal" parentModal="delete-checked-debts-modal" type="confirm" :text="phrases.areYouSureToDeleteCheckedDebts" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteCheckedDebts"></message-confirm-dialog>
     </b-modal>
 
-    <b-modal id="debt-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('debtTableErrorModal')">
+    <b-modal no-close-on-backdrop id="debt-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('debtTableErrorModal')">
         <message-confirm-dialog ref="debtTableErrorModal" parentModal="debt-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
 

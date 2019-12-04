@@ -28,6 +28,21 @@ const AutoNumeric = require('autonumeric')
 
 const { degrees, PDFDocument } = require('pdf-lib')
 
+function asRoman(num) {
+  if (typeof num !== 'number') 
+    return false; 
+  
+  var digits = String(+num).split(""),
+  key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+  "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+  "","I","II","III","IV","V","VI","VII","VIII","IX"],
+  roman_num = "",
+  i = 3;
+  while (i--)
+    roman_num = (key[+digits.pop() + (i * 10)] || "") + roman_num;
+  return Array(+digits.join("") + 1).join("M") + roman_num;
+}
+
 async function getAnnualReportCommonData () {
   console.log('Getting annual report common data')
   const common = await annualReportCommonDao.findOne()
@@ -306,10 +321,10 @@ async function getAnnualReportPages (annualReport) {
   var i = 0
   while (i < annualReport.incomePages.length || i < annualReport.outcomePages.length) {
     if (i < annualReport.incomePages.length) {
-      populateIncomePage(annualReport, annualReport.incomePages[i], incomePageTemplate, annualReportPages, 0)
+      populateIncomePage(annualReport, annualReport.incomePages[i], incomePageTemplate, annualReportPages, 0, i + 1)
     }
     if (i < annualReport.outcomePages.length) {
-      populateOutcomePage(annualReport, annualReport.outcomePages[i], outcomePageTemplate, annualReportPages, 0)
+      populateOutcomePage(annualReport, annualReport.outcomePages[i], outcomePageTemplate, annualReportPages, 0, i + 1)
     }
     i++
   }
@@ -350,8 +365,9 @@ function populateManualPage(annualReport, manualPageTemplate, annualReportPages)
   annualReportPages.push(manualPageTemplate);
 }
 
-function populateIncomePage (annualReport, incomePage, incomePageTemplate, annualReportPages, paymentSlipStartIndex) {
+function populateIncomePage (annualReport, incomePage, incomePageTemplate, annualReportPages, paymentSlipStartIndex, pageNum) {
   var incomePageContext = {};
+  incomePageContext.pageNum = pageNum
   incomePageContext.page = incomePage.ordinal;
   incomePageContext.monthLokativ = i18n.getTranslation(monthNames[incomePage.ordinal-1] + '.lokativ');
 
@@ -359,7 +375,7 @@ function populateIncomePage (annualReport, incomePage, incomePageTemplate, annua
   var col = 'D';
   // income codes
   annualReport.incomeCodes.forEach(ic => {
-    let incomeCodeText = ic.partition + '/' + ic.position;
+    let incomeCodeText = asRoman(ic.partition) + '/' + ic.position;
     incomePageContext[col+'6'] = incomeCodeText;
     incomePageContext[col+'7'] = ic.description;
     colsPerIncomeCodes[incomeCodeText] = col;
@@ -401,8 +417,9 @@ function populateIncomePage (annualReport, incomePage, incomePageTemplate, annua
   annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext));
 }
 
-function populateOutcomePage (annualReport, outcomePage, outcomePageTemplate, annualReportPages, receiptStartIndex) {
+function populateOutcomePage (annualReport, outcomePage, outcomePageTemplate, annualReportPages, receiptStartIndex, pageNum) {
   var outcomePageContext = {};
+  outcomePageContext.pageNum = pageNum
   outcomePageContext.page = outcomePage.ordinal;
   if (!annualReport.year) {
     outcomePageContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -413,7 +430,7 @@ function populateOutcomePage (annualReport, outcomePage, outcomePageTemplate, an
   var col = 'D';
    // outcome codes
    annualReport.outcomeCodes.forEach(oc => {
-    let outcomeCodeText = oc.partition + '/' + oc.position;
+    let outcomeCodeText = asRoman(oc.partition) + '/' + oc.position;
     outcomePageContext[col+'6'] = outcomeCodeText;
     outcomePageContext[col+'7'] = oc.description;
     colsPerOutcomeCodes[outcomeCodeText] = col;
@@ -457,10 +474,11 @@ function populateOutcomePage (annualReport, outcomePage, outcomePageTemplate, an
 
 function populateTotalIncomePage(annualReport, totalIncomePageTemplate, annualReportPages) {
   var totalIncomePageContext = {};
+  totalIncomePageContext.pageNum = 13
   var colsPerIncomeCodes = {}
   var col = 'B';
   annualReport.incomeCodes.forEach(ic => {
-    let incomeCodeText = ic.partition + '/' + ic.position;
+    let incomeCodeText = asRoman(ic.partition) + '/' + ic.position;
     totalIncomePageContext[col+'5'] = incomeCodeText;
     totalIncomePageContext[col+'6'] = ic.description;
     colsPerIncomeCodes[incomeCodeText] = col;
@@ -491,6 +509,7 @@ function populateTotalIncomePage(annualReport, totalIncomePageTemplate, annualRe
 
 function populateTotalOutcomePage(annualReport, totalOutcomePageTemplate, annualReportPages) {
   var totalOutcomePageContext = {};
+  totalOutcomePageContext.pageNum = 13
   if (!annualReport.year) {
     totalOutcomePageContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
   } else {
@@ -499,7 +518,7 @@ function populateTotalOutcomePage(annualReport, totalOutcomePageTemplate, annual
   var colsPerOutcomeCodes = {}
   var col = 'B';
   annualReport.outcomeCodes.forEach(oc => {
-    let outcomeCodeText = oc.partition + '/' + oc.position;
+    let outcomeCodeText = asRoman(oc.partition) + '/' + oc.position;
     totalOutcomePageContext[col+'5'] = outcomeCodeText;
     totalOutcomePageContext[col+'6'] = oc.description;
     colsPerOutcomeCodes[outcomeCodeText] = col;
@@ -535,6 +554,7 @@ function populateTotalOutcomePage(annualReport, totalOutcomePageTemplate, annual
 
 function populateSharesPage(annualReport, sharesPageTemplate, annualReportPages, sharesStartIndex, savingsStartIndex) {
   const sharesPageContext = {}
+  sharesPageContext.pageNum = 14
   var newSharesStartIndex, newSavingsStartIndex
   if (sharesStartIndex || sharesStartIndex == 0) {
     let row = 7
@@ -586,6 +606,7 @@ function populateSharesPage(annualReport, sharesPageTemplate, annualReportPages,
 
 function populateTotalPage(annualReport, totalPageTemplate, annualReportPages, itemsStartIndex, debtsStartIndex) {
   const totalPageContext = {}
+  totalPageContext.pageNum = 14
   if (!annualReport.year) {
     totalPageContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
   } else {

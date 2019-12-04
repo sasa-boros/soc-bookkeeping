@@ -26,7 +26,7 @@
           </b-button-group>
         </template>
         <template v-slot:cell(partition)="row">
-          {{ row.item.partition }}
+          {{ row.item.partition | formatPartition }}
         </template>
         <template v-slot:cell(position)="row">
           {{ row.item.position }}
@@ -43,15 +43,15 @@
         </template>
       </b-table>
 
-      <b-modal hide-footer hide-header size="lg" id="create-outcome-code-modal">
+      <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-outcome-code-modal">
         <outcome-code-preview :outcomeCode='selectedOutcomeCode' :isUpdate='isUpdate' :existingOutcomeCodes="outcomeCodes" parentModal="create-outcome-code-modal" v-on:updateOutcomeCodes="update"></outcome-code-preview>
       </b-modal>
 
-      <b-modal id="delete-outcome-code-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteOutcomeCodeModal')">
+      <b-modal no-close-on-backdrop id="delete-outcome-code-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteOutcomeCodeModal')">
         <message-confirm-dialog ref="deleteOutcomeCodeModal" parentModal="delete-outcome-code-modal" type="confirm" :text="phrases.areYouSureToDeleteOutcomeCode" :subText="phrases.outcomeCodeDeleteConsequences" :cancelOkText="phrases.cancel" :confirmText="phrases.delete" v-on:confirmed="deleteOutcomeCode"></message-confirm-dialog>
       </b-modal>
 
-      <b-modal id="outcome-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('outcomeCodeTableErrorModal')">
+      <b-modal no-close-on-backdrop id="outcome-code-table-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('outcomeCodeTableErrorModal')">
         <message-confirm-dialog ref="outcomeCodeTableErrorModal" parentModal="outcome-code-table-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
   </b-container>
@@ -65,6 +65,7 @@
   const { dialog } = require('electron').remote
   const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
   const i18n = require('../../../../../translations/i18n')
+  const { asRoman } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -159,8 +160,7 @@
         outcomeCodeController.deleteOutcomeCode(this.deletedOutcomeCode._id).then((res) => {
           if (!res.err) {
             self.update()
-            this.$emit('updateDefaultReceipt')
-            EventBus.$emit('updateReceiptTable');
+            //this.$emit('updateDefaultReceipt')
           } else {
             self.openErrorModal(res.err)
           }
@@ -180,6 +180,12 @@
       update () {
         this.loadOutcomeCodes()
         EventBus.$emit('updateAnnualReportPane')
+        EventBus.$emit('updateReceiptTable');
+      }
+    },
+    filters: {
+      formatPartition (partition) {
+        return asRoman(partition)
       }
     },
     components: { OutcomeCodePreview, MessageConfirmDialog }

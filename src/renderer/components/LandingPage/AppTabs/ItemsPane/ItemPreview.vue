@@ -76,7 +76,7 @@
       {{phrases.clear}}
     </b-tooltip>
 
-    <b-modal id="item-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('itemPreviewErrorModal')">
+    <b-modal no-close-on-backdrop id="item-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('itemPreviewErrorModal')">
       <message-confirm-dialog ref="itemPreviewErrorModal" parentModal="item-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
   </b-container>
