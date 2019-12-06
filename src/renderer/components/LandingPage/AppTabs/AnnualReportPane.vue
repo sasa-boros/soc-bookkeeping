@@ -20,7 +20,7 @@
       <br>
       <b-row>
         <b-col cols="5">
-          Хартије од вредности - у току године отуђено - амортизовано:
+          Хартије од вредности - у току године отуђено (амортизовано):
         </b-col>
         <b-col>
           <b-form-input id="shareValueDepreciatedDuringYearInput" type="text" v-model="form.shareValueDepreciatedDuringYear"/>
@@ -29,7 +29,7 @@
       <br>
       <b-row>
         <b-col cols="5">
-          Некретнине - земљиште - површина:
+          Некретнине: земљиште - површина:
         </b-col>
         <b-col>
           <b-form-input id="realEstateLandSurfaceInput" type="text" v-model="form.realEstateLandSurface" v-on:keypress="limitInputPerSize"/>
@@ -38,7 +38,7 @@
       <br>
       <b-row>
         <b-col cols="5">
-          Некретнине - земљиште - вредност:
+          Некретнине: земљиште - вредност:
         </b-col>
         <b-col>
           <b-form-input id="realEstateLandValueInput" type="text" v-model="form.realEstateLandValue"/>
@@ -47,7 +47,7 @@
       <br>
       <b-row>
         <b-col cols="5">
-          Некретнине - зграде - површина:
+          Некретнине: зграде - површина:
         </b-col>
         <b-col>
           <b-form-input id="realEstateBuildingsSurfaceInput" type="text" v-model="form.realEstateBuildingsSurface" v-on:keypress="limitInputPerSize"/>
@@ -56,7 +56,7 @@
       <br>
       <b-row>
         <b-col cols="5">
-          Некретнине - зграде - вредност:
+          Некретнине: зграде - вредност:
         </b-col>
         <b-col>
         <b-form-input id="realEstateBuildingsValueInput" type="text" v-model="form.realEstateBuildingsValue"/>
