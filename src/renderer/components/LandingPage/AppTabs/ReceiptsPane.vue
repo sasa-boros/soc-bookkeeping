@@ -26,6 +26,7 @@
     <div class="tableDiv">
       <b-table show-empty hover small id="receipts-table" class="mt-3"
               stacked="md"
+              bordered
               :items="items"
               v-model="itemsShownInTable"
               :fields="fields"
@@ -44,6 +45,7 @@
               responsive
               :empty-text="phrases.noRecordsToShow"
               :empty-filtered-text="phrases.noRecordsToShow"
+              v-on:head-clicked="unsort"
       >
         <template v-slot:head(select)="row">
           <span v-on:mouseleave="hideTooltip()">
@@ -161,7 +163,8 @@
         errorText: "",
         sortBy: null,
         sortDesc: true,
-        sortDirection: 'desc'
+        sortDirection: 'desc',
+        sortsPerHeader: null
       }
     },
     created () {
@@ -197,15 +200,32 @@
         return [
           { key: 'select', label: '', thStyle: {outline: 'none'} },
           { key: 'preview', label: '', thStyle: {outline: 'none'} },
-          { key: 'outcome', label: this.phrases.outcome, class: 'text-center', sortable: true, thStyle: {outline: 'none'} },
-          { key: 'reason', label: this.phrases.reason, class: 'text-center', thStyle: {outline: 'none'} },
-          { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', sortable: true, thStyle: {outline: 'none'} },
+          { key: 'outcome', label: this.phrases.outcome, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'reason', label: this.phrases.reason, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'invalid', label: '', thStyle: {outline: 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none'} }
         ]
       }
     },
     methods: {
+      unsort (key, field, e) {
+        e.stopPropagation()
+        if (!field.sortable) {
+          this.sortsPerHeader = null
+          return
+        }
+        if (this.sortsPerHeader && this.sortsPerHeader.key == key) {
+          if (this.sortsPerHeader.value >= 2) {
+            this.sortsPerHeader = null
+            this.sortBy = null
+          } else {
+            this.sortsPerHeader.value += 1
+          }
+        } else {
+          this.sortsPerHeader = {key: key, value: 1}
+        }
+      },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },

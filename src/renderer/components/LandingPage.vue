@@ -20,24 +20,10 @@
 </script>
 
 <style>
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
   #wrapper {
-    height: 100vh;
-    padding: 60px 80px;
-    width: 100vw;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
-
-  main {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  main > div { flex-basis: 50%; }
-
 </style>

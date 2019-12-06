@@ -18,12 +18,14 @@
   height: 25px;
   width: auto;
 }
+
 body {
   font-family: "Times New Roman";
   font-size: 90%;
   letter-spacing: 95%;
   color:#514A4A;
 }
+
 input {
   text-align: center;
   font-family: "Times New Roman";
@@ -80,6 +82,13 @@ h1 {
 .page-link {
   border-color:rgb(208, 226, 247) !important;
   color:#514A4A !important;
+}
+
+.modal-open .modal {
+  height: 100vh;
+  width: 100vw;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
 }
 
 .page-link:hover {

@@ -63,32 +63,35 @@
         </b-col>
       </b-row>
       <br>
-      Буџетом предвиђено:
-      <br>
-      <br>
-      <div>
-        <div class="predictedAllowedDiv" v-for="(ipcp, index) in form.totalIncomePerCodePredicted" v-bind:key="'ic' + index">
-          <div class="predictedAllowedLabelDiv">{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position + "\n" + (ipcp.incomeCode.description ? ipcp.incomeCode.description : '')}}</div>
-          <b-form-input :id="'ic' + index" type="text" v-model="ipcp.income" class="codeAmountInput"/>
-        </div>
-      </div>
-      <br>
-      <br>
-      Буџетом одобрено:
-      <br>
-      <br>
-      <div>
-        <div class="predictedAllowedDiv" v-for="(opcp, index) in form.totalOutcomePerCodeAllowed" v-bind:key="'oc' + index">
-          <div class="predictedAllowedLabelDiv">{{ asRomanNumber(opcp.outcomeCode.partition) + "/" + opcp.outcomeCode.position + "\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
-          <b-form-input :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
-        </div>
-      </div>
+      <b-row>
+        <b-col>
+          <div class="predictedAllowedDivWrapper">
+            Буџетом предвиђено:
+            <br>
+            <br>
+            <div class="predictedAllowedDiv" v-for="(ipcp, index) in form.totalIncomePerCodePredicted" v-bind:key="'ic' + index">
+              <div class="predictedAllowedLabelDiv">{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position + "\n" + (ipcp.incomeCode.description ? ipcp.incomeCode.description : '')}}</div>
+              <b-form-input :id="'ic' + index" type="text" v-model="ipcp.income" class="codeAmountInput"/>
+            </div>
+          </div>
+          <div class="predictedAllowedDivWrapper">
+            Буџетом одобрено:
+            <br>
+            <br>
+            <div class="predictedAllowedDiv" v-for="(opcp, index) in form.totalOutcomePerCodeAllowed" v-bind:key="'oc' + index">
+              <div class="predictedAllowedLabelDiv">{{ asRomanNumber(opcp.outcomeCode.partition) + "/" + opcp.outcomeCode.position + "\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
+              <b-form-input :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
+            </div>
+          </div>
+        </b-col>
+      </b-row>
+      <br>             
       <b-row class="text-right">
         <b-col>
-          <b-button id="annualReportDataSaveBtn" ref="annualReportDataSaveBtn" :disabled="disableAnnualReportDataSaveBtn" v-on:mouseleave="hideTooltip('annualReportDataSaveBtn')" v-on:click="createAnnualReportData" variant="light" class="btn-xs text-center">
+          <b-button id="annualReportDataSaveBtn" ref="annualReportDataSaveBtn" :disabled="disableAnnualReportDataSaveBtn" v-on:mouseleave="hideTooltip('annualReportDataSaveBtn')" v-on:click="createAnnualReportData" variant="light" class="btn-lg text-center">
             <img src="~@/assets/save.png">
           </b-button>
-          <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" :disabled="!disableAnnualReportDataSaveBtn" variant="light" class="btn-xs">
+          <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" :disabled="!disableAnnualReportDataSaveBtn" variant="light" class="btn-lg">
             <img src="~@/assets/annual-report.png">
           </b-button>
         </b-col> 
@@ -327,10 +330,10 @@
 
 <style>
   .modal .modal-ar {
-    max-width: 1173px;
-    width: 1173px;
-    max-height:844px;
-    height:844px;
+    max-width: 1213px;
+    width: 1213px;
+    max-height:894px;
+    height:894px;
     overflow: hidden;
   }
 </style>
@@ -391,10 +394,15 @@ input {
   border-style: none;
 }
 
+.predictedAllowedDivWrapper {
+  width: 50%;
+  float: left;
+}
+
 .predictedAllowedDiv {
   display:inline-block;
   border-collapse:collapse;
-  margin-bottom:20px;
+  margin-bottom:10px;
 }
 
 .predictedAllowedLabelDiv {

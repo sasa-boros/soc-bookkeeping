@@ -5,6 +5,7 @@ const { app, BrowserWindow } = require('electron')
 const Datastore = require('nedb')
 const path = require('path')
 const config = require('./config')
+const settingsService = require('./service/settingsService')
 
 // Connecting to neDB
 var db = {}
@@ -41,18 +42,22 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-function createWindow () {
+async function createWindow () {
   /**
    * Initial window options
    */
+  const settings = await settingsService.getSettings()
   mainWindow = new BrowserWindow({
     huseContentSize: true,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    webPreferences: {
+      zoomFactor: settings && settings.zoomLevel ? settings.zoomLevel : 1.5
+    }
   })
 
   mainWindow.maximize()
   mainWindow.loadURL(winURL)
-
+  
   mainWindow.on('closed', () => {
     mainWindow = null
   })

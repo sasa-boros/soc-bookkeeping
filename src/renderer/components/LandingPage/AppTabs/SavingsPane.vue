@@ -26,6 +26,7 @@
     <div class="tableDiv">
       <b-table show-empty hover small id="savings-table" class="mt-3"
               stacked="md"
+              bordered
               :items="items"
               v-model="itemsShownInTable"
               :fields="fields"
@@ -43,6 +44,7 @@
               head-variant="light"
               :empty-text="phrases.noRecordsToShow"
               :empty-filtered-text="phrases.noRecordsToShow"
+              v-on:head-clicked="unsort"
       >
         <template v-slot:head(select)="row">
           <span v-on:mouseleave="hideTooltip()">
@@ -154,7 +156,8 @@
         errorText: "",
         sortBy: null,
         sortDesc: true,
-        sortDirection: 'desc'
+        sortDirection: 'desc',
+        sortsPerHeader: null
       }
     },
     created () {
@@ -186,17 +189,34 @@
         return [
           { key: 'select', label: '', thStyle: {outline: 'none'} },
           { key: 'preview', label: '', thStyle: {outline: 'none'}  },
-          { key: 'account', label: this.phrases.account, class: 'text-center', thStyle: {outline: 'none'} },
-          { key: 'savingEntity', label: this.phrases.savingEntity, class: 'text-center', thStyle: {outline: 'none'} },
-          { key: 'amount', label: this.phrases.amount, class: 'text-center', sortable: true, thStyle: {outline: 'none'} },
-          { key: 'amountDeposited', label: this.phrases.amountDeposited, class: 'text-center', sortable: true, thStyle: {outline: 'none'} },
-          { key: 'amountWithdrawn', label: this.phrases.amountWithdrawn, class: 'text-center', sortable: true, thStyle: {outline: 'none'} },
-          { key: 'year', label: this.phrases.year, class: 'text-center', sortable: true, thStyle: {outline: 'none'} },
+          { key: 'account', label: this.phrases.account, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'savingEntity', label: this.phrases.savingEntity, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'amount', label: this.phrases.amount, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'amountDeposited', label: this.phrases.amountDeposited, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'amountWithdrawn', label: this.phrases.amountWithdrawn, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'year', label: this.phrases.year, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none'} },
         ]
       }
     },
     methods: {
+      unsort (key, field, e) {
+        e.stopPropagation()
+        if (!field.sortable) {
+          this.sortsPerHeader = null
+          return
+        }
+        if (this.sortsPerHeader && this.sortsPerHeader.key == key) {
+          if (this.sortsPerHeader.value >= 2) {
+            this.sortsPerHeader = null
+            this.sortBy = null
+          } else {
+            this.sortsPerHeader.value += 1
+          }
+        } else {
+          this.sortsPerHeader = {key: key, value: 1}
+        }
+      },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },

@@ -26,7 +26,7 @@ const largeAmountNumberOptions = {
 }
 
 const partitionPositionNumberOptions = {
-  minimumValue: 0, 
+  minimumValue: 1, 
   maximumValue: 99,
   decimalPlaces: 0,
   digitGroupSeparator: '',
@@ -35,7 +35,10 @@ const partitionPositionNumberOptions = {
 
 function asRoman(num) {
   if (num == NaN || num == null || num == undefined) 
-    return null; 
+    return null;
+  if (num <= 0) {
+    return num
+  }
   
   var digits = String(+num).split(""),
   key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",

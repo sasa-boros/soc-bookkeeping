@@ -7,6 +7,7 @@
      </b-button-group>
     <b-table show-empty
               stacked="md"
+              bordered
               class="mt-3"
               :items="incomeCodes"
               responsive

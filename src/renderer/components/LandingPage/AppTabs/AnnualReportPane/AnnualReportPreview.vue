@@ -50,6 +50,7 @@
           </b-button>
         </b-col>
       </b-row>
+      <hr>
       <b-row>
         <div v-html="annualReportPages[(currentPage ? currentPage : 1)-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
         </div>
@@ -681,56 +682,56 @@ input {
 .headline >>> #headline {
 	transform: scale(0.6);
 	position:relative;
-  bottom:50px;
-  left:304px;
+  bottom:70px;
+  left:323px;
 }
 
 .manualPage >>> #manual-page {
 	transform: scale(0.6);
 	position:relative;
-  bottom:215px;
-  right:364px;
+  bottom:235px;
+  right:345px;
 }
 
 .incomePage >>> #income-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 199px;
-	right: 366px;
+	bottom: 219px;
+	right: 347px;
 }
 .outcomePage >>> #outcome-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 203px;
-	right: 366px;
+	bottom: 224px;
+	right: 349px;
 }
 
 .totalIncomePage >>> #total-income-page {
   transform: scale(0.6);
 	position:relative;
-	bottom: 164px;
-	right: 314px;
+	bottom: 184px;
+	right: 295px;
 }
 
 .totalOutcomePage >>> #total-outcome-page {
   transform: scale(0.6);
 	position:relative;
-	bottom: 213px;
-	right: 312px;
+	bottom: 233px;
+	right: 293px;
 }
 
 .sharesPage >>> #shares-page {
   transform: scale(0.6);
   position:relative;
-  bottom: 171px;
-  right: 321px;
+  bottom: 191px;
+  right: 301px;
 }
 
 .totalPage >>> #total-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 175px;
-	right: 123px;
+	bottom: 195px;
+	right: 103px;
 }
 
 i {

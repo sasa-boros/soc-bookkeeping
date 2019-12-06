@@ -239,7 +239,10 @@
       },
       updateZoomLevel (zoomLevel) {
         this.zoomLevel = Big(zoomLevel)
-        webFrame.setZoomFactor(parseFloat(this.zoomLevel))
+        const newZoomLevel = parseFloat(this.zoomLevel)
+        if (webFrame.getZoomFactor() != newZoomLevel) {
+          webFrame.setZoomFactor(newZoomLevel)
+        }
       },
       hideTooltip (elementId) {
         if (elementId) {
