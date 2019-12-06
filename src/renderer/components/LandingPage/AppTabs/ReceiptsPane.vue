@@ -69,20 +69,18 @@
         <template v-slot:cell(outcome)="row">{{ row.item.outcome | formatOutcome }}</template>
         <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
         <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
-        <template v-slot:cell(invalid)="row">
-          <div v-show="!isValid(row.item)">
-            <img v-on:mouseleave="hideTooltip('invalid' + row.item._id)" :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
-            <b-tooltip :target="'invalid' + row.item._id" v-on:hide.prevent>
-                {{phrases.invalidReceipt}}
-            </b-tooltip>
-          </div>
-        </template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
             <b-button id="deleteReceiptBtn" v-on:mouseleave="hideTooltip('deleteReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.deleteReceipt}" @click.stop="openDeleteReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/delete.png">                                           
             </b-button>     
           </b-button-group>                
+          <span v-show="!isValid(row.item)">
+            <img v-on:mouseleave="hideTooltip('invalid' + row.item._id)" :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
+            <b-tooltip :target="'invalid' + row.item._id" v-on:hide.prevent>
+                {{phrases.invalidReceipt}}
+            </b-tooltip>
+          </span>
         </template>
       </b-table>
     </div>
@@ -203,7 +201,6 @@
           { key: 'outcome', label: this.phrases.outcome, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'reason', label: this.phrases.reason, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'invalid', label: '', thStyle: {outline: 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none'} }
         ]
       }

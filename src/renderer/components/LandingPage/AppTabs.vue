@@ -15,7 +15,7 @@
             {{phrases.paymentSlips}} 
             <span v-show="!arePaymentSlipsValid">
               &nbsp;
-              <img id="invalidPsImg" v-on:mouseleave="hideTooltip('invalidPsImg')" src="~@/assets/invalid.png" class="invalidIcon">
+              <img id="invalidPsImg" v-on:mouseleave="hideTooltip('invalidPsImg')" src="~@/assets/invalid.png" class="invalidTabIcon">
               <b-tooltip target="invalidPsImg">
                   {{phrases.invalidPaymentSlipsExist}}
               </b-tooltip>
@@ -29,7 +29,7 @@
             {{phrases.receipts}}
             <span v-show="!areReceiptsValid">
               &nbsp;
-              <img id="invalidRImg" v-on:mouseleave="hideTooltip('invalidRImg')" src="~@/assets/invalid.png" class="invalidIcon">
+              <img id="invalidRImg" v-on:mouseleave="hideTooltip('invalidRImg')" src="~@/assets/invalid.png" class="invalidTabIcon">
               <b-tooltip target="invalidRImg">
                   {{phrases.invalidReceiptsExist}}
               </b-tooltip>
@@ -275,5 +275,9 @@
   .appTabsIcon {
     width: auto;
     margin-right: 5px;
+  }
+  .invalidTabIcon {
+    height: 25px;
+    width: auto;
   }
 </style>

@@ -17,6 +17,9 @@
 .invalidIcon {
   height: 25px;
   width: auto;
+  position: relative;
+  bottom: 10px;
+  left: 30px;
 }
 
 body {
@@ -89,6 +92,10 @@ h1 {
   width: 100vw;
   overflow-y: auto !important;
   overflow-x: auto !important;
+}
+
+.highlight {
+  background-color:  rgb(208, 226, 247) !important;
 }
 
 .page-link:hover {
