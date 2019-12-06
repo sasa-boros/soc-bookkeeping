@@ -25,7 +25,7 @@
         </b-col>
         <b-col cols="2">
           <div class="float-right pageCount">
-            <b-form-input id="currentPageInput" type="text" v-model="currentPage"/>/{{annualReportPages.length}}
+            {{currentPage}}/{{annualReportPages.length}}
           </div>
         </b-col>
         <b-col cols="2" class="text-center">
@@ -37,11 +37,11 @@
           </b-button>
         </b-col>
         <b-col cols="4">
-          <span v-for="(value, arpn, index) in annualReportPagesNums" v-bind:key="value">
-            <b-button v-on:click="setPage(value)" type="text" variant="light" class="btn-sm">
+          <div style="text-align:center">Страна дневника:</div>
+          <span align="justify">
+            <b-button v-for="(value, arpn, index) in annualReportPagesNums" v-bind:key="value" v-on:click="setPage(value)" type="text" variant="light" class="btn-sm">
               {{index + 1}}
             </b-button>
-            <br v-if="index == 7">
           </span>
         </b-col>
         <b-col>
@@ -52,7 +52,7 @@
       </b-row>
       <hr>
       <b-row>
-        <div v-html="annualReportPages[(currentPage ? currentPage : 1)-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
+        <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
         </div>
       </b-row>
       <b-tooltip ref="annualReportPrintDropdownTooltip" triggers="hover" target="annualReportPrintDropdown" v-on:hide.prevent>
@@ -425,8 +425,7 @@ export default {
       printPageSections: [],
       downloadSection: null,
       downloadPageSections: [],
-      alreadyPressed: false,
-      currentPageAutonumeric: null
+      alreadyPressed: false
     }
   },
   created () {
@@ -441,15 +440,6 @@ export default {
   },
   mounted () {
     this.bindKeys()
-    const pageCountNumberOptions = {
-      minimumValue: 0, 
-      maximumValue: this.annualReportPages.length,
-      decimalPlaces: 0,
-      digitGroupSeparator: '',
-      modifyValueOnWheel: false,
-      watchExternalChanges: true
-    }
-    this.currentPageAutonumeric = new AutoNumeric('#currentPageInput', pageCountNumberOptions)
   },
   beforeDestroy () {
     this.unbindKeys()
