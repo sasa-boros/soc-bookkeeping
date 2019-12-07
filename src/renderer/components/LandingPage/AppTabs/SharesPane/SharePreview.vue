@@ -76,23 +76,23 @@
       </b-row>
     </b-form>
 
-    <b-tooltip target="yearInput" triggers="hover" placement="top" ref="yearInputTooltip" :disabled.sync="disableYearTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="yearInput" triggers="hover" placement="top" ref="yearInputTooltip" :disabled.sync="disableYearTooltip" v-on:hide.prevent>
       {{phrases.pickYear}}
     </b-tooltip>
 
-    <b-tooltip target="nameInput" triggers="hover" placement="top" ref="nameInputTooltip" :disabled.sync="disableNameTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="nameInput" triggers="hover" placement="top" ref="nameInputTooltip" :disabled.sync="disableNameTooltip" v-on:hide.prevent>
       {{phrases.enterName}}
     </b-tooltip>
 
-    <b-tooltip target="nominalValueInput" triggers="hover" placement="top" ref="nominalValueInputTooltip" :disabled.sync="disableNominalValueTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="nominalValueInput" triggers="hover" placement="top" ref="nominalValueInputTooltip" :disabled.sync="disableNominalValueTooltip" v-on:hide.prevent>
       {{phrases.enterValue}}
     </b-tooltip>
 
-    <b-tooltip target="saveShareBtn" triggers="hover" placement="top" ref="saveShareBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="saveShareBtn" triggers="hover" placement="top" ref="saveShareBtnTooltip" v-on:hide.prevent>
       {{phrases.save}}
     </b-tooltip>
 
-    <b-tooltip target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
       {{phrases.clear}}
     </b-tooltip>
 
@@ -331,7 +331,7 @@
     font-family: "Times New Roman";
     font-size: 90%;
     letter-spacing: 95%;
-    height:15px;
+    height:20px;
     font-weight: bold;
     border-bottom: .5pt solid black !important;
     border-radius: 0 !important;
@@ -363,7 +363,7 @@
 
     white-space: nowrap;
     width:50px;
-    max-height: 15px;
+    max-height: 20px;
     padding: 0px;
     margin: 0px;
     font-weight: bold;
@@ -378,7 +378,7 @@
   .shareDatepickerWrapper {
     display: inline;
     white-space: normal;
-    height: 15px;
+    height: 20px;
     margin: 0px;
     padding: 0px;
     width: 95px;

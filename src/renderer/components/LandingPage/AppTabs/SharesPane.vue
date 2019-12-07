@@ -4,12 +4,12 @@
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addShareButton" v-on:mouseleave="hideTooltip('addShareButton')" v-b-tooltip.hover.top="{title: phrases.addShare}" @click.stop="openCreateShareModal" variant="light" class="btn-xs">
+          <b-btn id="addShareButton" v-on:mouseleave="hideTooltip('addShareButton')" v-b-tooltip.hover.top.window="{title: phrases.addShare}" @click.stop="openCreateShareModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedSharesModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
+          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedSharesModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
@@ -48,20 +48,20 @@
       >
         <template v-slot:head(select)="row">
           <span v-on:mouseleave="hideTooltip()">
-            <b-form-checkbox  v-b-tooltip.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
+            <b-form-checkbox  v-b-tooltip.hover.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
             </b-form-checkbox>
           </span>
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateShareBtn" v-on:mouseleave="hideTooltip('updateShareBtn')" v-b-tooltip.hover.html.top="{title: phrases.seeDetails}" @click.stop="openUpdateShareModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="updateShareBtn" v-on:mouseleave="hideTooltip('updateShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateShareModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>                
         </template>
         <template v-slot:cell(select)="row">
           <span v-on:mouseleave="hideTooltip()">
-            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top="{title: phrases.select}" :value="row.item" v-model="checkedShares">
+            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top.window="{title: phrases.select}" :value="row.item" v-model="checkedShares">
             </b-form-checkbox>
           </span>
         </template>
@@ -72,7 +72,7 @@
         <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteShareBtn" v-on:mouseleave="hideTooltip('deleteShareBtn')" v-b-tooltip.hover.top="{title: phrases.deleteShare}" @click.stop="openDeleteShareModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="deleteShareBtn" v-on:mouseleave="hideTooltip('deleteShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteShare}" @click.stop="openDeleteShareModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/delete.png">                                           
             </b-button>     
           </b-button-group>                

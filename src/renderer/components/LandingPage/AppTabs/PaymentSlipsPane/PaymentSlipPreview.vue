@@ -43,67 +43,67 @@
       </div>
     </b-form>
 
-    <b-tooltip target="incomeInput" triggers="hover" placement="top" ref="incomeInputTooltip" :disabled.sync="disableIncomeTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="incomeInput" triggers="hover" placement="top" ref="incomeInputTooltip" :disabled.sync="disableIncomeTooltip" v-on:hide.prevent>
       {{phrases.enterAmount}}
     </b-tooltip>
 
-    <b-tooltip target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip" v-on:hide.prevent>
       {{phrases.enterReason}}
     </b-tooltip>
 
-    <b-tooltip target="firstPartPosSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="firstPartPosSelect" triggers="hover" placement="top" ref="firstPartInputTooltip" :disabled.sync="disableFirstPartTooltip" v-on:hide.prevent>
       {{firstPartTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="firstPosInputWrapper" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="firstPosInputWrapper" triggers="hover" placement="top" ref="firstPosInputTooltip" :disabled.sync="disableFirstPosTooltip" v-on:hide.prevent>
       {{firstPosTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="firstIncomeInputWrapper" triggers="hover" placement="top" ref="firstIncomeInputTooltip" :disabled.sync="disableFirstIncomeTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="firstIncomeInputWrapper" triggers="hover" placement="top" ref="firstIncomeInputTooltip" :disabled.sync="disableFirstIncomeTooltip" v-on:hide.prevent>
       {{firstIncomeTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="secondPartPosSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="secondPartPosSelect" triggers="hover" placement="top" ref="secondPartInputTooltip" :disabled.sync="disableSecondPartTooltip" v-on:hide.prevent>
       {{secondPartTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="secondPosInputWrapper" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="secondPosInputWrapper" triggers="hover" placement="top" ref="secondPosInputTooltip" :disabled.sync="disableSecondPosTooltip" v-on:hide.prevent>
       {{secondPosTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="secondIncomeInputWrapper" triggers="hover" placement="top" ref="secondIncomeInputTooltip" :disabled.sync="disableSecondIncomeTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="secondIncomeInputWrapper" triggers="hover" placement="top" ref="secondIncomeInputTooltip" :disabled.sync="disableSecondIncomeTooltip" v-on:hide.prevent>
       {{secondIncomeTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="totalIncomeInputWrapper" triggers="hover" placement="top" ref="totalIncomeInputTooltip" :disabled.sync="disableTotalIncomeTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="totalIncomeInputWrapper" triggers="hover" placement="top" ref="totalIncomeInputTooltip" :disabled.sync="disableTotalIncomeTooltip" v-on:hide.prevent>
       {{totalIncomeTooltipText}}
     </b-tooltip>
 
-    <b-tooltip target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip" v-on:hide.prevent>
       {{phrases.pickDate}}
     </b-tooltip>
 
-    <b-tooltip target="annualReportPageInputWrapper" triggers="hover" placement="top" ref="annualReportPageInputTooltip" :disabled.sync="defaultPaymentSlipPreview" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="annualReportPageInputWrapper" triggers="hover" placement="top" ref="annualReportPageInputTooltip" :disabled.sync="defaultPaymentSlipPreview" v-on:hide.prevent>
       {{phrases.automaticallyGeneratedAfterSave}}
     </b-tooltip>
 
-    <b-tooltip target="ordinalInputWrapper" triggers="hover" placement="top" ref="ordinalInputTooltip" :disabled.sync="defaultPaymentSlipPreview" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="ordinalInputWrapper" triggers="hover" placement="top" ref="ordinalInputTooltip" :disabled.sync="defaultPaymentSlipPreview" v-on:hide.prevent>
       {{phrases.automaticallyGeneratedAfterSave}}
     </b-tooltip>
 
-    <b-tooltip target="paymentSlipDownloadBtn" triggers="hover" placement="top" ref="paymentSlipDownloadBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="paymentSlipDownloadBtn" triggers="hover" placement="top" ref="paymentSlipDownloadBtnTooltip" v-on:hide.prevent>
       {{phrases.download}}
     </b-tooltip>
 
-    <b-tooltip target="paymentSlipPrintBtn" triggers="hover" placement="top" ref="paymentSlipPrintBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="paymentSlipPrintBtn" triggers="hover" placement="top" ref="paymentSlipPrintBtnTooltip" v-on:hide.prevent>
       {{phrases.print}}
     </b-tooltip>
 
-    <b-tooltip target="paymentSlipSaveBtn" triggers="hover" placement="top" ref="paymentSlipSaveBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="paymentSlipSaveBtn" triggers="hover" placement="top" ref="paymentSlipSaveBtnTooltip" v-on:hide.prevent>
       {{phrases.save}}
     </b-tooltip>
 
-    <b-tooltip target="paymentSlipClearBtn" triggers="hover" placement="top" ref="paymentSlipClearBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="paymentSlipClearBtn" triggers="hover" placement="top" ref="paymentSlipClearBtnTooltip" v-on:hide.prevent>
       {{phrases.clear}}
     </b-tooltip>
 
@@ -866,7 +866,7 @@
     border-style: none;
     font-weight: bold;
     display: inline;
-    height: 15px;
+    height: 20px;
     margin: 0px;
     color: black;
   }
@@ -876,8 +876,8 @@
     display: inline;
     margin: 0px;
     padding: 0px;
-    height: 15px;
-    max-height: 15px;
+    height: 20px;
+    max-height: 20px;
     color: black;
   }
   #incomeInput {
@@ -1021,7 +1021,7 @@
 
     white-space: nowrap;
     width: 94px;
-    max-height: 15px;
+    max-height: 20px;
     padding: 0px;
     margin: 0px;
     font-weight: bold;
@@ -1039,7 +1039,7 @@
   .paymentSlipDatepickerWrapper {
     display: inline;
     white-space: normal;
-    height: 15px;
+    height: 20px;
     margin: 0px;
     padding: 0px;
     width: 95px;

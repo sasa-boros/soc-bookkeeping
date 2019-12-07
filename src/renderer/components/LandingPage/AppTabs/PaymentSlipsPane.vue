@@ -4,12 +4,12 @@
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addPaymentSlipBtn" v-on:mouseleave="hideTooltip('addPaymentSlipBtn')" v-b-tooltip.hover.top="{title: phrases.addPaymentSlip}" @click.stop="openCreatePaymentSlipModal" variant="light" class="btn-xs">
+          <b-btn id="addPaymentSlipBtn" v-on:mouseleave="hideTooltip('addPaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.addPaymentSlip}" @click.stop="openCreatePaymentSlipModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedPaymentSlipsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
+          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedPaymentSlipsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
@@ -49,20 +49,20 @@
       >
         <template v-slot:head(select)="row">
           <span v-on:mouseleave="hideTooltip()">
-            <b-form-checkbox  v-b-tooltip.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
+            <b-form-checkbox  v-b-tooltip.hover.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
             </b-form-checkbox>
           </span>
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.html.top="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>                
         </template>
         <template v-slot:cell(select)="row">
           <span v-on:mouseleave="hideTooltip()">
-            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top="{title: phrases.select}" :value="row.item" v-model="checkedPaymentSlips">
+            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top.window="{title: phrases.select}" :value="row.item" v-model="checkedPaymentSlips">
             </b-form-checkbox>
           </span>
         </template>
@@ -71,13 +71,13 @@
         <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/delete.png">                                           
             </b-button>     
           </b-button-group>               
           <span v-show="!isValid(row.item)">
             <img v-on:mouseleave="hideTooltip('invalid' + row.item._id)" :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
-            <b-tooltip :target="'invalid' + row.item._id" v-on:hide.prevent>
+            <b-tooltip boundary='window' :target="'invalid' + row.item._id" v-on:hide.prevent>
                 {{phrases.invalidPaymentSlip}}
             </b-tooltip>
           </span>

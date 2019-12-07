@@ -56,23 +56,23 @@
       </b-row>
     </b-form>
 
-    <b-tooltip target="yearInput" triggers="hover" placement="top" ref="yearInputTooltip" :disabled.sync="disableYearTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="yearInput" triggers="hover" placement="top" ref="yearInputTooltip" :disabled.sync="disableYearTooltip" v-on:hide.prevent>
       {{phrases.pickYear}}
     </b-tooltip>
 
-    <b-tooltip target="descriptionInput" triggers="hover" placement="top" ref="descriptionInputTooltip" :disabled.sync="disableNameTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="descriptionInput" triggers="hover" placement="top" ref="descriptionInputTooltip" :disabled.sync="disableNameTooltip" v-on:hide.prevent>
       {{phrases.enterDescription}}
     </b-tooltip>
 
-    <b-tooltip target="amountInput" triggers="hover" placement="top" ref="amountInputTooltip" :disabled.sync="disableValueTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="amountInput" triggers="hover" placement="top" ref="amountInputTooltip" :disabled.sync="disableValueTooltip" v-on:hide.prevent>
       {{phrases.enterAmount}}
     </b-tooltip>
 
-    <b-tooltip target="saveDebtBtn" triggers="hover" placement="top" ref="saveDebtBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="saveDebtBtn" triggers="hover" placement="top" ref="saveDebtBtnTooltip" v-on:hide.prevent>
       {{phrases.save}}
     </b-tooltip>
 
-    <b-tooltip target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
       {{phrases.clear}}
     </b-tooltip>
 
@@ -307,7 +307,7 @@
     font-family: "Times New Roman";
     font-size: 90%;
     letter-spacing: 95%;
-    height:15px;
+    height:20px;
     font-weight: bold;
     border-bottom: .5pt solid black !important;
     border-radius: 0 !important;
@@ -331,7 +331,7 @@
 
     white-space: nowrap;
     width:50px;
-    max-height: 15px;
+    max-height: 20px;
     padding: 0px;
     margin: 0px;
     font-weight: bold;
@@ -346,7 +346,7 @@
   .debtDatepickerWrapper {
     display: inline;
     white-space: normal;
-    height: 15px;
+    height: 20px;
     margin: 0px;
     padding: 0px;
     width: 95px;

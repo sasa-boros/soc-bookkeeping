@@ -16,7 +16,7 @@
             <span v-show="!arePaymentSlipsValid">
               &nbsp;
               <img id="invalidPsImg" v-on:mouseleave="hideTooltip('invalidPsImg')" src="~@/assets/invalid.png" class="invalidTabIcon">
-              <b-tooltip target="invalidPsImg">
+              <b-tooltip boundary='window' target="invalidPsImg">
                   {{phrases.invalidPaymentSlipsExist}}
               </b-tooltip>
             </span>
@@ -30,7 +30,7 @@
             <span v-show="!areReceiptsValid">
               &nbsp;
               <img id="invalidRImg" v-on:mouseleave="hideTooltip('invalidRImg')" src="~@/assets/invalid.png" class="invalidTabIcon">
-              <b-tooltip target="invalidRImg">
+              <b-tooltip boundary='window' target="invalidRImg">
                   {{phrases.invalidReceiptsExist}}
               </b-tooltip>
             </span>

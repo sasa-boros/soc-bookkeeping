@@ -4,12 +4,12 @@
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addReceiptBtn" v-on:mouseleave="hideTooltip('addReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.addReceipt}" @click.stop="openCreateReceiptModal" variant="light" class="btn-xs">
+          <b-btn id="addReceiptBtn" v-on:mouseleave="hideTooltip('addReceiptBtn')" v-b-tooltip.hover.top.window="{title: phrases.addReceipt}" @click.stop="openCreateReceiptModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group>
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedReceiptsModal" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" variant="light" class="btn-xs">
+          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedReceiptsModal" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group> 
@@ -55,14 +55,14 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateReceiptBtn" v-on:mouseleave="hideTooltip('updateReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.seeDetails}" @click.stop="openUpdateReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="updateReceiptBtn" v-on:mouseleave="hideTooltip('updateReceiptBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>                
         </template>
         <template v-slot:cell(select)="row">
           <span v-on:mouseleave="hideTooltip()">
-            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top="{title: phrases.select}" :value="row.item" v-model="checkedReceipts">
+            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top.window="{title: phrases.select}" :value="row.item" v-model="checkedReceipts">
             </b-form-checkbox>
           </span>
         </template>
@@ -71,13 +71,13 @@
         <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteReceiptBtn" v-on:mouseleave="hideTooltip('deleteReceiptBtn')" v-b-tooltip.hover.top="{title: phrases.deleteReceipt}" @click.stop="openDeleteReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="deleteReceiptBtn" v-on:mouseleave="hideTooltip('deleteReceiptBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteReceipt}" @click.stop="openDeleteReceiptModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/delete.png">                                           
             </b-button>     
           </b-button-group>                
           <span v-show="!isValid(row.item)">
             <img v-on:mouseleave="hideTooltip('invalid' + row.item._id)" :id="'invalid' + row.item._id" src="~@/assets/invalid.png" class="invalidIcon">
-            <b-tooltip :target="'invalid' + row.item._id" v-on:hide.prevent>
+            <b-tooltip boundary='window' :target="'invalid' + row.item._id" v-on:hide.prevent>
                 {{phrases.invalidReceipt}}
             </b-tooltip>
           </span>

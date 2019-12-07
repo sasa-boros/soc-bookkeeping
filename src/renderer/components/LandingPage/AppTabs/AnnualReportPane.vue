@@ -101,11 +101,11 @@
         <annual-report-preview :year="year" :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
       </b-modal>
 
-      <b-tooltip target="annualReportBtn" triggers="hover" placement="top" ref="annualReportBtnTooltip" v-on:hide.prevent>
+      <b-tooltip boundary='window' target="annualReportBtn" triggers="hover" placement="top" ref="annualReportBtnTooltip" v-on:hide.prevent>
         {{phrases.showAnnualReport}}
       </b-tooltip>
 
-      <b-tooltip target="annualReportDataSaveBtn" triggers="hover" placement="top" ref="annualReportDataSaveBtnTooltip" v-on:hide.prevent>
+      <b-tooltip boundary='window' target="annualReportDataSaveBtn" triggers="hover" placement="top" ref="annualReportDataSaveBtnTooltip" v-on:hide.prevent>
         {{phrases.save}}
       </b-tooltip>
 
@@ -345,7 +345,7 @@ input {
   font-family: "Times New Roman";
   font-size: 90%;
   letter-spacing: 95%;
-  height:15px;
+  height:20px;
   font-weight: bold;
   border-bottom: .5pt solid black !important;
   border-radius: 0 !important;
@@ -445,7 +445,6 @@ input {
   font-family: "Times New Roman";
   font-size: 90%;
   letter-spacing: 95%;
-  height:30px;
   font-weight: bold;
   border-bottom:none !important;
   border-radius: 0 !important;

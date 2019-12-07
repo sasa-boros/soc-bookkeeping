@@ -86,35 +86,35 @@
       </b-row>
     </b-form>
 
-    <b-tooltip target="yearInput" triggers="hover" placement="top" ref="yearInputTooltip" :disabled.sync="disableYearTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="yearInput" triggers="hover" placement="top" ref="yearInputTooltip" :disabled.sync="disableYearTooltip" v-on:hide.prevent>
       {{phrases.pickYear}}
     </b-tooltip>
 
-    <b-tooltip target="accountInput" triggers="hover" placement="top" ref="accountInputTooltip" :disabled.sync="disableAccountTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="accountInput" triggers="hover" placement="top" ref="accountInputTooltip" :disabled.sync="disableAccountTooltip" v-on:hide.prevent>
       {{phrases.enterAccount}}
     </b-tooltip>
 
-    <b-tooltip target="savingEntityInput" triggers="hover" placement="top" ref="savingEntityInputTooltip" :disabled.sync="disableSavingEntityTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="savingEntityInput" triggers="hover" placement="top" ref="savingEntityInputTooltip" :disabled.sync="disableSavingEntityTooltip" v-on:hide.prevent>
       {{phrases.enterSavingEntity}}
     </b-tooltip>
 
-    <b-tooltip target="amountInput" triggers="hover" placement="top" ref="amountInputTooltip" :disabled.sync="disableAmountTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="amountInput" triggers="hover" placement="top" ref="amountInputTooltip" :disabled.sync="disableAmountTooltip" v-on:hide.prevent>
       {{phrases.enterAmount}}
     </b-tooltip>
 
-    <b-tooltip target="amountDepositedInput" triggers="hover" placement="top" ref="amountDepositedInputTooltip" :disabled.sync="disableAmountDepositedTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="amountDepositedInput" triggers="hover" placement="top" ref="amountDepositedInputTooltip" :disabled.sync="disableAmountDepositedTooltip" v-on:hide.prevent>
       {{phrases.enterAmount}}
     </b-tooltip>
 
-    <b-tooltip target="amountWithdrawnInput" triggers="hover" placement="top" ref="amountWithdrawnInputTooltip" :disabled.sync="disableAmountWithdrawnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="amountWithdrawnInput" triggers="hover" placement="top" ref="amountWithdrawnInputTooltip" :disabled.sync="disableAmountWithdrawnTooltip" v-on:hide.prevent>
       {{phrases.enterAmount}}
     </b-tooltip>
 
-    <b-tooltip target="saveSavingBtn" triggers="hover" placement="top" ref="saveSavingBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="saveSavingBtn" triggers="hover" placement="top" ref="saveSavingBtnTooltip" v-on:hide.prevent>
       {{phrases.save}}
     </b-tooltip>
 
-    <b-tooltip target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
       {{phrases.clear}}
     </b-tooltip>
 
@@ -413,7 +413,7 @@
     font-family: "Times New Roman";
     font-size: 90%;
     letter-spacing: 95%;
-    height:15px;
+    height:20px;
     font-weight: bold;
     border-bottom: .5pt solid black !important;
     border-radius: 0 !important;
@@ -449,7 +449,7 @@
 
     white-space: nowrap;
     width:50px;
-    max-height: 15px;
+    max-height: 20px;
     padding: 0px;
     margin: 0px;
     font-weight: bold;
@@ -464,7 +464,7 @@
   .savingDatepickerWrapper {
     display: inline;
     white-space: normal;
-    height: 15px;
+    height: 20px;
     margin: 0px;
     padding: 0px;
     width: 95px;

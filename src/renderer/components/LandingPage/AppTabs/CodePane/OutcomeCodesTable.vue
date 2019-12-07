@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-button-group class="float-left">
-      <b-button id="createOutcomeCodeBtn" v-on:mouseleave="hideTooltip('createOutcomeCodeBtn')" v-b-tooltip.hover.top="{title: phrases.createOutcomeCode}" v-on:click="openCreateOutcomeCodeModal()" variant="light" class="btn-xs">
+      <b-button id="createOutcomeCodeBtn" v-on:mouseleave="hideTooltip('createOutcomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.createOutcomeCode}" v-on:click="openCreateOutcomeCodeModal()" variant="light" class="btn-xs">
         <img src="~@/assets/add.png">
       </b-button>
     </b-button-group>
@@ -21,7 +21,7 @@
               >
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateOutcomeCodeBtn" v-on:mouseleave="hideTooltip('updateOutcomeCodeBtn')" v-b-tooltip.hover.top="{title: phrases.seeDetails}" v-on:click="openCreateOutcomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="updateOutcomeCodeBtn" v-on:mouseleave="hideTooltip('updateOutcomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" v-on:click="openCreateOutcomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>
@@ -37,7 +37,7 @@
         </template>
         <template v-slot:cell(remove)="row">
           <b-button-group>
-            <b-button id="deleteOutcomeCodeBtn" v-on:mouseleave="hideTooltip('deleteOutcomeCodeBtn')" v-b-tooltip.hover.top="{title: phrases.deleteOutcomeCod}" v-on:click="openDeleteOutcomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="deleteOutcomeCodeBtn" v-on:mouseleave="hideTooltip('deleteOutcomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteOutcomeCode}" v-on:click="openDeleteOutcomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
                 <img src="~@/assets/delete.png">
             </b-button>
           </b-button-group>

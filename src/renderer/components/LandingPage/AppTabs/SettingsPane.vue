@@ -59,23 +59,23 @@
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
 
-    <b-tooltip target="commonSaveBtn" triggers="hover" placement="top" ref="commonSaveBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="commonSaveBtn" triggers="hover" placement="top" ref="commonSaveBtnTooltip" v-on:hide.prevent>
         {{phrases.save}}
       </b-tooltip>
       
-    <b-tooltip target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip" v-on:hide.prevent>
       {{phrases.adaptPaymentSlips}}
     </b-tooltip>
 
-    <b-tooltip target="defaultReceiptBtn" triggers="hover" placement="top" ref="defaultReceiptBtnTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="defaultReceiptBtn" triggers="hover" placement="top" ref="defaultReceiptBtnTooltip" v-on:hide.prevent>
       {{phrases.adaptReceipts}}
     </b-tooltip>
 
-    <b-tooltip target="increaseZoomLevelButton" triggers="hover" placement="top" ref="increaseZoomLevelButtonTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="increaseZoomLevelButton" triggers="hover" placement="top" ref="increaseZoomLevelButtonTooltip" v-on:hide.prevent>
       {{phrases.increase}}
     </b-tooltip>
 
-    <b-tooltip target="decreaseZoomLevelButton" triggers="hover" placement="top" ref="decreaseZoomLevelButtonTooltip" v-on:hide.prevent>
+    <b-tooltip boundary='window' target="decreaseZoomLevelButton" triggers="hover" placement="top" ref="decreaseZoomLevelButtonTooltip" v-on:hide.prevent>
       {{phrases.decrease}}
     </b-tooltip>
   </b-container>
@@ -229,7 +229,7 @@
     font-family: "Times New Roman";
     font-size: 90%;
     letter-spacing: 95%;
-    height:15px;
+    height:20px;
     font-weight: bold;
     border-bottom: .5pt solid black !important;
     border-radius: 0 !important;
@@ -256,7 +256,7 @@
     border-style: none;
     font-weight: bold;
     display: inline;
-    height: 15px;
+    height: 20px;
     margin: 0px;
     color: black;
   }

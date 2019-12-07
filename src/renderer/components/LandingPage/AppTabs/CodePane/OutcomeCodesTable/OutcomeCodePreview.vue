@@ -56,19 +56,19 @@
       </b-row>
     </b-form>
 
-      <b-tooltip target="saveOutcomeCodeBtn" triggers="hover" placement="top" ref="saveOutcomeCodeBtnTooltip" v-on:hide.prevent>
+      <b-tooltip boundary='window' target="saveOutcomeCodeBtn" triggers="hover" placement="top" ref="saveOutcomeCodeBtnTooltip" v-on:hide.prevent>
         {{phrases.save}}
       </b-tooltip>
 
-      <b-tooltip target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
+      <b-tooltip boundary='window' target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
         {{phrases.clear}}
       </b-tooltip>
 
-      <b-tooltip target="partitionInput" triggers="hover" placement="top" ref="partitionInputTooltip" :disabled.sync="disablePartitionTooltip" v-on:hide.prevent>
+      <b-tooltip boundary='window' target="partitionInput" triggers="hover" placement="top" ref="partitionInputTooltip" :disabled.sync="disablePartitionTooltip" v-on:hide.prevent>
         {{partitionTooltipText}}
       </b-tooltip>
 
-      <b-tooltip target="positionInput" triggers="hover" placement="top" ref="positionInputTooltip" :disabled.sync="disablePositionTooltip" v-on:hide.prevent>
+      <b-tooltip boundary='window' target="positionInput" triggers="hover" placement="top" ref="positionInputTooltip" :disabled.sync="disablePositionTooltip" v-on:hide.prevent>
         {{positionTooltipText}}
       </b-tooltip>
 
@@ -303,7 +303,7 @@ input {
   font-family: "Times New Roman";
   font-size: 90%;
   letter-spacing: 95%;
-  height:15px;
+  height:20px;
   font-weight: bold;
   border-bottom: .5pt solid black !important;
   border-radius: 0 !important;

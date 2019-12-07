@@ -4,12 +4,12 @@
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addDebtButton" v-on:mouseleave="hideTooltip('addDebtButton')" v-b-tooltip.hover.top="{title: phrases.addDebt}" @click.stop="openCreateDebtModal" variant="light" class="btn-xs">
+          <b-btn id="addDebtButton" v-on:mouseleave="hideTooltip('addDebtButton')" v-b-tooltip.hover.top.window="{title: phrases.addDebt}" @click.stop="openCreateDebtModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedDebtsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
+          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedDebtsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
@@ -48,20 +48,20 @@
       >
         <template v-slot:head(select)="row">
           <span v-on:mouseleave="hideTooltip()">
-            <b-form-checkbox  v-b-tooltip.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
+            <b-form-checkbox  v-b-tooltip.hover.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
             </b-form-checkbox>
           </span>
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateDebtBtn" v-on:mouseleave="hideTooltip('updateDebtBtn')" v-b-tooltip.hover.html.top="{title: phrases.seeDetails}" @click.stop="openUpdateDebtModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="updateDebtBtn" v-on:mouseleave="hideTooltip('updateDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateDebtModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>                
         </template>
         <template v-slot:cell(select)="row">
           <span v-on:mouseleave="hideTooltip()">
-            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top="{title: phrases.select}" :value="row.item" v-model="checkedDebts">
+            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top.window="{title: phrases.select}" :value="row.item" v-model="checkedDebts">
             </b-form-checkbox>
           </span>
         </template>
@@ -70,7 +70,7 @@
         <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteDebtBtn" v-on:mouseleave="hideTooltip('deleteDebtBtn')" v-b-tooltip.hover.top="{title: phrases.deleteDebt}" @click.stop="openDeleteDebtModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="deleteDebtBtn" v-on:mouseleave="hideTooltip('deleteDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteDebt}" @click.stop="openDeleteDebtModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/delete.png">                                           
             </b-button>     
           </b-button-group>                

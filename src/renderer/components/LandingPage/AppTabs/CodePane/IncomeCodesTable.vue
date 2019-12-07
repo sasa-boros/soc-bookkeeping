@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
      <b-button-group class="float-left">
-      <b-button v-on:mouseleave="hideTooltip('addIncomeCodeBtn')" id="addIncomeCodeBtn" v-b-tooltip.hover.top="{title: phrases.createIncomeCode}" v-on:click="openCreateIncomeCodeModal()" variant="light" class="btn-xs">
+      <b-button v-on:mouseleave="hideTooltip('addIncomeCodeBtn')" id="addIncomeCodeBtn" v-b-tooltip.hover.top.window="{title: phrases.createIncomeCode}" v-on:click="openCreateIncomeCodeModal()" variant="light" class="btn-xs">
         <img src="~@/assets/add.png">
       </b-button>
      </b-button-group>
@@ -21,7 +21,7 @@
               >
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateIncomeCodeBtn" v-on:mouseleave="hideTooltip('updateIncomeCodeBtn')" v-b-tooltip.hover.top="{title: phrases.seeDetails}" v-on:click="openCreateIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="updateIncomeCodeBtn" v-on:mouseleave="hideTooltip('updateIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" v-on:click="openCreateIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
               <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>
@@ -37,7 +37,7 @@
         </template>
         <template v-slot:cell(remove)="row">
            <b-button-group>
-              <b-button id="deleteIncomeCodeBtn" v-on:mouseleave="hideTooltip('deleteIncomeCodeBtn')" v-b-tooltip.hover.top="{title: phrases.deleteIncomeCode}" v-on:click="openDeleteIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+              <b-button id="deleteIncomeCodeBtn" v-on:mouseleave="hideTooltip('deleteIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteIncomeCode}" v-on:click="openDeleteIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
                   <img src="~@/assets/delete.png">
               </b-button>
            </b-button-group>

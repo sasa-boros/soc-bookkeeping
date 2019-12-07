@@ -55,16 +55,16 @@
         <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
         </div>
       </b-row>
-      <b-tooltip ref="annualReportPrintDropdownTooltip" triggers="hover" target="annualReportPrintDropdown" v-on:hide.prevent>
+      <b-tooltip boundary='window' ref="annualReportPrintDropdownTooltip" triggers="hover" target="annualReportPrintDropdown" v-on:hide.prevent>
         {{phrases.print}}
       </b-tooltip>
-      <b-tooltip ref="annualReportDownloadDropdownTooltip" triggers="hover" target="annualReportDownloadDropdown" v-on:hide.prevent>
+      <b-tooltip boundary='window' ref="annualReportDownloadDropdownTooltip" triggers="hover" target="annualReportDownloadDropdown" v-on:hide.prevent>
         {{phrases.download}}
       </b-tooltip>
-      <b-tooltip ref="decrementPageBtnTooltip" triggers="hover" target="decrementPageBtn" v-on:hide.prevent>
+      <b-tooltip boundary='window' ref="decrementPageBtnTooltip" triggers="hover" target="decrementPageBtn" v-on:hide.prevent>
         {{phrases.previousPage}}
       </b-tooltip>
-      <b-tooltip ref="incrementPageBtnTooltip" triggers="hover" target="incrementPageBtn" v-on:hide.prevent>
+      <b-tooltip boundary='window' ref="incrementPageBtnTooltip" triggers="hover" target="incrementPageBtn" v-on:hide.prevent>
         {{phrases.nextPage}}
       </b-tooltip>
       
