@@ -5,7 +5,6 @@ const { app, BrowserWindow } = require('electron')
 const Datastore = require('nedb')
 const path = require('path')
 const config = require('./config')
-const settingsService = require('./service/settingsService')
 
 // Connecting to neDB
 var db = {}
@@ -24,11 +23,6 @@ db.outcomeCodes = new Datastore({ filename: path.join(app.getPath('userData'), c
 db.settings = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.settings), autoload: true})
 global.db = db
 
-// Loading store
-require('../renderer/store')
-// Loading ipc main router
-require('./ipcRouter')
-
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -36,6 +30,13 @@ require('./ipcRouter')
 if (process.env.NODE_ENV !== 'development') {
   global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 } 
+
+// Loading store
+require('../renderer/store')
+// Loading ipc main router
+require('./ipcRouter')
+
+const settingsService = require('./service/settingsService')
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
@@ -54,7 +55,6 @@ async function createWindow () {
       zoomFactor: settings && settings.zoomLevel ? settings.zoomLevel : 1.5
     }
   })
-
   mainWindow.maximize()
   mainWindow.loadURL(winURL)
   
