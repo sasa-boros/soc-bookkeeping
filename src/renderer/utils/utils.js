@@ -26,7 +26,7 @@ const largeAmountNumberOptions = {
 }
 
 const partitionPositionNumberOptions = {
-  minimumValue: 1, 
+  minimumValue: 0, 
   maximumValue: 99,
   decimalPlaces: 0,
   digitGroupSeparator: '',

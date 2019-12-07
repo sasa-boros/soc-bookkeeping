@@ -100,8 +100,8 @@
     </b-row>
     <b-row>
       <b-col>
-        <p align="center"><b>daxon.tech@outlook.com</b></p>
-        <p align="center"><b>+381642750071</b></p>
+        <p align="center">daxon.tech@outlook.com</p>
+        <p align="center">+381642750071</p>
       </b-col>
     </b-row>
     <hr>

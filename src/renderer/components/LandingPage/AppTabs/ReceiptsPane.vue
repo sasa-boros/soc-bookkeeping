@@ -48,8 +48,8 @@
               v-on:head-clicked="unsort"
       >
         <template v-slot:head(select)="row">
-          <span v-on:mouseleave="hideTooltip()">
-            <b-form-checkbox v-b-tooltip.hover.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
+          <span>
+            <b-form-checkbox v-on:change="toggleCheckAll" v-model="checkAll">
             </b-form-checkbox>
           </span>
         </template>

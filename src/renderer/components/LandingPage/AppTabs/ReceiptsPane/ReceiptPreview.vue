@@ -650,6 +650,9 @@
         }
       },
       limitInputPerSize(evt) {
+        if (evt.key == 'Enter') {
+          return
+        }
         const highlightedText = window.getSelection().toString()
         if (evt.target.scrollWidth > evt.target.clientWidth && (!highlightedText || highlightedText == '')) {
           evt.preventDefault()
