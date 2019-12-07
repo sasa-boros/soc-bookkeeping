@@ -375,10 +375,9 @@ function populateIncomePage (annualReport, incomePage, incomePageTemplate, annua
   var col = 'D';
   // income codes
   annualReport.incomeCodes.forEach(ic => {
-    let incomeCodeText = asRoman(ic.partition) + '/' + ic.position;
-    incomePageContext[col+'6'] = incomeCodeText;
+    incomePageContext[col+'6'] = asRoman(ic.partition) + '/' + ic.position;
     incomePageContext[col+'7'] = ic.description;
-    colsPerIncomeCodes[incomeCodeText] = col;
+    colsPerIncomeCodes[ic.partition + '/' + ic.position] = col;
     col = String.fromCharCode(col.charCodeAt() + 1);
   });
   var row = 14;
@@ -430,10 +429,9 @@ function populateOutcomePage (annualReport, outcomePage, outcomePageTemplate, an
   var col = 'D';
    // outcome codes
    annualReport.outcomeCodes.forEach(oc => {
-    let outcomeCodeText = asRoman(oc.partition) + '/' + oc.position;
-    outcomePageContext[col+'6'] = outcomeCodeText;
+    outcomePageContext[col+'6'] = asRoman(oc.partition) + '/' + oc.position;
     outcomePageContext[col+'7'] = oc.description;
-    colsPerOutcomeCodes[outcomeCodeText] = col;
+    colsPerOutcomeCodes[oc.partition + '/' + oc.position] = col;
     col = String.fromCharCode(col.charCodeAt() + 1);
   });
   var row = 14;
@@ -478,10 +476,9 @@ function populateTotalIncomePage(annualReport, totalIncomePageTemplate, annualRe
   var colsPerIncomeCodes = {}
   var col = 'B';
   annualReport.incomeCodes.forEach(ic => {
-    let incomeCodeText = asRoman(ic.partition) + '/' + ic.position;
-    totalIncomePageContext[col+'5'] = incomeCodeText;
+    totalIncomePageContext[col+'5'] = asRoman(ic.partition) + '/' + ic.position;
     totalIncomePageContext[col+'6'] = ic.description;
-    colsPerIncomeCodes[incomeCodeText] = col;
+    colsPerIncomeCodes[ic.partition + '/' + ic.position] = col;
     col = String.fromCharCode(col.charCodeAt() + 1);
   });
   var row = 8;
@@ -518,10 +515,9 @@ function populateTotalOutcomePage(annualReport, totalOutcomePageTemplate, annual
   var colsPerOutcomeCodes = {}
   var col = 'B';
   annualReport.outcomeCodes.forEach(oc => {
-    let outcomeCodeText = asRoman(oc.partition) + '/' + oc.position;
-    totalOutcomePageContext[col+'5'] = outcomeCodeText;
+    totalOutcomePageContext[col+'5'] = asRoman(oc.partition) + '/' + oc.position;
     totalOutcomePageContext[col+'6'] = oc.description;
-    colsPerOutcomeCodes[outcomeCodeText] = col;
+    colsPerOutcomeCodes[oc.partition + '/' + oc.position] = col;
     col = String.fromCharCode(col.charCodeAt() + 1);
   });
   var row = 8;
