@@ -77,6 +77,8 @@ h1 {
 }
 
 .nav-link {
+  padding-right: 10px !important;
+  padding-left: 10px !important;
   color:#514A4A !important;
 }
 .table tbody tr:hover {

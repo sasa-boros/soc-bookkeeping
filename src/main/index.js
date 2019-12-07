@@ -52,7 +52,7 @@ async function createWindow () {
     huseContentSize: true,
     backgroundColor: 'white',
     webPreferences: {
-      zoomFactor: settings && settings.zoomLevel ? settings.zoomLevel : 1.5
+      zoomFactor: settings && settings.zoomLevel ? settings.zoomLevel : 1.3
     }
   })
   mainWindow.maximize()

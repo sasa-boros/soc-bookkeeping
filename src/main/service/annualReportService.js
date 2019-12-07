@@ -29,8 +29,11 @@ const AutoNumeric = require('autonumeric')
 const { degrees, PDFDocument } = require('pdf-lib')
 
 function asRoman(num) {
-  if (typeof num !== 'number') 
-    return false; 
+  if (num == NaN || num == null || num == undefined) 
+    return null;
+  if (num <= 0) {
+    return num
+  } 
   
   var digits = String(+num).split(""),
   key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",

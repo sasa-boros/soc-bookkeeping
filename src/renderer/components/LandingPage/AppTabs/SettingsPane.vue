@@ -107,7 +107,7 @@
         },
         churchMunicipality: null,
         churchTown: null,
-        zoomLevel: Big(1.5),
+        zoomLevel: Big(1.3),
         commonDataSaveTimeout: null,
         disableCommonSaveBtn: true
       }
@@ -121,7 +121,7 @@
         if(!this.zoomLevel) {
           return null;
         }
-        var formatedZoomLevel = this.zoomLevel.times(100).minus(50)
+        var formatedZoomLevel = this.zoomLevel.times(100).minus(30)
         return formatedZoomLevel.toString() + ' %'
       }
     },
@@ -157,7 +157,7 @@
         const self = this
         settingsController.getSettings().then(function (res) {
           if (!res.err) {
-            self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.5)
+            self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.3)
             self.$emit('updateZoomLevel', parseFloat(self.zoomLevel))
           } else {
             self.openErrorModal(res.err)
@@ -190,13 +190,13 @@
         this.$root.$emit('bv::show::modal', 'default-receipt-modal')
       },
       increaseZoomLevel () {
-        if(!this.zoomLevel.gte(2.0)) {
+        if(!this.zoomLevel.gte(1.8)) {
           this.zoomLevel = this.zoomLevel.plus(0.1)
           this.updateZoomLevel()
         }
       },
       decreaseZoomLevel () {
-        if(!this.zoomLevel.lte(1.0)) {
+        if(!this.zoomLevel.lte(0.8)) {
           this.zoomLevel = this.zoomLevel.minus(0.1)
           this.updateZoomLevel()
         }
