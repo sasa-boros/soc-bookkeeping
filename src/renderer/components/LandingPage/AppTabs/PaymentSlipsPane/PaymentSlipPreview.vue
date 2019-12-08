@@ -80,8 +80,32 @@
       {{thirdPartTooltipText}}
     </b-tooltip>
 
+    <b-tooltip boundary='window' target="thirdPosInputWrapper" triggers="hover" placement="top" ref="thirdPosInputTooltip" :disabled.sync="disableThirdPosTooltip" v-on:hide.prevent>
+      {{thirdPosTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="thirdIncomeInputWrapper" triggers="hover" placement="top" ref="thirdIncomeInputTooltip" :disabled.sync="disableThirdIncomeTooltip" v-on:hide.prevent>
+      {{thirdIncomeTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fourthPartPosSelect" triggers="hover" placement="top" ref="fourthPartInputTooltip" :disabled.sync="disableFourthPartTooltip" v-on:hide.prevent>
+      {{fourthPartTooltipText}}
+    </b-tooltip>
+
     <b-tooltip boundary='window' target="fourthPosInputWrapper" triggers="hover" placement="top" ref="fourthPosInputTooltip" :disabled.sync="disableFourthPosTooltip" v-on:hide.prevent>
       {{fourthPosTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fourthIncomeInputWrapper" triggers="hover" placement="top" ref="fourthIncomeInputTooltip" :disabled.sync="disableFourthIncomeTooltip" v-on:hide.prevent>
+      {{fourthIncomeTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fifthPartPosSelect" triggers="hover" placement="top" ref="fifthPartInputTooltip" :disabled.sync="disableFifthPartTooltip" v-on:hide.prevent>
+      {{fifthPartTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fifthPosInputWrapper" triggers="hover" placement="top" ref="fifthPosInputTooltip" :disabled.sync="disableFifthPosTooltip" v-on:hide.prevent>
+      {{fifthPosTooltipText}}
     </b-tooltip>
 
     <b-tooltip boundary='window' target="fifthIncomeInputWrapper" triggers="hover" placement="top" ref="fifthIncomeInputTooltip" :disabled.sync="disableFifthIncomeTooltip" v-on:hide.prevent>
@@ -1010,9 +1034,9 @@
         } else {
           this.form.firstPartition = null
           this.form.firstPosition = null
-          this.form.firstOutcome = null
-          if (this.firstOutcomeInputAutonumeric) {
-            this.firstOutcomeInputAutonumeric.clear()
+          this.form.firstIncome = null
+          if (this.firstIncomeInputAutonumeric) {
+            this.firstIncomeInputAutonumeric.clear()
           }
         }
       },
@@ -1024,9 +1048,9 @@
         } else {
           this.form.secondPartition = null
           this.form.secondPosition = null
-          this.form.secondOutcome = null
-          if (this.secondOutcomeInputAutonumeric) {
-            this.secondOutcomeInputAutonumeric.clear()
+          this.form.secondIncome = null
+          if (this.secondIncomeInputAutonumeric) {
+            this.secondIncomeInputAutonumeric.clear()
           }
         }
       },
@@ -1038,9 +1062,9 @@
         } else {
           this.form.thirdPartition = null
           this.form.thirdPosition = null
-          this.form.thirdOutcome = null
-          if (this.thirdOutcomeInputAutonumeric) {
-            this.thirdOutcomeInputAutonumeric.clear()
+          this.form.thirdIncome = null
+          if (this.thirdIncomeInputAutonumeric) {
+            this.thirdIncomeInputAutonumeric.clear()
           }
         }
       },
@@ -1052,9 +1076,9 @@
         } else {
           this.form.fourthPartition = null
           this.form.fourthPosition = null
-          this.form.fourthOutcome = null
-          if (this.fourthOutcomeInputAutonumeric) {
-            this.fourthOutcomeInputAutonumeric.clear()
+          this.form.fourthIncome = null
+          if (this.fourthIncomeInputAutonumeric) {
+            this.fourthIncomeInputAutonumeric.clear()
           }
         }
       },
@@ -1066,9 +1090,9 @@
         } else {
           this.form.fifthPartition = null
           this.form.fifthPosition = null
-          this.form.fifthOutcome = null
-          if (this.fifthOutcomeInputAutonumeric) {
-            this.fifthOutcomeInputAutonumeric.clear()
+          this.form.fifthIncome = null
+          if (this.fifthIncomeInputAutonumeric) {
+            this.fifthIncomeInputAutonumeric.clear()
           }
         }
       },
