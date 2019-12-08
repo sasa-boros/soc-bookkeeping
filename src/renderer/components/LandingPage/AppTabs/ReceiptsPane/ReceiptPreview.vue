@@ -6,21 +6,22 @@
       </b-button>
       <div class="receipt-preview-text">
         <h1> ПРИЗНАНИЦА </h1>
-        <br/>На дин. <b-form-input :disabled="defaultReceiptPreview" id="outcomeInput" ref="outcomeInput" v-on:mouseleave="disableOutcomeTooltip ? null : hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" type="text" :autofocus="!receiptPreview"></b-form-input> и словима <b-form-input disabled class="input-small" id="outcomeAsText1" v-model="generatedOutcomeTextLine1"></b-form-input>
+        <br/>         На динара <b-form-input :disabled="defaultReceiptPreview" id="outcomeInput" ref="outcomeInput" v-on:mouseleave="disableOutcomeTooltip ? null : hideTooltip('outcomeInput')" v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': shouldValidate && missingOutcome }" type="text" :autofocus="!receiptPreview"></b-form-input> и словима <b-form-input disabled class="input-small" id="outcomeAsText1" v-model="generatedOutcomeTextLine1"></b-form-input>
         <br/><b-form-input disabled class="input-small" id="outcomeAsText2" v-model="generatedOutcomeTextLine2"></b-form-input>
-        <br/>динара, примљених из благајне Српске православне црквене општине <b-form-input id="churchMunicipalityInput" v-on:keypress="limitInputPerSize" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input>
-        <br/>у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :disabled="defaultReceiptPreview" v-on:keypress="limitInputPerSize" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" v-on:blur.native="preDatepickerOnBlur"></b-form-input>
-        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview }" :language="calendarLanguages.srCYRL" :disabled="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker> год.</span>                                                                                                                 Примио,
-у <b-form-input id="townPayedInput" v-on:keypress="limitInputPerSize" v-model="form.townPayed" class="input-small" type="text" v-on:blur.native="postDatepickerOnBlur"></b-form-input>&nbsp;                            <b-form-input v-on:keypress="limitInputPerSize" :disabled="defaultReceiptPreview" v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input>
-        <br/>                                                                                                         Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
-                                                                                           <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultReceiptPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstOutcomeTooltip ? null : hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
-                Исплатио благајник,                                        <span class="partText">Парт. </span><b-form-input id="secondPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondOutcomeTooltip ? null : hideTooltip('secondOutcomeInputWrapper')" id="secondOutcomeInputWrapper"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
-                                                           
-      <br/><b-form-input disabled class="input-small" id="payedInput" type="text"></b-form-input>                                                                              Свега дин. <span v-on:mouseleave="disableTotalOutcomeTooltip ? null : hideTooltip('totalOutcomeInputWrapper')" id="totalOutcomeInputWrapper"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalOutcomeTooltip }" type="text"></b-form-input></span>
-                                                                                                                                                
-                                                                                                                                                Наредбодавац
-                                                                                                                                  Председник црквене општине,
-Књижено у Дн. бл. стр. <span v-on:mouseleave="hideTooltip('annualReportPageInputWrapper')" id="annualReportPageInputWrapper"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span> р. бр. <span v-on:mouseleave="hideTooltip('ordinalInputWrapper')" id="ordinalInputWrapper"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span>.                                        <b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input>
+        <br/>примљених из благајне Српског православног манастира
+у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :disabled="defaultReceiptPreview" v-on:keypress="limitInputPerSize" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text"></b-form-input>
+                                                                                                                                         Примио,
+                        Исплатио благајник,                                              <b-form-input v-on:keypress="limitInputPerSize" :disabled="defaultReceiptPreview" v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input>
+<br><b-form-input disabled class="input-small" id="payedInput" type="text"></b-form-input>&nbsp;                       Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.                      
+у <b-form-input id="townPayedInput" v-on:keypress="limitInputPerSize" v-model="form.townPayed" class="input-small" type="text"></b-form-input>&nbsp;         <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultReceiptPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstOutcomeTooltip ? null : hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
+<span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview }" :language="calendarLanguages.srCYRL" :disabled="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker>год.</span>&nbsp;                                                             <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="secondPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondOutcomeTooltip ? null : hideTooltip('secondOutcomeInputWrapper')" id="secondOutcomeInputWrapper"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
+&nbsp;                                                                                               <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="thirdPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedThirdPart" v-bind:class="{ 'is-invalid': !disableThirdPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableThirdPartTooltip ? null : hideTooltip('thirdPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="thirdPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedThirdPartPos(option.value)" v-for="(option, index) in thirdPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdPosTooltip ? null : hideTooltip('thirdPosInputWrapper')" id="thirdPosInputWrapper"><b-form-input id="thirdPosInput" v-model="form.thirdPosition" v-bind:class="{ 'is-invalid': !disableThirdPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdOutcomeTooltip ? null : hideTooltip('thirdOutcomeInputWrapper')" id="thirdOutcomeInputWrapper"><b-form-input v-model="form.thirdOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableThirdOutcomeTooltip }" id="thirdOutcomeInput" :disabled="missingThirdPart" type="text"></b-form-input></span>
+&nbsp;                                                                                               <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fourthPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedFourthPart" v-bind:class="{ 'is-invalid': !disableFourthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFourthPartTooltip ? null : hideTooltip('fourthPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="fourthPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFourthPartPos(option.value)" v-for="(option, index) in fourthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthPosTooltip ? null : hideTooltip('fourthPosInputWrapper')" id="fourthPosInputWrapper"><b-form-input id="fourthPosInput" v-model="form.fourthPosition" v-bind:class="{ 'is-invalid': !disableFourthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthOutcomeTooltip ? null : hideTooltip('fourthOutcomeInputWrapper')" id="fourthOutcomeInputWrapper"><b-form-input v-model="form.fourthOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFourthOutcomeTooltip }" id="fourthOutcomeInput" :disabled="missingFourthPart" type="text"></b-form-input></span>
+&nbsp;                                                                                               <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fifthPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedFifthPart" v-bind:class="{ 'is-invalid': !disableFifthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFifthPartTooltip ? null : hideTooltip('fifthPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="fifthPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFifthPartPos(option.value)" v-for="(option, index) in fifthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthPosTooltip ? null : hideTooltip('fifthPosInputWrapper')" id="fifthPosInputWrapper"><b-form-input id="fifthPosInput" v-model="form.fifthPosition" v-bind:class="{ 'is-invalid': !disableFifthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthOutcomeTooltip ? null : hideTooltip('fifthOutcomeInputWrapper')" id="fifthOutcomeInputWrapper"><b-form-input v-model="form.fifthOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFifthOutcomeTooltip }" id="fifthOutcomeInput" :disabled="missingFifthPart" type="text"></b-form-input></span>
+                                                                                                                                             Свега дин. <span v-on:mouseleave="disableTotalOutcomeTooltip ? null : hideTooltip('totalOutcomeInputWrapper')" id="totalOutcomeInputWrapper"><b-form-input id="totalOutcomeInput" disabled v-model="form.outcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalOutcomeTooltip }" type="text"></b-form-input></span>
+                                                                                                                                   НАРЕДБОДАВАЦ
+Књижено у Дневник благајне                                                                              Настојатељ манастира,
+бр. <span v-on:mouseleave="hideTooltip('ordinalInputWrapper')" id="ordinalInputWrapper"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span> страна <span v-on:mouseleave="hideTooltip('annualReportPageInputWrapper')" id="annualReportPageInputWrapper"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span>&nbsp;                                                         <b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input>
       </div>
       <div id="downloadPrintBtnsDiv">
         <b-button v-on:mouseleave="hideTooltip('receiptDownloadBtn')" ref="receiptDownloadBtn" id="receiptDownloadBtn" @click.stop="downloadReceipt()" variant="light" class="ignoreInPrint btn-lg" :class="{ 'displayNone' : defaultReceiptPreview }" :disabled="disablePrintAndDownload">
@@ -71,6 +72,42 @@
 
     <b-tooltip boundary='window' target="secondOutcomeInputWrapper" triggers="hover" placement="top" ref="secondOutcomeInputTooltip" :disabled.sync="disableSecondOutcomeTooltip" v-on:hide.prevent>
       {{secondOutcomeTooltipText}}
+    </b-tooltip>
+    
+    <b-tooltip boundary='window' target="thirdPartPosSelect" triggers="hover" placement="top" ref="thirdPartInputTooltip" :disabled.sync="disableThirdPartTooltip" v-on:hide.prevent>
+      {{thirdPartTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="thirdPosInputWrapper" triggers="hover" placement="top" ref="thirdPosInputTooltip" :disabled.sync="disableThirdPosTooltip" v-on:hide.prevent>
+      {{thirdPosTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="thirdOutcomeInputWrapper" triggers="hover" placement="top" ref="thirdOutcomeInputTooltip" :disabled.sync="disableThirdOutcomeTooltip" v-on:hide.prevent>
+      {{thirdOutcomeTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fourthPartPosSelect" triggers="hover" placement="top" ref="fourthPartInputTooltip" :disabled.sync="disableFourthPartTooltip" v-on:hide.prevent>
+      {{fourthPartTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fourthPosInputWrapper" triggers="hover" placement="top" ref="fourthPosInputTooltip" :disabled.sync="disableFourthPosTooltip" v-on:hide.prevent>
+      {{fourthPosTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fourthOutcomeInputWrapper" triggers="hover" placement="top" ref="fourthOutcomeInputTooltip" :disabled.sync="disableFourthOutcomeTooltip" v-on:hide.prevent>
+      {{fourthOutcomeTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fifthPartPosSelect" triggers="hover" placement="top" ref="fifthPartInputTooltip" :disabled.sync="disableFifthPartTooltip" v-on:hide.prevent>
+      {{fifthPartTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fifthPosInputWrapper" triggers="hover" placement="top" ref="fifthPosInputTooltip" :disabled.sync="disableFifthPosTooltip" v-on:hide.prevent>
+      {{fifthPosTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fifthOutcomeInputWrapper" triggers="hover" placement="top" ref="fifthOutcomeInputTooltip" :disabled.sync="disableFifthOutcomeTooltip" v-on:hide.prevent>
+      {{fifthOutcomeTooltipText}}
     </b-tooltip>
 
     <b-tooltip boundary='window' target="totalOutcomeInputWrapper" triggers="hover" placement="top" ref="totalOutcomeInputTooltip" :disabled.sync="disableTotalOutcomeTooltip" v-on:hide.prevent>
@@ -178,12 +215,18 @@
         outcomeInputAutonumeric: null,
         firstOutcomeInputAutonumeric: null,
         secondOutcomeInputAutonumeric: null,
+        thirdOutcomeInputAutonumeric: null,
+        fourthOutcomeInputAutonumeric: null,
+        fifthOutcomeInputAutonumeric: null,
         totalOutcomeInputAutonumeric: null,
         alreadyPressed: false,
         disablePrintAndDownload: true,
         tooltipTimeouts: [],
         formatedFirstPart: null,
-        formatedSecondPart: null
+        formatedSecondPart: null,
+        formatedThirdPart: null,
+        formatedFourthPart: null,
+        formatedFifthPart: null
       }
     },
     created () {
@@ -221,11 +264,26 @@
       this.$watch('form.secondPartition', () => {
         self.formatedSecondPart = asRoman(self.form.secondPartition)
       })
+      this.formatedThirdPart = asRoman(this.form.thirdPartition)
+      this.$watch('form.thirdPartition', () => {
+        self.formatedThirdPart = asRoman(self.form.thirdPartition)
+      })
+      this.formatedFourthPart = asRoman(this.form.fourthPartition)
+      this.$watch('form.fourthPartition', () => {
+        self.formatedFourthPart = asRoman(self.form.fourthPartition)
+      })
+      this.formatedFifthPart = asRoman(this.form.fifthPartition)
+      this.$watch('form.fifthPartition', () => {
+        self.formatedFifthPart = asRoman(self.form.fifthPartition)
+      })
     },
     mounted () {
       this.outcomeInputAutonumeric = new AutoNumeric('#outcomeInput', amountNumberOptions)
       this.firstOutcomeInputAutonumeric = new AutoNumeric('#firstOutcomeInput', amountNumberOptions)
       this.secondOutcomeInputAutonumeric = new AutoNumeric('#secondOutcomeInput', amountNumberOptions)
+      this.thirdOutcomeInputAutonumeric = new AutoNumeric('#thirdOutcomeInput', amountNumberOptions)
+      this.fourthOutcomeInputAutonumeric = new AutoNumeric('#fourthOutcomeInput', amountNumberOptions)
+      this.fifthOutcomeInputAutonumeric = new AutoNumeric('#fifthOutcomeInput', amountNumberOptions)
       this.totalOutcomeInputAutonumeric = new AutoNumeric('#totalOutcomeInput', amountNumberOptions)
       this.bindKeys()
     },
@@ -318,6 +376,42 @@
       },
       secondOutcomeTooltipText: function () {
         if(!this.missingSecondPart) {
+          return this.phrases.enterAmount
+        }
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      thirdPosTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      thirdPartTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      thirdOutcomeTooltipText: function () {
+        if(!this.missingThirdPart) {
+          return this.phrases.enterAmount
+        }
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fourthPosTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fourthPartTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fourthOutcomeTooltipText: function () {
+        if(!this.missingFourthPart) {
+          return this.phrases.enterAmount
+        }
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fifthPosTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fifthPartTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fifthOutcomeTooltipText: function () {
+        if(!this.missingFifthPart) {
           return this.phrases.enterAmount
         }
         return this.phrases.atLeastOnePartPosAmount
@@ -429,6 +523,123 @@
           }
         }
       },
+      disableThirdPartTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingThirdPart || !this.shouldValidate 
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('thirdPartPosSelect')
+          }
+        }
+      },
+      disableThirdPosTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingThirdPos || !this.shouldValidate
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('thirdPosInputWrapper')
+          }
+        }
+      },
+      disableThirdOutcomeTooltip: {
+        get: function () {
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingThirdPart && this.missingThirdOutcome && this.shouldValidate) {
+            return false
+          }
+          return true
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('thirdOutcomeInputWrapper')
+          }
+        }
+      },
+      disableFourthPartTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingFourthPart || !this.shouldValidate 
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fourthPartPosSelect')
+          }
+        }
+      },
+      disableFourthPosTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingFourthPos || !this.shouldValidate
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fourthPosInputWrapper')
+          }
+        }
+      },
+      disableFourthOutcomeTooltip: {
+        get: function () {
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingFourthPart && this.missingFourthOutcome && this.shouldValidate) {
+            return false
+          }
+          return true
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fourthOutcomeInputWrapper')
+          }
+        }
+      },
+      disableFifthPartTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingFifthPart || !this.shouldValidate 
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fifthPartPosSelect')
+          }
+        }
+      },
+      disableFifthPosTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingFifthPos || !this.shouldValidate
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fifthPosInputWrapper')
+          }
+        }
+      },
+      disableFifthOutcomeTooltip: {
+        get: function () {
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingFifthPart && this.missingFifthOutcome && this.shouldValidate) {
+            return false
+          }
+          return true
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fifthOutcomeInputWrapper')
+          }
+        }
+      },
       disableTotalOutcomeTooltip: {
         get: function () {
           return !this.totalOutcomeNotValid || !this.shouldValidate
@@ -461,6 +672,30 @@
             }
           }
         }
+        if(this.form.thirdPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fourthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fifthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
         return options
       },
       secondPartPosOptions: function() {
@@ -468,6 +703,138 @@
         if(this.form.firstPartition) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.thirdPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fourthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fifthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        return options
+      },
+      thirdPartPosOptions: function() {
+        var options = this.getInitialPartPosOptions()
+        if(this.form.firstPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.secondPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fourthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fifthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        return options
+      },
+      fourthPartPosOptions: function() {
+        var options = this.getInitialPartPosOptions()
+        if(this.form.firstPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.secondPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.thirdPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fifthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        return options
+      },
+      fifthPartPosOptions: function() {
+        var options = this.getInitialPartPosOptions()
+        if(this.form.firstPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.secondPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.thirdPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fourthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
               options.splice(i, 1)
               break
             }
@@ -499,6 +866,33 @@
       missingSecondOutcome: function () {
         return !this.form.secondOutcome || this.form.secondOutcome.trim() === ''
       },
+      missingThirdPart: function () {
+        return !this.form.thirdPartition || this.form.thirdPartition.toString().trim() === ''
+      },
+      missingThirdPos: function () {
+          return !this.form.thirdPosition
+      },
+      missingThirdOutcome: function () {
+        return !this.form.thirdOutcome || this.form.thirdOutcome.trim() === ''
+      },
+      missingFourthPart: function () {
+        return !this.form.fourthPartition || this.form.fourthPartition.toString().trim() === ''
+      },
+      missingFourthPos: function () {
+          return !this.form.fourthPosition
+      },
+      missingFourthOutcome: function () {
+        return !this.form.fourthOutcome || this.form.fourthOutcome.trim() === ''
+      },
+      missingFifthPart: function () {
+        return !this.form.fifthPartition || this.form.fifthPartition.toString().trim() === ''
+      },
+      missingFifthPos: function () {
+          return !this.form.fifthPosition
+      },
+      missingFifthOutcome: function () {
+        return !this.form.fifthOutcome || this.form.fifthOutcome.trim() === ''
+      },
       missingTotalOutcome: function () {
         return !this.form.outcome || this.form.outcome.trim() === ''
       },
@@ -507,7 +901,10 @@
           const totalOutcome = Big(asFloat(this.form.outcome, amountNumberOptions))
           const firstOutcome = this.missingFirstOutcome ? Big(0.0) : Big(asFloat(this.form.firstOutcome, amountNumberOptions))
           const secondOutcome = this.missingSecondOutcome ? Big(0.0) : Big(asFloat(this.form.secondOutcome, amountNumberOptions))
-          if (!firstOutcome.plus(secondOutcome).eq(totalOutcome)) {
+          const thirdOutcome = this.missingThirdOutcome ? Big(0.0) : Big(asFloat(this.form.thirdOutcome, amountNumberOptions))
+          const fourthOutcome = this.missingFourthOutcome ? Big(0.0) : Big(asFloat(this.form.fourthOutcome, amountNumberOptions))
+          const fifthOutcome = this.missingFifthOutcome ? Big(0.0) : Big(asFloat(this.form.fifthOutcome, amountNumberOptions))
+          if (!firstOutcome.plus(secondOutcome).plus(thirdOutcome).plus(fourthOutcome).plus(fifthOutcome).eq(totalOutcome)) {
             return true
           }
         }
@@ -519,7 +916,10 @@
       atLeastOnePartPosNotSet: function () {
         const firstCombinationNotSet = this.missingFirstPart || this.missingFirstPos || this.missingFirstOutcome
         const secondCombinationNotSet = this.missingSecondPart || this.missingSecondPos || this.missingSecondOutcome
-        return firstCombinationNotSet && secondCombinationNotSet
+        const thirdCombinationNotSet = this.missingThirdPart || this.missingThirdPos || this.missingThirdOutcome
+        const fourthCombinationNotSet = this.missingFourthPart || this.missingFourthPos || this.missingFourthOutcome
+        const fifthCombinationNotSet = this.missingFifthPart || this.missingFifthPos || this.missingFifthOutcome
+        return firstCombinationNotSet && secondCombinationNotSet && thirdCombinationNotSet && fourthCombinationNotSet && fifthCombinationNotSet
       },
       validForm: function () {
         if (this.missingOutcome ||
@@ -528,6 +928,9 @@
             this.atLeastOnePartPosNotSet ||
             (!this.missingFirstPart && this.missingFirstOutcome) ||
             (!this.missingSecondPart && this.missingSecondOutcome) ||
+            (!this.missingThirdPart && this.missingThirdOutcome) ||
+            (!this.missingFourthPart && this.missingFourthOutcome) ||
+            (!this.missingFifthPart && this.missingFifthOutcome) ||
             this.totalOutcomeNotValid) {
           return false
         }
@@ -649,6 +1052,48 @@
           }
         }
       },
+      setSelectedThirdPartPos (selectedPartPos) {
+        if (selectedPartPos) {
+          const partPos = selectedPartPos.split('/')
+          this.form.thirdPartition = partPos[0]
+          this.form.thirdPosition = partPos[1]
+        } else {
+          this.form.thirdPartition = null
+          this.form.thirdPosition = null
+          this.form.thirdOutcome = null
+          if (this.thirdOutcomeInputAutonumeric) {
+            this.thirdOutcomeInputAutonumeric.clear()
+          }
+        }
+      },
+      setSelectedFourthPartPos (selectedPartPos) {
+        if (selectedPartPos) {
+          const partPos = selectedPartPos.split('/')
+          this.form.fourthPartition = partPos[0]
+          this.form.fourthPosition = partPos[1]
+        } else {
+          this.form.fourthPartition = null
+          this.form.fourthPosition = null
+          this.form.fourthOutcome = null
+          if (this.fourthOutcomeInputAutonumeric) {
+            this.fourthOutcomeInputAutonumeric.clear()
+          }
+        }
+      },
+      setSelectedFifthPartPos (selectedPartPos) {
+        if (selectedPartPos) {
+          const partPos = selectedPartPos.split('/')
+          this.form.fifthPartition = partPos[0]
+          this.form.fifthPosition = partPos[1]
+        } else {
+          this.form.fifthPartition = null
+          this.form.fifthPosition = null
+          this.form.fifthOutcome = null
+          if (this.fifthOutcomeInputAutonumeric) {
+            this.fifthOutcomeInputAutonumeric.clear()
+          }
+        }
+      },
       limitInputPerSize(evt) {
         if (evt.key == 'Enter') {
           return
@@ -671,6 +1116,12 @@
           this.showTooltip('firstOutcomeInputWrapper')
         } else if (!this.missingSecondPart && this.missingSecondOutcome) {
           this.showTooltip('secondOutcomeInputWrapper')
+        } else if (!this.missingThirdPart && this.missingThirdOutcome) {
+          this.showTooltip('thirdOutcomeInputWrapper')
+        } else if (!this.missingFourthPart && this.missingFourthOutcome) {
+          this.showTooltip('fourthOutcomeInputWrapper')
+        } else if (!this.missingFifthPart && this.missingFifthOutcome) {
+          this.showTooltip('fifthOutcomeInputWrapper')
         } else if (this.totalOutcomeNotValid) {
           this.showTooltip('totalOutcomeInputWrapper')
         }
@@ -746,6 +1197,18 @@
         this.form.secondPosition = null
         this.form.secondOutcome = null
         this.secondOutcomeInputAutonumeric.clear()
+        this.form.thirdPartition = null
+        this.form.thirdPosition = null
+        this.form.thirdOutcome = null
+        this.thirdOutcomeInputAutonumeric.clear()
+        this.form.fourthPartition = null
+        this.form.fourthPosition = null
+        this.form.fourthOutcome = null
+        this.fourthOutcomeInputAutonumeric.clear()
+        this.form.fifthPartition = null
+        this.form.fifthPosition = null
+        this.form.fifthOutcome = null
+        this.fifthOutcomeInputAutonumeric.clear()
         this.form.outcome = null
         this.outcomeInputAutonumeric.clear()
         this.form.outcomeAsText = null
@@ -847,13 +1310,13 @@
   }
   #receipt-preview-container {
     width: 794px;
-    height: 559px;
+    height: 595px;
     position:relative;
   }
   .receipt-preview-text {
     white-space: pre;
     width: 670px;
-    height: 520px;
+    height: 560px;
     /*border-style: solid;
     border-color: blue;*/
     color: #16264C;
@@ -903,7 +1366,7 @@
     width: 255px;
   }
   #churchMunicipalityInput {
-    width: 235px;
+    width: 305px;
   }
   #townInput {
     width: 320px;
@@ -912,19 +1375,31 @@
     width: 290px;
   }
   #receivedInput {
-    width: 235px;
+    width: 290px;
   }
   #townPayedInput {
-    width: 320px;
+    width: 279px;
   }
   #payedInput {
-    width: 230px;
+    width: 290px;
   }
   #firstPartPosSelect {
     width: 50px;
     height: 20px;
   }
   #secondPartPosSelect {
+    width: 50px;
+    height: 20px;
+  }
+  #thirdPartPosSelect {
+    width: 50px;
+    height: 20px;
+  }
+  #fourthPartPosSelect {
+    width: 50px;
+    height: 20px;
+  }
+  #fifthPartPosSelect {
     width: 50px;
     height: 20px;
   }
@@ -954,10 +1429,52 @@
   #secondPosInput {
     width: 50px;
   }
+  #thirdPartInput {
+    width: 50px;
+    position:relative;
+    left:50px;
+    pointer-events: none;
+    z-index: 1;
+    padding:0px;
+  }
+  #thirdPosInput {
+    width: 50px;
+  }
+  #fourthPartInput {
+    width: 50px;
+    position:relative;
+    left:50px;
+    pointer-events: none;
+    z-index: 1;
+    padding:0px;
+  }
+  #fourthPosInput {
+    width: 50px;
+  }
+  #fifthPartInput {
+    width: 50px;
+    position:relative;
+    left:50px;
+    pointer-events: none;
+    z-index: 1;
+    padding:0px;
+  }
+  #fifthPosInput {
+    width: 50px;
+  }
   #firstOutcomeInput {
     width: 90px;
   }
   #secondOutcomeInput {
+    width: 90px;
+  }
+  #thirdOutcomeInput {
+    width: 90px;
+  }
+  #fourthOutcomeInput {
+    width: 90px;
+  }
+  #fifthOutcomeInput {
     width: 90px;
   }
   #totalOutcomeInput {
@@ -970,7 +1487,7 @@
     width: 50px;
   }
   #municipalityPresidentInput {
-    width: 235px;
+    width: 290px;
   }
   #modalCancelBtn {
     position: absolute;
@@ -979,12 +1496,12 @@
   }
   #clearSaveBtnsDiv {
     position: absolute;
-    bottom: 0%;
+    top: 93%;
     right: 7.5%;
   }
   #downloadPrintBtnsDiv {
     position: absolute;
-    bottom: 0%;
+    top:93%;
     left: 7.5%;
   }
   .displayNone {
@@ -1016,7 +1533,7 @@
     margin: 0;
   }
   #outcomeAsText1 {
-    width: 410px;
+    width: 362px;
     white-space: nowrap;
     overflow: hidden;
     display: inline-block;
@@ -1036,7 +1553,7 @@
     text-align: center;
 
     white-space: nowrap;
-    width: 94px;
+    width: 95px;
     max-height: 20px;
     padding: 0px;
     margin: 0px;

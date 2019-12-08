@@ -113,7 +113,7 @@ li.active .page-link {
   background-color:  rgb(208, 226, 247);
 }
 .is-invalid {
-  border: dotted 2px red !important;
+  outline: dotted 2px red !important;
   /* To keep selects from getting wider when invalid */
   padding-right: 0 !important;
   background-color: white;

@@ -458,6 +458,8 @@ function mapDebtFormToDebt (debtForm) {
   return debt
 }
 
+const partPosNumber = ['first', 'second', 'third', 'fourth', 'fifth']
+
 function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   const paymentSlipForm = {};
   paymentSlipForm._id = paymentSlip._id;
@@ -474,19 +476,24 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   paymentSlipForm.secondPartition = null;
   paymentSlipForm.secondPosition = null;
   paymentSlipForm.secondIncome = null;
-  if (paymentSlip.incomePerCode && paymentSlip.incomePerCode.length > 0) {
-    paymentSlipForm.firstPartition = paymentSlip.incomePerCode[0].incomeCode.partition;
-    paymentSlipForm.firstPosition = paymentSlip.incomePerCode[0].incomeCode.position;
-    paymentSlipForm.firstIncome = asFormatedString(paymentSlip.incomePerCode[0].income, amountNumberOptions);
-    if(paymentSlip.incomePerCode.length > 1) {
-      paymentSlipForm.secondPartition = paymentSlip.incomePerCode[1].incomeCode.partition;
-      paymentSlipForm.secondPosition = paymentSlip.incomePerCode[1].incomeCode.position;
-      paymentSlipForm.secondIncome = asFormatedString(paymentSlip.incomePerCode[1].income, amountNumberOptions);
-    }
+  paymentSlipForm.thirdPartition = null;
+  paymentSlipForm.thirdPosition = null;
+  paymentSlipForm.thirdIncome = null;
+  paymentSlipForm.fourthPartition = null;
+  paymentSlipForm.fourthPosition = null;
+  paymentSlipForm.fourthIncome = null;
+  paymentSlipForm.fifthPartition = null;
+  paymentSlipForm.fifthPosition = null;
+  paymentSlipForm.fifthIncome = null;
+  for (let i = 0; i < paymentSlip.incomePerCode.length; i++) {
+    paymentSlipForm[partPosNumber[i] + 'Partition'] = paymentSlip.incomePerCode[i].incomeCode.partition;
+    paymentSlipForm[partPosNumber[i] + 'Position'] = paymentSlip.incomePerCode[i].incomeCode.position;
+    paymentSlipForm[partPosNumber[i] + 'Income'] = asFormatedString(paymentSlip.incomePerCode[i].income, amountNumberOptions);
   }
   paymentSlipForm.income = asFormatedString(paymentSlip.income, amountNumberOptions);
   paymentSlipForm.incomeAsText = numberToSerbianDinars(paymentSlip.income);
   paymentSlipForm.town = paymentSlip.town;
+  paymentSlipForm.townReceived = paymentSlip.townReceived;
   paymentSlipForm.reason = paymentSlip.reason;
   paymentSlipForm.payed = paymentSlip.payed;
 
@@ -502,6 +509,7 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes, nullAsZer
   paymentSlip.date = paymentSlipForm.date;
   paymentSlip.income = asFloat(paymentSlipForm.income, amountNumberOptions, nullAsZero);
   paymentSlip.town = paymentSlipForm.town;
+  paymentSlip.townReceived = paymentSlipForm.townReceived;
   paymentSlip.reason = paymentSlipForm.reason;
   paymentSlip.payed = paymentSlipForm.payed;
   paymentSlip.incomePerCode = [];
@@ -511,11 +519,29 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes, nullAsZer
   const secondIncomeCode = incomeCodes.find(incomeCode => {
     return incomeCode.partition == paymentSlipForm.secondPartition && incomeCode.position == paymentSlipForm.secondPosition;
   })
+  const thirdIncomeCode = incomeCodes.find(incomeCode => {
+    return incomeCode.partition == paymentSlipForm.thirdPartition && incomeCode.position == paymentSlipForm.thirdPosition;
+  })
+  const fourthIncomeCode = incomeCodes.find(incomeCode => {
+    return incomeCode.partition == paymentSlipForm.fourthPartition && incomeCode.position == paymentSlipForm.fourthPosition;
+  })
+  const fifthIncomeCode = incomeCodes.find(incomeCode => {
+    return incomeCode.partition == paymentSlipForm.fifthPartition && incomeCode.position == paymentSlipForm.fifthPosition;
+  })
   if (firstIncomeCode) {
     paymentSlip.incomePerCode.push({incomeCode: firstIncomeCode, income: asFloat(paymentSlipForm.firstIncome, amountNumberOptions, nullAsZero)});
   }
   if (secondIncomeCode) {
     paymentSlip.incomePerCode.push({incomeCode: secondIncomeCode, income: asFloat(paymentSlipForm.secondIncome, amountNumberOptions, nullAsZero)});
+  }
+  if (thirdIncomeCode) {
+    paymentSlip.incomePerCode.push({incomeCode: thirdIncomeCode, income: asFloat(paymentSlipForm.thirdIncome, amountNumberOptions, nullAsZero)});
+  }
+  if (fourthIncomeCode) {
+    paymentSlip.incomePerCode.push({incomeCode: fourthIncomeCode, income: asFloat(paymentSlipForm.fourthIncome, amountNumberOptions, nullAsZero)});
+  }
+  if (fifthIncomeCode) {
+    paymentSlip.incomePerCode.push({incomeCode: fifthIncomeCode, income: asFloat(paymentSlipForm.fifthIncome, amountNumberOptions, nullAsZero)});
   }
   return paymentSlip;
 }
@@ -537,15 +563,20 @@ function mapReceiptToReceiptForm (receipt) {
     receiptForm.secondPartition = null;
     receiptForm.secondPosition = null;
     receiptForm.secondOutcome = null;
-    if (receipt.outcomePerCode && receipt.outcomePerCode.length > 0) {
-      receiptForm.firstPartition = receipt.outcomePerCode[0].outcomeCode.partition;
-      receiptForm.firstPosition = receipt.outcomePerCode[0].outcomeCode.position;
-      receiptForm.firstOutcome = asFormatedString(receipt.outcomePerCode[0].outcome, amountNumberOptions);
-      if(receipt.outcomePerCode.length > 1) {
-        receiptForm.secondPartition = receipt.outcomePerCode[1].outcomeCode.partition;
-        receiptForm.secondPosition = receipt.outcomePerCode[1].outcomeCode.position;
-        receiptForm.secondOutcome = asFormatedString(receipt.outcomePerCode[1].outcome, amountNumberOptions);
-      } 
+    receiptForm.thirdPartition = null;
+    receiptForm.thirdPosition = null;
+    receiptForm.thirdOutcome = null;
+    receiptForm.fourthPartition = null;
+    receiptForm.fourthPosition = null;
+    receiptForm.fourthOutcome = null;
+    receiptForm.fifthPartition = null;
+    receiptForm.fifthPosition = null;
+    receiptForm.fifthOutcome = null;
+
+    for (let i = 0; i < receipt.outcomePerCode.length; i++) {
+      receiptForm[partPosNumber[i] + 'Partition'] = receipt.outcomePerCode[i].outcomeCode.partition;
+      receiptForm[partPosNumber[i] + 'Position'] = receipt.outcomePerCode[i].outcomeCode.position;
+      receiptForm[partPosNumber[i] + 'Outcome'] = asFormatedString(receipt.outcomePerCode[i].outcome, amountNumberOptions);
     }
     receiptForm.outcome = asFormatedString(receipt.outcome, amountNumberOptions);
     receiptForm.outcomeAsText = numberToSerbianDinars(receipt.outcome);
@@ -578,11 +609,29 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes, nullAsZero) {
     const secondOutcomeCode = outcomeCodes.find(outcomeCode => {
       return outcomeCode.partition == receiptForm.secondPartition && outcomeCode.position == receiptForm.secondPosition;
     })
+    const thirdOutcomeCode = outcomeCodes.find(outcomeCode => {
+      return outcomeCode.partition == receiptForm.thirdPartition && outcomeCode.position == receiptForm.thirdPosition;
+    })
+    const fourthOutcomeCode = outcomeCodes.find(outcomeCode => {
+      return outcomeCode.partition == receiptForm.fourthPartition && outcomeCode.position == receiptForm.fourthPosition;
+    })
+    const fifthOutcomeCode = outcomeCodes.find(outcomeCode => {
+      return outcomeCode.partition == receiptForm.fifthPartition && outcomeCode.position == receiptForm.fifthPosition;
+    })
     if (firstOutcomeCode) {
       receipt.outcomePerCode.push({outcomeCode: firstOutcomeCode, outcome: asFloat(receiptForm.firstOutcome, amountNumberOptions, nullAsZero)});
     }
     if (secondOutcomeCode) {
       receipt.outcomePerCode.push({outcomeCode: secondOutcomeCode, outcome: asFloat(receiptForm.secondOutcome, amountNumberOptions, nullAsZero)});
+    }
+    if (thirdOutcomeCode) {
+      receipt.outcomePerCode.push({outcomeCode: thirdOutcomeCode, outcome: asFloat(receiptForm.thirdOutcome, amountNumberOptions, nullAsZero)});
+    }
+    if (fourthOutcomeCode) {
+      receipt.outcomePerCode.push({outcomeCode: fourthOutcomeCode, outcome: asFloat(receiptForm.fourthOutcome, amountNumberOptions, nullAsZero)});
+    }
+    if (fifthOutcomeCode) {
+      receipt.outcomePerCode.push({outcomeCode: fifthOutcomeCode, outcome: asFloat(receiptForm.fifthOutcome, amountNumberOptions, nullAsZero)});
     }
     return receipt;
 }

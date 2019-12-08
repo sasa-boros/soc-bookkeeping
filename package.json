@@ -17,8 +17,8 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "Dnevnik Blagajne - Crkva",
-    "appId": "Dnevnik Blagajne - Crkva",
+    "productName": "Dnevnik Blagajne - Manastir",
+    "appId": "Dnevnik Blagajne - Manastir",
     "directories": {
       "output": "build"
     },

@@ -38,7 +38,7 @@
     <b-row>
       <b-col>
         <b-form ref="commonDataForm" @submit="createAnnualReportCommonData" novalidate no-validation>
-          Дневник благајне Српске православне црквене општине&nbsp;
+          Дневник благајне Српског православног манастира&nbsp;
           <b-form-input id="churchMunicipalityInput" type="text" v-model="churchMunicipality" v-on:input="disableCommonSaveBtn = false" v-on:keypress="limitInputPerSize"/> у
           <b-form-input id="churchTownInput" type="text" v-model="churchTown" v-on:input="disableCommonSaveBtn = false" v-on:keypress="limitInputPerSize"/>.&nbsp;
           <b-button id="commonSaveBtn" ref="commonSaveBtn" :disabled="disableCommonSaveBtn" v-on:mouseleave="hideTooltip('commonSaveBtn')" type="submit" variant="light">
@@ -250,8 +250,8 @@
   }
 
   #churchTownInput {
-    width: 320px;
-    max-width: 320px;
+    width: 278px;
+    max-width: 278px;
     border-style: none;
     display:inline;
   }

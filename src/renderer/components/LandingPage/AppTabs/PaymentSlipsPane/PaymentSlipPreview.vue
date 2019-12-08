@@ -6,21 +6,22 @@
       </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-        <br/>На дин. <b-form-input id="incomeInput" ref="incomeInput" :disabled="defaultPaymentSlipPreview" v-on:mouseleave="disableIncomeTooltip ? null : hideTooltip('incomeInput')" v-model="form.income" class="input-small number-input" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" type="text" :autofocus="!paymentSlipPreview"></b-form-input> и словима <b-form-input type="text" disabled class="input-small" id="IncomeAsText1" v-model="generatedIncomeTextLine1"></b-form-input>
+        <br/>         На динара <b-form-input id="incomeInput" ref="incomeInput" :disabled="defaultPaymentSlipPreview" v-on:mouseleave="disableIncomeTooltip ? null : hideTooltip('incomeInput')" v-model="form.income" class="input-small number-input" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" type="text" :autofocus="!paymentSlipPreview"></b-form-input> и словима <b-form-input type="text" disabled class="input-small" id="IncomeAsText1" v-model="generatedIncomeTextLine1"></b-form-input>
         <br/><b-form-input disabled class="input-small" id="IncomeAsText2" v-model="generatedIncomeTextLine2"></b-form-input>
-        <br/>колико сам данас уплатио у благајну Српске православне црквене општине
-у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" v-on:keypress="limitInputPerSize" ref="reasonInput" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" :disabled="defaultPaymentSlipPreview" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text" v-on:blur.native="preDatepickerOnBlur"></b-form-input>
-        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview}" :language="calendarLanguages.srCYRL" :disabled="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>                                                                                                               Уплатио,
-                                                                                                                        <b-form-input id="payedInput" :disabled="defaultPaymentSlipPreview" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text" v-on:blur.native="postDatepickerOnBlur"></b-form-input> 
-        <br/>                                                                                                         Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
-                                                                                           <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
-                Примио благајник,                                           <span class="partText">Парт. </span><b-form-input id="secondPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
-                                                           
-      <br/><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input>                                                                              Свега дин. <span v-on:mouseleave="disableTotalIncomeTooltip ? null : hideTooltip('totalIncomeInputWrapper')" id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalIncomeTooltip }"></b-form-input></span>
-
-                                                                                                                                              Наредбодавац
-                                                                                                                                Председник црквене општине,
-Књижено у Дн. бл. стр. <span v-on:mouseleave="hideTooltip('annualReportPageInputWrapper')" id="annualReportPageInputWrapper"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span> р. бр. <span v-on:mouseleave="hideTooltip('ordinalInputWrapper')" id="ordinalInputWrapper"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span>.                                         <b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input>
+        <br/>колико сам данас уплатио у благајну Српског православног манастира
+у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" v-on:keypress="limitInputPerSize" ref="reasonInput" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" :disabled="defaultPaymentSlipPreview" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text"></b-form-input>
+                                                                                                                                           Уплатио,
+                         Примио благајник,                                                <b-form-input id="payedInput" :disabled="defaultPaymentSlipPreview" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text"></b-form-input> 
+<br/><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input>                        Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
+у <b-form-input id="townReceivedInput" v-on:keypress="limitInputPerSize" ref="townReceivedInput" v-model="form.townReceived" class="input-small" type="text"></b-form-input>&nbsp;          <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
+<span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview}" :language="calendarLanguages.srCYRL" :disabled="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>&nbsp;                                                            <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="secondPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
+&nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="thirdPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedThirdPart" v-bind:class="{ 'is-invalid': !disableThirdPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableThirdPartTooltip ? null : hideTooltip('thirdPartPosSelect')"><b-dropdown id="thirdPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedThirdPartPos(option.value)" v-for="(option, index) in thirdPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdPosTooltip ? null : hideTooltip('thirdPosInputWrapper')" id="thirdPosInputWrapper"><b-form-input id="thirdPosInput" v-model="form.thirdPosition" v-bind:class="{ 'is-invalid': !disableThirdPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdIncomeTooltip ? null : hideTooltip('thirdIncomeInputWrapper')" id="thirdIncomeInputWrapper"><b-form-input v-model="form.thirdIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableThirdIncomeTooltip }" id="thirdIncomeInput" :disabled="missingThirdPart" type="text"></b-form-input></span>
+&nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fourthPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFourthPart" v-bind:class="{ 'is-invalid': !disableFourthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFourthPartTooltip ? null : hideTooltip('fourthPartPosSelect')"><b-dropdown id="fourthPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFourthPartPos(option.value)" v-for="(option, index) in fourthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthPosTooltip ? null : hideTooltip('fourthPosInputWrapper')" id="fourthPosInputWrapper"><b-form-input id="fourthPosInput" v-model="form.fourthPosition" v-bind:class="{ 'is-invalid': !disableFourthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthIncomeTooltip ? null : hideTooltip('fourthIncomeInputWrapper')" id="fourthIncomeInputWrapper"><b-form-input v-model="form.fourthIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFourthIncomeTooltip }" id="fourthIncomeInput" :disabled="missingFourthPart" type="text"></b-form-input></span>
+&nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fifthPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFifthPart" v-bind:class="{ 'is-invalid': !disableFifthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFifthPartTooltip ? null : hideTooltip('fifthPartPosSelect')"><b-dropdown id="fifthPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFifthPartPos(option.value)" v-for="(option, index) in fifthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthPosTooltip ? null : hideTooltip('fifthPosInputWrapper')" id="fifthPosInputWrapper"><b-form-input id="fifthPosInput" v-model="form.fifthPosition" v-bind:class="{ 'is-invalid': !disableFifthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthIncomeTooltip ? null : hideTooltip('fifthIncomeInputWrapper')" id="fifthIncomeInputWrapper"><b-form-input v-model="form.fifthIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFifthIncomeTooltip }" id="fifthIncomeInput" :disabled="missingFifthPart" type="text"></b-form-input></span>
+                                                                                                                                              Свега дин. <span v-on:mouseleave="disableTotalIncomeTooltip ? null : hideTooltip('totalIncomeInputWrapper')" id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalIncomeTooltip }"></b-form-input></span>
+                                                                                                                                  НАРЕДБОДАВАЦ
+Књижено у Дневник благајне                                                                             Настојатељ манастира,
+страна <span v-on:mouseleave="hideTooltip('annualReportPageInputWrapper')" id="annualReportPageInputWrapper"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span> бр. <span v-on:mouseleave="hideTooltip('ordinalInputWrapper')" id="ordinalInputWrapper"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span>&nbsp;                                                         <b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input>
       
 
       </div>
@@ -73,6 +74,18 @@
 
     <b-tooltip boundary='window' target="secondIncomeInputWrapper" triggers="hover" placement="top" ref="secondIncomeInputTooltip" :disabled.sync="disableSecondIncomeTooltip" v-on:hide.prevent>
       {{secondIncomeTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="thirdPartPosSelect" triggers="hover" placement="top" ref="thirdPartInputTooltip" :disabled.sync="disableThirdPartTooltip" v-on:hide.prevent>
+      {{thirdPartTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fourthPosInputWrapper" triggers="hover" placement="top" ref="fourthPosInputTooltip" :disabled.sync="disableFourthPosTooltip" v-on:hide.prevent>
+      {{fourthPosTooltipText}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="fifthIncomeInputWrapper" triggers="hover" placement="top" ref="fifthIncomeInputTooltip" :disabled.sync="disableFifthIncomeTooltip" v-on:hide.prevent>
+      {{fifthIncomeTooltipText}}
     </b-tooltip>
 
     <b-tooltip boundary='window' target="totalIncomeInputWrapper" triggers="hover" placement="top" ref="totalIncomeInputTooltip" :disabled.sync="disableTotalIncomeTooltip" v-on:hide.prevent>
@@ -181,12 +194,18 @@
         incomeInputAutonumeric: null,
         firstIncomeInputAutonumeric: null,
         secondIncomeInputAutonumeric: null,
+        thirdIncomeInputAutonumeric: null,
+        fourthIncomeInputAutonumeric: null,
+        fifthIncomeInputAutonumeric: null,
         totalIncomeInputAutonumeric: null,
         alreadyPressed: false,
         disablePrintAndDownload: true,
         tooltipTimeouts: [],
         formatedFirstPart: null,
-        formatedSecondPart: null
+        formatedSecondPart: null,
+        formatedThirdPart: null,
+        formatedFourthPart: null,
+        formatedFifthPart: null
       }
     },
     created () {
@@ -224,11 +243,26 @@
       this.$watch('form.secondPartition', () => {
         self.formatedSecondPart = asRoman(self.form.secondPartition)
       })
+      this.formatedThirdPart = asRoman(this.form.thirdPartition)
+      this.$watch('form.thirdPartition', () => {
+        self.formatedThirdPart = asRoman(self.form.thirdPartition)
+      })
+      this.formatedFourthPart = asRoman(this.form.fourthPartition)
+      this.$watch('form.fourthPartition', () => {
+        self.formatedFourthPart = asRoman(self.form.fourthPartition)
+      })
+      this.formatedFifthPart = asRoman(this.form.fifthPartition)
+      this.$watch('form.fifthPartition', () => {
+        self.formatedFifthPart = asRoman(self.form.fifthPartition)
+      })
     },
     mounted () {
       this.incomeInputAutonumeric = new AutoNumeric('#incomeInput', amountNumberOptions)
       this.firstIncomeInputAutonumeric = new AutoNumeric('#firstIncomeInput', amountNumberOptions)
       this.secondIncomeInputAutonumeric = new AutoNumeric('#secondIncomeInput', amountNumberOptions)
+      this.thirdIncomeInputAutonumeric = new AutoNumeric('#thirdIncomeInput', amountNumberOptions)
+      this.fourthIncomeInputAutonumeric = new AutoNumeric('#fourthIncomeInput', amountNumberOptions)
+      this.fifthIncomeInputAutonumeric = new AutoNumeric('#fifthIncomeInput', amountNumberOptions)
       this.totalIncomeInputAutonumeric = new AutoNumeric('#totalIncomeInput', amountNumberOptions)
       this.bindKeys()
     },
@@ -321,6 +355,42 @@
       },
       secondIncomeTooltipText: function () {
         if(!this.missingSecondPart) {
+          return this.phrases.enterAmount
+        }
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      thirdPosTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      thirdPartTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      thirdIncomeTooltipText: function () {
+        if(!this.missingThirdPart) {
+          return this.phrases.enterAmount
+        }
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fourthPosTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fourthPartTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fourthIncomeTooltipText: function () {
+        if(!this.missingFourthPart) {
+          return this.phrases.enterAmount
+        }
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fifthPosTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fifthPartTooltipText: function () {
+        return this.phrases.atLeastOnePartPosAmount
+      },
+      fifthIncomeTooltipText: function () {
+        if(!this.missingFifthPart) {
           return this.phrases.enterAmount
         }
         return this.phrases.atLeastOnePartPosAmount
@@ -432,6 +502,123 @@
           }
         }
       },
+      disableThirdPartTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingThirdPart || !this.shouldValidate 
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('thirdPartPosSelect')
+          }
+        }
+      },
+      disableThirdPosTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingThirdPos || !this.shouldValidate
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('thirdPosInputWrapper')
+          }
+        }
+      },
+      disableThirdIncomeTooltip: {
+        get: function () {
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingThirdPart && this.missingThirdIncome && this.shouldValidate) {
+            return false
+          }
+          return true
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('thirdIncomeInputWrapper')
+          }
+        }
+      },
+      disableFourthPartTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingFourthPart || !this.shouldValidate 
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fourthPartPosSelect')
+          }
+        }
+      },
+      disableFourthPosTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingFourthPos || !this.shouldValidate
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fourthPosInputWrapper')
+          }
+        }
+      },
+      disableFourthIncomeTooltip: {
+        get: function () {
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingFourthPart && this.missingFourthIncome && this.shouldValidate) {
+            return false
+          }
+          return true
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fourthIncomeInputWrapper')
+          }
+        }
+      },
+      disableFifthPartTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingFifthPart || !this.shouldValidate 
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fifthPartPosSelect')
+          }
+        }
+      },
+      disableFifthPosTooltip: {
+        get: function () {
+          return !this.atLeastOnePartPosNotSet || !this.missingFifthPos || !this.shouldValidate
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fifthPosInputWrapper')
+          }
+        }
+      },
+      disableFifthIncomeTooltip: {
+        get: function () {
+          if (this.atLeastOnePartPosNotSet && this.shouldValidate) {
+            return false
+          }
+          if (!this.missingFifthPart && this.missingFifthIncome && this.shouldValidate) {
+            return false
+          }
+          return true
+        },
+        set: function (newValue) {
+          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
+          if (newValue) {
+            this.hideTooltip('fifthIncomeInputWrapper')
+          }
+        }
+      },
       disableTotalIncomeTooltip: {
         get: function () {
           return !this.totalIncomeNotValid || !this.shouldValidate
@@ -464,6 +651,30 @@
             }
           }
         }
+        if(this.form.thirdPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fourthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fifthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
         return options
       },
       secondPartPosOptions: function() {
@@ -471,6 +682,138 @@
         if(this.form.firstPartition) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.thirdPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fourthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fifthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        return options
+      },
+      thirdPartPosOptions: function() {
+        var options = this.getInitialPartPosOptions()
+        if(this.form.firstPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.secondPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fourthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fifthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        return options
+      },
+      fourthPartPosOptions: function() {
+        var options = this.getInitialPartPosOptions()
+        if(this.form.firstPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.secondPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.thirdPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fifthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        return options
+      },
+      fifthPartPosOptions: function() {
+        var options = this.getInitialPartPosOptions()
+        if(this.form.firstPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.secondPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.thirdPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
+              options.splice(i, 1)
+              break
+            }
+          }
+        }
+        if(this.form.fourthPartition) {
+          for (let i=0; i<options.length; i++) {
+            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
               options.splice(i, 1)
               break
             }
@@ -502,6 +845,33 @@
       missingSecondIncome: function () {
         return !this.form.secondIncome || this.form.secondIncome.trim() === ''
       },
+      missingThirdPart: function () {
+        return !this.form.thirdPartition || this.form.thirdPartition.toString().trim() === ''
+      },
+      missingThirdPos: function () {
+          return !this.form.thirdPosition
+      },
+      missingThirdIncome: function () {
+        return !this.form.thirdIncome || this.form.thirdIncome.trim() === ''
+      },
+      missingFourthPart: function () {
+        return !this.form.fourthPartition || this.form.fourthPartition.toString().trim() === ''
+      },
+      missingFourthPos: function () {
+          return !this.form.fourthPosition
+      },
+      missingFourthIncome: function () {
+        return !this.form.fourthIncome || this.form.fourthIncome.trim() === ''
+      },
+      missingFifthPart: function () {
+        return !this.form.fifthPartition || this.form.fifthPartition.toString().trim() === ''
+      },
+      missingFifthPos: function () {
+          return !this.form.fifthPosition
+      },
+      missingFifthIncome: function () {
+        return !this.form.fifthIncome || this.form.fifthIncome.trim() === ''
+      },
       missingTotalIncome: function () {
         return !this.form.income || this.form.income.trim() === ''
       },
@@ -510,7 +880,10 @@
           const totalIncome = Big(asFloat(this.form.income, amountNumberOptions))
           const firstIncome = this.missingFirstIncome ? Big(0.0) : Big(asFloat(this.form.firstIncome, amountNumberOptions))
           const secondIncome = this.missingSecondIncome ? Big(0.0) : Big(asFloat(this.form.secondIncome, amountNumberOptions))
-          if (!firstIncome.plus(secondIncome).eq(totalIncome)) {
+          const thirdIncome = this.missingThirdIncome ? Big(0.0) : Big(asFloat(this.form.thirdIncome, amountNumberOptions))
+          const fourthIncome = this.missingFourthIncome ? Big(0.0) : Big(asFloat(this.form.fourthIncome, amountNumberOptions))
+          const fifthIncome = this.missingFifthIncome ? Big(0.0) : Big(asFloat(this.form.fifthIncome, amountNumberOptions))
+          if (!firstIncome.plus(secondIncome).plus(thirdIncome).plus(fourthIncome).plus(fifthIncome).eq(totalIncome)) {
             return true
           }
         }
@@ -522,7 +895,10 @@
       atLeastOnePartPosNotSet: function () {
         const firstCombinationNotSet = this.missingFirstPart || this.missingFirstPos || this.missingFirstIncome
         const secondCombinationNotSet = this.missingSecondPart || this.missingSecondPos || this.missingSecondIncome
-        return firstCombinationNotSet && secondCombinationNotSet
+        const thirdCombinationNotSet = this.missingThirdPart || this.missingThirdPos || this.missingThirdIncome
+        const fourthCombinationNotSet = this.missingFourthPart || this.missingFourthPos || this.missingFourthIncome
+        const fifthCombinationNotSet = this.missingFifthPart || this.missingFifthPos || this.missingFifthIncome
+        return firstCombinationNotSet && secondCombinationNotSet && thirdCombinationNotSet && fourthCombinationNotSet && fifthCombinationNotSet
       },
       validForm: function () {
         if (this.missingIncome ||
@@ -531,6 +907,9 @@
             this.atLeastOnePartPosNotSet ||
             (!this.missingFirstPart && this.missingFirstIncome) ||
             (!this.missingSecondPart && this.missingSecondIncome) ||
+            (!this.missingThirdPart && this.missingThirdIncome) ||
+            (!this.missingFourthPart && this.missingFourthIncome) ||
+            (!this.missingFifthPart && this.missingFifthIncome) ||
             this.totalIncomeNotValid) {
           return false
         }
@@ -567,6 +946,7 @@
         annualReportController.getAnnualReportCommonData().then((res) => {
           if (!res.err) {
             self.form.town = res.data ? res.data.churchTown : null
+            self.form.townReceived = res.data ? res.data.churchTown : null
           } else {
             self.openErrorModal(res.err)
           }
@@ -630,9 +1010,9 @@
         } else {
           this.form.firstPartition = null
           this.form.firstPosition = null
-          this.form.firstIncome = null
-          if (this.firstIncomeInputAutonumeric) {
-            this.firstIncomeInputAutonumeric.clear()
+          this.form.firstOutcome = null
+          if (this.firstOutcomeInputAutonumeric) {
+            this.firstOutcomeInputAutonumeric.clear()
           }
         }
       },
@@ -644,9 +1024,51 @@
         } else {
           this.form.secondPartition = null
           this.form.secondPosition = null
-          this.form.secondIncome = null
-          if (this.secondIncomeInputAutonumeric) {
-            this.secondIncomeInputAutonumeric.clear()
+          this.form.secondOutcome = null
+          if (this.secondOutcomeInputAutonumeric) {
+            this.secondOutcomeInputAutonumeric.clear()
+          }
+        }
+      },
+      setSelectedThirdPartPos (selectedPartPos) {
+        if (selectedPartPos) {
+          const partPos = selectedPartPos.split('/')
+          this.form.thirdPartition = partPos[0]
+          this.form.thirdPosition = partPos[1]
+        } else {
+          this.form.thirdPartition = null
+          this.form.thirdPosition = null
+          this.form.thirdOutcome = null
+          if (this.thirdOutcomeInputAutonumeric) {
+            this.thirdOutcomeInputAutonumeric.clear()
+          }
+        }
+      },
+      setSelectedFourthPartPos (selectedPartPos) {
+        if (selectedPartPos) {
+          const partPos = selectedPartPos.split('/')
+          this.form.fourthPartition = partPos[0]
+          this.form.fourthPosition = partPos[1]
+        } else {
+          this.form.fourthPartition = null
+          this.form.fourthPosition = null
+          this.form.fourthOutcome = null
+          if (this.fourthOutcomeInputAutonumeric) {
+            this.fourthOutcomeInputAutonumeric.clear()
+          }
+        }
+      },
+      setSelectedFifthPartPos (selectedPartPos) {
+        if (selectedPartPos) {
+          const partPos = selectedPartPos.split('/')
+          this.form.fifthPartition = partPos[0]
+          this.form.fifthPosition = partPos[1]
+        } else {
+          this.form.fifthPartition = null
+          this.form.fifthPosition = null
+          this.form.fifthOutcome = null
+          if (this.fifthOutcomeInputAutonumeric) {
+            this.fifthOutcomeInputAutonumeric.clear()
           }
         }
       },
@@ -672,6 +1094,12 @@
           this.showTooltip('firstIncomeInputWrapper')
         } else if (!this.missingSecondPart && this.missingSecondIncome) {
           this.showTooltip('secondIncomeInputWrapper')
+        } else if (!this.missingThirdPart && this.missingThirdIncome) {
+          this.showTooltip('thirdIncomeInputWrapper')
+        } else if (!this.missingFourthPart && this.missingFourthIncome) {
+          this.showTooltip('fourthIncomeInputWrapper')
+        } else if (!this.missingFifthPart && this.missingFifthIncome) {
+          this.showTooltip('fifthIncomeInputWrapper')
         } else if (this.totalIncomeNotValid) {
           this.showTooltip('totalIncomeInputWrapper')
         }
@@ -748,6 +1176,18 @@
         this.form.secondPosition = null;
         this.form.secondIncome = null;
         this.secondIncomeInputAutonumeric.clear()
+        this.form.thirdPartition = null;
+        this.form.thirdPosition = null;
+        this.form.thirdIncome = null;
+        this.thirdIncomeInputAutonumeric.clear()
+        this.form.fourthPartition = null;
+        this.form.fourthPosition = null;
+        this.form.fourthIncome = null;
+        this.fourthIncomeInputAutonumeric.clear()
+        this.form.fifthPartition = null;
+        this.form.fifthPosition = null;
+        this.form.fifthIncome = null;
+        this.fifthIncomeInputAutonumeric.clear()
         this.form.income = null;
         this.incomeInputAutonumeric.clear()
         this.form.incomeAsText = null;
@@ -841,7 +1281,7 @@
   }
   #payment-slip-preview-container {
     width: 794px;
-    height: 559px;
+    height: 595px;
     position:relative;
   }
   .payment-slip-preview-text {
@@ -900,10 +1340,13 @@
     width: 290px;
   }
   #payedInput {
-    width: 235px;
+    width: 290px;
   }
   #receivedInput {
-    width: 230px;
+    width: 290px;
+  }
+  #townReceivedInput {
+    width: 279px;
   }
   #yearInput {
     width:70px;
@@ -913,6 +1356,18 @@
     height:20px;
   }
   #secondPartPosSelect {
+    width: 50px;
+    height:20px;
+  }
+  #thirdPartPosSelect {
+    width: 50px;
+    height:20px;
+  }
+  #fourthPartPosSelect {
+    width: 50px;
+    height:20px;
+  }
+  #fifthPartPosSelect {
     width: 50px;
     height:20px;
   }
@@ -942,10 +1397,52 @@
   #secondPosInput {
     width: 50px;
   }
+  #thirdPartInput {
+    width: 50px;
+    position:relative;
+    left:50px;
+    pointer-events: none;
+    z-index: 1;
+    padding:0px;
+  }
+  #thirdPosInput {
+    width: 50px;
+  }
+  #fourthPartInput {
+    width: 50px;
+    position:relative;
+    left:50px;
+    pointer-events: none;
+    z-index: 1;
+    padding:0px;
+  }
+  #fourthPosInput {
+    width: 50px;
+  }
+  #fifthPartInput {
+    width: 50px;
+    position:relative;
+    left:50px;
+    pointer-events: none;
+    z-index: 1;
+    padding:0px;
+  }
+  #fifthPosInput {
+    width: 50px;
+  }
   #firstIncomeInput {
     width: 90px;
   }
   #secondIncomeInput {
+    width: 90px;
+  }
+  #thirdIncomeInput {
+    width: 90px;
+  }
+  #fourthIncomeInput {
+    width: 90px;
+  }
+  #fifthIncomeInput {
     width: 90px;
   }
   #totalIncomeInput {
@@ -958,7 +1455,7 @@
     width: 50px;
   }
   #municipalityPresidentInput {
-    width: 230px;
+    width: 290px;
   }
   #modalCancelBtn {
     position: absolute;
@@ -967,12 +1464,12 @@
   }
   #clearSaveBtnsDiv {
     position: absolute;
-    bottom: 0%;
+    top:93%;
     right: 7.5%;
   }
   #downloadPrintBtnsDiv {
     position: absolute;
-    bottom: 0%;
+    top:93%;
     left: 7.5%;
   }
   .displayNone {
@@ -1004,7 +1501,7 @@
     margin: 0;
   }
   #IncomeAsText1 {
-    width: 410px;
+    width: 362px;
     white-space: nowrap;
     overflow: hidden;
     display: inline-block;
@@ -1024,7 +1521,7 @@
     text-align: center;
 
     white-space: nowrap;
-    width: 94px;
+    width: 95px;
     max-height: 20px;
     padding: 0px;
     margin: 0px;

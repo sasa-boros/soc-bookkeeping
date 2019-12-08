@@ -358,8 +358,7 @@ function populateHeadline(annualReport, headlineTemplate, annualReportPages) {
   } else {
     headlineContext.year = annualReport.year;
   }
-  headlineContext.churchMunicipality = annualReport.churchMunicipality
-  headlineContext.churchTown = annualReport.churchTown
+  headlineContext.church = annualReport.churchMunicipality
 
   annualReportPages.push(Mustache.render(headlineTemplate, headlineContext));
 }
@@ -611,7 +610,7 @@ function populateTotalPage(annualReport, totalPageTemplate, annualReportPages, i
   } else {
     totalPageContext.year = annualReport.year
   }
-  totalPageContext.churchMunicipality = annualReport.churchMunicipality
+  totalPageContext.church = annualReport.churchMunicipality
   if (itemsStartIndex == 0 &&  debtsStartIndex == 0) {
     totalPageContext['E5'] = formatAmount(annualReport.totalOutcomePage.transferToNextYear)
     totalPageContext['E6'] = formatAmount(annualReport.sharesPage.savingAmountOnYearEnd)
