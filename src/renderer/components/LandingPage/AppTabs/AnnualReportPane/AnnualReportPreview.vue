@@ -100,7 +100,7 @@ const printStyle = `
     #headline {
       position: relative;
       top: 283px;
-      left: 180px;
+      left: 115px;
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -179,8 +179,8 @@ const printPageStyle = `
     }
     #headline {
       position: relative;
-      top: 237px;
-      left: 160px;
+      top: 275px;
+      left: 113px;
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -253,7 +253,7 @@ const downloadStyle = `
     #headline {
       position: relative;
       top: 283px;
-      left: 180px;
+      left: 115px;
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -333,8 +333,8 @@ const downloadPageStyle = `
     }
     #headline {
       position: relative;
-      top: 240px;
-      left: 160px;
+      top: 275px;
+      left: 113px;
       transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
@@ -672,8 +672,8 @@ input {
 .headline >>> #headline {
 	transform: scale(0.6);
 	position:relative;
-  bottom:70px;
-  left:323px;
+  bottom:110px;
+  left:190px;
 }
 
 .manualPage >>> #manual-page {

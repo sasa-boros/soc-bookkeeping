@@ -243,8 +243,8 @@
   }
 
   #churchMunicipalityInput {
-    width: 235px;
-    max-width: 320px;
+    width: 440px;
+    max-width: 440px;
     border-style: none;
     display:inline;
   }
