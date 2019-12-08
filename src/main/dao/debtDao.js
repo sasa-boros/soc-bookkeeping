@@ -11,7 +11,7 @@ function findAll () {
 
 function findAllForYear (year) {
     return new Promise((resolve, reject) => { 
-        db.debts.find({ 'year': year }).sort({ 'createdAt': -1 }).exec((err, docs) => {
+        db.debts.find({ 'year': year }).sort({ 'createdAt': 1 }).exec((err, docs) => {
             if (err) {
                 reject(err)
             }

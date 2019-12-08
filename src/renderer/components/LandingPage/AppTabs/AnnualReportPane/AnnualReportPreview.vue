@@ -416,7 +416,7 @@ export default {
         ok: i18n.getTranslation('Ok'),
         permissionDenied: i18n.getTranslation('Permission denied.'),
         annualReportFileName: i18n.getTranslation('annual-report'),
-        annualReportPageFileName: i18n.getTranslation('annual-report-page')
+        page: i18n.getTranslation('page')
       },
       currentPage: 1,
       annualReportPagesNums: null,
@@ -592,7 +592,7 @@ export default {
         const res = await annualReportController.createAnnualReportPdf()
         if (!res.err) {
             const self = this
-            saveAs('/annual-report.pdf', this.phrases.annualReportPageFileName + '-' + this.currentPage  + (this.year ? '-' + this.year : '' ) + '.pdf', err => {
+            saveAs('/annual-report.pdf', this.phrases.annualReportFileName + '-' + this.year + '-' + this.phrases.page +  '-' + this.currentPage  + '.pdf', err => {
               if (err) {
                 if (err.message.toLowerCase().indexOf('permission denied') != -1) {
                   self.openErrorModal(self.phrases.permissionDenied)

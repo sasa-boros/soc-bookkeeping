@@ -785,7 +785,8 @@
           const res = await receiptController.createReceiptPdf()
           if (!res.err) {
             const self = this
-            saveAs('/receipt.pdf', this.phrases.receiptFileName + '.pdf', err => {
+            const date = new Date(this.form.date)
+            saveAs('/receipt.pdf', this.phrases.receiptFileName + '-' + date.getUTCDate()  + '-' + (date.getUTCMonth() +1) + '-' + date.getUTCFullYear() + '.pdf', err => {
               if (err) {
                 if (err.message.toLowerCase().indexOf('permission denied') != -1) {
                   self.openErrorModal(self.phrases.permissionDenied)
@@ -1072,11 +1073,21 @@
     -webkit-transform: scale(0.7, 0.7) translate(-70px, -70px); /* Safari and Chrome */
   }
 
+   .receiptDatepickerCalendar span:hover  {
+    border: rgb(208, 226, 247) !important;
+    background-color:  rgb(208, 226, 247) !important;
+  }
+  .receiptDatepickerCalendar span.selected  {
+    border: rgb(208, 226, 247) !important;
+    background-color:  rgb(208, 226, 247) !important;
+  }
+
    .receiptDatepickerCalendar div span:hover  {
     border: rgb(208, 226, 247) !important;
     background-color:  rgb(208, 226, 247) !important;
   }
-  .receiptDatepickerCalendar div span.selected  {
+     
+  .receiptDatepickerCalendar header span:hover  {
     border: rgb(208, 226, 247) !important;
     background-color:  rgb(208, 226, 247) !important;
   }

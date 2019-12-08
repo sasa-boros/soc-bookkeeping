@@ -11,7 +11,7 @@ function findAll () {
 
 function findAllForYear (year) {
     return new Promise((resolve, reject) => { 
-        db.savings.find({ 'year': year }).sort({ 'createdAt': -1 }).exec((err, docs) => {
+        db.savings.find({ 'year': year }).sort({ 'createdAt': 1 }).exec((err, docs) => {
             if (err) {
                 reject(err)
             }

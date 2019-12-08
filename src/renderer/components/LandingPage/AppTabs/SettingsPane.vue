@@ -37,7 +37,7 @@
     </b-row>-->
     <b-row>
       <b-col>
-        <b-form ref="form" @submit="createAnnualReportCommonData" novalidate no-validation>
+        <b-form ref="commonDataForm" @submit="createAnnualReportCommonData" novalidate no-validation>
           Дневник благајне Српске православне црквене општине&nbsp;
           <b-form-input id="churchMunicipalityInput" type="text" v-model="churchMunicipality" v-on:input="disableCommonSaveBtn = false" v-on:keypress="limitInputPerSize"/> у
           <b-form-input id="churchTownInput" type="text" v-model="churchTown" v-on:input="disableCommonSaveBtn = false" v-on:keypress="limitInputPerSize"/>.&nbsp;
@@ -167,8 +167,12 @@
           }
         })
       },
-      limitInputPerSize (evt) {
-        if (evt.target.scrollWidth > evt.target.clientWidth) {
+      limitInputPerSize(evt) {
+        if (evt.key == 'Enter') {
+          return
+        }
+        const highlightedText = window.getSelection().toString()
+        if (evt.target.scrollWidth > evt.target.clientWidth && (!highlightedText || highlightedText == '')) {
           evt.preventDefault()
         } 
       },
