@@ -458,6 +458,8 @@ function mapDebtFormToDebt (debtForm) {
   return debt
 }
 
+const partPosNumber = ['first', 'second']
+
 function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   const paymentSlipForm = {};
   paymentSlipForm._id = paymentSlip._id;
@@ -474,15 +476,10 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   paymentSlipForm.secondPartition = null;
   paymentSlipForm.secondPosition = null;
   paymentSlipForm.secondIncome = null;
-  if (paymentSlip.incomePerCode && paymentSlip.incomePerCode.length > 0) {
-    paymentSlipForm.firstPartition = paymentSlip.incomePerCode[0].incomeCode.partition;
-    paymentSlipForm.firstPosition = paymentSlip.incomePerCode[0].incomeCode.position;
-    paymentSlipForm.firstIncome = asFormatedString(paymentSlip.incomePerCode[0].income, amountNumberOptions);
-    if(paymentSlip.incomePerCode.length > 1) {
-      paymentSlipForm.secondPartition = paymentSlip.incomePerCode[1].incomeCode.partition;
-      paymentSlipForm.secondPosition = paymentSlip.incomePerCode[1].incomeCode.position;
-      paymentSlipForm.secondIncome = asFormatedString(paymentSlip.incomePerCode[1].income, amountNumberOptions);
-    }
+  for (let i = 0; i < paymentSlip.incomePerCode.length; i++) {
+    paymentSlipForm[partPosNumber[i] + 'Partition'] = paymentSlip.incomePerCode[i].incomeCode.partition;
+    paymentSlipForm[partPosNumber[i] + 'Position'] = paymentSlip.incomePerCode[i].incomeCode.position;
+    paymentSlipForm[partPosNumber[i] + 'Income'] = asFormatedString(paymentSlip.incomePerCode[i].income, amountNumberOptions);
   }
   paymentSlipForm.income = asFormatedString(paymentSlip.income, amountNumberOptions);
   paymentSlipForm.incomeAsText = numberToSerbianDinars(paymentSlip.income);
@@ -537,15 +534,10 @@ function mapReceiptToReceiptForm (receipt) {
     receiptForm.secondPartition = null;
     receiptForm.secondPosition = null;
     receiptForm.secondOutcome = null;
-    if (receipt.outcomePerCode && receipt.outcomePerCode.length > 0) {
-      receiptForm.firstPartition = receipt.outcomePerCode[0].outcomeCode.partition;
-      receiptForm.firstPosition = receipt.outcomePerCode[0].outcomeCode.position;
-      receiptForm.firstOutcome = asFormatedString(receipt.outcomePerCode[0].outcome, amountNumberOptions);
-      if(receipt.outcomePerCode.length > 1) {
-        receiptForm.secondPartition = receipt.outcomePerCode[1].outcomeCode.partition;
-        receiptForm.secondPosition = receipt.outcomePerCode[1].outcomeCode.position;
-        receiptForm.secondOutcome = asFormatedString(receipt.outcomePerCode[1].outcome, amountNumberOptions);
-      } 
+    for (let i = 0; i < receipt.outcomePerCode.length; i++) {
+      receiptForm[partPosNumber[i] + 'Partition'] = receipt.outcomePerCode[i].outcomeCode.partition;
+      receiptForm[partPosNumber[i] + 'Position'] = receipt.outcomePerCode[i].outcomeCode.position;
+      receiptForm[partPosNumber[i] + 'Outcome'] = asFormatedString(receipt.outcomePerCode[i].outcome, amountNumberOptions);
     }
     receiptForm.outcome = asFormatedString(receipt.outcome, amountNumberOptions);
     receiptForm.outcomeAsText = numberToSerbianDinars(receipt.outcome);

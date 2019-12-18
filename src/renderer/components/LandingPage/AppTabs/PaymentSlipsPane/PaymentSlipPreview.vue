@@ -14,13 +14,13 @@
                                                                                                                         <b-form-input id="payedInput" :disabled="defaultPaymentSlipPreview" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text" v-on:blur.native="postDatepickerOnBlur"></b-form-input> 
         <br/>                                                                                                         Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
                                                                                            <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
-                Примио благајник,                                           <span class="partText">Парт. </span><b-form-input id="secondPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
+                  Примио благајник,                                         <span class="partText">Парт. </span><b-form-input id="secondPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
                                                            
-      <br/><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input>                                                                              Свега дин. <span v-on:mouseleave="disableTotalIncomeTooltip ? null : hideTooltip('totalIncomeInputWrapper')" id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalIncomeTooltip }"></b-form-input></span>
+      <br/><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input>                                                                            Свега дин. <span v-on:mouseleave="disableTotalIncomeTooltip ? null : hideTooltip('totalIncomeInputWrapper')" id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalIncomeTooltip }"></b-form-input></span>
 
                                                                                                                                               Наредбодавац
                                                                                                                                 Председник црквене општине,
-Књижено у Дн. бл. стр. <span v-on:mouseleave="hideTooltip('annualReportPageInputWrapper')" id="annualReportPageInputWrapper"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span> р. бр. <span v-on:mouseleave="hideTooltip('ordinalInputWrapper')" id="ordinalInputWrapper"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span>.                                         <b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input>
+Књижено у Дн. бл. стр. <span v-on:mouseleave="hideTooltip('annualReportPageInputWrapper')" id="annualReportPageInputWrapper"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span> р. бр. <span v-on:mouseleave="hideTooltip('ordinalInputWrapper')" id="ordinalInputWrapper"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span>.                                        <b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input>
       
 
       </div>
@@ -456,7 +456,7 @@
       },
       firstPartPosOptions: function() {
         var options = this.getInitialPartPosOptions()
-        if(this.form.secondPartition) {
+        if(this.form.secondPartition || this.form.secondPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
               options.splice(i, 1)
@@ -468,7 +468,7 @@
       },
       secondPartPosOptions: function() {
         var options = this.getInitialPartPosOptions()
-        if(this.form.firstPartition) {
+        if(this.form.firstPartition || this.form.firstPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
               options.splice(i, 1)
@@ -485,19 +485,19 @@
         return !this.form.income || this.form.income.trim() === ''
       },
       missingFirstPart: function () {
-        return !this.form.firstPartition || this.form.firstPartition.toString().trim() === ''
+        return !(this.form.firstPartition || this.form.firstPartition == 0) || this.form.firstPartition.toString().trim() === ''
       },
       missingFirstPos: function () {
-          return !this.form.firstPosition
+        return !(this.form.firstPosition || this.form.firstPosition == 0)
       },
       missingFirstIncome: function () {
         return !this.form.firstIncome || this.form.firstIncome.trim() === ''
       },
       missingSecondPart: function () {
-        return !this.form.secondPartition || this.form.secondPartition.toString().trim() === ''
+        return !(this.form.secondPartition || this.form.secondPartition == 0) || this.form.secondPartition.toString().trim() === ''
       },
       missingSecondPos: function () {
-          return !this.form.secondPosition
+        return !(this.form.secondPosition || this.form.secondPosition == 0)
       },
       missingSecondIncome: function () {
         return !this.form.secondIncome || this.form.secondIncome.trim() === ''
@@ -903,7 +903,7 @@
     width: 235px;
   }
   #receivedInput {
-    width: 230px;
+    width: 237px;
   }
   #yearInput {
     width:70px;
@@ -958,7 +958,7 @@
     width: 50px;
   }
   #municipalityPresidentInput {
-    width: 230px;
+    width: 235px;
   }
   #modalCancelBtn {
     position: absolute;
