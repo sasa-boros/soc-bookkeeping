@@ -980,7 +980,7 @@
   }
 
   .partPosOption {
-    overflow: auto;
+    overflow: hidden;
   }
 
   .partPosOption >>> .partPosOptionText {
@@ -990,6 +990,7 @@
   }
 
   .partPosOption >>> .descriptionOptionText {
+    overflow: auto;
     margin-right: 80px;
   }
 
