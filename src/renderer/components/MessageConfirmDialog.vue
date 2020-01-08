@@ -13,7 +13,7 @@
     </b-row>
     <b-row v-show="text">
       <b-col>
-        <div> 
+        <div class="text"> 
           {{text}} 
         </div>
       </b-col>
@@ -84,7 +84,7 @@ export default {
 
 <style scoped>
 .subText {
-  color: #8e8e8e;
-  font-size:10.0pt;
+  font-size: 10.0pt;
+  color: #888585;
 }
 </style>

@@ -481,6 +481,7 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
       paymentSlipForm[partPosNumber[i] + 'Partition'] = paymentSlip.incomePerCode[i].incomeCode.partition;
       paymentSlipForm[partPosNumber[i] + 'Position'] = paymentSlip.incomePerCode[i].incomeCode.position;
       paymentSlipForm[partPosNumber[i] + 'Income'] = asFormatedString(paymentSlip.incomePerCode[i].income, amountNumberOptions);
+      paymentSlipForm[partPosNumber[i] + 'CodeValid'] = paymentSlip.incomePerCode[i].isValid
     }
   }
   paymentSlipForm.income = asFormatedString(paymentSlip.income, largeAmountNumberOptions);
@@ -541,6 +542,7 @@ function mapReceiptToReceiptForm (receipt) {
         receiptForm[partPosNumber[i] + 'Partition'] = receipt.outcomePerCode[i].outcomeCode.partition;
         receiptForm[partPosNumber[i] + 'Position'] = receipt.outcomePerCode[i].outcomeCode.position;
         receiptForm[partPosNumber[i] + 'Outcome'] = asFormatedString(receipt.outcomePerCode[i].outcome, amountNumberOptions);
+        receiptForm[partPosNumber[i] + 'CodeValid'] = receipt.outcomePerCode[i].isValid
       }
     }
     receiptForm.outcome = asFormatedString(receipt.outcome, largeAmountNumberOptions);
@@ -602,6 +604,11 @@ function saveAs (pathToFile, fileName, callback) {
   }
 }
 
+function open (filters) {
+  const userChosenPath = dialog.showOpenDialog(currentWindow, { filters: filters })
+  return userChosenPath
+}
+
 function copy(pathToFile, userChosenPath, callback) {
   var readStream = fs.createReadStream(pathToFile);
   var writeStream = fs.createWriteStream(userChosenPath);
@@ -614,6 +621,10 @@ function copy(pathToFile, userChosenPath, callback) {
   });
 
   readStream.pipe(writeStream);
+}
+
+function reloadApp () {
+  currentWindow.reload()
 }
 
 module.exports = {
@@ -642,5 +653,7 @@ module.exports = {
   mapItemFormToItem: mapItemFormToItem,
   mapDebtToDebtForm: mapDebtToDebtForm,
   mapDebtFormToDebt: mapDebtFormToDebt,
-  saveAs: saveAs
+  saveAs: saveAs,
+  open: open,
+  reloadApp: reloadApp
 }

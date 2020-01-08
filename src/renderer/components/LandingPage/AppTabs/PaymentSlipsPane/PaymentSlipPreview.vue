@@ -161,9 +161,10 @@
           atLeastOnePartPosAmount: i18n.getTranslation('Enter at least one partition, position, amount'),
           ok: i18n.getTranslation('Ok'),
           download: i18n.getTranslation('Download'),
-          permissionDenied: i18n.getTranslation('Permission denied.'),
           paymentSlipFileName: i18n.getTranslation('payment-slip'),
-          automaticallyGeneratedAfterSave: i18n.getTranslation('Automatically generated after save')
+          automaticallyGeneratedAfterSave: i18n.getTranslation('Automatically generated after save'),
+          saveError: i18n.getTranslation('Failed saving error'),
+          unexistingPartitionAndPosition: i18n.getTranslation('Unexisting partition and position')
         },
         calendarLanguages: {
           sr: sr,
@@ -295,9 +296,15 @@
         }
       },
       firstPartTooltipText: function () {
+        if (this.invalidFirstCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       firstPosTooltipText: function () {
+        if (this.invalidFirstCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       firstIncomeTooltipText: function () {
@@ -307,9 +314,15 @@
         return this.phrases.atLeastOnePartPosAmount
       },
       secondPosTooltipText: function () {
+         if (this.invalidSecondCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       secondPartTooltipText: function () {
+         if (this.invalidSecondCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       secondIncomeTooltipText: function () {
@@ -331,7 +344,7 @@
       },
       disableFirstPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstPart || !this.shouldValidate
+          return ((!this.atLeastOnePartPosNotSet || !this.missingFirstPart) && !this.invalidFirstCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -342,7 +355,7 @@
       },
       disableFirstPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstPos || !this.shouldValidate
+          return ((!this.atLeastOnePartPosNotSet || !this.missingFirstPos) && !this.invalidFirstCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -370,7 +383,7 @@
       },
       disableSecondPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondPart || !this.shouldValidate 
+          return ((!this.atLeastOnePartPosNotSet || !this.missingSecondPart) && !this.invalidSecondCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -381,7 +394,7 @@
       },
       disableSecondPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondPos || !this.shouldValidate
+          return ((!this.atLeastOnePartPosNotSet || !this.missingSecondPos) && !this.invalidSecondCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -463,6 +476,12 @@
       missingSecondIncome: function () {
         return !this.form.secondIncome || this.form.secondIncome.trim() === ''
       },
+      invalidFirstCode: function () {
+        return this.form.firstCodeValid == false
+      },
+      invalidSecondCode: function () {
+        return this.form.secondCodeValid == false
+      },
       missingDate: function () {
         return !this.form.date
       },
@@ -476,7 +495,9 @@
             this.missingDate ||
             this.atLeastOnePartPosNotSet ||
             (!this.missingFirstPart && this.missingFirstIncome) ||
-            (!this.missingSecondPart && this.missingSecondIncome)) {
+            (!this.missingSecondPart && this.missingSecondIncome) ||
+            this.invalidFirstCode ||
+            this.invalidSecondCode) {
           return false
         }
         return true
@@ -581,10 +602,12 @@
           const partPos = selectedPartPos.split('/')
           this.form.firstPartition = partPos[0]
           this.form.firstPosition = partPos[1]
+          this.form.firstCodeValid = true
         } else {
           this.form.firstPartition = null
           this.form.firstPosition = null
           this.form.firstIncome = null
+          this.form.firstCodeValid = true
           if (this.firstIncomeInputAutonumeric) {
             this.firstIncomeInputAutonumeric.clear()
           }
@@ -595,10 +618,12 @@
           const partPos = selectedPartPos.split('/')
           this.form.secondPartition = partPos[0]
           this.form.secondPosition = partPos[1]
+          this.form.secondCodeValid = true
         } else {
           this.form.secondPartition = null
           this.form.secondPosition = null
           this.form.secondIncome = null
+          this.form.secondCodeValid = true
           if (this.secondIncomeInputAutonumeric) {
             this.secondIncomeInputAutonumeric.clear()
           }
@@ -624,6 +649,10 @@
           this.showTooltip('firstIncomeInputWrapper')
         } else if (!this.missingSecondPart && this.missingSecondIncome) {
           this.showTooltip('secondIncomeInputWrapper')
+        } else if (this.invalidFirstCode) {
+          this.showTooltip('firstPartPosSelect')
+        } else if (this.invalidSecondCode) {
+          this.showTooltip('secondPartPosSelect')
         }
       },
       showTooltip (elementId) {
@@ -693,10 +722,12 @@
         this.form.firstPartition = null;
         this.form.firstPosition = null;
         this.form.firstIncome = null;
+        this.form.firstCodeValid = null;
         this.firstIncomeInputAutonumeric.clear()
         this.form.secondPartition = null;
         this.form.secondPosition = null;
         this.form.secondIncome = null;
+        this.form.secondCodeValid = null;
         this.secondIncomeInputAutonumeric.clear()
         this.form.income = null;
         this.form.incomeAsText = null;
@@ -736,11 +767,7 @@
             const date = new Date(this.form.date)
             saveAs('/payment-slip.pdf', this.phrases.paymentSlipFileName  + '-' + date.getUTCDate()  + '-' + (date.getUTCMonth() +1) + '-' + date.getUTCFullYear() +  '.pdf', err => {
               if (err) {
-                if (err.message.toLowerCase().indexOf('permission denied') != -1) {
-                  self.openErrorModal(self.phrases.permissionDenied)
-                } else {
-                  self.openErrorModal(err.message)
-                }
+                self.openErrorModal(self.phrases.saveError)
               }
             })
           } else {
