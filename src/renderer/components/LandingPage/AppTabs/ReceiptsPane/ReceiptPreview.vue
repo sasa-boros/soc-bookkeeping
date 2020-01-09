@@ -10,7 +10,7 @@
         <br/><b-form-input disabled class="input-small" id="outcomeAsText2" v-model="generatedOutcomeTextLine2"></b-form-input>
         <br/>динара, примљених из благајне Српске православне црквене општине <b-form-input id="churchMunicipalityInput" v-on:keypress="limitInputPerSize" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input>
         <br/>у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :autofocus="!receiptPreview" :disabled="defaultReceiptPreview" v-on:keypress="limitInputPerSize" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" v-on:blur.native="preDatepickerOnBlur"></b-form-input>
-        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview }" :language="calendarLanguages.srCYRL" :disabled="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker> год.</span>                                                                                                                 Примио,
+        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview, 'receiptDatepickerInput': true }" :language="calendarLanguages.srCYRL" :disabled="defaultReceiptPreview" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker> год.</span>                                                                                                                 Примио,
 у <b-form-input id="townPayedInput" v-on:keypress="limitInputPerSize" v-model="form.townPayed" class="input-small" type="text" v-on:blur.native="postDatepickerOnBlur"></b-form-input>&nbsp;                            <b-form-input v-on:keypress="limitInputPerSize" :disabled="defaultReceiptPreview" v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input>
         <br/>                                                                                                         Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
                                                                                            <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultReceiptPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstOutcomeTooltip ? null : hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
@@ -173,10 +173,12 @@
         disablePrintAndDownload: true,
         tooltipTimeouts: [],
         formatedFirstPart: null,
-        formatedSecondPart: null
+        formatedSecondPart: null,
+        commonData: null
       }
     },
     created () {
+      this.loadAnnualReportCommon()
       if(this.receiptPreview) {
         var receipt = JSON.parse(JSON.stringify(this.receipt));
         this.form = mapReceiptToReceiptForm(receipt);
@@ -189,7 +191,6 @@
         var defaultReceipt = JSON.parse(JSON.stringify(this.defaultReceipt))
         defaultReceipt._id = undefined;
         this.form = mapReceiptToReceiptForm(defaultReceipt);
-        this.loadAnnualReportCommon()
       } 
       const self = this;
       outcomeCodeController.getOutcomeCodes().then(function (res) {
@@ -538,9 +539,12 @@
         const self = this
         annualReportController.getAnnualReportCommonData().then((res) => {
           if (!res.err) {
-            self.form.churchMunicipality = res.data ? res.data.churchMunicipality : null
-            self.form.town = res.data ? res.data.churchTown : null
-            self.form.townPayed = self.form.town
+            if(!self.receiptPreview) {
+              self.form.churchMunicipality = res.data ? res.data.churchMunicipality : null
+              self.form.town = res.data ? res.data.churchTown : null
+              self.form.townPayed = self.form.town
+            }
+            self.commonData = res.data
           } else {
             self.openErrorModal(res.err)
           }
@@ -729,11 +733,11 @@
         this.secondOutcomeInputAutonumeric.clear()
         this.form.outcome = null
         this.form.outcomeAsText = null
-        this.form.churchMunicipality = null
-        this.form.town = null
         this.form.reason = null
-        this.form.townPayed = null
         this.form.received = null
+        this.form.churchMunicipality = this.commonData ? this.commonData.churchMunicipality : null
+        this.form.town = this.commonData ? this.commonData.churchTown : null
+        this.form.townPayed = this.form.town
       },
       openErrorModal(error) {
         this.errorText = error
@@ -831,7 +835,7 @@
     height: 520px;
     /*border-style: solid;
     border-color: blue;*/
-    color: #16264C;
+    color: black;
     line-height: 2;
     margin: 0;
     position: relative;
@@ -1022,7 +1026,8 @@
   .disabledDatepicker .receiptDatepickerInput {
     background-color: rgb(235, 236, 238);
   }
-  .is-invalid .receiptDatepickerInput {    
+  .is-invalid-date {   
+    outline: dotted 2px red !important;
     background-image: url('~@/assets/invalid-red.png');
     background-repeat: no-repeat;
     background-position: center right calc(2.25rem / 4);

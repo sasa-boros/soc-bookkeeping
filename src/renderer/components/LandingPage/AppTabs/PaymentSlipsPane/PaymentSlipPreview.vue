@@ -10,7 +10,7 @@
         <br/><b-form-input disabled class="input-small" id="IncomeAsText2" v-model="generatedIncomeTextLine2"></b-form-input>
         <br/>колико сам данас уплатио у благајну Српске православне црквене општине
 у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :autofocus="!paymentSlipPreview" v-on:keypress="limitInputPerSize" ref="reasonInput" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" :disabled="defaultPaymentSlipPreview" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text" v-on:blur.native="preDatepickerOnBlur"></b-form-input>
-        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date" v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview}" :language="calendarLanguages.srCYRL" :disabled="defaultPaymentSlipPreview" input-class="paymentSlipDatepickerInput ignoreInPrint" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>                                                                                                               Уплатио,
+        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker id="dateInput" ref="dateInput" v-model="form.date" :language="calendarLanguages.srCYRL" :disabled="defaultPaymentSlipPreview" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview, 'paymentSlipDatepickerInput': true, 'ignoreInPrint': true}" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>                                                                                                               Уплатио,
                                                                                                                         <b-form-input id="payedInput" :disabled="defaultPaymentSlipPreview" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text" v-on:blur.native="postDatepickerOnBlur"></b-form-input> 
         <br/>                                                                                                         Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
                                                                                            <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
@@ -176,10 +176,12 @@
         disablePrintAndDownload: true,
         tooltipTimeouts: [],
         formatedFirstPart: null,
-        formatedSecondPart: null
+        formatedSecondPart: null,
+        commonData: null
       }
     },
     created () {
+      this.loadAnnualReportCommon()
       if(this.paymentSlipPreview) {
         var paymentSlip = JSON.parse(JSON.stringify(this.paymentSlip))
         this.form = mapPaymentSlipToPaymentSlipForm(paymentSlip)
@@ -192,7 +194,6 @@
         var defaultPaymentSlip = JSON.parse(JSON.stringify(this.defaultPaymentSlip))
         defaultPaymentSlip._id = undefined
         this.form = mapPaymentSlipToPaymentSlipForm(defaultPaymentSlip)
-        this.loadAnnualReportCommon()
       }
       const self = this;
       incomeCodeController.getIncomeCodes().then(function (res) {
@@ -541,7 +542,10 @@
         const self = this
         annualReportController.getAnnualReportCommonData().then((res) => {
           if (!res.err) {
-            self.form.town = res.data ? res.data.churchTown : null
+            if(!self.paymentSlipPreview) {
+              self.form.town = res.data ? res.data.churchTown : null
+            }
+            self.commonData = res.data
           } else {
             self.openErrorModal(res.err)
           }
@@ -731,7 +735,7 @@
         this.secondIncomeInputAutonumeric.clear()
         this.form.income = null;
         this.form.incomeAsText = null;
-        this.form.town = null;
+        this.form.town = this.commonData ? this.commonData.churchTown : null
         this.form.reason = null;
         this.form.payed = null;
       },
@@ -825,7 +829,7 @@
     height: 520px;
     /*border-style: solid;
     border-color: blue;*/
-    color: #16264C;
+    color: black;
     line-height: 2;
     margin: 0;
     position: relative;
@@ -1010,7 +1014,8 @@
   .disabledDatepicker .paymentSlipDatepickerInput {
     background-color: rgb(235, 236, 238);
   }
-  .is-invalid .paymentSlipDatepickerInput {    
+  .is-invalid-date {   
+    outline: dotted 2px red !important;
     background-image: url('~@/assets/invalid-red.png');
     background-repeat: no-repeat;
     background-position: center right calc(2.25rem / 4);
