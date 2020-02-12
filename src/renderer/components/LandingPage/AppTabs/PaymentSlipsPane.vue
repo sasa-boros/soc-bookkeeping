@@ -55,8 +55,8 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
-              <img src="~@/assets/see-more.png">                                           
+            <b-button id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs">
+              <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>                
         </template>
@@ -71,8 +71,8 @@
         <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
-              <img src="~@/assets/delete.png">                                           
+            <b-button id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs">
+              <img src="~@/assets/delete.png" class="rowImg">                                           
             </b-button>     
           </b-button-group>               
           <span v-show="!isValid(row.item)">

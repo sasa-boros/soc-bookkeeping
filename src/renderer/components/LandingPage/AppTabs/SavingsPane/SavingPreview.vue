@@ -430,15 +430,15 @@
     border-style: none;
   }
   #amountInput {
-    width: 130px;
+    width: 110px;
     border-style: none;
   }
   #amountWithdrawnInput {
-    width: 130px;
+    width: 110px;
     border-style: none;
   }
   #amountDepositedInput {
-    width: 130px;
+    width: 110px;
     border-style: none;
   }
 </style>

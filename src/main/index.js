@@ -1,8 +1,10 @@
 // Using chrome cache to speed up app
 require('v8-compile-cache')
 const settingsService = require('./service/settingsService')
+const outcomeCodeService = require('./service/outcomeCodeService')
 
 const { app, BrowserWindow } = require('electron')
+const contextMenu = require('electron-context-menu');
 const path = require('path')
 
 // Connecting to neDB
@@ -21,6 +23,21 @@ require('../renderer/store')
 // Loading ipc main router
 require('./ipcRouter')
 
+createDefaults()
+
+async function createDefaults() {
+  // creating default ct 4% outcome code
+  const outcomeCodes = await outcomeCodeService.getOutcomeCodes()
+  if (outcomeCodes) {
+    const taxOutcomeCode = outcomeCodes.find(el => el.tax)
+    if (!taxOutcomeCode) {
+      outcomeCodeService.createOutcomeCode({partition: 3, position: 1, description: 'ЦТ 4%', tax: true})
+    }
+  } else {
+    outcomeCodeService.createOutcomeCode({partition: 3, position: 1, description: 'ЦТ 4%', tax: true})
+  }
+}
+
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
@@ -32,7 +49,7 @@ async function createWindow () {
    */
   const settings = await settingsService.getSettings()
   mainWindow = new BrowserWindow({
-    huseContentSize: true,
+    show: false,
     backgroundColor: 'white',
     webPreferences: {
       zoomFactor: settings && settings.zoomLevel ? settings.zoomLevel : 1.3
@@ -44,7 +61,29 @@ async function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  mainWindow.webContents.on('did-finish-load', function() {
+    mainWindow.show();
+  })
 }
+
+contextMenu({
+  prepend: (defaultActions, params) => [
+  ],
+  showLookUpSelection: false,
+  showCopyImage: false,
+  showCopyImageAddress: false,
+  showSaveImage: false,
+  showSaveImageAs: false,
+  showInspectElement: false,
+  showServices: false,
+  labels: {
+    cut: 'Исеци',
+		copy: 'Копирај',
+    paste: 'Налепи'
+  },
+  shouldShowMenu: (event, params) => params.mediaType !== 'image'
+});
+
 
 app.on('ready', createWindow)
 

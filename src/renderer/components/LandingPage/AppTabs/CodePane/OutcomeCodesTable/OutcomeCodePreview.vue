@@ -38,7 +38,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-on:keypress="limitInputPerSize"/>
+            <b-form-input :disabled="isTaxCode" id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-on:keypress="limitInputPerSize"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -120,13 +120,15 @@ export default {
       partitionInputAutonumeric: null,
       positionInputAutonumeric: null,
       alreadySubmited: false,
-      tooltipTimeouts: []
+      tooltipTimeouts: [],
+      isTaxCode: false
     }
   },
   created () {
     if (this.isUpdate) {
       this.form = mapCodeToCodeForm(JSON.parse(JSON.stringify(this.outcomeCode)))
     }
+    this.determineIfItsTaxCode()
   },
   mounted () {
     this.partitionInputAutonumeric = new AutoNumeric('#partitionInput', partitionPositionNumberOptions)
@@ -190,6 +192,11 @@ export default {
     }
   },
   methods: {
+    determineIfItsTaxCode () {
+       if (this.outcomeCode && this.outcomeCode.tax) {
+            this.isTaxCode = true
+        }
+    },
     focusModalCloseButton (modalRef) {
       this.$refs[modalRef].$refs.closeButton.focus()
     },
@@ -263,7 +270,10 @@ export default {
       this.partitionInputAutonumeric.clear()
       this.form.position = null;
       this.positionInputAutonumeric.clear()
-      this.form.description = null;
+      if (!this.isTaxCode) {
+        this.form.description = null;
+      }
+      this.form.isTaxed = null;
     },
     showInvalidTooltips () {
       if (this.missingPartition || this.notUnique) {

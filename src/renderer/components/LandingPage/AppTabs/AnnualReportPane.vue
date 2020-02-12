@@ -1,11 +1,16 @@
 <template>
   <b-container fluid>
-      <b-row class="text-center">
+      <b-row class="text-center" v-show="year">
         <b-col>
           Дневник благајне за годину&nbsp;
           <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-col> 
       </b-row>
+      <b-row class="text-center" v-show="!year">
+          <b-col>
+            Дневник благајне за одређену годину се креира након првог уноса података за њу.
+          </b-col>
+        </b-row>
       <div v-if="form">
       <b-form ref="annualReportDataForm" @submit="createAnnualReportData" novalidate no-validation>
         <hr>
@@ -30,28 +35,10 @@
         <br>
         <b-row>
           <b-col cols="5">
-            Некретнине: земљиште - површина:
-          </b-col>
-          <b-col>
-            <b-form-input id="realEstateLandSurfaceInput" type="text" v-model="form.realEstateLandSurface" v-on:keypress="limitInputPerSize"/>
-          </b-col>
-        </b-row>
-        <br>
-        <b-row>
-          <b-col cols="5">
             Некретнине: земљиште - вредност:
           </b-col>
           <b-col>
             <b-form-input id="realEstateLandValueInput" type="text" v-model="form.realEstateLandValue"/>
-          </b-col>
-        </b-row>
-        <br>
-        <b-row>
-          <b-col cols="5">
-            Некретнине: зграде - површина:
-          </b-col>
-          <b-col>
-            <b-form-input id="realEstateBuildingsSurfaceInput" type="text" v-model="form.realEstateBuildingsSurface" v-on:keypress="limitInputPerSize"/>
           </b-col>
         </b-row>
         <br>
@@ -63,11 +50,30 @@
           <b-form-input id="realEstateBuildingsValueInput" type="text" v-model="form.realEstateBuildingsValue"/>
           </b-col>
         </b-row>
+         <br>
+        <b-row>
+          <b-col cols="5">
+            Некретнине: земљиште - површина:
+          </b-col>
+          <b-col>
+            <b-form-input id="realEstateLandSurfaceInput" type="text" v-model="form.realEstateLandSurface" v-on:keypress="limitInputPerSize"/>
+          </b-col>
+        </b-row>
+         <br>
+        <b-row>
+          <b-col cols="5">
+            Некретнине: зграде - површина:
+          </b-col>
+          <b-col>
+            <b-form-input id="realEstateBuildingsSurfaceInput" type="text" v-model="form.realEstateBuildingsSurface" v-on:keypress="limitInputPerSize"/>
+          </b-col>
+        </b-row>
+        <br>
         <br>
         <b-row>
           <b-col>
             <div class="predictedAllowedDivWrapper" style="padding-right:30px">
-              Буџетом предвиђено:
+              Буџетом предвиђено - приходи:
               <br>
               <br>
               <div class="predictedAllowedDiv" v-for="(ipcp, index) in form.totalIncomePerCodePredicted" v-bind:key="'ic' + index">
@@ -76,7 +82,7 @@
               </div>
             </div>
             <div class="predictedAllowedDivWrapper">
-              Буџетом одобрено:
+              Буџетом предвиђено - расходи:
               <br>
               <br>
               <div class="predictedAllowedDiv" v-for="(opcp, index) in form.totalOutcomePerCodeAllowed" v-bind:key="'oc' + index">
@@ -136,7 +142,7 @@
   const { ipcRenderer } = require('electron')
   const AutoNumeric = require('autonumeric')
   const Mousetrap = require('mousetrap')
-  const { amountNumberOptions, largeAmountNumberOptions, asRoman, mapAnnualReportDataToAnnualReportDataForm, mapAnnualReportDataFormToAnnualReportData } = require('../../../utils/utils')
+  const { largeAmountNumberOptions, asRoman, mapAnnualReportDataToAnnualReportDataForm, mapAnnualReportDataFormToAnnualReportData } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -228,10 +234,10 @@
             self.autonumerisedInputs.push(new AutoNumeric('#realEstateLandValueInput', largeAmountNumberOptions))
             self.autonumerisedInputs.push(new AutoNumeric('#realEstateBuildingsValueInput', largeAmountNumberOptions))
             for (let i=0; i<self.form.totalIncomePerCodePredicted.length; i++) {
-              self.autonumerisedInputs.push(new AutoNumeric('#ic' + i, amountNumberOptions))
+              self.autonumerisedInputs.push(new AutoNumeric('#ic' + i, largeAmountNumberOptions))
             }
             for (let i=0; i<self.form.totalOutcomePerCodeAllowed.length; i++) {
-              self.autonumerisedInputs.push(new AutoNumeric('#oc' + i, amountNumberOptions))
+              self.autonumerisedInputs.push(new AutoNumeric('#oc' + i, largeAmountNumberOptions))
             }
             self.formUnwatch = self.$watch('form', () => {
               self.disableAnnualReportDataSaveBtn = false
@@ -337,10 +343,10 @@
 
 <style>
   .modal .modal-ar {
-    max-width: 1213px;
-    width: 1213px;
-    max-height:894px;
-    height:894px;
+    max-width: 1280px;
+    width: 1280px;
+    max-height:960px;
+    height:960px;
     overflow: hidden;
   }
 </style>
@@ -358,46 +364,39 @@ input {
   border-radius: 0 !important;
 }
 
-#churchMunicipalityInput {
-  width: 320px;
-  max-width: 320px;
-  border-style: none;
-  display:inline;
-}
-
 #transferFromPreviousYearInput {
-  width: 140px;
-  max-width: 140px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
 }
 
 #shareValueDepreciatedDuringYearInput {
-  width: 140px;
-  max-width: 140px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
 }
 
 #realEstateBuildingsValueInput {
-  width: 140px;
-  max-width: 140px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
 }
 
 #realEstateBuildingsSurfaceInput {
-  width: 140px;
-  max-width: 140px;
+  width: 200px;
+  max-width: 200px;
   border-style: none;
 }
 
 #realEstateLandValueInput {
-  width: 140px;
-  max-width: 140px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
 }
 
 #realEstateLandSurfaceInput {
-  width: 140px;
-  max-width: 140px;
+  width: 200px;
+  max-width: 200px;
   border-style: none;
 }
 
@@ -413,11 +412,10 @@ input {
 }
 
 .predictedAllowedLabelDiv {
-  width: 105px; 
-  max-width: 105px;
-  height: 135px; 
-  max-height: 135px;
-  text-overflow: ellipsis;
+  width: 110px; 
+  max-width: 110px;
+  height: 140px; 
+  max-height: 140px;
   white-space:pre-wrap; 
   word-wrap:break-word;
   hyphens:auto;
@@ -432,15 +430,9 @@ input {
   0 .5pt 0 0 #514A4A inset;
 }
 
-.amountInput {
-  width: 105px;
-  max-width: 105px;
-  border-style: none;
-}
-
 .codeAmountInput {
-  width: 105px;
-  max-width: 100=5px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
   box-shadow: 
   .5pt 0 0 0 #514A4A, 

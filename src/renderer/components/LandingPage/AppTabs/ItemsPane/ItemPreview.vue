@@ -316,11 +316,11 @@
     border-radius: 0 !important;
   }
   #nameInput {
-    width: 470px;
+    width: 430px;
     border-style: none;
   }
   #valueInput {
-    width: 140px;
+    width: 110px;
     border-style: none;
   }
 </style>

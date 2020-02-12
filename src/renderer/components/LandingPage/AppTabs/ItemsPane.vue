@@ -54,8 +54,8 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateItemBtn" v-on:mouseleave="hideTooltip('updateItemBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateItemModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
-              <img src="~@/assets/see-more.png">                                           
+            <b-button id="updateItemBtn" v-on:mouseleave="hideTooltip('updateItemBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateItemModal(row.item)" variant="link" class="btn-xs">
+              <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>                
         </template>
@@ -70,8 +70,8 @@
         <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteItemBtn" v-on:mouseleave="hideTooltip('deleteItemBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteItem}" @click.stop="openDeleteItemModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
-              <img src="~@/assets/delete.png">                                           
+            <b-button id="deleteItemBtn" v-on:mouseleave="hideTooltip('deleteItemBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteItem}" @click.stop="openDeleteItemModal(row.item)" variant="link" class="btn-xs">
+              <img src="~@/assets/delete.png" class="rowImg">                                           
             </b-button>     
           </b-button-group>                
         </template>

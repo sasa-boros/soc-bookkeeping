@@ -352,7 +352,7 @@
     border-style: none;
   }
   #nominalValueInput {
-    width: 130px;
+    width: 110px;
     border-style: none;
   }
 </style>

@@ -202,3 +202,8 @@ input[type]:focus:not(.is-invalid) {
 .dropdown-toggle::after {
   color:#514A4A;
 }
+
+.rowImg {
+  position:relative; 
+  bottom:8px;
+}

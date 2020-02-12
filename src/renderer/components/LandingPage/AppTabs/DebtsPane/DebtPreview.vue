@@ -316,11 +316,11 @@
     border-radius: 0 !important;
   }
   #descriptionInput {
-    width: 470px;
+    width: 430px;
     border-style: none;
   }
   #amountInput {
-    width: 140px;
+    width: 110px;
     border-style: none;
   }
 </style>
