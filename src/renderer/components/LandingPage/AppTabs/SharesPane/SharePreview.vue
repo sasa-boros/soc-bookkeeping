@@ -58,7 +58,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="nominalValueInput" type="text" v-model="form.nominalValue" v-on:mouseleave="disableNominalValueTooltip ? null : hideTooltip('nominalValueInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingNominalValue }"/>
+            <b-form-input v-on:cut="updateAfterCut" id="nominalValueInput" type="text" v-model="form.nominalValue" v-on:mouseleave="disableNominalValueTooltip ? null : hideTooltip('nominalValueInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingNominalValue }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -223,6 +223,17 @@
       }
     },
     methods: {
+      updateAfterCut (e) {
+        if (e && e.target && e.target.id) {
+          setTimeout(() => {
+            const updatedDocEl = document.getElementById(e.target.id);
+            const el = AutoNumeric.getAutoNumericElement('#' + e.target.id)
+            if (el && updatedDocEl) {
+              el.set(updatedDocEl.value)
+            }
+          }, 100)
+        }
+      },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },

@@ -22,7 +22,7 @@
             Пренос готовине из претходне године (рез. фонд):
           </b-col>
           <b-col>
-            <b-form-input id="transferFromPreviousYearInput" type="text" v-model="form.transferFromPreviousYear"/>
+            <b-form-input v-on:cut="updateAfterCut" id="transferFromPreviousYearInput" type="text" v-model="form.transferFromPreviousYear"/>
           </b-col>
         </b-row>
         <br>
@@ -31,7 +31,7 @@
             Хартије од вредности - у току године отуђено (амортизовано):
           </b-col>
           <b-col>
-            <b-form-input id="shareValueDepreciatedDuringYearInput" type="text" v-model="form.shareValueDepreciatedDuringYear"/>
+            <b-form-input v-on:cut="updateAfterCut" id="shareValueDepreciatedDuringYearInput" type="text" v-model="form.shareValueDepreciatedDuringYear"/>
           </b-col>
         </b-row>
         <br>
@@ -40,7 +40,7 @@
             Некретнине: земљиште - вредност:
           </b-col>
           <b-col>
-            <b-form-input id="realEstateLandValueInput" type="text" v-model="form.realEstateLandValue"/>
+            <b-form-input v-on:cut="updateAfterCut" id="realEstateLandValueInput" type="text" v-model="form.realEstateLandValue"/>
           </b-col>
         </b-row>
         <br>
@@ -49,7 +49,7 @@
             Некретнине: зграде - вредност:
           </b-col>
           <b-col>
-          <b-form-input id="realEstateBuildingsValueInput" type="text" v-model="form.realEstateBuildingsValue"/>
+          <b-form-input v-on:cut="updateAfterCut" id="realEstateBuildingsValueInput" type="text" v-model="form.realEstateBuildingsValue"/>
           </b-col>
         </b-row>
          <br>
@@ -80,7 +80,7 @@
               <br>
               <div class="predictedAllowedDiv" v-for="(ipcp, index) in form.totalIncomePerCodePredicted" v-bind:key="'ic' + index">
                 <div class="predictedAllowedLabelDiv">{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position + "\n\n" + (ipcp.incomeCode.description ? ipcp.incomeCode.description : '')}}</div>
-                <b-form-input :id="'ic' + index" type="text" v-model="ipcp.income" class="codeAmountInput"/>
+                <b-form-input v-on:cut="updateAfterCut" :id="'ic' + index" type="text" v-model="ipcp.income" class="codeAmountInput"/>
               </div>
             </div>
             <div class="predictedAllowedDivWrapper">
@@ -89,7 +89,7 @@
               <br>
               <div class="predictedAllowedDiv" v-for="(opcp, index) in form.totalOutcomePerCodeAllowed" v-bind:key="'oc' + index">
                 <div class="predictedAllowedLabelDiv">{{ asRomanNumber(opcp.outcomeCode.partition) + "/" + opcp.outcomeCode.position + "\n\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
-                <b-form-input :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
+                <b-form-input v-on:cut="updateAfterCut" :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
               </div>
             </div>
           </b-col>
@@ -180,6 +180,17 @@
       )
     },
     methods: {
+      updateAfterCut (e) {
+        if (e && e.target && e.target.id) {
+          setTimeout(() => {
+            const updatedDocEl = document.getElementById(e.target.id);
+            const el = AutoNumeric.getAutoNumericElement('#' + e.target.id)
+            if (el && updatedDocEl) {
+              el.set(updatedDocEl.value)
+            }
+          }, 100)
+        }
+      },
       asRomanNumber(num) {
         return asRoman(num)
       },

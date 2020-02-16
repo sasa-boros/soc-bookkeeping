@@ -18,7 +18,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="partitionInput" v-on:mouseleave="disablePartitionTooltip ? null : hideTooltip('partitionInput')" type="text" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }" :autofocus="!isUpdate"/>
+            <b-form-input v-on:cut="updateAfterCut" id="partitionInput" v-on:mouseleave="disablePartitionTooltip ? null : hideTooltip('partitionInput')" type="text" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }" :autofocus="!isUpdate"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -28,7 +28,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="positionInput" v-on:mouseleave="disablePositionTooltip ? null : hideTooltip('positionInput')" type="text" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
+            <b-form-input v-on:cut="updateAfterCut" id="positionInput" v-on:mouseleave="disablePositionTooltip ? null : hideTooltip('positionInput')" type="text" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -192,6 +192,17 @@ export default {
     }
   },
   methods: {
+    updateAfterCut (e) {
+      if (e && e.target && e.target.id) {
+        setTimeout(() => {
+          const updatedDocEl = document.getElementById(e.target.id);
+          const el = AutoNumeric.getAutoNumericElement('#' + e.target.id)
+          if (el && updatedDocEl) {
+            el.set(updatedDocEl.value)
+          }
+        }, 100)
+      }
+    },
     determineIfItsTaxCode () {
        if (this.outcomeCode && this.outcomeCode.tax) {
             this.isTaxCode = true
