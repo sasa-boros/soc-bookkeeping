@@ -313,8 +313,8 @@ input {
   border-style: none;
 }
 .descriptionInput {
-  width: 355px;
-  max-width: 355px;
+  width: 340px;
+  max-width: 340px;
   border-style: none;
 }
 </style>

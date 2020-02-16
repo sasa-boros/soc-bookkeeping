@@ -272,6 +272,9 @@
     display: block;
     overflow: auto;
   }
+  .appTab.focus-visible {
+    box-shadow: none !important;
+  }
   .appTabsIcon {
     width: 25px;
   }

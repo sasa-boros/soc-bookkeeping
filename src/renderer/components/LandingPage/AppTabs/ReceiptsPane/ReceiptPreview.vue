@@ -1098,7 +1098,7 @@
     width: 320px;
   }
   #payedInput {
-    width: 236px;
+    width: 237px;
   }
   #firstPartPosSelect {
     width: 50px;

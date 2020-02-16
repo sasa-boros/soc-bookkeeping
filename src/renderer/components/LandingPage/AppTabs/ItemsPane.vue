@@ -24,7 +24,7 @@
     </b-row>
 
     <div class="tableDiv">
-      <b-table show-empty hover small id="items-table" class="mt-3"
+      <b-table show-empty hover small id="items-table" class="mt-3" fixed
               stacked="md"
               bordered
               :items="tableItems"
@@ -47,8 +47,8 @@
               v-on:head-clicked="unsort"
       >
         <template v-slot:head(select)="row">
-          <span>
-            <b-form-checkbox v-on:change="toggleCheckAll" v-model="checkAll">
+          <span v-on:mouseleave="hideTooltip()">
+            <b-form-checkbox v-b-tooltip.hover.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
             </b-form-checkbox>
           </span>
         </template>
@@ -181,12 +181,12 @@
       },
       fields () {
         return [
-          { key: 'select', label: '', thStyle: {outline: 'none'} },
-          { key: 'preview', label: '', thStyle: {outline: 'none'}  },
+          { key: 'select', label: '', thStyle: {outline: 'none', width: '30px'} },
+          { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'}  },
           { key: 'name', label: this.phrases.name, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'value', label: this.phrases.value, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'year', label: this.phrases.year, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'delete', label: '', thStyle: {outline: 'none'} },
+          { key: 'delete', label: '', thStyle: {outline: 'none', width: '70px'} },
         ]
       }
     },

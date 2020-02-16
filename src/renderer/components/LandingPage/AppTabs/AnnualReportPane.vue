@@ -1,12 +1,20 @@
 <template>
   <b-container fluid>
+      <b-form ref="annualReportDataForm" @submit="createAnnualReportData" novalidate no-validation>
       <b-row class="text-center" v-show="year">
         <b-col>
-          Дневник благајне за годину&nbsp;
+          Дневник благајне за годину:&nbsp;
           <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-col> 
+        <b-col>
+            <b-button id="annualReportDataSaveBtn" ref="annualReportDataSaveBtn" :disabled="disableAnnualReportDataSaveBtn" v-on:mouseleave="hideTooltip('annualReportDataSaveBtn')" type="submit" variant="light" class="btn-lg text-center">
+              <img src="~@/assets/save.png">
+            </b-button>
+            <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" v-on:click="createAnnualReport" :disabled="!disableAnnualReportDataSaveBtn" variant="light" class="btn-lg">
+              <img src="~@/assets/annual-report.png">
+            </b-button>
+          </b-col> 
       </b-row>
-      <b-form ref="annualReportDataForm" @submit="createAnnualReportData" novalidate no-validation>
         <hr>
         <br>
         <b-row>
@@ -71,7 +79,7 @@
               <br>
               <br>
               <div class="predictedAllowedDiv" v-for="(ipcp, index) in form.totalIncomePerCodePredicted" v-bind:key="'ic' + index">
-                <div class="predictedAllowedLabelDiv">{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position + "\n" + (ipcp.incomeCode.description ? ipcp.incomeCode.description : '')}}</div>
+                <div class="predictedAllowedLabelDiv">{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position + "\n\n" + (ipcp.incomeCode.description ? ipcp.incomeCode.description : '')}}</div>
                 <b-form-input :id="'ic' + index" type="text" v-model="ipcp.income" class="codeAmountInput"/>
               </div>
             </div>
@@ -80,23 +88,13 @@
               <br>
               <br>
               <div class="predictedAllowedDiv" v-for="(opcp, index) in form.totalOutcomePerCodeAllowed" v-bind:key="'oc' + index">
-                <div class="predictedAllowedLabelDiv">{{ asRomanNumber(opcp.outcomeCode.partition) + "/" + opcp.outcomeCode.position + "\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
+                <div class="predictedAllowedLabelDiv">{{ asRomanNumber(opcp.outcomeCode.partition) + "/" + opcp.outcomeCode.position + "\n\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
                 <b-form-input :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
               </div>
             </div>
           </b-col>
         </b-row>
         <br>             
-        <b-row class="text-right">
-          <b-col>
-            <b-button id="annualReportDataSaveBtn" ref="annualReportDataSaveBtn" :disabled="disableAnnualReportDataSaveBtn" v-on:mouseleave="hideTooltip('annualReportDataSaveBtn')" type="submit" variant="light" class="btn-lg text-center">
-              <img src="~@/assets/save.png">
-            </b-button>
-            <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" v-on:click="createAnnualReport" :disabled="!disableAnnualReportDataSaveBtn" variant="light" class="btn-lg">
-              <img src="~@/assets/annual-report.png">
-            </b-button>
-          </b-col> 
-        </b-row>
       </b-form>
       <!-- Annual report preview modal -->
       <b-modal no-close-on-backdrop hide-footer hide-header id="annual-report-preview-modal" size="ar">
@@ -399,8 +397,8 @@ input {
 .predictedAllowedLabelDiv {
   width: 110px; 
   max-width: 110px;
-  height: 140px; 
-  max-height: 140px;
+  height: 145px; 
+  max-height: 145px;
   white-space:pre-wrap; 
   word-wrap:break-word;
   hyphens:auto;

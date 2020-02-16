@@ -24,7 +24,7 @@
     </b-row>
 
     <div class="tableDiv">
-      <b-table show-empty hover small id="receipts-table" class="mt-3"
+      <b-table show-empty hover small id="receipts-table" class="mt-3" fixed
               stacked="md"
               bordered
               :items="items"
@@ -48,8 +48,8 @@
               v-on:head-clicked="unsort"
       >
         <template v-slot:head(select)="row">
-          <span>
-            <b-form-checkbox v-on:change="toggleCheckAll" v-model="checkAll">
+          <span v-on:mouseleave="hideTooltip()">
+            <b-form-checkbox v-b-tooltip.hover.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
             </b-form-checkbox>
           </span>
         </template>
@@ -62,7 +62,7 @@
         </template>
         <template v-slot:cell(select)="row">
           <span v-on:mouseleave="hideTooltip()">
-            <b-form-checkbox :id="row._id" v-b-tooltip.hover.top.window="{title: phrases.select}" :value="row.item" v-model="checkedReceipts">
+            <b-form-checkbox v-b-tooltip.hover.top.window="{title: phrases.select}" :id="row._id" :value="row.item" v-model="checkedReceipts">
             </b-form-checkbox>
           </span>
         </template>
@@ -196,12 +196,12 @@
       },
       fields () {
         return [
-          { key: 'select', label: '', thStyle: {outline: 'none'} },
-          { key: 'preview', label: '', thStyle: {outline: 'none'} },
+          { key: 'select', label: '', thStyle: {outline: 'none', width: '30px'} },
+          { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'} },
           { key: 'outcome', label: this.phrases.outcome, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'reason', label: this.phrases.reason, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'delete', label: '', thStyle: {outline: 'none'} }
+          { key: 'delete', label: '', thStyle: {outline: 'none', width: '100px'} }
         ]
       }
     },

@@ -5,7 +5,7 @@
         <img src="~@/assets/add.png">
       </b-button>
     </b-button-group>
-    <b-table show-empty
+    <b-table show-empty fixed
               stacked="md"
               bordered
               class="mt-3"
@@ -86,7 +86,8 @@
         fields: [
           {
             key: 'preview',
-            label: ''
+            label: '',
+            thStyle: {outline: 'none', width: '70px'}
           },
           {
             key: 'partition',
@@ -105,7 +106,8 @@
           },
           {
             key: 'remove',
-            label: ''
+            label: '',
+            thStyle: {outline: 'none', width: '70px'}
           }
         ],
         outcomeCodes: [],
