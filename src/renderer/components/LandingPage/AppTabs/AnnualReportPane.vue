@@ -6,12 +6,6 @@
           <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-col> 
       </b-row>
-      <b-row class="text-center" v-show="!year">
-          <b-col>
-            Дневник благајне за одређену годину се креира након првог уноса података за њу.
-          </b-col>
-        </b-row>
-      <div v-if="form">
       <b-form ref="annualReportDataForm" @submit="createAnnualReportData" novalidate no-validation>
         <hr>
         <br>
@@ -98,7 +92,7 @@
             <b-button id="annualReportDataSaveBtn" ref="annualReportDataSaveBtn" :disabled="disableAnnualReportDataSaveBtn" v-on:mouseleave="hideTooltip('annualReportDataSaveBtn')" type="submit" variant="light" class="btn-lg text-center">
               <img src="~@/assets/save.png">
             </b-button>
-            <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" :disabled="!disableAnnualReportDataSaveBtn" variant="light" class="btn-lg">
+            <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" v-on:click="createAnnualReport" :disabled="!disableAnnualReportDataSaveBtn" variant="light" class="btn-lg">
               <img src="~@/assets/annual-report.png">
             </b-button>
           </b-col> 
@@ -124,7 +118,6 @@
       <b-modal no-close-on-backdrop id="annual-report-pane-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPaneErrorModal')">
         <message-confirm-dialog ref="annualReportPaneErrorModal" parentModal="annual-report-pane-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
-    </div>
   </b-container>
 </template>
 
@@ -155,17 +148,15 @@
         },
         year: null,
         churchMunicipality: null,
-        form: null,
+        form: {
+          totalIncomePerCodePredicted: [],
+          totalOutcomePerCodePredicted: []
+        },
         annualReportPages: [],
         errorText: "",
         alreadyPressed: false,
-        transferFromPreviousYearInputAutonumeric: null,
-        shareValueDepreciatedDuringYearInputAutonumeric: null,
-        realEstateLandValueInputAutonumeric: null,
-        realEstateBuildingsValueInputAutonumeric: null,
         formUnwatch: null,
-        disableAnnualReportDataSaveBtn: true,
-        autonumerisedInputs: []
+        disableAnnualReportDataSaveBtn: true
       }
     },
     created () {
@@ -176,27 +167,17 @@
       this.$watch('year', () => {
         self.loadAnnualReportDataForm()
       })
+      if (this.yearOptions && this.yearOptions.length > 0) {
+        this.year = this.yearOptions[0]
+      } else {
+        this.year = new Date().getFullYear()
+      }
+      
     },
     computed: {
       ...mapState(
         {
-          yearOptions: function (state) {
-            const bookedYears = state.CommonValues.bookedYears
-            const currentYear = new Date().getFullYear()
-            if (bookedYears && bookedYears.length > 0) {
-              const currentYearBooked = bookedYears.find(by => {
-                return by == currentYear
-              })
-              if (currentYearBooked) {
-                this.year = currentYear
-              } else {
-                this.year = bookedYears[0]
-              }  
-            } else {
-              this.year = null
-            }
-            return bookedYears
-          }
+          yearOptions: state => state.CommonValues.bookedYears
         }
       )
     },
@@ -216,36 +197,40 @@
       async loadAnnualReportDataForm () {
         const self = this
         this.disableAnnualReportDataSaveBtn = true
-        if (this.year) {
-          const annualReportData = JSON.parse(JSON.stringify(await this.loadAnnualReportData()))
-          const incomeCodes = await this.loadIncomeCodes()
-          const outcomeCodes = await this.loadOutcomeCodes()
           if (this.formUnwatch) {
             this.formUnwatch()
           }
+          const annualReportData = JSON.parse(JSON.stringify(await this.loadAnnualReportData()))
+          const incomeCodes = await this.loadIncomeCodes()
+          const outcomeCodes = await this.loadOutcomeCodes()
           this.form = mapAnnualReportDataToAnnualReportDataForm(annualReportData, incomeCodes, outcomeCodes)
+          self.formUnwatch = self.$watch('form', () => {
+            self.disableAnnualReportDataSaveBtn = false
+          }, {deep: true})
           this.$nextTick(() => {
-            for (let i=0; i<self.autonumerisedInputs.length; i++) {
-              self.autonumerisedInputs[i].remove()
+            if (AutoNumeric.getAutoNumericElement('#transferFromPreviousYearInput') === null) {
+              new AutoNumeric('#transferFromPreviousYearInput', largeAmountNumberOptions)
             }
-            self.autonumerisedInputs = []
-            self.autonumerisedInputs.push(new AutoNumeric('#transferFromPreviousYearInput', largeAmountNumberOptions))
-            self.autonumerisedInputs.push(new AutoNumeric('#shareValueDepreciatedDuringYearInput', largeAmountNumberOptions))
-            self.autonumerisedInputs.push(new AutoNumeric('#realEstateLandValueInput', largeAmountNumberOptions))
-            self.autonumerisedInputs.push(new AutoNumeric('#realEstateBuildingsValueInput', largeAmountNumberOptions))
+            if (AutoNumeric.getAutoNumericElement('#shareValueDepreciatedDuringYearInput') === null) {
+              new AutoNumeric('#shareValueDepreciatedDuringYearInput', largeAmountNumberOptions)
+            }
+            if (AutoNumeric.getAutoNumericElement('#realEstateLandValueInput') === null) {
+              new AutoNumeric('#realEstateLandValueInput', largeAmountNumberOptions)
+            }
+            if (AutoNumeric.getAutoNumericElement('#realEstateBuildingsValueInput') === null) {
+              new AutoNumeric('#realEstateBuildingsValueInput', largeAmountNumberOptions)
+            }
             for (let i=0; i<self.form.totalIncomePerCodePredicted.length; i++) {
-              self.autonumerisedInputs.push(new AutoNumeric('#ic' + i, largeAmountNumberOptions))
+              if (AutoNumeric.getAutoNumericElement('#ic' + i) === null) {
+                new AutoNumeric('#ic' + i, largeAmountNumberOptions)
+              }
             }
             for (let i=0; i<self.form.totalOutcomePerCodeAllowed.length; i++) {
-              self.autonumerisedInputs.push(new AutoNumeric('#oc' + i, largeAmountNumberOptions))
+              if (AutoNumeric.getAutoNumericElement('#oc' + i) === null) {
+                new AutoNumeric('#oc' + i, largeAmountNumberOptions)
+              }
             }
-            self.formUnwatch = self.$watch('form', () => {
-              self.disableAnnualReportDataSaveBtn = false
-            }, {deep: true})
           })
-        } else {
-          this.form = null
-        }
       },
       async loadAnnualReportData() {
         const self = this
@@ -345,8 +330,8 @@
   .modal .modal-ar {
     max-width: 1280px;
     width: 1280px;
-    max-height:960px;
-    height:960px;
+    max-height:975px;
+    height:975px;
     overflow: hidden;
   }
 </style>

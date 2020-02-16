@@ -35,6 +35,8 @@
       </b-col>
     </b-row>
     <hr>
+    <br>
+    
     <!--<b-row>
       <b-col cols=4>
         {{ phrases.setDefaultPaymentSlip }}:
@@ -158,7 +160,7 @@
         },
         churchMunicipality: null,
         churchTown: null,
-        zoomLevel: Big(1.3),
+        zoomLevel: Big(1.2),
         commonDataSaveTimeout: null,
         alreadyPressed: false,
         disableCommonSaveBtn: true,
@@ -175,7 +177,7 @@
         if(!this.zoomLevel) {
           return null;
         }
-        var formatedZoomLevel = this.zoomLevel.times(100).minus(30)
+        var formatedZoomLevel = this.zoomLevel.times(100).minus(20)
         return formatedZoomLevel.toString() + ' %'
       }
     },
@@ -252,7 +254,7 @@
         const self = this
         settingsController.getSettings().then(function (res) {
           if (!res.err) {
-            self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.3)
+            self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.2)
             self.$emit('updateZoomLevel', parseFloat(self.zoomLevel))
           } else {
             self.openErrorModal(res.err)
@@ -289,13 +291,13 @@
         this.$root.$emit('bv::show::modal', 'default-receipt-modal')
       },
       increaseZoomLevel () {
-        if(!this.zoomLevel.gte(1.8)) {
+        if(!this.zoomLevel.gte(1.7)) {
           this.zoomLevel = this.zoomLevel.plus(0.1)
           this.updateZoomLevel()
         }
       },
       decreaseZoomLevel () {
-        if(!this.zoomLevel.lte(0.8)) {
+        if(!this.zoomLevel.lte(0.7)) {
           this.zoomLevel = this.zoomLevel.minus(0.1)
           this.updateZoomLevel()
         }

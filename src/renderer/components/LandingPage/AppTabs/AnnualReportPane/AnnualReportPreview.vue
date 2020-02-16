@@ -188,7 +188,7 @@ const printTotalReportStyle = `
     #total-income-page {
       page-break-before: always;
       position: relative;
-      top:742px;
+      top:738px;
       right: 1px;
       transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -196,7 +196,7 @@ const printTotalReportStyle = `
     #total-outcome-page {
       page-break-before: always;
       position: relative;
-      top:742px;
+      top:738px;
       right: 1px;
       transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
@@ -657,7 +657,7 @@ input {
 	transform: scale(0.6);
 	position:relative;
   bottom:50px;
-  left:213px;
+  left:223px;
 }
 
 .manualPage >>> #manual-page {
@@ -670,13 +670,13 @@ input {
 .incomePage >>> #income-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 269px;
+	bottom: 271px;
 	right: 385px;
 }
 .outcomePage >>> #outcome-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 274px;
+	bottom: 276px;
 	right: 383px;
 }
 
@@ -712,7 +712,7 @@ input {
 	transform: scale(0.6);
 	position:relative;
   bottom:50px;
-  left:213px;
+  left:223px;
 }
 
 i {

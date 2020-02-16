@@ -132,7 +132,7 @@
         arePaymentSlipsValid: true,
         areReceiptsValid: true,
         errorText: "",
-        zoomLevel: Big(1.3)
+        zoomLevel: Big(1.2)
       }
     },
     created () {
@@ -226,13 +226,13 @@
         })
       },
       increaseZoomLevel () {
-        if(!this.zoomLevel.gte(1.8)) {
+        if(!this.zoomLevel.gte(1.7)) {
           this.zoomLevel = this.zoomLevel.plus(0.1)
           webFrame.setZoomFactor(parseFloat(this.zoomLevel))
         }
       },
       decreaseZoomLevel () {
-        if(!this.zoomLevel.lte(0.8)) {
+        if(!this.zoomLevel.lte(0.7)) {
           this.zoomLevel = this.zoomLevel.minus(0.1)
           webFrame.setZoomFactor(parseFloat(this.zoomLevel))
         }

@@ -50,10 +50,7 @@ async function createWindow () {
   const settings = await settingsService.getSettings()
   mainWindow = new BrowserWindow({
     show: false,
-    backgroundColor: 'white',
-    webPreferences: {
-      zoomFactor: settings && settings.zoomLevel ? settings.zoomLevel : 1.3
-    }
+    backgroundColor: 'white'
   })
   mainWindow.maximize()
   mainWindow.loadURL(winURL)
@@ -61,8 +58,9 @@ async function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-  mainWindow.webContents.on('did-finish-load', function() {
-    mainWindow.show();
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.webContents.setZoomFactor(settings && settings.zoomLevel ? settings.zoomLevel : 1.2)
+    mainWindow.show()
   })
 }
 

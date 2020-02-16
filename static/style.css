@@ -10,9 +10,9 @@
 }
 
 .tooltip .tooltip-inner {
-  font-size: 80%;
+  font-size: 90%;
   line-height: 1;
-  margin: 1px;
+  padding:5px;
   font-family: "Times New Roman";
   letter-spacing: 95%;
   background-color:#514A4A;
