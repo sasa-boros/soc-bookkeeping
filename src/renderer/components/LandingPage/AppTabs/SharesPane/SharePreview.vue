@@ -359,7 +359,7 @@
     border-style: none;
   }
   #nameInput {
-    width: 315px;
+    width: 300px;
     border-style: none;
   }
   #nominalValueInput {

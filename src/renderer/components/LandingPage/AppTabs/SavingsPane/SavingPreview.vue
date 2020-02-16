@@ -433,11 +433,11 @@
     border-radius: 0 !important;
   }
   #accountInput {
-    width: 170px;
+    width: 200px;
     border-style: none;
   }
   #savingEntityInput {
-    width: 315px;
+    width: 300px;
     border-style: none;
   }
   #amountInput {
