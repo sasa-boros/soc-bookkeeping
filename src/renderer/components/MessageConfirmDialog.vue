@@ -13,12 +13,9 @@
     </b-row>
     <b-row v-show="text">
       <b-col>
-        <div class="text"> 
-          {{text}} 
-        </div>
+        <pre class="mainText">{{text}}</pre>
       </b-col>
     </b-row>
-    <br>
     <b-row v-show="subText">
       <b-col>
         <div class="subText"> 
@@ -73,6 +70,7 @@ export default {
   methods: {
     closeDialog () {
       this.$root.$emit('bv::hide::modal', this.parentModal)
+      this.$emit('closed')
     },
     confirm () {
       this.$emit('confirmed')
@@ -83,8 +81,14 @@ export default {
 </script>
 
 <style scoped>
+.mainText {
+  font-family:'Times New Roman'; 
+  word-wrap: break-word; 
+  white-space: pre-wrap;
+  font-size:100%;
+}
 .subText {
-  font-size: 10.0pt;
+  font-size: 95%;
   color: #888585;
 }
 </style>
