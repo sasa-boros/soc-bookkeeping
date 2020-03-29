@@ -11,7 +11,7 @@
             v-model="churchMunicipality"
             v-on:input="disableCommonSaveBtn = false"
             v-on:keypress="limitInputPerSize"
-          />у
+          />&nbsp;&nbsp;у
           <b-form-input
             id="churchTownInput"
             type="text"
