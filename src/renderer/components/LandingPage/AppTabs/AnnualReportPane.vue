@@ -34,7 +34,7 @@
     </b-row>
     <b-row class="text-center">
       <b-col>
-        Година књижења
+        Година књижења&nbsp;
         <datepicker
           minimum-view="year"
           maximum-view="year"

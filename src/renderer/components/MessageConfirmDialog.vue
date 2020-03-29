@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col>
+      <b-col cols=11>
         <img v-show="type=='warning'" src="~@/assets/warning.png">
         <img v-show="type=='error'" src="~@/assets/error.png">
       </b-col>
