@@ -285,7 +285,6 @@
             if (!generatedText) {
               return placeholder
             } else {
-              this.form.outcomeAsText = generatedText
               return generatedText
             }
           } else {
@@ -920,7 +919,6 @@
         this.form.thirdOutcome = null
         this.form.thirdCodeValid = null
         this.form.outcome = null
-        this.form.outcomeAsText = null
         this.form.reason = null
         this.form.received = null
         this.form.churchMunicipality = this.commonData ? this.commonData.churchMunicipality : null

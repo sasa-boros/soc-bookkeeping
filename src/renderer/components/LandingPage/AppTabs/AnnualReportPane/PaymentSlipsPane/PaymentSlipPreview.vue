@@ -276,7 +276,6 @@
             if (!generatedText) {
               return placeholder
             } else {
-              this.form.incomeAsText = generatedText
               return generatedText
             }
           } else {
@@ -892,7 +891,6 @@
         this.form.thirdIncome = null;
         this.form.thirdCodeValid = null;
         this.form.income = null;
-        this.form.incomeAsText = null;
         this.form.town = this.commonData ? this.commonData.churchTown : null
         this.form.reason = null;
         this.form.payed = null;
