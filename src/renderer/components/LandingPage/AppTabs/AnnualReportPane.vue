@@ -131,11 +131,7 @@
     </b-modal>
 
     <b-modal no-close-on-backdrop hide-footer hide-header id="annual-report-preview-modal" size="ar">
-      <annual-report-preview :year="bookingYear" :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal"></annual-report-preview>
-    </b-modal>
-
-    <b-modal no-close-on-backdrop id="annual-report-preview-warning-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPreviewWarningModal')">
-      <message-confirm-dialog ref="annualReportPreviewWarningModal" parentModal="annual-report-preview-warning-modal" type="warning" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+      <annual-report-preview :annualReport="annualReport" :year="bookingYear" :annualReportPages='annualReportPages' parentModal="annual-report-preview-modal" ref="annualReportPreviewModal"></annual-report-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="annual-report-preview-failed-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPreviewFailedModal')">
@@ -199,6 +195,7 @@ export default {
       churchTown: null,
       alreadyPressed: false,
       year: new Date(),
+      annualReport: null,
       annualReportPages: [],
       disableCommonSaveBtn: true
     };
@@ -267,19 +264,13 @@ export default {
       annualReportController.getAnnualReport(this.bookingYear).then(function (res) {
         if (!res.err) {
             const annualReport = res.data
+            self.annualReport = annualReport
             annualReportController.getAnnualReportPages(res.data).then(function (res) {
               self.alreadyPressed = false
               if (!res.err) {
                 self.annualReportPages = res.data ? res.data : []
                 self.hideTooltip('annualReportBtn')
                 self.openAnnualReportPreviewModal()
-                if (annualReport.warnings.length > 0) {
-                var warning = '';
-                annualReport.warnings.forEach(w => {
-                  warning += (w + '\n')
-                })
-                self.openAnnualReportPreviewWarningModal(warning.substring(0, warning.length-1))
-                } 
               } else {
                 self.openErrorModal(res.err)
               }
@@ -336,10 +327,6 @@ export default {
     openErrorModal(error) {
       this.errorText = error
       this.$root.$emit('bv::show::modal', 'annual-report-pane-error-modal')
-    },
-    openAnnualReportPreviewWarningModal(error) {
-      this.errorText = error
-      this.$root.$emit('bv::show::modal', 'annual-report-preview-warning-modal')
     },
     openAnnualReportPreviewFailedModal(error) {
       this.errorText = error

@@ -90,8 +90,8 @@
           return
         }
         this.alreadyPressed = false
-        this.$refs.incomeCodesTable.update()
-        this.$refs.outcomeCodesTable.update()
+        this.$refs.incomeCodesTable.updateFromCodesPane()
+        this.$refs.outcomeCodesTable.updateFromCodesPane()
       },
       openErrorModal(error) {
         this.errorText = error

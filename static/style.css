@@ -153,7 +153,6 @@ li.active .page-link {
   background-color:  #e7f3fc !important;
 }
 
-
 .btn-light:active:enabled {
   background-color:  #e7f3fc;
 }
@@ -163,6 +162,16 @@ li.active .page-link {
   padding-right: 0 !important;
   background-color: white;
   background-image: url('~@/assets/invalid-red.png') !important;
+  box-shadow: none !important;
+}
+
+input[type]:focus(.is-invalid) {
+  outline: dotted 1px red !important;
+  /* To keep selects from getting wider when invalid */
+  padding-right: 0 !important;
+  background-color: white;
+  background-image: url('~@/assets/invalid-red.png') !important;
+  box-shadow: none !important;
 }
 
 input[type]:focus:not(.is-invalid) {

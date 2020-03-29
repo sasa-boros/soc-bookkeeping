@@ -6,7 +6,7 @@
         <img v-show="type=='error'" src="~@/assets/error.png">
       </b-col>
       <b-col>
-        <b-button ref="closeButton" @click.stop="closeDialog()" variant="link" class="btn-xs float-right">
+        <b-button id="closeButton" ref="closeButton" @click.stop="closeDialog()" variant="link" class="btn-xs float-right">
           <img src="~@/assets/close.png">
         </b-button>
       </b-col>

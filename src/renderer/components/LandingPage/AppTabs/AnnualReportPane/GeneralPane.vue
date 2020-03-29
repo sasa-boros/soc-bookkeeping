@@ -130,16 +130,17 @@
         formUnwatch: null,
         errorText: "",
         alreadyPressed: false,
-        disableAnnualReportDataSaveBtn: true
+        disableAnnualReportDataSaveBtn: true,
+        updating: []
       }
     },
     created () {
       const self = this
-      EventBus.$on('updateAnnualReportPane', () => {
-        self.loadAnnualReportDataForm()
+      EventBus.$on('updateGeneralPane', () => {
+        self.loadGeneralForm()
       })
       this.$watch('bookingYear', () => {
-        self.loadAnnualReportDataForm()
+        self.loadGeneralForm()
       }, {immediate: true})
     },
     computed: {
@@ -176,46 +177,48 @@
           evt.preventDefault()
         } 
       },
-      async loadAnnualReportDataForm () {
+      async loadGeneralForm () {
         const self = this
+        this.updating.push(1)
         this.disableAnnualReportDataSaveBtn = true
-          if (this.formUnwatch) {
-            this.formUnwatch()
-            this.formUnwatch = null
+        if (this.formUnwatch) {
+          this.formUnwatch()
+          this.formUnwatch = null
+        }
+        const annualReportData = await this.loadAnnualReportData()
+        const incomeCodes = await this.loadIncomeCodes()
+        const outcomeCodes = await this.loadOutcomeCodes()
+        this.form = JSON.parse(JSON.stringify(mapAnnualReportDataToAnnualReportDataForm(annualReportData, incomeCodes, outcomeCodes)))
+        this.formUnwatch = this.$watch('computedForm', (newForm, oldForm) => {
+          if(!_.isEqual(newForm, oldForm) && this.updating.length == 0) {
+            self.disableAnnualReportDataSaveBtn = false
           }
-          const annualReportData = await this.loadAnnualReportData()
-          const incomeCodes = await this.loadIncomeCodes()
-          const outcomeCodes = await this.loadOutcomeCodes()
-          this.form = JSON.parse(JSON.stringify(mapAnnualReportDataToAnnualReportDataForm(annualReportData, incomeCodes, outcomeCodes)))
-          this.formUnwatch = this.$watch('computedForm', (newForm, oldForm) => {
-            if(!_.isEqual(newForm, oldForm)) {
-              self.disableAnnualReportDataSaveBtn = false
+        }, {deep: true})
+        this.$nextTick(() => {
+          if (AutoNumeric.getAutoNumericElement('#transferFromPreviousYearInput') === null) {
+            new AutoNumeric('#transferFromPreviousYearInput', largeAmountNumberOptions)
+          }
+          if (AutoNumeric.getAutoNumericElement('#shareValueDepreciatedDuringYearInput') === null) {
+            new AutoNumeric('#shareValueDepreciatedDuringYearInput', largeAmountNumberOptions)
+          }
+          if (AutoNumeric.getAutoNumericElement('#realEstateLandValueInput') === null) {
+            new AutoNumeric('#realEstateLandValueInput', largeAmountNumberOptions)
+          }
+          if (AutoNumeric.getAutoNumericElement('#realEstateBuildingsValueInput') === null) {
+            new AutoNumeric('#realEstateBuildingsValueInput', largeAmountNumberOptions)
+          }
+          for (let i=0; i<self.form.totalIncomePerCodePredicted.length; i++) {
+            if (AutoNumeric.getAutoNumericElement('#ic' + i) === null) {
+              new AutoNumeric('#ic' + i, largeAmountNumberOptions)
             }
-          }, {deep: true})
-          this.$nextTick(() => {
-            if (AutoNumeric.getAutoNumericElement('#transferFromPreviousYearInput') === null) {
-              new AutoNumeric('#transferFromPreviousYearInput', largeAmountNumberOptions)
+          }
+          for (let i=0; i<self.form.totalOutcomePerCodeAllowed.length; i++) {
+            if (AutoNumeric.getAutoNumericElement('#oc' + i) === null) {
+              new AutoNumeric('#oc' + i, largeAmountNumberOptions)
             }
-            if (AutoNumeric.getAutoNumericElement('#shareValueDepreciatedDuringYearInput') === null) {
-              new AutoNumeric('#shareValueDepreciatedDuringYearInput', largeAmountNumberOptions)
-            }
-            if (AutoNumeric.getAutoNumericElement('#realEstateLandValueInput') === null) {
-              new AutoNumeric('#realEstateLandValueInput', largeAmountNumberOptions)
-            }
-            if (AutoNumeric.getAutoNumericElement('#realEstateBuildingsValueInput') === null) {
-              new AutoNumeric('#realEstateBuildingsValueInput', largeAmountNumberOptions)
-            }
-            for (let i=0; i<self.form.totalIncomePerCodePredicted.length; i++) {
-              if (AutoNumeric.getAutoNumericElement('#ic' + i) === null) {
-                new AutoNumeric('#ic' + i, largeAmountNumberOptions)
-              }
-            }
-            for (let i=0; i<self.form.totalOutcomePerCodeAllowed.length; i++) {
-              if (AutoNumeric.getAutoNumericElement('#oc' + i) === null) {
-                new AutoNumeric('#oc' + i, largeAmountNumberOptions)
-              }
-            }
-          })
+          }
+        })
+        this.updating.pop()
       },
       async loadAnnualReportData() {
         const self = this

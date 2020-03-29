@@ -243,6 +243,9 @@
         this.$emit('updateInvalidPaymentSlipsInfo')
         this.monthToFilter = ''
         this.clearChecked()
+        if (highlightChange) {
+          this.highlightChangedRow()
+        }
       },
       highlightChangedRow() {
         var updatedRow;

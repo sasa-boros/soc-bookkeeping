@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid id="annual-report-preview">
+  <b-container fluid id="annual-report-preview" ref="annualReportPreview">
     <br>
     <b-row>
       <b-col cols="3">
@@ -46,7 +46,7 @@
           </b-button>
         </span>
       </b-col>
-      <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" class="btn-xs float-right">
+      <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" ref="modalCancelBtn" class="btn-xs float-right">
         <img src="~@/assets/close.png">
       </b-button>
     </b-row>
@@ -71,6 +71,10 @@
     <b-tooltip boundary='window' ref="incrementPageBtnTooltip" triggers="hover" target="incrementPageBtn" v-on:hide.prevent>
       {{phrases.nextPage}}
     </b-tooltip>
+
+    <b-modal centered no-close-on-backdrop id="annual-report-warning-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportWarningModal')">
+      <message-confirm-dialog ref="annualReportWarningModal" parentModal="annual-report-warning-modal" type="warning" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
     
     <b-modal no-close-on-backdrop id="annual-report-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportErrorModal')">
       <message-confirm-dialog ref="annualReportErrorModal" parentModal="annual-report-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
@@ -100,6 +104,9 @@ const printPageStyle = `
     }
     #print-annual-report, #print-annual-report * {
       visibility:visible;
+    }
+    @page {
+      margin-bottom: 0cm;
     }
     #headline {
       position: relative;
@@ -182,6 +189,9 @@ const printTotalReportStyle = `
     #print-annual-report, #print-annual-report * {
       visibility:visible;
     }
+    @page {
+      margin-bottom: 0cm;
+    }
     #total-headline {
       position: relative;
       top: 288px;
@@ -238,6 +248,9 @@ const printAnnualReportStyle = `
     }
     #print-annual-report, #print-annual-report * {
       visibility:visible;
+    }
+    @page {
+      margin-bottom: 0cm;
     }
     #headline {
       position: relative;
@@ -311,6 +324,9 @@ export default {
     year: {
       type: Number
     },
+    annualReport: {
+      type: Object,
+    },
     annualReportPages: {
       type: Array,
       default: []
@@ -355,6 +371,15 @@ export default {
     this.findAnnualReportPagesNums()
   },
   mounted () {
+    setTimeout(() => {
+      if (this.annualReport && this.annualReport.warnings && this.annualReport.warnings.length > 0) {
+        var warning = '';
+        this.annualReport.warnings.forEach(w => {
+          warning += (w + '\n')
+        })
+        this.openAnnualReportWarningModal(warning.substring(0, warning.length-1))
+      } 
+    }, 200)
     this.bindKeys()
   },
   beforeDestroy () {
@@ -417,6 +442,12 @@ export default {
     },
     bindKeys() {
       const self = this
+      Mousetrap.bind('esc', function(e) {
+        if (!document.getElementById('annual-report-warning-modal')) {
+          self.closeModal()
+        }
+        return false;
+      });
       Mousetrap.bind(['command+p', 'ctrl+p'], function(e) {
         document.activeElement.blur()
         self.printAnnualReportPage()
@@ -446,6 +477,7 @@ export default {
       Mousetrap.unbind(['command+d', 'ctrl+d']);
       Mousetrap.unbind('left');
       Mousetrap.unbind('right');
+      Mousetrap.unbind('esc');
     },
     decrementPage() {
       if(this.currentPage <= 1) {
@@ -615,6 +647,10 @@ export default {
         section.appendChild(page)
       }
       return section
+    },
+    openAnnualReportWarningModal(error) {
+      this.errorText = error
+      this.$root.$emit('bv::show::modal', 'annual-report-warning-modal')
     },
     openErrorModal(error) {
       this.errorText = error

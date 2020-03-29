@@ -201,9 +201,13 @@
         this.errorText = error
         this.$root.$emit('bv::show::modal', 'income-code-table-error-modal')
       },
+      updateFromCodesPane () {
+        this.loadIncomeCodes()
+        EventBus.$emit('updatePaymentSlipTable')
+      },
       update (el) {
         this.loadIncomeCodes(el)
-        EventBus.$emit('updateAnnualReportPane')
+        EventBus.$emit('updateGeneralPane')
         EventBus.$emit('updatePaymentSlipTable')
       },
       highlightChangedRow(el) {

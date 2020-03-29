@@ -201,9 +201,13 @@
         this.errorText = error
         this.$root.$emit('bv::show::modal', 'outcome-code-table-error-modal')
       },
+      updateFromCodesPane () {
+        this.loadOutcomeCodes()
+        EventBus.$emit('updateReceiptTable')
+      },
       update (el) {
         this.loadOutcomeCodes(el)
-        EventBus.$emit('updateAnnualReportPane')
+        EventBus.$emit('updateGeneralPane')
         EventBus.$emit('updateReceiptTable');
       },
       highlightChangedRow(el) {
