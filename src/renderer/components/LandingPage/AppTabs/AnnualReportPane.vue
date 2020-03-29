@@ -352,14 +352,14 @@ export default {
     border-radius: 0 !important;
   }
   #churchMunicipalityInput {
-    width: 235px;
-    max-width: 320px;
+    width: 255px;
+    max-width: 255px;
     border-style: none;
     display:inline;
   }
   #churchTownInput {
-    width: 320px;
-    max-width: 320px;
+    width: 335px;
+    max-width: 330px;
     border-style: none;
     display:inline;
   }
