@@ -54,7 +54,7 @@ async function deleteReceipt (id, bookingYear) {
 
 async function deleteReceipts (ids, bookingYear) {
   console.log(`Deleting receipts with ids ${ids}`)
-  await receiptDao.removeManyByIds(ids)
+  await receiptDao.removeByIds(ids)
   await assignAnnualReportValues(bookingYear)
   console.log('Successfully deleted receipts')
 }

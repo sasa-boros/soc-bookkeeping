@@ -15,7 +15,7 @@
           <br>
           <b-row>
             <b-col cols='6'>
-              {{ (ipcp.incomeCode.description ? ipcp.incomeCode.description : '') + '  (' + asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position + ')' }} 
+              <b>{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position }}</b>&nbsp;&nbsp;&nbsp;{{ (ipcp.incomeCode.description ? ipcp.incomeCode.description : '') }} 
             </b-col>
             <b-col>
               <b-form-input v-on:cut="updateAfterCut" :id="'ic' + index" type="text" v-model="ipcp.income" class="predictedAllowedCodeAmountInput"/>
@@ -30,7 +30,7 @@
           <br>
           <b-row>
             <b-col cols='6'>
-              {{ (opca.outcomeCode.description ? opca.outcomeCode.description : '') + '  (' + asRomanNumber(opca.outcomeCode.partition) + "/" + opca.outcomeCode.position + ')' }} 
+              <b>{{ asRomanNumber(opca.outcomeCode.partition) + "/" + opca.outcomeCode.position }}</b>&nbsp;&nbsp;&nbsp;{{ (opca.outcomeCode.description ? opca.outcomeCode.description : '') }} 
             </b-col>
             <b-col>
               <b-form-input v-on:cut="updateAfterCut" :id="'oc' + index" type="text" v-model="opca.outcome" class="predictedAllowedCodeAmountInput"/>

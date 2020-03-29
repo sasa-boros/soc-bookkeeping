@@ -15,7 +15,7 @@
       </b-col>
       <b-col cols="6">
         <b-form-group class="float-right">
-          <label :for="`monthSelect`">{{phrases.filterByMonth}}: </label>
+          <label style="font-size:100%" :for="`monthSelect`">{{phrases.filterByMonth}}: </label>
           &nbsp;
           <b-form-select v-model="monthToFilter" id="monthSelect" :options="monthOptions" size="sm" class="my-0"/>
         </b-form-group>
