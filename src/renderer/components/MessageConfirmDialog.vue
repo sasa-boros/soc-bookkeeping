@@ -1,12 +1,12 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols=11>
+      <b-col>
         <img v-show="type=='warning'" src="~@/assets/warning.png">
         <img v-show="type=='error'" src="~@/assets/error.png">
       </b-col>
-      <b-col>
-        <b-button id="closeButton" ref="closeButton" @click.stop="closeDialog()" variant="link" class="btn-xs float-right">
+      <b-col class="text-right">
+        <b-button id="closeButton" ref="closeButton" @click.stop="closeDialog()" variant="link" class="btn-xs">
           <img src="~@/assets/close.png">
         </b-button>
       </b-col>
@@ -90,5 +90,10 @@ export default {
 .subText {
   font-size: 95%;
   color: #888585;
+}
+#closeButton {
+  position:relative;
+  left:15px;
+  bottom: 3px;
 }
 </style>
