@@ -902,6 +902,22 @@
         }
       },
       clearForm () {
+        this.form.firstOutcome = null
+        this.form.secondOutcome = null
+        this.form.thirdOutcome = null
+        this.form.outcome = null
+        var firstOutcomeInputEl = AutoNumeric.getAutoNumericElement('#firstOutcomeInput')
+        var secondOutcomeInputEl = AutoNumeric.getAutoNumericElement('#secondOutcomeInput')
+        var thirdOutcomeInputEl = AutoNumeric.getAutoNumericElement('#thirdOutcomeInput')
+        if (firstOutcomeInputEl) {
+          firstOutcomeInputEl.clear()
+        }
+        if (secondOutcomeInputEl) {
+          secondOutcomeInputEl.clear()
+        }
+        if (thirdOutcomeInputEl) {
+          thirdOutcomeInputEl.clear()
+        }
         this.selectedFirstOutcomeCode = null
         this.selectedSecondOutcomeCode = null
         this.selectedThirdOutcomeCode = null
@@ -910,17 +926,13 @@
         this.form.date = null
         this.form.firstPartition = null
         this.form.firstPosition = null
-        this.form.firstOutcome = null
         this.form.firstCodeValid = null
         this.form.secondPartition = null
         this.form.secondPosition = null
-        this.form.secondOutcome = null
         this.form.secondCodeValid = null
         this.form.thirdPartition = null
         this.form.thirdPosition = null
-        this.form.thirdOutcome = null
         this.form.thirdCodeValid = null
-        this.form.outcome = null
         this.form.reason = null
         this.form.received = null
         this.form.churchMunicipality = this.commonData ? this.commonData.churchMunicipality : null

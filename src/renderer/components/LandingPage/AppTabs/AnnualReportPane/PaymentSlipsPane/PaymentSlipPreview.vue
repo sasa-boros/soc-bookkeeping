@@ -874,6 +874,22 @@
         }
       },
       clearForm () {
+        this.form.firstIncome = null;
+        this.form.secondIncome = null;
+        this.form.thirdIncome = null;
+        this.form.income = null;
+        var firstIncomeInputEl = AutoNumeric.getAutoNumericElement('#firstIncomeInput')
+        var secondIncomeInputEl = AutoNumeric.getAutoNumericElement('#secondIncomeInput')
+        var thirdIncomeInputEl = AutoNumeric.getAutoNumericElement('#thirdIncomeInput')
+        if (firstIncomeInputEl) {
+          firstIncomeInputEl.clear()
+        }
+        if (secondIncomeInputEl) {
+          secondIncomeInputEl.clear()
+        }
+        if (thirdIncomeInputEl) {
+          thirdIncomeInputEl.clear()
+        }
         this.selectedFirstIncomeCode = null
         this.selectedSecondIncomeCode = null
         this.selectedThirdIncomeCode = null
@@ -882,17 +898,13 @@
         this.form.date = null;
         this.form.firstPartition = null;
         this.form.firstPosition = null;
-        this.form.firstIncome = null;
         this.form.firstCodeValid = null;
         this.form.secondPartition = null;
         this.form.secondPosition = null;
-        this.form.secondIncome = null;
         this.form.secondCodeValid = null;
         this.form.thirdPartition = null;
         this.form.thirdPosition = null;
-        this.form.thirdIncome = null;
         this.form.thirdCodeValid = null;
-        this.form.income = null;
         this.form.town = this.commonData ? this.commonData.churchTown : null
         this.form.reason = null;
         this.form.payed = null;
