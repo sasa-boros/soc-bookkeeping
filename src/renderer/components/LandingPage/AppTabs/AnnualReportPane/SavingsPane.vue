@@ -182,6 +182,7 @@
         }
       },
       unsort (key, field, e) {
+        this.clearRowHighlight();
         e.stopPropagation()
         if (!field.sortable) {
           this.sortsPerHeader = null
