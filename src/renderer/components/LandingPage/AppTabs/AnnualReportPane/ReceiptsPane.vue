@@ -92,7 +92,7 @@
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="create-receipt-modal">
-      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" v-on:updateReceiptTable="update(); highlightUpdatedRow()"></receipt-preview>
+      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' :existingReceipts='receipts' parentModal="create-receipt-modal" v-on:updateReceiptTable="update(); highlightUpdatedRow()"></receipt-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-receipt-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteReceiptModal')">
@@ -246,6 +246,9 @@
       },
       highlightUpdatedRow () {
         this.clearRowHighlight()
+        if (this.sortsPerHeader != null) {
+          return
+        }
 
         var rowToHighlight
         if (this.selectedItem) {
@@ -258,7 +261,7 @@
           this.highlightedRow = rowToHighlight
           this.highlightedRowTimeout = setTimeout(() => {
             rowToHighlight.style.setProperty('box-shadow', 'none')
-          }, 2500)
+          }, 1500)
         }
       },
       clearRowHighlight () {

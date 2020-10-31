@@ -9,8 +9,8 @@
         <br/>На дин. <b-form-input disabled id="incomeInput" ref="incomeInput" v-model="form.income" class="input-small number-input" type="text"></b-form-input> и словима <b-form-input type="text" disabled class="input-small" id="IncomeAsText1" v-model="generatedIncomeTextLine1"></b-form-input>
         <br/><b-form-input disabled class="input-small" id="IncomeAsText2" v-model="generatedIncomeTextLine2"></b-form-input>
         <br/>колико сам данас уплатио у благајну Српске православне црквене општине
-у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :autofocus="!paymentSlipPreview" v-on:keypress="limitInputPerSize" ref="reasonInput" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text" v-on:blur.native="preDatepickerOnBlur"></b-form-input>
-        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker :open-date="openDate" id="dateInput" ref="dateInput" v-model="form.date" :language="calendarLanguages.srCYRL" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'paymentSlipDatepickerInput': true, 'ignoreInPrint': true}" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar" :disabled-dates="disabledDates"></datepicker> год. </span>                                                                                                               Уплатио,
+у <b-form-input disabled id="townInput" v-on:keypress="limitInputPerSize" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :autofocus="!paymentSlipPreview" v-on:keypress="limitInputPerSize" ref="reasonInput" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text" v-on:blur.native="preDatepickerOnBlur"></b-form-input>
+        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')" class="ignoreInPrint"><datepicker :open-date="openDate" id="dateInput" ref="dateInput" v-model="form.date" :language="calendarLanguages.srCYRL" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'paymentSlipDatepickerInput': true, 'ignoreInPrint': true}" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar" :disabled-dates="disabledDates" v-on:input="determinePageAndOrdinal"></datepicker> год. </span>                                                                                                               Уплатио,
                                                                                                                         <b-form-input id="payedInput" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text" v-on:blur.native="postDatepickerOnBlur"></b-form-input> 
         <br/>                                                                                                         Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="bookingYear"></b-form-input> год.
                                                                                            <span class="partText">Парт. </span><b-form-input id="firstPartInput" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('firstIncome')" id="firstIncomeInput" v-on:cut="updateAfterCut" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
@@ -88,14 +88,6 @@
       {{phrases.pickDate}}
     </b-tooltip>
 
-    <b-tooltip boundary='window' target="annualReportPageInputWrapper" triggers="hover" placement="top" ref="annualReportPageInputTooltip" v-on:hide.prevent>
-      {{phrases.automaticallyGeneratedAfterSave}}
-    </b-tooltip>
-
-    <b-tooltip boundary='window' target="ordinalInputWrapper" triggers="hover" placement="top" ref="ordinalInputTooltip" v-on:hide.prevent>
-      {{phrases.automaticallyGeneratedAfterSave}}
-    </b-tooltip>
-
     <b-tooltip boundary='window' target="paymentSlipDownloadBtn" triggers="hover" placement="top" ref="paymentSlipDownloadBtnTooltip" v-on:hide.prevent>
       {{phrases.download}}
     </b-tooltip>
@@ -137,6 +129,10 @@
   export default {
     store: store,
     props: {
+      existingPaymentSlips: {
+        type: Array,
+        default: [],
+      },
       paymentSlip: {
         type: Object,
         default: null,
@@ -170,7 +166,6 @@
           ok: i18n.getTranslation('Ok'),
           download: i18n.getTranslation('Download'),
           paymentSlipFileName: i18n.getTranslation('payment-slip'),
-          automaticallyGeneratedAfterSave: i18n.getTranslation('Automatically generated after save'),
           saveError: i18n.getTranslation('Failed saving error'),
           unexistingPartitionAndPosition: i18n.getTranslation('Unexisting partition and position')
         },
@@ -188,7 +183,6 @@
         formatedFirstPart: null,
         formatedSecondPart: null,
         formatedThirdPart: null,
-        commonData: null,
         selectedFirstIncomeCode: null,
         selectedSecondIncomeCode: null,
         selectedThirdIncomeCode: null,
@@ -205,7 +199,6 @@
       }
       this.disabledDates.to = new Date(this.bookingYear, 0, 1, 0, 0, 0);
       this.disabledDates.from = new Date(this.bookingYear, 11, 31, 23, 59, 59)
-      this.loadAnnualReportCommon()
       if(this.paymentSlipPreview) {
         var paymentSlip = JSON.parse(JSON.stringify(this.paymentSlip))
         this.form = mapPaymentSlipToPaymentSlipForm(paymentSlip)
@@ -215,7 +208,7 @@
           this.disablePrintAndDownload = false
         }
       } else {
-        this.form = mapPaymentSlipToPaymentSlipForm({})
+        this.form = mapPaymentSlipToPaymentSlipForm({town: this.churchTown})
       }
       const self = this;
       incomeCodeController.getIncomeCodes(this.bookingYear).then(function (res) {
@@ -262,7 +255,8 @@
     computed: {
       ...mapState(
         {
-          bookingYear: state => state.CommonValues.bookingYear
+          bookingYear: state => state.CommonValues.bookingYear,
+          churchTown: state => state.CommonValues.churchTown
         }
       ),
       generatedIncomeText: {
@@ -634,6 +628,35 @@
       }
     },
     methods: {
+      determinePageAndOrdinal () {
+        if (this.form.date == null) {
+          this.form.annualReportPage = null;
+          this.form.ordinal = null;
+          return;
+        }
+        let dates = [];
+        let currentDate = new Date(this.form.date);
+        this.form.annualReportPage = currentDate.getMonth() + 1;
+        for (let i = this.existingPaymentSlips.length - 1; i >= 0; i--) {
+          let existingDate = new Date(this.existingPaymentSlips[i].date);
+          if (this.paymentSlipPreview) {
+             if (this.paymentSlip._id != this.existingPaymentSlips[i]._id) {
+               dates.push(existingDate);
+             } else {
+               dates.push(currentDate);
+             }
+          } else {
+            dates.push(existingDate);
+          }
+        }
+        if (!this.paymentSlipPreview) {
+          dates.push(currentDate)
+        }
+        dates.sort((a,b) => {
+          return a - b;
+        });
+        this.form.ordinal = dates.indexOf(currentDate) + 1;
+      },
       adaptAutoNumericAmount (formField) {
         if (this.form[formField] && !this.form[formField].includes(',')) {
           this.form[formField] = this.form[formField] + ',00'
@@ -698,19 +721,6 @@
       postDatepickerOnBlur (evt) {
         this.postDatepickerJustBlurred = true
       },
-      loadAnnualReportCommon () {
-        const self = this
-        annualReportController.getAnnualReportCommon().then((res) => {
-          if (!res.err) {
-            if(!self.paymentSlipPreview) {
-              self.form.town = res.data ? res.data.churchTown : null
-            }
-            self.commonData = res.data
-          } else {
-            self.openErrorModal(res.err)
-          }
-        })
-      },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
@@ -751,7 +761,11 @@
           return []
         }
         var options = []
-        options.push({html: '&nbsp;', value: null})
+        if (this.incomeCodes.length == 0) {
+          options.push({html: '&nbsp;Нема партија и позиција примања', value: null})
+        } else {
+          options.push({html: '&nbsp;', value: null})
+        }
         this.incomeCodes.forEach(ic => {
           options.push({html: '<span class="partPosOptionText">' + asRoman(ic.partition) + '/' + ic.position + '</span><span class="descriptionOptionText">' + (ic.description ? ic.description : '&nbsp;') + '</span>', value: ic})
         })
@@ -905,7 +919,7 @@
         this.form.thirdPartition = null;
         this.form.thirdPosition = null;
         this.form.thirdCodeValid = null;
-        this.form.town = this.commonData ? this.commonData.churchTown : null
+        this.form.town = this.churchTown
         this.form.reason = null;
         this.form.payed = null;
       },

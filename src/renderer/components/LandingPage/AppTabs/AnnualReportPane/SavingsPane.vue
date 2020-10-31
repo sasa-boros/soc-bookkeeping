@@ -207,6 +207,9 @@
       },
       highlightUpdatedRow () {
         this.clearRowHighlight()
+        if (this.sortsPerHeader != null) {
+          return
+        }
 
         var rowToHighlight
         if (this.selectedItem) {
@@ -219,7 +222,7 @@
           this.highlightedRow = rowToHighlight
           this.highlightedRowTimeout = setTimeout(() => {
             rowToHighlight.style.setProperty('box-shadow', 'none')
-          }, 2500)
+          }, 1500)
         }
       },
       clearRowHighlight () {

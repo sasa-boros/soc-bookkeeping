@@ -8,10 +8,10 @@
         <h1> ПРИЗНАНИЦА </h1>
         <br/>На дин. <b-form-input disabled id="outcomeInput" ref="outcomeInput" v-model="form.outcome" class="input-small numberInput" type="text"></b-form-input> и словима <b-form-input disabled class="input-small" id="outcomeAsText1" v-model="generatedOutcomeTextLine1"></b-form-input>
         <br/><b-form-input disabled class="input-small" id="outcomeAsText2" v-model="generatedOutcomeTextLine2"></b-form-input>
-        <br/>динара, примљених из благајне Српске православне црквене општине <b-form-input id="churchMunicipalityInput" v-on:keypress="limitInputPerSize" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input>
-        <br/>у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :autofocus="!receiptPreview" v-on:keypress="limitInputPerSize" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" v-on:blur.native="preDatepickerOnBlur"></b-form-input>
-        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker :open-date="openDate" id="dateInput" ref="dateInput" v-model="form.date" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'receiptDatepickerInput': true }" :language="calendarLanguages.srCYRL" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" :disabled-dates="disabledDates"></datepicker> год.</span>                                                                                                                 Примио,
-у <b-form-input id="townPayedInput" v-on:keypress="limitInputPerSize" v-model="form.townPayed" class="input-small" type="text" v-on:blur.native="postDatepickerOnBlur"></b-form-input>&nbsp;                            <b-form-input v-on:keypress="limitInputPerSize" v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input>
+        <br/>динара, примљених из благајне Српске православне црквене општине <b-form-input disabled id="churchMunicipalityInput" v-on:keypress="limitInputPerSize" v-model="form.churchMunicipality" class="input-small" type="text"></b-form-input>
+        <br/>у <b-form-input disabled id="townInput" v-on:keypress="limitInputPerSize" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :autofocus="!receiptPreview" v-on:keypress="limitInputPerSize" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text" v-on:blur.native="preDatepickerOnBlur"></b-form-input>
+        <br/><span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker :open-date="openDate" id="dateInput" ref="dateInput" v-model="form.date" v-on:input="determinePageAndOrdinal" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'receiptDatepickerInput': true }" :language="calendarLanguages.srCYRL" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" :disabled-dates="disabledDates"></datepicker> год.</span>                                                                                                                 Примио,
+у <b-form-input disabled id="townPayedInput" v-on:keypress="limitInputPerSize" v-model="form.townPayed" class="input-small" type="text" v-on:blur.native="postDatepickerOnBlur"></b-form-input>&nbsp;                            <b-form-input v-on:keypress="limitInputPerSize" v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input>
         <br/>                                                                                                         Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="bookingYear"></b-form-input> год.
                                                                                            <span class="partText">Парт. </span><b-form-input id="firstPartInput" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstOutcomeTooltip ? null : hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('firstOutcome')" id="firstOutcomeInput" v-on:cut="updateAfterCut" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart  || (selectedFirstOutcomeCode && selectedFirstOutcomeCode.tax)" type="text"></b-form-input></span>
                  Исплатио благајник,                                       <span class="partText">Парт. </span><b-form-input id="secondPartInput" type="text" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableSecondOutcomeTooltip ? null : hideTooltip('secondOutcomeInputWrapper')" id="secondOutcomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('secondOutcome')" v-on:cut="updateAfterCut" v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart || (selectedSecondOutcomeCode && selectedSecondOutcomeCode.tax)" type="text"></b-form-input></span>
@@ -86,14 +86,6 @@
       {{phrases.pickDate}}
     </b-tooltip>
 
-    <b-tooltip boundary='window' target="annualReportPageInputWrapper" triggers="hover" placement="top" ref="annualReportPageInputTooltip" v-on:hide.prevent>
-      {{phrases.automaticallyGeneratedAfterSave}}
-    </b-tooltip>
-
-    <b-tooltip boundary='window' target="ordinalInputWrapper" triggers="hover" placement="top" ref="ordinalInputTooltip" v-on:hide.prevent>
-      {{phrases.automaticallyGeneratedAfterSave}}
-    </b-tooltip>
-
     <b-tooltip boundary='window' target="receiptDownloadBtn" triggers="hover" placement="top" ref="receiptDownloadBtnTooltip" v-on:hide.prevent>
       {{phrases.download}}
     </b-tooltip>
@@ -135,6 +127,10 @@
   export default {
     store: store,
     props: {
+      existingReceipts: {
+        type: Array,
+        default: [],
+      },
       receipt: {
         type: Object,
         default: null
@@ -167,7 +163,6 @@
           ok: i18n.getTranslation('Ok'),
           download: i18n.getTranslation('Download'),
           receiptFileName: i18n.getTranslation('receipt'),
-          automaticallyGeneratedAfterSave: i18n.getTranslation('Automatically generated after save'),
           saveError: i18n.getTranslation('Failed saving error'),
           unexistingPartitionAndPosition: i18n.getTranslation('Unexisting partition and position')
         },
@@ -185,7 +180,6 @@
         formatedFirstPart: null,
         formatedSecondPart: null,
         formatedThirdPart: null,
-        commonData: null,
         selectedFirstOutcomeCode: null,
         selectedSecondOutcomeCode: null,
         selectedThirdOutcomeCode: null,
@@ -202,7 +196,6 @@
       }
       this.disabledDates.to = new Date(this.bookingYear, 0, 1, 0, 0, 0);
       this.disabledDates.from = new Date(this.bookingYear, 11, 31, 23, 59, 59)
-      this.loadAnnualReportCommon()
       if(this.receiptPreview) {
         var receipt = JSON.parse(JSON.stringify(this.receipt));
         this.form = mapReceiptToReceiptForm(receipt);
@@ -212,7 +205,8 @@
           this.disablePrintAndDownload = false
         }
       } else {
-        this.form = mapReceiptToReceiptForm({});
+        this.form = mapReceiptToReceiptForm({churchMunicipality: this.churchMunicipality,
+        town: this.churchTown, townPayed: this.churchTown});
       } 
       const self = this;
       outcomeCodeController.getOutcomeCodes(this.bookingYear).then(function (res) {
@@ -271,7 +265,9 @@
     computed: {
       ...mapState(
         {
-          bookingYear: state => state.CommonValues.bookingYear
+          bookingYear: state => state.CommonValues.bookingYear,
+          churchMunicipality: state => state.CommonValues.churchMunicipality,
+          churchTown: state => state.CommonValues.churchTown
         }
       ),
       generatedOutcomeText: {
@@ -643,6 +639,35 @@
       }
     },
     methods: {
+      determinePageAndOrdinal () {
+        if (this.form.date == null) {
+          this.form.annualReportPage = null;
+          this.form.ordinal = null;
+          return;
+        }
+        let dates = [];
+        let currentDate = new Date(this.form.date);
+        this.form.annualReportPage = currentDate.getMonth() + 1;
+        for (let i = this.existingReceipts.length - 1; i >= 0; i--) {
+          let existingDate = new Date(this.existingReceipts[i].date);
+          if (this.receiptPreview) {
+             if (this.receipt._id != this.existingReceipts[i]._id) {
+               dates.push(existingDate);
+             } else {
+               dates.push(currentDate);
+             }
+          } else {
+            dates.push(existingDate);
+          }
+        }
+        if (!this.receiptPreview) {
+          dates.push(currentDate)
+        }
+        dates.sort((a,b) => {
+          return a - b;
+        });
+        this.form.ordinal = dates.indexOf(currentDate) + 1;
+      },
       adaptAutoNumericAmount (formField) {
         if (this.form[formField] && !this.form[formField].includes(',')) {
           this.form[formField] = this.form[formField] + ',00'
@@ -677,17 +702,17 @@
         if (this.selectedFirstOutcomeCode && this.selectedFirstOutcomeCode.tax) {
           var secondOutcomeTax =  this.form.secondOutcome ? Big(asFloat(this.form.secondOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var thirdOutcomeTax =   this.form.thirdOutcome ? Big(asFloat(this.form.thirdOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
-          var totalOutcomeTax = parseFloat(secondOutcomeTax.plus(thirdOutcomeTax))
+          var totalOutcomeTax = parseFloat(secondOutcomeTax.plus(thirdOutcomeTax).round())
           this.form.firstOutcome = asFormatedString(totalOutcomeTax, largeAmountNumberOptions)
         } else if (this.selectedSecondOutcomeCode && this.selectedSecondOutcomeCode.tax) {
           var firstOutcomeTax =  this.form.firstOutcome ? Big(asFloat(this.form.firstOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var thirdOutcomeTax =  this.form.thirdOutcome ? Big(asFloat(this.form.thirdOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
-          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(thirdOutcomeTax))
+          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(thirdOutcomeTax).round())
           this.form.secondOutcome = asFormatedString(totalOutcomeTax, largeAmountNumberOptions)
         } else if (this.selectedThirdOutcomeCode && this.selectedThirdOutcomeCode.tax) {
           var firstOutcomeTax =  this.form.firstOutcome ? Big(asFloat(this.form.firstOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var secondOutcomeTax =  this.form.secondOutcome ? Big(asFloat(this.form.secondOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
-          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(secondOutcomeTax)) 
+          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(secondOutcomeTax).round()) 
           this.form.thirdOutcome = asFormatedString(totalOutcomeTax, largeAmountNumberOptions)
         }
       },
@@ -724,21 +749,6 @@
       },
       postDatepickerOnBlur (evt) {
         this.postDatepickerJustBlurred = true
-      },
-      loadAnnualReportCommon () {
-        const self = this
-        annualReportController.getAnnualReportCommon().then((res) => {
-          if (!res.err) {
-            if(!self.receiptPreview) {
-              self.form.churchMunicipality = res.data ? res.data.churchMunicipality : null
-              self.form.town = res.data ? res.data.churchTown : null
-              self.form.townPayed = self.form.town
-            }
-            self.commonData = res.data
-          } else {
-            self.openErrorModal(res.err)
-          }
-        })
       },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
@@ -780,7 +790,11 @@
           return []
         }
         var options = []
-        options.push({html: '&nbsp', value: null})
+         if (this.outcomeCodes.length == 0) {
+          options.push({html: '&nbsp;Нема партија и позиција издавања', value: null})
+        } else {
+          options.push({html: '&nbsp;', value: null})
+        }
         this.outcomeCodes.forEach(oc => {
           options.push({html: '<span class="partPosOptionText">' + asRoman(oc.partition) + '/' + oc.position + '</span><span class="descriptionOptionText">' + (oc.description ? oc.description : '') + '</span>', value: oc})
         })
@@ -935,8 +949,8 @@
         this.form.thirdCodeValid = null
         this.form.reason = null
         this.form.received = null
-        this.form.churchMunicipality = this.commonData ? this.commonData.churchMunicipality : null
-        this.form.town = this.commonData ? this.commonData.churchTown : null
+        this.form.churchMunicipality = this.churchMunicipality
+        this.form.town = this.churchTown
         this.form.townPayed = this.form.town
       },
       openErrorModal(error) {
